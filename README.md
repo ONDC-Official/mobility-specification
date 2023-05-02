@@ -10,7 +10,7 @@ ONDC mobility specification swaggerhub [link](https://app.swaggerhub.com/apis/ON
 
 ## Latest Version
 
-[v1.0.0](https://github.com/ONDC-Official/travel-protocol-specs/releases/tag/v1.0.1)
+[v1.0.0](https://github.com/ONDC-Official/mobility-specification/releases/tag/v1.0.0)
 
 ## Earlier Versions
 
@@ -45,9 +45,9 @@ The evolution of ONDC mobility specification driven by 2 factors:
 
 To know more about how the specification evolves, visit the Network GOVERNANCE document.
 
-To follow discussions related to the mobility specification please visit the [Discussions Forum]() on GitHub
+To follow discussions related to the mobility specification please visit the [Discussions Forum](https://github.com/ONDC-Official/mobility-specification/discussions) on GitHub
 
-Each major release of ONDC mobility specification will be approved by ONDC mobility 
+Each major release of ONDC mobility specification will be approved by ONDC mobility
 
  members are listed [here](./committee.md)
 
