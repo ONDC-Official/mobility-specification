@@ -16,7 +16,7 @@ ONDC mobility specification swaggerhub [link](https://app.swaggerhub.com/apis/ON
 
 | Version | Release Date | beckn Version                      | Comments                                                           |
 | ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------ |
-| v1.0.0  | TBD          | core - 0.9.4<br />mobility - 0.8.1 | Initial mobility specification for on-demand ride hailing use case |
+| v1.0.0  | TBD          | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for on-demand ride hailing use case |
 
 ## Introduction
 
@@ -47,9 +47,7 @@ To know more about how the specification evolves, visit the Network GOVERNANCE d
 
 To follow discussions related to the mobility specification please visit the [Discussions Forum](https://github.com/ONDC-Official/mobility-specification/discussions) on GitHub
 
-Each major release of ONDC mobility specification will be approved by ONDC mobility
-
- members are listed [here](./committee.md)
+Each major release of ONDC mobility specification will be approved by ONDC mobility working group members for which are listed [here](./committee.md)
 
 For minor releases for bug fix and cosmetic changes ONDC would make a minor release based on internal approval process and update the committee in the next scheduled discussion.
 
