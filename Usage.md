@@ -104,19 +104,18 @@ The compilation flow is illustrated below
 
 ### Install swagger CLI
 
-
 - Install the swagger command line tool using ``npm`` (Note: you may need to use root privileges if installing it globally)
 
 ```
 sudo npm install -g swagger-cli
 ```
 
-## Generate the resolved OpenAPI definition file on-demand
+## Generate the resolved OpenAPI illustration viewer file on-demand
 
 - Run the following command
 
 ```
-./build_module {module_name}
+./build_example {example_set_yaml_file}.yaml
 ```
 
 - If the command runs successfully, you should see an output like this,
