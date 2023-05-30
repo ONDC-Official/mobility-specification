@@ -115,11 +115,12 @@ sudo npm install -g swagger-cli
 - Run the following command
 
 ```
-./build_example {example_set_yaml_file}.yaml
+./example_util ./api/mobility/components/beckn_yaml.yaml {out_file_path} ./api/mobility/components/index.yaml 
 ```
 
 - If the command runs successfully, you should see an output like this,
 
 ```
-Created api/{module_name}/build/{module_name}.yaml from api/{module_name}/build/{module_name}.yaml
+Created Created {out_file_path} from ./api/mobility/components/beckn_yaml.yaml
+Temporary file deleted
 ```
