@@ -111,15 +111,16 @@ sudo npm install -g swagger-cli
 
 ## Generate the resolved OpenAPI illustration viewer file on-demand
 
-- Run the following command
+- Run the following command[mac]
 
 ```
-./example_util ./api/mobility/components/beckn_yaml.yaml {out_file_path} ./api/mobility/components/index.yaml 
+cd ./api/components
+./build_util {example_set}
 ```
 
 - If the command runs successfully, you should see an output like this,
 
 ```
-Created Created {out_file_path} from ./api/mobility/components/beckn_yaml.yaml
+Created ../build/build.yaml from ./temp.yaml
 Temporary file deleted
 ```
