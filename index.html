@@ -66,8 +66,9 @@
   </header>
   <main>
     <section class="left-section">
-      <input type="text" id="swagger_url" placeholder="Swagger_yaml_url">
-      <button onclick="loadSwaggerYaml()">Submit</button>
+      <!-- <input type="text" id="swagger_url" placeholder="Swagger_yaml_url">
+      <button onclick="loadSwaggerYaml()">Submit</button> -->
+      <input id="fileInput" />
       <!-- Swagger UI -->
       <div id="swagger-ui"></div>
     </section>
@@ -140,10 +141,27 @@
 
   <script>
     // script.js
+
+      
 window.onload = function () {
-  let url = "https://raw.githubusercontent.com/92shreyansh/mobility-specification/draft-1.x/api/mobility/build/build.yaml"
-  loadSwaggerUI(url)
-  populateEnums(url);
+  // let url = Math.random() < 0.5?"https://raw.githubusercontent.com/beckn/mobility/main/api/mobility.yaml":"https://raw.githubusercontent.com/beckn/protocol-specifications/master/api/transaction/build/transaction.yaml"
+  let url = "https://raw.githubusercontent.com/tanya-ondc/B2B-1.5/main/api/build/B2Bv2.0.1.yaml"
+  //"https://raw.githubusercontent.com/beckn/protocol-specifications/master/api/transaction/build/transaction.yaml"
+  const fileInput = document.getElementById('fileInput');
+  fileInput.type = 'file';
+  fileInput.accept = '.yaml';
+
+  fileInput.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+      const openApiJson = event.target.result;
+      loadSwaggerUIFile(openApiJson);
+    }
+  })
+  // loadSwaggerUI(url)
+  // populateEnums(url);
 }
 
 function loadSwaggerYaml() {
@@ -155,6 +173,20 @@ function loadSwaggerYaml() {
 function display(result) {
   document.getElementById('output').innerText = result;
 }
+
+function loadSwaggerUIFile(openApiJson) {
+  const ui = SwaggerUIBundle({
+    spec: JSON.parse(openApiJson),
+    dom_id: '#swagger-ui',
+    presets: [
+      SwaggerUIBundle.presets.apis,
+      SwaggerUIStandalonePreset
+    ],
+    layout: "BaseLayout",
+    deepLinking: true
+  });
+  window.ui = ui
+};
 
 function loadSwaggerUI(url) {
   const ui = SwaggerUIBundle({
