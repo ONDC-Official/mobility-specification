@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>ONDC API Contract</title>
+  <style>
+    body {
+      display: flex;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      height: 10%;
+    }
+
+    main {
+      height: 80%;
+      display: flex;
+    }
+
+    .select-file {
+      height: 10%;
+    }
+
+    .left-section {
+      width: 70%;
+      overflow: scroll;
+      padding: 20px;
+    }
+
+    .right-section {
+      width: 30%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .dropdown {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    .dropdown label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .display-section {
+      margin-top: 20px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      height: inherit;
+    }
+
+    .flows-panel {
+      width: 15%;
+      display: flex;
+      flex-direction: column;
+      background-color: #a1a1a1;
+      overflow: scroll;
+    }
+
+    .flows-panel ul {
+      list-style-type: disc;
+      padding: 0;
+      margin: 0;
+    }
+
+    .flows-panel li {
+      margin-bottom: 5px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+
+    .flows-panel li.active {
+      font-weight: bold;
+    }
+
+    .steps-panel {
+      width: 25%;
+      display: flex;
+      flex-direction: column;
+      background-color: #f1f1f1;
+    }
+
+    .steps-panel ul {
+      list-style-type: upper-roman;
+      padding: 0;
+      margin: 0;
+    }
+
+    .steps-panel li {
+      margin-bottom: 5px;
+      height: 60px;
+      cursor: pointer;
+    }
+
+
+    .steps-panel li.active {
+      font-weight: bold;
+    }
+
+    .content-panel {
+      width: 60%;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      background-color: #ffffff;
+    }
+
+    .flow-content-section {
+      flex: 1;
+      overflow: auto;
+    }
+
+    .tab {
+      display: none;
+    }
+
+    .tab-button.active {
+      background-color: #333;
+      color: #fff;
+      border-bottom-color: #333;
+    }
+  </style>
+  <!-- Swagger UI CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.52.0/swagger-ui.css">
+
+</head>
+
+<body>
+  <header>
+    <h1>ONDC API Contract</h1>
+  </header>
+ <!--  <div class="select-file">
+    <table>
+      <tr>
+        <td><b>Load By Url</b></td>
+        <td>
+          <input type="text" id="swagger_url" placeholder="Swagger_yaml_url">
+          <button onclick="loadSwaggerYaml()">Submit</button>
+        </td>
+      </tr>
+      <tr>
+        <td><b>Load By Local File</b></td>
+        <td>
+          <input type="file" id="file-input" />
+        </td>
+      </tr>
+    </table> 
+  </div> -->
+  <div class="tabs">
+    <button class="tab-button" onclick="openTab(event, 'swagger-tab')">Swagger</button>
+    <select id='example-set' onchange="updateExample()"></select>
+    <button class="tab-button" onclick="openTab(event, 'flow-tab')">Flow</button>
+  </div>
+  <main>
+    <section class="left-section">
+      <!-- Swagger UI -->
+
+      <div id="swagger-tab" class="tab">
+        <div id="swagger-ui"></div>
+      </div>
+      <div id="flow-tab" class="tab">
+        <div id="flow">
+          <div class="container">
+            <div class="flows-panel">
+              <h2>Flows:</h2>
+              <ul id="flows-list"></ul>
+            </div>
+            <div class="steps-panel">
+              <h2 id="flow-summary"></h2>
+              <p id="flow-description"></p>
+              <h3>Steps:</h2>
+                <ul id="steps-list"></ul>
+            </div>
+            <div class="content-panel">
+              <h2 id="step-summary"></h2>
+              <p id="step-description"></p>
+              <h2>Example:</h2>
+              <pre id="yaml-content" class="flow-content-section"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="right-section">
+      <section class="section">
+        <table id="option-table">
+          <tr>
+            <td><b>API</b></td>
+            <td>
+              <select id="dropdown1" onchange="loadDropdown2()"></select>
+            </td>
+          </tr>
+          <tr>
+            <td><b>Field</b></td>
+            <td>
+              <select id="dropdown2" onchange="loadDropdown4()"></select>
+            </td>
+          </tr>
+          <tr>
+            <td><b>Enum</b></td>
+            <td>
+              <select id="dropdown4" onchange="displayTable()"></select>
+            </td>
+          </tr>
+        </table>
+        <table id="result-table"></table>
+        </table>
+      </section>
+      <section class="section">
+        <table id="option-table">
+          <tr>
+            <td><b>API</b></td>
+            <td>
+              <select id="tag-schema-dropdown" onchange="loadTagPath()"></select>
+            </td>
+          </tr>
+          <tr>
+            <td><b>Field</b></td>
+            <td>
+              <select id="tag-path-dropdown" onchange="loadTagGroup()"></select>
+            </td>
+          </tr>
+          <tr>
+            <td><b>TagGroup</b></td>
+            <td>
+              <select id="tag-group-dropdown" onchange="loadTag()"></select>
+            </td>
+          </tr>
+          <tr>
+            <td><b>Tag</b></td>
+            <td>
+              <select id="tag-dropdown" onchange="displayTag()"></select>
+            </td>
+          </tr>
+        </table>
+        <table id="tag-group-table"></table>
+        </table>
+        <table id="tag-table"></table>
+        </table>
+      </section>
+    </div>
+  </main>
+  <!-- Swagger UI initialization -->
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.52.0/swagger-ui-bundle.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.52.0/swagger-ui-standalone-preset.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+
+  <script src="ui/build.js"></script>
+  <script src="ui/tabs.js"></script>
+  <script src="ui/swagger.js"></script>
+  <script src="ui/enum.js"></script>
+  <script src="ui/tag.js"></script>
+  <script src="ui/flow.js"></script>
+  <script src="ui/examples.js"></script>
+
+  <!--
+
+-->
+
+</body>
+
+</html>
