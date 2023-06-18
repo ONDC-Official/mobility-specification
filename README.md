@@ -14,9 +14,10 @@ ONDC mobility specification swaggerhub [link](https://app.swaggerhub.com/apis/ON
 
 ## Earlier Versions
 
-| Version | Release Date | beckn Version                      | Comments                                                           |
-| ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------ |
-| v1.0.0  | TBD          | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for on-demand ride hailing use case |
+| Version | Release Date | beckn Version                      | Comments                                                                                                                             |
+| ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| v1.0.0  | 14 Jun 2023  | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for on-demand ride hailing use case                                                                   |
+| v1.1.0  | TBD          | mobility - 0.8.2                   | - Added UI for specification visual<br />- Restructured on-demand ride hailing for contribution<br />- Added Ticket Booking use case |
 
 ## Introduction
 
@@ -35,6 +36,7 @@ This would be possible in the mobility domain by making sure all mobility apps i
 ## Enabled/Supported use cases on network
 
 * On-demand Ride hailing with fix pick-up and drop locations for transport modes : Car, Autorickshaw, Motorcycle
+* Ticket Booking without designated seat or vehicle but fix start, end & route.
 
 ## Evolution
 
