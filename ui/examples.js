@@ -26,8 +26,11 @@ function loadExample(data) {
 function addExample(example_set) {
     // let base = jsyaml.load(openApiYaml)
     let base = build_spec;
-    for (var key in examples[example_set]) {
-        var list = examples[example_set][key]["examples"];
+    base["info"]["title"] = examples[example_set]["summary"]
+    base["info"]["description"] = examples[example_set]["description"]
+    let examplesList = examples[example_set]["example_set"]
+    for (var key in examplesList) {
+        var list = examplesList[key]["examples"];
         base["paths"]["/" + key]["post"]["requestBody"]["content"]["application/json"]["examples"] = {};
         for (var key2 in list) {
             base["paths"]["/" + key]["post"]["requestBody"]["content"]["application/json"]["examples"]["e" + key2] = list[key2];

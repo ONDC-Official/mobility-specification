@@ -1,92 +1,72 @@
 // flow.js
 
+var flows;
+
 function loadSteps(steps) {
-    const stepsList = document.getElementById('steps-list');
-    const stepSummary = document.getElementById('step-summary');
-    const stepDescription = document.getElementById('step-description');
-    const yamlContent = document.getElementById('yaml-content');
-    stepsList.innerHTML = '';
-    stepSummary.innerHTML = '';
-    stepDescription.innerHTML = '';
-    yamlContent.innerHTML = '';
-    // Render the steps list
-    steps.forEach((step, index) => {
-        const li = document.createElement('li');
-        li.textContent = step["summary"]+" API:"+step["api"];
-        li.classList.add('step');
-        li.dataset.index = index;
-        stepsList.appendChild(li);
-    });
+    const stepPane = document.querySelector('.step-pane');
+    const contentPane = document.querySelector('.content-pane');
+    stepPane.innerHTML = '';
+    contentPane.innerHTML = '';
+    steps.forEach(function (step, index) {
+        const link = document.createElement('a');
+        link.href = '#' + step.summary;
+        link.classList.add('list-group-item', 'list-group-item-action', 'step-item');
+        link.textContent = (index + 1) + '. ' + step.api;
+ 
+        const content = document.createElement('div');
+        content.id = step.summary;
+        content.classList.add('step-content', 'p-4');
+        content.innerHTML = '<div>'
+            + '<h3>' + step.summary + '</h3>'
+            + '<p>' + step.description + '</p>'
+            + '</div>'
+            + '<pre class="yaml-content">' + JSON.stringify(step.example.value, null, 2) + '</pre>';
 
-    // Add click event listener to each step
-    const flowElements = document.getElementsByClassName('step');
-    Array.from(flowElements).forEach(step => {
-        step.addEventListener('click', handleFlowClick);
-    });
-
-    // Handle step click event
-    function handleFlowClick(event) {
-        const clickedStep = event.target;
-        const stepIndex = clickedStep.dataset.index;
-
-        // Remove 'active' class from all steps
-        Array.from(flowElements).forEach(flow => {
-            flow.classList.remove('active');
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            document.querySelectorAll('.step-item').forEach(function (item) {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.step-content').forEach(function (content) {
+                content.classList.remove('active');
+            });
+            link.classList.add('active');
+            content.classList.add('active');
         });
-
-        // Add 'active' class to clicked step
-        clickedStep.classList.add('active');
-
-        // Get YAML content for the selected step index
-        const selectedStep = steps[stepIndex];
-        stepSummary.textContent = selectedStep["summary"]
-        stepDescription.textContent = selectedStep["description"]
-        yamlContent.textContent = JSON.stringify(selectedStep["example"]["value"], null, 2);
-    }
-
+        stepPane.appendChild(link);
+        contentPane.appendChild(content);
+    });
 };
 
+function updateFlow() {
+    var flowDropdown = document.getElementById('flow-dropdown');
+    var selectedValue = flowDropdown.value;
+    loadFlow(selectedValue)
+}
 
-function loadFlow(flows) {
-    const flowsList = document.getElementById('flows-list');
+function loadFlow(flowName) {
     const flowSummary = document.getElementById('flow-summary');
     const flowDescription = document.getElementById('flow-description');
-    flowsList.innerHTML = '';
     flowSummary.innerHTML = '';
     flowDescription.innerHTML = '';
+    let selectedFlow = flows.find(obj => {
+        if (obj["summary"] === flowName)
+            return obj
+    });
+    flowSummary.textContent = selectedFlow["summary"]
+    flowDescription.textContent = selectedFlow["description"]
+    loadSteps(selectedFlow["steps"])
+}
+
+function loadFlows(data) {
+    flows = data;
+    const flowDropdown = document.getElementById('flow-dropdown');
+    flowDropdown.innerHTML = '';
     // Render the steps list
-    flows.forEach((flow, index) => {
-        const li = document.createElement('li');
-        li.textContent = flow["summary"];
-        li.classList.add('flow');
-        li.dataset.index = index;
-        flowsList.appendChild(li);
+    flows.forEach((flow) => {
+        var option = document.createElement('option');
+        option.text = flow.summary;
+        flowDropdown.add(option);
     });
-
-    // Add click event listener to each step
-    const flowElements = document.getElementsByClassName('flow');
-    Array.from(flowElements).forEach(step => {
-        step.addEventListener('click', handleFlowClick);
-    });
-
-    // Handle step click event
-    function handleFlowClick(event) {
-        const clickedStep = event.target;
-        const flowIndex = clickedStep.dataset.index;
-
-        // Remove 'active' class from all steps
-        Array.from(flowElements).forEach(flow => {
-            flow.classList.remove('active');
-        });
-
-        // Add 'active' class to clicked step
-        clickedStep.classList.add('active');
-
-        // Get YAML content for the selected step index
-        const selectedFlow = flows[flowIndex];
-        flowSummary.textContent = selectedFlow["summary"]
-        flowDescription.textContent = selectedFlow["description"]
-        loadSteps(selectedFlow["steps"])
-    }
-
+    loadFlow(flows[0].summary)
 };
