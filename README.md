@@ -6,7 +6,7 @@ ONDC mobility specification is an adaptation of [beckn mobility specifications](
 
 These specifications will be released in multiple phases enabling different use case and enhancements.
 
-ONDC mobility specification swaggerhub [link](https://app.swaggerhub.com/apis/ONDC/ONDC-Mobility-API-Specification)
+ONDC mobility specification swagger [link](https://app.swaggerhub.com/apis/ONDC/ONDC-Mobility-API-Specification)
 
 ## Latest Version
 
@@ -38,6 +38,10 @@ This would be possible in the mobility domain by making sure all mobility apps i
 * On-demand Ride hailing with fix pick-up and drop locations for transport modes : Car, Autorickshaw, Motorcycle
 * Ticket Booking without designated seat or vehicle but fix start, end & route.
 
+## Working with Protocol
+
+Refer the [link](./Usage.md) for details regarding how to use this repository
+
 ## Evolution
 
 The evolution of ONDC mobility specification driven by 2 factors:
@@ -49,7 +53,7 @@ To know more about how the specification evolves, visit the Network GOVERNANCE d
 
 To follow discussions related to the mobility specification please visit the [Discussions Forum](https://github.com/ONDC-Official/mobility-specification/discussions) on GitHub
 
-Each major release of ONDC mobility specification will be approved by ONDC mobility working group members for which are listed [here](./committee.md)
+Each major release of ONDC mobility specification will be approved by ONDC mobility working group members for which are listed [here](./Committee.md)
 
 For minor releases for bug fix and cosmetic changes ONDC would make a minor release based on internal approval process and update the committee in the next scheduled discussion.
 
