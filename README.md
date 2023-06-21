@@ -6,7 +6,7 @@ ONDC mobility specification is an adaptation of [beckn mobility specifications](
 
 These specifications will be released in multiple phases enabling different use case and enhancements.
 
-ONDC mobility specification swagger [link](https://app.swaggerhub.com/apis/ONDC/ONDC-Mobility-API-Specification)
+ONDC mobility specification swagger [link](https://ondc-official.github.io/mobility-specification/)
 
 ## Latest Version
 
