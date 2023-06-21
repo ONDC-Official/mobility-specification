@@ -1507,7 +1507,6 @@ components:
             This is the most unique identifier of a service item. An example of
             an Item ID could be the SKU of a product.
           type: string
-          format: '#/components/schemas/Item/properties/id'
         parent_item_id:
           $ref: '#/components/schemas/Item/properties/id'
         descriptor:
@@ -2058,6 +2057,7 @@ components:
         channels:
           $ref: '#/components/schemas/Tags'
     Tags:
+      type: object
       description: >-
         A simple key-value store which is used to contain extended metadata.
         However, grouped tags can be created using the recommendations provided
@@ -2396,7 +2396,7 @@ x-flows:
           Users search over the network to avail a mobility service from
           Location A to Location B (GPS)
         reference: if any
-        example: &ref_8
+        example: &ref_11
           summary: >-
             Search for services in the city of Bengaluru by pickup and drop
             location
@@ -2404,8 +2404,8 @@ x-flows:
             context:
               country: IND
               domain: nic2004:60221
-              timestamp: 2023-03-23T04:41:16.000Z
-              bap_id: example-test-bap.com
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: https://example-test-bap.com
               transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
               message_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
               city: std:080
@@ -2428,7 +2428,7 @@ x-flows:
           catalog of all services that can be used for transit from A to B,
           along with estimated fare
         reference: if any
-        example: &ref_15
+        example: &ref_17
           summary: Return a mobility catalog
           value:
             context:
@@ -2437,9 +2437,9 @@ x-flows:
                 https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
               domain: nic2004:60221
               timestamp: '2023-03-23T04:43:02Z'
-              bap_id: example-bap.com
+              bap_id: https://example-bap.com
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-              bpp_id: example-bpp.com
+              bpp_id: https://example-bpp.com
               message_id: 21e54d3c-9c3b-47c1-aa3b-b0e7b20818ee
               city: std:080
               core_version: 0.9.4
@@ -2472,7 +2472,7 @@ x-flows:
                         tags:
                           groups/1/descriptor/name: Daytime Charges
                           groups/1/descriptor/code: fare_policy
-                          groups/1/display: true
+                          groups/1/display: 'true'
                           groups/1/list/1/descriptor/name: Min Fare upto 2 km
                           groups/1/list/1/value: ₹ 30 upto 2 km
                           groups/1/list/2/descriptor/name: Rate above Min. Fare
@@ -2495,7 +2495,7 @@ x-flows:
                           groups/1/list/5/value: ₹ 0 / min
                           groups/2/descriptor/name: Night Charges
                           groups/2/descriptor/code: fare_policy
-                          groups/2/display: true
+                          groups/2/display: 'true'
                           groups/2/list/1/descriptor/name: Night Charges
                           groups/2/list/1/descriptor/code: night_charges
                           groups/2/list/1/value: >-
@@ -2509,7 +2509,7 @@ x-flows:
                           groups/2/list/3/value: '05:00:00'
                           groups/3/descriptor/name: General Information
                           groups/3/descriptor/code: info
-                          groups/3/display: true
+                          groups/3/display: 'true'
                           groups/3/list/1/descriptor/name: Distance to nearest driver
                           groups/3/list/1/descriptor/code: distance_to_nearest_driver
                           groups/3/list/1/value: 661 m
@@ -2545,7 +2545,7 @@ x-flows:
                               state: Karnataka
                               city: Bengaluru
                               locality: Basavanagudi
-                              door: null
+                              door: ''
                               area_code: ''
                               street: Chikkanna Garden
                         vehicle:
@@ -2553,7 +2553,7 @@ x-flows:
                         tags:
                           groups/1/descriptor/code: route_info
                           groups/1/descriptor/name: Route Information
-                          groups/1/display: true
+                          groups/1/display: 'true'
                           groups/1/list/1/descriptor/code: encoded_polyline
                           groups/1/list/1/descriptor/name: Path
                           groups/1/list/1/value: _p~iF~ps|U_ulLnnqC_mqNvxq`@
@@ -2576,7 +2576,7 @@ x-flows:
           1, the consumer platform will consider only one on_select response for
           the quotation
         reference: if any
-        example: &ref_9
+        example: &ref_12
           summary: >-
             Get quote for a specific product from a mobility catalog with
             localization
@@ -2587,9 +2587,9 @@ x-flows:
                 https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
               domain: nic2004:60221
               timestamp: '2023-03-23T04:46:45Z'
-              bap_id: example-bap.com
+              bap_id: https://example-bap.com
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-              bpp_id: example-bpp.com
+              bpp_id: https://example-bpp.com
               message_id: 432fdfd6-0457-47b6-9fac-80cbe5c0a75b
               city: std:080
               core_version: 0.9.4
@@ -2627,7 +2627,7 @@ x-flows:
                         state: Karnataka
                         city: Bengaluru
                         locality: Basavanagudi
-                        door: null
+                        door: ''
                         area_code: ''
                         street: Chikkanna Garden
                   customer:
@@ -2635,7 +2635,7 @@ x-flows:
                       tags:
                         groups/1/descriptor/name: Localization
                         groups/1/descriptor/code: localization
-                        groups/1/display: false
+                        groups/1/display: 'false'
                         groups/1/list/1/descriptor/code: lang
                         groups/1/list/1/descriptor/name: Language
                         groups/1/list/1/value: en
@@ -2645,7 +2645,7 @@ x-flows:
           The provider platform responds with detailed information and quote for
           the specific service that the consumer would like to avail
         reference: if any
-        example: &ref_16
+        example: &ref_18
           summary: Return a quote offered by a provider
           value:
             context:
@@ -2654,8 +2654,8 @@ x-flows:
                 https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
               domain: nic2004:60221
               timestamp: '2023-03-23T04:48:53Z'
-              bap_id: example-bap.com
-              bpp_id: example-bpp.com
+              bap_id: https://example-bap.com
+              bpp_id: https://example-bpp.com
               message_id: 8926b747-0362-4fcc-b795-0994a6287700
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               city: std:080
@@ -2676,7 +2676,7 @@ x-flows:
                     tags:
                       groups/1/descriptor/name: Daytime Charges
                       groups/1/descriptor/code: fare_policy
-                      groups/1/display: true
+                      groups/1/display: 'true'
                       groups/1/list/1/descriptor/name: Min Fare upto 2 km
                       groups/1/list/1/value: ₹ 30 upto 2 km
                       groups/1/list/2/descriptor/name: Rate above Min. Fare
@@ -2699,7 +2699,7 @@ x-flows:
                       groups/1/list/5/value: ₹ 0 / min
                       groups/2/descriptor/name: Waiting Charges
                       groups/2/descriptor/code: fare_policy
-                      groups/2/display: true
+                      groups/2/display: 'true'
                       groups/2/list/1/descriptor/name: Night Charges
                       groups/2/list/1/descriptor/code: night_charges
                       groups/2/list/1/value: >-
@@ -2713,7 +2713,7 @@ x-flows:
                       groups/2/list/3/value: '05:00:00'
                       groups/3/descriptor/name: General Information
                       groups/3/descriptor/code: info
-                      groups/3/display: true
+                      groups/3/display: 'true'
                       groups/3/list/1/descriptor/name: Distance to nearest driver
                       groups/3/list/1/descriptor/code: distance_to_nearest_driver
                       groups/3/list/1/value: 661 m
@@ -2766,7 +2766,7 @@ x-flows:
                         state: Karnataka
                         city: Bengaluru
                         locality: Basavanagudi
-                        door: null
+                        door: ''
                         area_code: ''
                         street: Chikkanna Garden
                   agent:
@@ -2779,14 +2779,14 @@ x-flows:
         api: init
         description: Consumer platform shares the terms of order and initializes the order
         reference: if any
-        example: &ref_10
+        example: &ref_8
           summary: Initialize draft order and request for terms of service
           value:
             context:
               action: init
-              bap_id: example-bap.com
+              bap_id: https://example-bap.com
               bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
-              bpp_id: example-bpp.com
+              bpp_id: https://example-bpp.com
               bpp_uri: >-
                 https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
               city: std:080
@@ -2806,7 +2806,7 @@ x-flows:
                       tags:
                         groups/1/descriptor/code: localization
                         groups/1/descriptor/name: Localization
-                        groups/1/display: false
+                        groups/1/display: 'false'
                         groups/1/list/1/descriptor/code: lang
                         groups/1/list/1/descriptor/name: Language
                         groups/1/list/1/value: en
@@ -2821,7 +2821,7 @@ x-flows:
                         building: Rangadore Memorial Hospital
                         city: Bengaluru
                         country: India
-                        door: null
+                        door: ''
                         locality: Basavanagudi
                         state: Karnataka
                         street: Chikkanna Garden
@@ -2873,7 +2873,7 @@ x-flows:
           Provider platform accepts the terms of order and appends its own terms
           and responds with the final draft
         reference: if any
-        example: &ref_17
+        example: &ref_9
           summary: Return draft order with payment terms
           value:
             context:
@@ -2882,8 +2882,8 @@ x-flows:
                 https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
               domain: nic2004:60221
               timestamp: '2023-03-23T04:48:53Z'
-              bap_id: example-bap.com
-              bpp_id: example-bpp.com
+              bap_id: https://example-bap.com
+              bpp_id: https://example-bpp.com
               transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
               message_id: 8926b747-0362-4fcc-b795-0994a6287700
               city: std:080
@@ -2905,7 +2905,7 @@ x-flows:
                     tags:
                       groups/1/descriptor/name: Daytime Charges
                       groups/1/descriptor/code: fare_policy
-                      groups/1/display: true
+                      groups/1/display: 'true'
                       groups/1/list/1/descriptor/name: Min Fare upto 2 km
                       groups/1/list/1/value: ₹ 30 upto 2 km
                       groups/1/list/2/descriptor/name: Rate above Min. Fare
@@ -2928,7 +2928,7 @@ x-flows:
                       groups/1/list/5/value: ₹ 0 / min
                       groups/2/descriptor/name: Waiting Charges
                       groups/2/descriptor/code: fare_policy
-                      groups/2/display: true
+                      groups/2/display: 'true'
                       groups/2/list/1/descriptor/name: Night Charges
                       groups/2/list/1/descriptor/code: night_charges
                       groups/2/list/1/value: >-
@@ -2942,7 +2942,7 @@ x-flows:
                       groups/2/list/3/value: '05:00:00'
                       groups/3/descriptor/name: General Information
                       groups/3/descriptor/code: info
-                      groups/3/display: true
+                      groups/3/display: 'true'
                       groups/3/list/1/descriptor/name: Distance to nearest driver
                       groups/3/list/1/descriptor/code: distance_to_nearest_driver
                       groups/3/list/1/value: 661 m
@@ -2998,7 +2998,7 @@ x-flows:
                         state: Karnataka
                         city: Bengaluru
                         locality: Basavanagudi
-                        door: null
+                        door: ''
                         area_code: ''
                         street: Chikkanna Garden
                   agent:
@@ -3014,7 +3014,7 @@ x-flows:
                       tags:
                         groups/1/descriptor/name: Localization
                         groups/1/descriptor/code: localization
-                        groups/1/display: false
+                        groups/1/display: 'false'
                         groups/1/list/1/descriptor/code: lang
                         groups/1/list/1/descriptor/name: Language
                         groups/1/list/1/value: en
@@ -3031,14 +3031,14 @@ x-flows:
           The consumer platform confirms the booking and provides all the
           required information for confirmation, as per the terms of the order
         reference: if any
-        example: &ref_11
+        example: &ref_13
           summary: Confirm ride booking
           value:
             context:
               action: confirm
-              bap_id: example-bap.com
+              bap_id: https://example-bap.com
               bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
-              bpp_id: example-bpp.com
+              bpp_id: https://example-bpp.com
               bpp_uri: >-
                 https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
               city: std:080
@@ -3062,7 +3062,7 @@ x-flows:
                       tags:
                         groups/1/descriptor/code: localization
                         groups/1/descriptor/name: Localization
-                        groups/1/display: false
+                        groups/1/display: 'false'
                         groups/1/list/1/descriptor/code: lang
                         groups/1/list/1/descriptor/name: Language
                         groups/1/list/1/value: en
@@ -3073,7 +3073,7 @@ x-flows:
                         building: Rangadore Memorial Hospital
                         city: Bengaluru
                         country: India
-                        door: null
+                        door: ''
                         locality: Basavanagudi
                         state: Karnataka
                         street: Chikkanna Garden
@@ -3108,7 +3108,7 @@ x-flows:
                     tags:
                       groups/1/descriptor/code: fare_policy
                       groups/1/descriptor/name: Daytime Charges
-                      groups/1/display: true
+                      groups/1/display: 'true'
                       groups/1/list/1/descriptor/name: Min Fare upto 2 km
                       groups/1/list/1/value: ₹ 30 upto 2 km
                       groups/1/list/2/descriptor/code: extra_fare
@@ -3131,7 +3131,7 @@ x-flows:
                       groups/1/list/5/value: ₹ 0 / min
                       groups/2/descriptor/code: fare_policy
                       groups/2/descriptor/name: Waiting Charges
-                      groups/2/display: true
+                      groups/2/display: 'true'
                       groups/2/list/1/descriptor/code: night_charges
                       groups/2/list/1/descriptor/name: Night Charges
                       groups/2/list/1/value: >-
@@ -3145,7 +3145,7 @@ x-flows:
                       groups/2/list/3/value: '05:00:00'
                       groups/3/descriptor/code: info
                       groups/3/descriptor/name: General Information
-                      groups/3/display: true
+                      groups/3/display: 'true'
                       groups/3/list/1/descriptor/code: distance_to_nearest_driver
                       groups/3/list/1/descriptor/name: Distance to nearest driver
                       groups/3/list/1/value: 661 m
@@ -3189,7 +3189,7 @@ x-flows:
           Provider platform confirms the order and provides ride details on
           confirmation
         reference: if any
-        example: &ref_18
+        example: &ref_19
           summary: Return confirmed order with latest fulfillment details
           value:
             context:
@@ -3198,8 +3198,8 @@ x-flows:
                 https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
               domain: nic2004:60221
               timestamp: '2023-03-23T04:48:53Z'
-              bap_id: example-bap.com
-              bpp_id: example-bpp.com
+              bap_id: https://example-bap.com
+              bpp_id: https://example-bpp.com
               transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
               message_id: 8926b747-0362-4fcc-b795-0994a6287700
               city: std:080
@@ -3221,7 +3221,7 @@ x-flows:
                     tags:
                       groups/1/descriptor/name: Daytime Charges
                       groups/1/descriptor/code: fare_policy
-                      groups/1/display: true
+                      groups/1/display: 'true'
                       groups/1/list/1/descriptor/name: Min Fare upto 2 km
                       groups/1/list/1/value: ₹ 30 upto 2 km
                       groups/1/list/2/descriptor/name: Rate above Min. Fare
@@ -3244,7 +3244,7 @@ x-flows:
                       groups/1/list/5/value: ₹ 0 / min
                       groups/2/descriptor/name: Waiting Charges
                       groups/2/descriptor/code: fare_policy
-                      groups/2/display: true
+                      groups/2/display: 'true'
                       groups/2/list/1/descriptor/name: Night Charges
                       groups/2/list/1/descriptor/code: night_charges
                       groups/2/list/1/value: >-
@@ -3258,7 +3258,7 @@ x-flows:
                       groups/2/list/3/value: '05:00:00'
                       groups/3/descriptor/name: General Information
                       groups/3/descriptor/code: info
-                      groups/3/display: true
+                      groups/3/display: 'true'
                       groups/3/list/1/descriptor/name: Distance to nearest driver
                       groups/3/list/1/descriptor/code: distance_to_nearest_driver
                       groups/3/list/1/value: 661 m
@@ -3321,7 +3321,7 @@ x-flows:
                         state: Karnataka
                         city: Bengaluru
                         locality: Basavanagudi
-                        door: null
+                        door: ''
                         area_code: ''
                         street: Chikkanna Garden
                   agent:
@@ -3339,7 +3339,7 @@ x-flows:
                       tags:
                         groups/1/descriptor/name: Localization
                         groups/1/descriptor/code: localization
-                        groups/1/display: false
+                        groups/1/display: 'false'
                         groups/1/list/1/descriptor/code: lang
                         groups/1/list/1/descriptor/name: Language
                         groups/1/list/1/value: en
@@ -3356,7 +3356,7 @@ x-flows:
           The consumer platform requests the provider platform to provide the
           latest order status
         reference: if any
-        example: &ref_12
+        example: &ref_14
           summary: Get latest fulfillment status of a booking
           value:
             context:
@@ -3365,8 +3365,8 @@ x-flows:
                 https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
               domain: nic2004:60221
               timestamp: '2023-03-23T04:48:53Z'
-              bap_id: example-bap.com
-              bpp_id: example-bpp.com
+              bap_id: https://example-bap.com
+              bpp_id: https://example-bpp.com
               transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
               message_id: 8926b747-0362-4fcc-b795-0994a6287700
               city: std:080
@@ -3388,8 +3388,8 @@ x-flows:
                 https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
               domain: nic2004:60221
               timestamp: '2023-03-23T04:48:53Z'
-              bap_id: example-bap.com
-              bpp_id: example-bpp.com
+              bap_id: https://example-bap.com
+              bpp_id: https://example-bpp.com
               transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
               message_id: 8926b747-0362-4fcc-b795-0994a6287700
               city: std:080
@@ -3411,7 +3411,7 @@ x-flows:
                     tags:
                       groups/1/descriptor/name: Daytime Charges
                       groups/1/descriptor/code: fare_policy
-                      groups/1/display: true
+                      groups/1/display: 'true'
                       groups/1/list/1/descriptor/name: Min Fare upto 2 km
                       groups/1/list/1/value: ₹ 30 upto 2 km
                       groups/1/list/2/descriptor/name: Rate above Min. Fare
@@ -3434,7 +3434,7 @@ x-flows:
                       groups/1/list/5/value: ₹ 0 / min
                       groups/2/descriptor/name: Waiting Charges
                       groups/2/descriptor/code: fare_policy
-                      groups/2/display: true
+                      groups/2/display: 'true'
                       groups/2/list/1/descriptor/name: Night Charges
                       groups/2/list/1/descriptor/code: night_charges
                       groups/2/list/1/value: >-
@@ -3448,7 +3448,7 @@ x-flows:
                       groups/2/list/3/value: '05:00:00'
                       groups/3/descriptor/name: General Information
                       groups/3/descriptor/code: info
-                      groups/3/display: true
+                      groups/3/display: 'true'
                       groups/3/list/1/descriptor/name: Distance to nearest driver
                       groups/3/list/1/descriptor/code: distance_to_nearest_driver
                       groups/3/list/1/value: 661 m
@@ -3511,7 +3511,7 @@ x-flows:
                         state: Karnataka
                         city: Bengaluru
                         locality: Basavanagudi
-                        door: null
+                        door: ''
                         area_code: ''
                         street: Chikkanna Garden
                   agent:
@@ -3529,7 +3529,7 @@ x-flows:
                       tags:
                         groups/1/descriptor/name: Localization
                         groups/1/descriptor/code: localization
-                        groups/1/display: false
+                        groups/1/display: 'false'
                         groups/1/list/1/descriptor/code: lang
                         groups/1/list/1/descriptor/name: Language
                         groups/1/list/1/value: en
@@ -3546,7 +3546,7 @@ x-flows:
           Consumer platform requests the provider platform for tracking the
           ride/driver
         reference: if any
-        example: &ref_13
+        example: &ref_15
           summary: Track an active ride
           value:
             context:
@@ -3555,8 +3555,8 @@ x-flows:
                 https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
               domain: nic2004:60221
               timestamp: '2023-03-23T04:48:53Z'
-              bap_id: example-bap.com
-              bpp_id: example-bpp.com
+              bap_id: https://example-bap.com
+              bpp_id: https://example-bpp.com
               message_id: 8926b747-0362-4fcc-b795-0994a6287700
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               city: std:080
@@ -3571,7 +3571,7 @@ x-flows:
           Provider platform responds with the relevant information to track the
           ride
         reference: if any
-        example: &ref_19
+        example: &ref_10
           summary: Return tracking information for an order
           value:
             context:
@@ -3580,13 +3580,14 @@ x-flows:
                 https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
               domain: nic2004:60221
               timestamp: '2023-03-23T05:41:09Z'
-              bap_id: example-bap.com
-              bpp_id: example-bpp.com
+              bap_id: https://example-bap.com
+              bpp_id: https://example-bpp.com
               message_id: ec3dea8c-c64c-4f06-b2a0-ec1f9584d7ba
               city: std:080
               core_version: 0.9.4
               action: on_track
               bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
             message:
               tracking:
                 content_type: application/json
@@ -3597,7 +3598,7 @@ x-flows:
         api: support
         description: Consumer platform requests for support information
         reference: if any
-        example: &ref_14
+        example: &ref_16
           summary: Fetch support information related to a particular order
           value:
             context:
@@ -3606,8 +3607,8 @@ x-flows:
                 https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
               domain: nic2004:60221
               timestamp: '2023-03-23T04:48:53Z'
-              bap_id: example-bap.com
-              bpp_id: example-bpp.com
+              bap_id: https://example-bap.com
+              bpp_id: https://example-bpp.com
               message_id: 8926b747-0362-4fcc-b795-0994a6287700
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               city: std:080
@@ -3631,32 +3632,655 @@ x-flows:
                 https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
               domain: nic2004:60221
               timestamp: '2023-03-23T05:41:09Z'
-              bap_id: example-bap.com
-              bpp_id: example-bpp.com
+              bap_id: https://example-bap.com
+              bpp_id: https://example-bpp.com
               message_id: ec3dea8c-c64c-4f06-b2a0-ec1f9584d7ba
               city: std:080
               core_version: 0.9.4
               action: on_support
               bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
             message:
               phone: '+918068870525'
               email: support@nammayatri.in
               url: https://support.nammayatri.com/gethelp
+  - summary: publiic transit (metro)
+    description: >-
+      The illustraive flow to perform a transaction of the nature where in a
+      buyer would like to book a public transport service form location
+      A(gps-cordinates) to localtion B(gps-cordinates) with metro
+    reference: if any
+    steps:
+      - summary: Search for the public transport
+        api: search
+        description: >-
+          Users searches over the network to avail the public mode of transport
+          from position A to position B (gps)
+        reference: if any
+        example: &ref_22
+          summary: Search for a public mode of transit from a specific position
+          value: null
+          context:
+            country: IND
+            domain: nic2004:60221
+            timestamp: 2023-03-23T04:41:16.000Z
+            bap_id: example-test-bap.com
+            transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+            message_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+            city: std:080
+            core_version: 0.9.4
+            action: search
+            bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+          message:
+            intent:
+              fulfillment:
+                start:
+                  location:
+                    gps: 12.923608703179461, 77.61462964117527
+                end:
+                  location:
+                    gps: 12.9346302, 77.61533969999999
+      - summary: Return a public_transit catalog of fare products
+        api: on_search
+        description: >-
+          Provider plateform sends the catalog of all the service that can be
+          used for transit from position A to position B with estimated fair
+        reference: if any
+        example: &ref_26
+          summary: Return a public transit catalog of fare products
+          value:
+            context:
+              domain: nic2008:49213
+              country: IND
+              city: std:011
+              action: on_search
+              core_version: 0.9.4
+              bap_id: https://example-bap.com
+              bap_uri: https://mock_bap.com/beckn/
+              bpp_id: https://transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+              timestamp: '2021-03-23T10:00:40.065Z'
+            message:
+              catalog:
+                bpp/descriptor:
+                  name: Transit Solutions
+                  images:
+                    - https://transitsolutions.in/logos/logo.ico
+                bpp/providers:
+                  - id: '1'
+                    descriptor:
+                      name: Delhi Metro Rail Limited
+                      images:
+                        - https://delhimetrorail.com/logos/logo.ico
+                    items:
+                      - id: '1'
+                        descriptor:
+                          name: Single Journey Ticket
+                          images:
+                            - https://delhimetrorail.com/icons/sjt.ico
+                        fulfillment_id: '1'
+                        price:
+                          currency: INR
+                          value: '35'
+                      - id: '2'
+                        descriptor:
+                          name: Single Journey Ticket
+                          images:
+                            - https://delhimetrorail.com/icons/sjt.ico
+                        fulfillment_id: '2'
+                        price:
+                          currency: INR
+                          value: '64'
+                      - id: '3'
+                        descriptor:
+                          name: Single Journey Ticket
+                          images:
+                            - https://delhimetrorail.com/icons/sjt.ico
+                        fulfillment_id: '3'
+                        price:
+                          currency: INR
+                          value: '100'
+                      - id: '4'
+                        descriptor:
+                          name: Return Journey Ticket
+                          images:
+                            - https://delhimetrorail.com/icons/rjt.ico
+                        fulfillment_id: '1'
+                        price:
+                          currency: INR
+                          value: '100'
+                      - id: '5'
+                        descriptor:
+                          name: Return Journey Ticket
+                          images:
+                            - https://delhimetrorail.com/icons/rjt.ico
+                        fulfillment_id: '2'
+                        price:
+                          currency: INR
+                          value: '100'
+                      - id: '6'
+                        descriptor:
+                          name: Return Journey Ticket
+                          images:
+                            - https://delhimetrorail.com/icons/rjt.ico
+                        fulfillment_id: '3'
+                        price:
+                          currency: INR
+                          value: '100'
+                      - id: '7'
+                        descriptor:
+                          name: Monthly Pass
+                          images:
+                            - https://delhimetrorail.com/icons/mp.ico
+                        price:
+                          currency: INR
+                          value: '250'
+                    fulfillments:
+                      - id: '1'
+                        start:
+                          location:
+                            descriptor:
+                              name: Dwarka Sector 10 - Blue Line
+                            gps: 28.5811261,77.0548206
+                        end:
+                          location:
+                            descriptor:
+                              name: Patel Chowk - Yellow Line
+                            gps: 28.6230972,77.2099917
+                        vehicle:
+                          category: METRO
+                        tags:
+                          groups/0/list/0/descriptor/name: Transfers
+                          groups/0/list/0/value: '1'
+                          groups/0/list/1/descriptor/name: Duration
+                          groups/0/list/1/value: 60 min
+                      - id: '2'
+                        start:
+                          location:
+                            descriptor:
+                              name: Dwarka Sector 10 - Blue Line
+                            gps: 28.5811261,77.0548206
+                        end:
+                          location:
+                            descriptor:
+                              name: Shivaji Stadium -  Airport Express Line
+                            gps: 28.6288785,77.2085895
+                        vehicle:
+                          category: METRO
+                        tags:
+                          groups/0/list/0/descriptor/name: Transfers
+                          groups/0/list/0/value: '1'
+                          groups/0/list/1/descriptor/name: Duration
+                          groups/0/list/1/value: 45 min
+                      - id: '3'
+                        start:
+                          location:
+                            descriptor:
+                              name: Dwarka Sector 21
+                            gps: 9.05,12.06
+                          time:
+                            timestamp: '2021-10-15T00:32:19.000Z'
+                        end:
+                          location:
+                            descriptor:
+                              name: Shivaji Stadium
+                            gps: 9.07,12.07
+                          time:
+                            timestamp: '2021-10-15T00:43:21.000Z'
+                        vehicle:
+                          category: METRO
+                        tags:
+                          groups/0/list/0/descriptor/name: Transfers
+                          groups/0/list/0/value: '0'
+                          groups/0/list/1/descriptor/name: Duration
+                          groups/0/list/1/value: 30 min
+                    tags:
+                      groups/0/list/0/descriptor/name: Timetable
+                      groups/0/list/0/value: https://delhimetrorail.com/timetable.html
+                      groups/0/list/1/descriptor/name: GTFS Schedule
+                      groups/0/list/1/value: https://delhimetrorail.com/gtfs
+                      groups/0/list/1/display: 'false'
+      - summary: Selection of specific service
+        api: select
+        description: >-
+          The end consumer have to select the specific service and wou;ld like
+          to have the neccesary details
+        reference: if any
+        example: &ref_23
+          summary: >-
+            Get a quote for a fare product selected from a public transit
+            catalog
+          value:
+            context:
+              domain: nic2004:60221
+              country: IND
+              city: std:080
+              action: select
+              core_version: 0.9.4
+              bap_id: https://example-bap.com
+              bap_uri: https://mock_bap.com/beckn/
+              bpp_id: https://kmrl-bpp.com
+              bpp_uri: https://kmrl-bpp.com/beckn/
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+              timestamp: '2021-03-23T10:00:40.065Z'
+            message:
+              order:
+                items:
+                  - id: '1'
+                provider:
+                  id: '1'
+      - summary: >-
+          Provider platform provides the quote for selected service of
+          public_transit
+        api: on_select
+        description: >-
+          Provider platform responds with the service detailed information and
+          quotes for the specific service that consumer would like to avail
+        reference: if any
+        example: &ref_27
+          summary: Return a quote offered by a public transit service provider
+          value:
+            context:
+              domain: nic2008:49213
+              country: IND
+              city: std:011
+              action: on_select
+              core_version: 0.9.4
+              bap_id: https://example-bap.com
+              bap_uri: https://mock_bap.com/beckn/
+              bpp_id: https://transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+              timestamp: '2021-03-23T10:00:40.065Z'
+          message:
+            order:
+              id: '123413'
+              items:
+                - id: '3'
+                  descriptor:
+                    name: Single Journey Ticket
+                    images:
+                      - https://delhimetrorail.com/icons/sjt.ico
+                  fulfillment_id: '3'
+                  price:
+                    currency: '55'
+                    value: INR
+                  tags:
+                    groups/0/list/0/descriptor/name: Validity
+                    groups/0/list/0/value: 24 hours from the time of purchase
+              provider:
+                id: '1'
+                descriptor:
+                  name: Delhi Metro Rail Limited
+                  images:
+                    - https://delhimetrorail.com/logos/logo.ico
+              fulfillment:
+                id: '3'
+                start:
+                  location:
+                    descriptor:
+                      name: Dwarka Sector 21
+                    gps: 9.05,12.06
+                  time:
+                    timestamp: 2021-10-15T00:32:19.000Z
+                end:
+                  location:
+                    descriptor:
+                      name: Shivaji Stadium
+                    gps: 9.07,12.07
+                  time:
+                    timestamp: 2021-10-15T00:43:21.000Z
+                vehicle:
+                  category: METRO
+                tags:
+                  groups/0/list/0/descriptor/name: Transfers
+                  groups/0/list/0/value: '0'
+                  groups/0/list/1/descriptor/name: Duration
+                  groups/0/list/1/value: 30 min
+              quote:
+                price:
+                  value: '60.5'
+                  currency: INR
+                breakup:
+                  - title: Single Journey Ticket X 1
+                    price:
+                      currency: INR
+                      value: '55'
+                  - title: CGST @ 5%
+                    price:
+                      currency: INR
+                      value: '2.75'
+                  - title: SGST @ 5%
+                    price:
+                      currency: INR
+                      value: '2.75'
+      - summary: Consumer platform initializes the order
+        api: init
+        description: Consumer platform shares the terms of order and initializes the order
+        reference: if any
+        example: *ref_8
+      - summary: Provider platform accepts/appends the terms of orders
+        api: on_init
+        description: >-
+          Provider platform accepts the terms of orders and appends its own
+          terms and responds with the final draft
+        reference: if any
+        example: *ref_9
+      - summary: Consumer confirms the
+        api: confirm
+        description: >-
+          Consumer platform confirms the booking and provides all information
+          required for confirmantion as per the terms of order
+        reference: if any
+        example: &ref_24
+          summary: Confirm ticket booking
+          value:
+            context:
+              domain: nic2004:60221
+              country: IND
+              city: std:080
+              action: confirm
+              core_version: 0.9.4
+              bap_id: https://example-bap.com
+              bap_uri: https://mock_bap.com/beckn/
+              bpp_id: https://kmrl-bpp.com
+              bpp_uri: https://kmrl-bpp.com/beckn/
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+              timestamp: '2021-03-23T10:00:40.065Z'
+            message:
+              order:
+                items:
+                  - id: '1'
+                provider:
+                  id: '1'
+                billing:
+                  name: John Doe
+                  email: john.doe@example.com
+                  phone: +91-9897867564
+                payment:
+                  params:
+                    amount: '55'
+                    currency: INR
+                    transaction_id: '24566345563'
+      - summary: Provider platform confirms the order
+        api: on_confirm
+        description: >-
+          Provider platform confirms the order and provides  details of the
+          journey on confirmation
+        reference: if any
+        example: &ref_28
+          summary: Return confirmed ticket order with payment confirmation
+          value:
+            context:
+              domain: nic2008:49213
+              country: IND
+              city: std:011
+              action: on_confirm
+              core_version: 0.9.4
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com/beckn/
+              bpp_id: https://transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+              timestamp: '2021-03-23T10:00:40.065Z'
+            message:
+              order:
+                id: '123413'
+                items:
+                  - id: '3'
+                    descriptor:
+                      name: Single Journey Ticket
+                      images:
+                        - https://delhimetrorail.com/icons/sjt.ico
+                    fulfillment_id: '3'
+                    price:
+                      currency: INR
+                      value: '55'
+                    tags:
+                      groups/0/list/0/descriptor/name: Validity
+                      groups/0/list/0/value: 24 hours from the time of purchase
+                provider:
+                  id: '1'
+                  descriptor:
+                    name: Delhi Metro Rail Limited
+                    images:
+                      - https://delhimetrorail.com/logos/logo.ico
+                fulfillment:
+                  id: '3'
+                  start:
+                    location:
+                      descriptor:
+                        name: Dwarka Sector 21
+                      gps: 9.05,12.06
+                    time:
+                      timestamp: '2021-10-15T00:32:19.000Z'
+                    instructions:
+                      name: Instructions
+                  end:
+                    location:
+                      descriptor:
+                        name: Shivaji Stadium
+                      gps: 9.07,12.07
+                    time:
+                      timestamp: '2021-10-15T00:43:21.000Z'
+                  vehicle:
+                    category: METRO
+                  tags:
+                    groups/0/list/0/descriptor/name: Transfers
+                    groups/0/list/0/value: '0'
+                    groups/0/list/1/descriptor/name: Duration
+                    groups/0/list/1/value: 30 min
+                documents:
+                  - label: Cancellation Terms
+                    url: https://dmrc.com/fare_products/sjt/cancellation_terms.html
+                billing:
+                  name: John Doe
+                  email: john.doe@example.com
+                  phone: +91 9712312121
+                quote:
+                  price:
+                    currency: INR
+                    value: '60.5'
+                  breakup:
+                    - title: Single Journey Ticket X 1
+                      price:
+                        currency: INR
+                        value: '55'
+                    - title: CGST @ 5%
+                      price:
+                        currency: INR
+                        value: '2.75'
+                    - title: SGST @ 5%
+                      price:
+                        currency: INR
+                        value: '2.75'
+                payment:
+                  type: ON-ORDER
+                  status: PAID
+                  params:
+                    amount: '60.5'
+                    currency: INR
+                    transaction_id: '24566345563'
+      - summary: Consumer platform requests for latest status
+        api: status
+        description: >-
+          Consumer platform request the provider platform to provide with latest
+          order status
+        reference: if any
+        example: &ref_25
+          summary: Get latest status of a transit ticket booking
+          value:
+            context:
+              domain: nic2008:49213
+              country: IND
+              city: std:011
+              action: status
+              core_version: 0.9.4
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com/beckn/
+              bpp_id: https://transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+              timestamp: '2021-03-23T10:00:40.065Z'
+            message:
+              order_id: '123413'
+      - summary: Provider platform provides latest order status
+        api: on_status
+        description: Provider platform provides the updated order status to the consumer
+        reference: if any
+        example: &ref_29
+          summary: Return transit ticket order with status - Ticket Issued
+          value:
+            context:
+              domain: nic2004:60221
+              country: IND
+              city: std:080
+              action: on_status
+              core_version: 0.9.4
+              bap_id: https://example-bap.com
+              bap_uri: https://mock_bap.com/beckn/
+              bpp_id: https://kmrl-bpp.com
+              bpp_uri: https://kmrl-bpp.com/beckn/
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+              timestamp: '2021-03-23T10:00:40.065Z'
+            message:
+              order:
+                id: '123413'
+                items:
+                  - id: '3'
+                    descriptor:
+                      name: Single Journey Ticket
+                      images:
+                        - https://delhimetrorail.com/icons/sjt.ico
+                    fulfillment_id: '3'
+                    price:
+                      currency: INR
+                      value: '55'
+                provider:
+                  id: '1'
+                  descriptor:
+                    name: Delhi Metro Rail Limited
+                    images:
+                      - https://delhimetrorail.com/logos/logo.ico
+                fulfillment:
+                  id: '3'
+                  state:
+                    descriptor:
+                      name: Ticket Issued
+                  start:
+                    location:
+                      descriptor:
+                        name: Dwarka Sector 21
+                      gps: 9.05,12.06
+                    time:
+                      timestamp: '2021-10-15T00:32:19.000Z'
+                  end:
+                    location:
+                      descriptor:
+                        name: Shivaji Stadium
+                      gps: 9.07,12.07
+                    time:
+                      timestamp: '2021-10-15T00:43:21.000Z'
+                  vehicle:
+                    category: METRO
+                  tags:
+                    groups/0/list/0/descriptor/name: Transfers
+                    groups/0/list/0/value: '0'
+                    groups/0/list/1/descriptor/name: Duration
+                    groups/0/list/1/value: 30 min
+                billing:
+                  name: John Doe
+                  email: john.doe@example.com
+                  phone: +91 9811212121
+                quote:
+                  price:
+                    currency: INR
+                    value: '60.5'
+                  breakup:
+                    - title: Single Journey Ticket X 1
+                      price:
+                        currency: INR
+                        value: '55'
+                    - title: CGST @ 5%
+                      price:
+                        currency: INR
+                        value: '2.75'
+                    - title: SGST @ 5%
+                      price:
+                        currency: INR
+                        value: '2.75'
+                payment:
+                  uri: https://pay.razorpay.com?amt=60.5&cur=INR&ref=24566345563
+                  params:
+                    amount: '60.5'
+                    currency: INR
+                    transaction_id: '24566345563'
+                  status: PAID
+      - summary: Consumer wants to track there journey
+        api: track
+        description: >-
+          Consumer platform request the provider platform for tracking the
+          public transport
+        reference: if any
+        example:
+          summary: Track an active ride
+          value:
+            context:
+              country: IND
+              bpp_uri: >-
+                https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+              domain: nic2004:60221
+              timestamp: 2023-03-23T04:48:53.000Z
+              bap_id: example-bap.com
+              bpp_id: example-bpp.com
+              message_id: 8926b747-0362-4fcc-b795-0994a6287700
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              city: std:080
+              core_version: 0.9.4
+              action: track
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+            message:
+              order_id: 22e090fc-b8b1-4437-9126-ff7a71c7845c
+      - summary: Provider platform responds with tracking deatils
+        api: on_track
+        description: >-
+          Provider platform responds with releveant information to track the
+          ride
+        reference: if any
+        example: *ref_10
 x-examples:
   on-demand:
     summary: On Demand Use Case Specification
-    description: These specification are derived form the ONDC mobility specification
+    description: >-
+      On-demand ride-hailing use case on the network would enable users to avail
+      commercial transit. Consumer/end-user can use the  specifications to 
+      select, book, pay and track the rides .While a provider platform can
+      consume the services  to validate rider  fares, including cash, passes,
+      and contactless options, as well as receive dynamically routed pick-up and
+      drop-off instructions. Driver manifests are continuously re-optimized
+      based on rider demand and changing traffic conditions to ensure the most
+      efficient route is taken each time.Gateway specifications are used to
+      brodcast demands originating from a consumer platform to all applicable 
+      provider platfrom in a transperent and un biased manner.
     example_set:
       search:
         examples:
-          - *ref_8
+          - *ref_11
           - summary: Search by pickup and drop location with localization info
             value:
               context:
                 country: IND
                 domain: nic2004:60221
                 timestamp: '2023-03-23T04:41:16Z'
-                bap_id: example-bap.com
+                bap_id: https://example-bap.com
                 transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
                 message_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
                 city: std:080
@@ -3677,7 +4301,7 @@ x-examples:
                         tags:
                           groups/1/descriptor/name: Localization
                           groups/1/descriptor/code: localization
-                          groups/1/display: false
+                          groups/1/display: 'false'
                           groups/1/list/1/descriptor/code: lang
                           groups/1/list/1/descriptor/name: Language
                           groups/1/list/1/value: en
@@ -3691,9 +4315,9 @@ x-examples:
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 domain: ONDCTRV10
                 timestamp: '2023-03-23T04:46:45Z'
-                bap_id: example-bap.com
+                bap_id: https://example-bap.com
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-                bpp_id: example-bpp.com
+                bpp_id: https://example-bpp.com
                 message_id: 432fdfd6-0457-47b6-9fac-80cbe5c0a75b
                 city: std:080
                 core_version: 0.9.4
@@ -3722,9 +4346,9 @@ x-examples:
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 domain: nic2004:60221
                 timestamp: '2023-03-23T04:46:45Z'
-                bap_id: example-bap.com
+                bap_id: https://example-bap.com
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-                bpp_id: example-bpp.com
+                bpp_id: https://example-bpp.com
                 message_id: 432fdfd6-0457-47b6-9fac-80cbe5c0a75b
                 city: std:080
                 core_version: 0.9.4
@@ -3762,10 +4386,10 @@ x-examples:
                           state: Karnataka
                           city: Bengaluru
                           locality: Basavanagudi
-                          door: null
+                          door: ''
                           area_code: ''
                           street: Chikkanna Garden
-          - *ref_9
+          - *ref_12
           - summary: >-
               Get quote for a specific product from a mobility catalog and
               receive only one qutote
@@ -3776,9 +4400,9 @@ x-examples:
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 domain: nic2004:60221
                 timestamp: '2023-03-23T04:46:45Z'
-                bap_id: example-bap.com
+                bap_id: https://example-bap.com
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-                bpp_id: example-bpp.com
+                bpp_id: https://example-bpp.com
                 message_id: 432fdfd6-0457-47b6-9fac-80cbe5c0a75b
                 city: std:080
                 core_version: 0.9.4
@@ -3799,26 +4423,26 @@ x-examples:
                         gps: 12.9535139, 77.5710434
       init:
         examples:
-          - *ref_10
+          - *ref_8
       confirm:
         examples:
-          - *ref_11
+          - *ref_13
       status:
         examples:
-          - *ref_12
+          - *ref_14
       track:
         examples:
-          - *ref_13
+          - *ref_15
       cancel:
         examples:
           - summary: Cancel a ride with selected reason
             value:
               context:
                 action: cancel
-                bap_id: api.beckn.juspay.in/pilot/bap/cab/v1
+                bap_id: https://api.beckn.juspay.in/pilot/bap/cab/v1
                 bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
                 bpp_id: >-
-                  api.beckn.juspay.in/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                  https://api.beckn.juspay.in/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 bpp_uri: >-
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 city: Bangalore
@@ -3827,6 +4451,7 @@ x-examples:
                 domain: nic2004:60221
                 message_id: be6a495a-e941-4fbf-9d59-f1e6166cccc8
                 timestamp: '2023-03-23T05:15:08Z'
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
               message:
                 cancellation_reason_id: '5'
                 order_id: b4232ad4-19ee-4c67-9223-a5189b13a741
@@ -3834,10 +4459,10 @@ x-examples:
             value:
               context:
                 action: cancel
-                bap_id: api.beckn.juspay.in/pilot/bap/cab/v1
+                bap_id: https://api.beckn.juspay.in/pilot/bap/cab/v1
                 bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
                 bpp_id: >-
-                  api.beckn.juspay.in/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                  https://api.beckn.juspay.in/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 bpp_uri: >-
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 city: Bangalore
@@ -3846,6 +4471,7 @@ x-examples:
                 domain: nic2004:60221
                 message_id: be6a495a-e941-4fbf-9d59-f1e6166cccc8
                 timestamp: '2023-03-23T05:15:08Z'
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
               message:
                 cancellation_reason_id: '7'
                 descriptor:
@@ -3853,7 +4479,7 @@ x-examples:
                 order_id: b4232ad4-19ee-4c67-9223-a5189b13a741
       support:
         examples:
-          - *ref_14
+          - *ref_16
       rating:
         examples:
           - summary: Provide a rating
@@ -3864,9 +4490,9 @@ x-examples:
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 domain: nic2004:60221
                 timestamp: '2023-03-23T04:46:45Z'
-                bap_id: example-bap.com
+                bap_id: https://example-bap.com
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-                bpp_id: example-bpp.com
+                bpp_id: https://example-bpp.com
                 message_id: 432fdfd6-0457-47b6-9fac-80cbe5c0a75b
                 city: std:080
                 core_version: 0.9.4
@@ -3884,9 +4510,9 @@ x-examples:
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 domain: nic2004:60221
                 timestamp: '2023-03-23T04:46:45Z'
-                bap_id: example-bap.com
+                bap_id: https://example-bap.com
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-                bpp_id: example-bpp.com
+                bpp_id: https://example-bpp.com
                 message_id: 432fdfd6-0457-47b6-9fac-80cbe5c0a75b
                 city: std:080
                 core_version: 0.9.4
@@ -3903,28 +4529,28 @@ x-examples:
                       reached 10 minutes before time
       on_search:
         examples:
-          - *ref_15
+          - *ref_17
       on_select:
         examples:
-          - *ref_16
+          - *ref_18
       on_init:
         examples:
-          - *ref_17
+          - *ref_9
       on_confirm:
         examples:
-          - *ref_18
+          - *ref_19
       on_track:
         examples:
-          - *ref_19
+          - *ref_10
       on_cancel:
         examples:
           - summary: Return order cancelled by rider with cancellation charges
             value:
               context:
                 action: on_cancel
-                bap_id: example-bap.com
+                bap_id: https://example-bap.com
                 bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
-                bpp_id: example-bpp.com
+                bpp_id: https://example-bpp.com
                 bpp_uri: >-
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 city: std:080
@@ -3949,7 +4575,7 @@ x-examples:
                         tags:
                           groups/1/descriptor/code: localization
                           groups/1/descriptor/name: Localization
-                          groups/1/display: false
+                          groups/1/display: 'false'
                           groups/1/list/1/descriptor/code: lang
                           groups/1/list/1/descriptor/name: Language
                           groups/1/list/1/value: en
@@ -3960,7 +4586,7 @@ x-examples:
                           building: Rangadore Memorial Hospital
                           city: Bengaluru
                           country: India
-                          door: null
+                          door: ''
                           locality: Basavanagudi
                           state: Karnataka
                           street: Chikkanna Garden
@@ -4003,7 +4629,7 @@ x-examples:
                       tags:
                         groups/1/descriptor/code: fare_policy
                         groups/1/descriptor/name: Daytime Charges
-                        groups/1/display: true
+                        groups/1/display: 'true'
                         groups/1/list/1/descriptor/name: Min Fare upto 2 km
                         groups/1/list/1/value: ₹ 30 upto 2 km
                         groups/1/list/2/descriptor/code: extra_fare
@@ -4026,7 +4652,7 @@ x-examples:
                         groups/1/list/5/value: ₹ 0 / min
                         groups/2/descriptor/code: fare_policy
                         groups/2/descriptor/name: Waiting Charges
-                        groups/2/display: true
+                        groups/2/display: 'true'
                         groups/2/list/1/descriptor/code: night_charges
                         groups/2/list/1/descriptor/name: Night Charges
                         groups/2/list/1/value: >-
@@ -4040,7 +4666,7 @@ x-examples:
                         groups/2/list/3/value: '05:00:00'
                         groups/3/descriptor/code: info
                         groups/3/descriptor/name: General Information
-                        groups/3/display: true
+                        groups/3/display: 'true'
                         groups/3/list/1/descriptor/code: distance_to_nearest_driver
                         groups/3/list/1/descriptor/name: Distance to nearest driver
                         groups/3/list/1/value: 661 m
@@ -4075,9 +4701,9 @@ x-examples:
             value:
               context:
                 action: on_cancel
-                bap_id: example-bap.com
+                bap_id: https://example-bap.com
                 bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
-                bpp_id: example-bpp.com
+                bpp_id: https://example-bpp.com
                 bpp_uri: >-
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 city: std:080
@@ -4102,7 +4728,7 @@ x-examples:
                         tags:
                           groups/1/descriptor/code: localization
                           groups/1/descriptor/name: Localization
-                          groups/1/display: false
+                          groups/1/display: 'false'
                           groups/1/list/1/descriptor/code: lang
                           groups/1/list/1/descriptor/name: Language
                           groups/1/list/1/value: en
@@ -4113,7 +4739,7 @@ x-examples:
                           building: Rangadore Memorial Hospital
                           city: Bengaluru
                           country: India
-                          door: null
+                          door: ''
                           locality: Basavanagudi
                           state: Karnataka
                           street: Chikkanna Garden
@@ -4156,7 +4782,7 @@ x-examples:
                       tags:
                         groups/1/descriptor/code: fare_policy
                         groups/1/descriptor/name: Daytime Charges
-                        groups/1/display: true
+                        groups/1/display: 'true'
                         groups/1/list/1/descriptor/name: Min Fare upto 2 km
                         groups/1/list/1/value: ₹ 30 upto 2 km
                         groups/1/list/2/descriptor/code: extra_fare
@@ -4179,7 +4805,7 @@ x-examples:
                         groups/1/list/5/value: ₹ 0 / min
                         groups/2/descriptor/code: fare_policy
                         groups/2/descriptor/name: Waiting Charges
-                        groups/2/display: true
+                        groups/2/display: 'true'
                         groups/2/list/1/descriptor/code: night_charges
                         groups/2/list/1/descriptor/name: Night Charges
                         groups/2/list/1/value: >-
@@ -4193,7 +4819,7 @@ x-examples:
                         groups/2/list/3/value: '05:00:00'
                         groups/3/descriptor/code: info
                         groups/3/descriptor/name: General Information
-                        groups/3/display: true
+                        groups/3/display: 'true'
                         groups/3/list/1/descriptor/code: distance_to_nearest_driver
                         groups/3/list/1/descriptor/name: Distance to nearest driver
                         groups/3/list/1/value: 661 m
@@ -4224,8 +4850,8 @@ x-examples:
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 domain: nic2004:60221
                 timestamp: '2023-03-23T04:48:53Z'
-                bap_id: example-bap.com
-                bpp_id: example-bpp.com
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
                 transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
                 message_id: 8926b747-0362-4fcc-b795-0994a6287700
                 city: std:080
@@ -4248,7 +4874,7 @@ x-examples:
                       tags:
                         groups/1/descriptor/name: Daytime Charges
                         groups/1/descriptor/code: fare_policy
-                        groups/1/display: true
+                        groups/1/display: 'true'
                         groups/1/list/1/descriptor/name: Min Fare upto 2 km
                         groups/1/list/1/value: ₹ 30 upto 2 km
                         groups/1/list/2/descriptor/name: Rate above Min. Fare
@@ -4271,7 +4897,7 @@ x-examples:
                         groups/1/list/5/value: ₹ 0 / min
                         groups/2/descriptor/name: Waiting Charges
                         groups/2/descriptor/code: fare_policy
-                        groups/2/display: true
+                        groups/2/display: 'true'
                         groups/2/list/1/descriptor/name: Night Charges
                         groups/2/list/1/descriptor/code: night_charges
                         groups/2/list/1/value: >-
@@ -4285,7 +4911,7 @@ x-examples:
                         groups/2/list/3/value: '05:00:00'
                         groups/3/descriptor/name: General Information
                         groups/3/descriptor/code: info
-                        groups/3/display: true
+                        groups/3/display: 'true'
                         groups/3/list/1/descriptor/name: Distance to nearest driver
                         groups/3/list/1/descriptor/code: distance_to_nearest_driver
                         groups/3/list/1/value: 661 m
@@ -4348,7 +4974,7 @@ x-examples:
                           state: Karnataka
                           city: Bengaluru
                           locality: Basavanagudi
-                          door: null
+                          door: ''
                           area_code: ''
                           street: Chikkanna Garden
                     agent:
@@ -4366,7 +4992,7 @@ x-examples:
                         tags:
                           groups/1/descriptor/name: Localization
                           groups/1/descriptor/code: localization
-                          groups/1/display: false
+                          groups/1/display: 'false'
                           groups/1/list/1/descriptor/code: lang
                           groups/1/list/1/descriptor/name: Language
                           groups/1/list/1/value: en
@@ -4385,8 +5011,8 @@ x-examples:
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 domain: nic2004:60221
                 timestamp: '2023-03-23T04:48:53Z'
-                bap_id: example-bap.com
-                bpp_id: example-bpp.com
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
                 transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
                 message_id: 8926b747-0362-4fcc-b795-0994a6287700
                 city: std:080
@@ -4409,7 +5035,7 @@ x-examples:
                       tags:
                         groups/1/descriptor/name: Daytime Charges
                         groups/1/descriptor/code: fare_policy
-                        groups/1/display: true
+                        groups/1/display: 'true'
                         groups/1/list/1/descriptor/name: Min Fare upto 2 km
                         groups/1/list/1/value: ₹ 30 upto 2 km
                         groups/1/list/2/descriptor/name: Rate above Min. Fare
@@ -4432,7 +5058,7 @@ x-examples:
                         groups/1/list/5/value: ₹ 0 / min
                         groups/2/descriptor/name: Waiting Charges
                         groups/2/descriptor/code: fare_policy
-                        groups/2/display: true
+                        groups/2/display: 'true'
                         groups/2/list/1/descriptor/name: Night Charges
                         groups/2/list/1/descriptor/code: night_charges
                         groups/2/list/1/value: >-
@@ -4446,7 +5072,7 @@ x-examples:
                         groups/2/list/3/value: '05:00:00'
                         groups/3/descriptor/name: General Information
                         groups/3/descriptor/code: info
-                        groups/3/display: true
+                        groups/3/display: 'true'
                         groups/3/list/1/descriptor/name: Distance to nearest driver
                         groups/3/list/1/descriptor/code: distance_to_nearest_driver
                         groups/3/list/1/value: 661 m
@@ -4509,7 +5135,7 @@ x-examples:
                           state: Karnataka
                           city: Bengaluru
                           locality: Basavanagudi
-                          door: null
+                          door: ''
                           area_code: ''
                           street: Chikkanna Garden
                     agent:
@@ -4527,7 +5153,7 @@ x-examples:
                         tags:
                           groups/1/descriptor/name: Localization
                           groups/1/descriptor/code: localization
-                          groups/1/display: false
+                          groups/1/display: 'false'
                           groups/1/list/1/descriptor/code: lang
                           groups/1/list/1/descriptor/name: Language
                           groups/1/list/1/value: en
@@ -4551,8 +5177,8 @@ x-examples:
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 domain: nic2004:60221
                 timestamp: '2023-03-23T04:48:53Z'
-                bap_id: example-bap.com
-                bpp_id: example-bpp.com
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
                 transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
                 message_id: 8926b747-0362-4fcc-b795-0994a6287700
                 city: std:080
@@ -4574,7 +5200,7 @@ x-examples:
                       tags:
                         groups/1/descriptor/name: Daytime Charges
                         groups/1/descriptor/code: fare_policy
-                        groups/1/display: true
+                        groups/1/display: 'true'
                         groups/1/list/1/descriptor/name: Min Fare upto 2 km
                         groups/1/list/1/value: ₹ 30 upto 2 km
                         groups/1/list/2/descriptor/name: Rate above Min. Fare
@@ -4597,7 +5223,7 @@ x-examples:
                         groups/1/list/5/value: ₹ 0 / min
                         groups/2/descriptor/name: Waiting Charges
                         groups/2/descriptor/code: fare_policy
-                        groups/2/display: true
+                        groups/2/display: 'true'
                         groups/2/list/1/descriptor/name: Night Charges
                         groups/2/list/1/descriptor/code: night_charges
                         groups/2/list/1/value: >-
@@ -4611,7 +5237,7 @@ x-examples:
                         groups/2/list/3/value: '05:00:00'
                         groups/3/descriptor/name: General Information
                         groups/3/descriptor/code: info
-                        groups/3/display: true
+                        groups/3/display: 'true'
                         groups/3/list/1/descriptor/name: Distance to nearest driver
                         groups/3/list/1/descriptor/code: distance_to_nearest_driver
                         groups/3/list/1/value: 661 m
@@ -4674,7 +5300,7 @@ x-examples:
                           state: Karnataka
                           city: Bengaluru
                           locality: Basavanagudi
-                          door: null
+                          door: ''
                           area_code: ''
                           street: Chikkanna Garden
                     agent:
@@ -4692,7 +5318,7 @@ x-examples:
                         tags:
                           groups/1/descriptor/name: Localization
                           groups/1/descriptor/code: localization
-                          groups/1/display: false
+                          groups/1/display: 'false'
                           groups/1/list/1/descriptor/code: lang
                           groups/1/list/1/descriptor/name: Language
                           groups/1/list/1/value: en
@@ -4711,8 +5337,8 @@ x-examples:
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 domain: nic2004:60221
                 timestamp: '2023-03-23T04:48:53Z'
-                bap_id: example-bap.com
-                bpp_id: example-bpp.com
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
                 transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
                 message_id: 8926b747-0362-4fcc-b795-0994a6287700
                 city: std:080
@@ -4734,7 +5360,7 @@ x-examples:
                       tags:
                         groups/1/descriptor/name: Daytime Charges
                         groups/1/descriptor/code: fare_policy
-                        groups/1/display: true
+                        groups/1/display: 'true'
                         groups/1/list/1/descriptor/name: Min Fare upto 2 km
                         groups/1/list/1/value: ₹ 30 upto 2 km
                         groups/1/list/2/descriptor/name: Rate above Min. Fare
@@ -4757,7 +5383,7 @@ x-examples:
                         groups/1/list/5/value: ₹ 0 / min
                         groups/2/descriptor/name: Waiting Charges
                         groups/2/descriptor/code: fare_policy
-                        groups/2/display: true
+                        groups/2/display: 'true'
                         groups/2/list/1/descriptor/name: Night Charges
                         groups/2/list/1/descriptor/code: night_charges
                         groups/2/list/1/value: >-
@@ -4771,7 +5397,7 @@ x-examples:
                         groups/2/list/3/value: '05:00:00'
                         groups/3/descriptor/name: General Information
                         groups/3/descriptor/code: info
-                        groups/3/display: true
+                        groups/3/display: 'true'
                         groups/3/list/1/descriptor/name: Distance to nearest driver
                         groups/3/list/1/descriptor/code: distance_to_nearest_driver
                         groups/3/list/1/value: 661 m
@@ -4834,7 +5460,7 @@ x-examples:
                           state: Karnataka
                           city: Bengaluru
                           locality: Basavanagudi
-                          door: null
+                          door: ''
                           area_code: ''
                           street: Chikkanna Garden
                     agent:
@@ -4852,7 +5478,7 @@ x-examples:
                         tags:
                           groups/1/descriptor/name: Localization
                           groups/1/descriptor/code: localization
-                          groups/1/display: false
+                          groups/1/display: 'false'
                           groups/1/list/1/descriptor/code: lang
                           groups/1/list/1/descriptor/name: Language
                           groups/1/list/1/value: en
@@ -4871,8 +5497,8 @@ x-examples:
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 domain: nic2004:60221
                 timestamp: '2023-03-23T04:48:53Z'
-                bap_id: example-bap.com
-                bpp_id: example-bpp.com
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
                 transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
                 message_id: 8926b747-0362-4fcc-b795-0994a6287700
                 city: std:080
@@ -4894,7 +5520,7 @@ x-examples:
                       tags:
                         groups/1/descriptor/name: Daytime Charges
                         groups/1/descriptor/code: fare_policy
-                        groups/1/display: true
+                        groups/1/display: 'true'
                         groups/1/list/1/descriptor/name: Min Fare upto 2 km
                         groups/1/list/1/value: ₹ 30 upto 2 km
                         groups/1/list/2/descriptor/name: Rate above Min. Fare
@@ -4917,7 +5543,7 @@ x-examples:
                         groups/1/list/5/value: ₹ 0 / min
                         groups/2/descriptor/name: Waiting Charges
                         groups/2/descriptor/code: fare_policy
-                        groups/2/display: true
+                        groups/2/display: 'true'
                         groups/2/list/1/descriptor/name: Night Charges
                         groups/2/list/1/descriptor/code: night_charges
                         groups/2/list/1/value: >-
@@ -4931,7 +5557,7 @@ x-examples:
                         groups/2/list/3/value: '05:00:00'
                         groups/3/descriptor/name: General Information
                         groups/3/descriptor/code: info
-                        groups/3/display: true
+                        groups/3/display: 'true'
                         groups/3/list/1/descriptor/name: Distance to nearest driver
                         groups/3/list/1/descriptor/code: distance_to_nearest_driver
                         groups/3/list/1/value: 661 m
@@ -4994,7 +5620,7 @@ x-examples:
                           state: Karnataka
                           city: Bengaluru
                           locality: Basavanagudi
-                          door: null
+                          door: ''
                           area_code: ''
                           street: Chikkanna Garden
                     agent:
@@ -5012,7 +5638,7 @@ x-examples:
                         tags:
                           groups/1/descriptor/name: Localization
                           groups/1/descriptor/code: localization
-                          groups/1/display: false
+                          groups/1/display: 'false'
                           groups/1/list/1/descriptor/code: lang
                           groups/1/list/1/descriptor/name: Language
                           groups/1/list/1/value: en
@@ -5033,17 +5659,687 @@ x-examples:
                   https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 domain: nic2004:60221
                 timestamp: '2023-03-23T05:41:15Z'
-                bap_id: api.beckn.juspay.in/pilot/bap/cab/v1
+                bap_id: https://api.beckn.juspay.in/pilot/bap/cab/v1
                 bpp_id: >-
-                  api.beckn.juspay.in/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                  https://api.beckn.juspay.in/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
                 message_id: 2a17e268-1dc4-4d1a-98a2-17554a50c7d2
                 city: Bangalore
                 core_version: 0.9.4
                 action: on_rating
                 bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
               message:
                 feedback_ack: true
                 rating_ack: true
       on_support:
         examples:
           - *ref_21
+  public-transit:
+    summary: Public Transit Use Case Specification
+    description: >-
+      Public transit , use case on the network would enable user to avail public
+      transit.These below api's are utilized by consumer and provider platform.
+      At consumer platform every consumer/end-user would consume the services
+      available on the network. Consumer Platform use these  specifications to
+      perform e-commerce operations like select, book, pay and track.At provider
+      platform would use these specifications expose there specific invetory in
+      form of rides, seats, transit etc . Gateway specifications are used to
+      brodcast demands originating from a consumer  platform to all applicable
+      provider platfrom in a transperent and un biased manner.
+    example_set:
+      search:
+        - *ref_22
+      select:
+        examples:
+          - *ref_23
+      init:
+        examples:
+          - summary: Initialize the order by providing billing details
+            value:
+              context:
+                domain: nic2004:60221
+                country: IND
+                city: std:080
+                action: init
+                core_version: 0.9.4
+                bap_id: https://example-bap.com
+                bap_uri: https://mock_bap.com/beckn/
+                bpp_id: https://kmrl-bpp.com
+                bpp_uri: https://kmrl-bpp.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  items:
+                    - id: '1'
+                  provider:
+                    id: '1'
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91-9897867564
+      confirm:
+        examples:
+          - *ref_24
+      cancel:
+        examples:
+          - summary: Cancel a transit ticket booking before the cancellation period
+            value:
+              context:
+                domain: nic2008:49213
+                country: IND
+                city: std:011
+                action: cancel
+                core_version: 0.9.4
+                bap_id: https://example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: https://transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order_id: b4232ad4-19ee-4c67-9223-a5189b13a741
+                order:
+                  id: '123413'
+                  cancellation_reason_id: '2'
+      status:
+        examples:
+          - *ref_25
+      on_search:
+        examples:
+          - *ref_26
+      on_select:
+        examples:
+          - *ref_27
+      on_init:
+        examples:
+          - summary: >-
+              Return draft order for transit ticket with settlement via payment
+              link
+            value:
+              context:
+                domain: nic2008:49213
+                country: IND
+                city: std:011
+                action: on_init
+                core_version: 0.9.4
+                bap_id: https://example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: https://transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - https://delhimetrorail.com/icons/sjt.ico
+                      fulfillment_id: '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                      tags:
+                        groups/0/list/0/descriptor/name: Validity
+                        groups/0/list/0/value: 24 hours from the time of purchase
+                  provider:
+                    id: '1'
+                    descriptor:
+                      name: Delhi Metro Rail Limited
+                      images:
+                        - https://delhimetrorail.com/logos/logo.ico
+                  fulfillment:
+                    id: '3'
+                    start:
+                      location:
+                        descriptor:
+                          name: Dwarka Sector 21
+                        gps: 9.05,12.06
+                      time:
+                        timestamp: '2021-10-15T00:32:19.000Z'
+                      instructions:
+                        name: Instructions
+                    end:
+                      location:
+                        descriptor:
+                          name: Shivaji Stadium
+                        gps: 9.07,12.07
+                      time:
+                        timestamp: '2021-10-15T00:43:21.000Z'
+                    vehicle:
+                      category: METRO
+                    tags:
+                      groups/0/list/0/descriptor/name: Transfers
+                      groups/0/list/0/value: '0'
+                      groups/0/list/1/descriptor/name: Duration
+                      groups/0/list/1/value: 30 min
+                  documents:
+                    - label: Cancellation Terms
+                      url: >-
+                        https://dmrc.com/fare_products/sjt/cancellation_terms.html
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91-9897867564
+                  quote:
+                    price:
+                      currency: INR
+                      value: '55'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payment:
+                    type: ON-ORDER
+                    uri: https://pay.razorpay.com?amt=60.5&cur=INR&ref=24566345563
+                    tl_method: http/get
+                    status: NOT-PAID
+          - summary: >-
+              Return draft order for transit ticket with T+1 settlment via bank
+              transfer
+            value:
+              context:
+                domain: nic2008:49213
+                country: IND
+                city: std:011
+                action: on_init
+                core_version: 0.9.4
+                bap_id: https://example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: https://transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - https://delhimetrorail.com/icons/sjt.ico
+                      fulfillment_id: '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                      tags:
+                        groups/0/list/0/descriptor/name: Validity
+                        groups/0/list/0/value: 24 hours from the time of purchase
+                  provider:
+                    id: '1'
+                    descriptor:
+                      name: Delhi Metro Rail Limited
+                      images:
+                        - https://delhimetrorail.com/logos/logo.ico
+                  fulfillment:
+                    id: '3'
+                    start:
+                      location:
+                        descriptor:
+                          name: Dwarka Sector 21
+                        gps: 9.05,12.06
+                      time:
+                        timestamp: '2021-10-15T00:32:19.000Z'
+                      instructions:
+                        name: Instructions
+                    end:
+                      location:
+                        descriptor:
+                          name: Shivaji Stadium
+                        gps: 9.07,12.07
+                      time:
+                        timestamp: '2021-10-15T00:43:21.000Z'
+                    vehicle:
+                      category: METRO
+                    tags:
+                      groups/0/list/0/descriptor/name: Transfers
+                      groups/0/list/0/value: '0'
+                      groups/0/list/1/descriptor/name: Duration
+                      groups/0/list/1/value: 30 min
+                  documents:
+                    - label: Cancellation Terms
+                      url: >-
+                        https://dmrc.com/fare_products/sjt/cancellation_terms.html
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91-9897867564
+                  quote:
+                    price:
+                      currency: INR
+                      value: '55'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payment:
+                    type: POST-FULFILLMENT
+                    status: NOT-PAID
+                    params:
+                      amount: '60.5'
+                      currency: INR
+                      transaction_id: '24566345563'
+                      bank_account: '32756678999'
+                      bank_code: SBIN0000575
+                    time:
+                      range:
+                        start: '2021-03-23T10:00:40.065Z'
+                        end: '2021-03-24T10:00:40.065Z'
+      on_confirm:
+        examples:
+          - *ref_28
+          - summary: Return confirmed ticket order with T+1 pending settlement
+            value:
+              context:
+                domain: nic2008:49213
+                country: IND
+                city: std:011
+                action: on_confirm
+                core_version: 0.9.4
+                bap_id: https://example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: https://transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  id: '123413'
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - https://delhimetrorail.com/icons/sjt.ico
+                      fulfillment_id: '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                      tags:
+                        groups/0/list/0/descriptor/name: Validity
+                        groups/0/list/0/value: 24 hours from the time of purchase
+                  provider:
+                    id: '1'
+                    descriptor:
+                      name: Delhi Metro Rail Limited
+                      images:
+                        - https://delhimetrorail.com/logos/logo.ico
+                  fulfillment:
+                    id: '3'
+                    state:
+                      descriptor:
+                        name: Ticket issued
+                    start:
+                      location:
+                        descriptor:
+                          name: Dwarka Sector 21
+                        gps: 9.05,12.06
+                      time:
+                        timestamp: '2021-10-15T00:32:19.000Z'
+                      instructions:
+                        name: Instructions
+                    end:
+                      location:
+                        descriptor:
+                          name: Shivaji Stadium
+                        gps: 9.07,12.07
+                      time:
+                        timestamp: '2021-10-15T00:43:21.000Z'
+                    vehicle:
+                      category: METRO
+                    tags:
+                      groups/0/list/0/descriptor/name: Transfers
+                      groups/0/list/0/value: '0'
+                      groups/0/list/1/descriptor/name: Duration
+                      groups/0/list/1/value: 30 min
+                  documents:
+                    - label: Cancellation Terms
+                      url: >-
+                        https://dmrc.com/fare_products/sjt/cancellation_terms.html
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91 9812311230
+                  quote:
+                    price:
+                      currency: INR
+                      value: '60.5'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payment:
+                    type: POST-FULFILLMENT
+                    status: NOT-PAID
+                    params:
+                      amount: '60.5'
+                      currency: INR
+                      transaction_id: '24566345563'
+                      bank_account: '32756678999'
+                      bank_code: SBIN0000575
+                    time:
+                      range:
+                        start: '2021-03-23T10:00:40.065Z'
+                        end: '2021-03-24T10:00:40.065Z'
+      on_cancel:
+        examples:
+          - summary: Return cancelled ticket order with cancellation charges
+            value:
+              context:
+                domain: nic2008:49213
+                country: IND
+                city: std:011
+                action: on_cancel
+                core_version: 0.9.4
+                bap_id: https://example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: https://transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  id: '123413'
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - https://delhimetrorail.com/icons/sjt.ico
+                      fulfillment_id: '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                      tags:
+                        groups/0/list/0/descriptor/name: Validity
+                        groups/0/list/0/value: 24 hours from the time of purchase
+                  provider:
+                    id: '1'
+                    descriptor:
+                      name: Delhi Metro Rail Limited
+                      images:
+                        - https://delhimetrorail.com/logos/logo.ico
+                  fulfillment:
+                    id: '3'
+                    start:
+                      location:
+                        descriptor:
+                          name: Dwarka Sector 21
+                        gps: 9.05,12.06
+                      time:
+                        timestamp: '2021-10-15T00:32:19.000Z'
+                      instructions:
+                        name: Instructions
+                    end:
+                      location:
+                        descriptor:
+                          name: Shivaji Stadium
+                        gps: 9.07,12.07
+                      time:
+                        timestamp: '2021-10-15T00:43:21.000Z'
+                    vehicle:
+                      category: METRO
+                    tags:
+                      groups/0/list/0/descriptor/name: Transfers
+                      groups/0/list/0/value: '0'
+                      groups/0/list/1/descriptor/name: Duration
+                      groups/0/list/1/value: 30 min
+                  documents:
+                    - label: Cancellation Terms
+                      url: >-
+                        https://dmrc.com/fare_products/sjt/cancellation_terms.html
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91 9812121212
+                  quote:
+                    price:
+                      currency: INR
+                      value: '60.5'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payment:
+                    type: POST-FULFILLMENT
+                    status: NOT-PAID
+                    params:
+                      amount: '10'
+                      currency: INR
+                      bank_account: '32756678999'
+                      bank_code: SBIN0000575
+                    time:
+                      range:
+                        start: '2021-03-23T10:00:40.065Z'
+                        end: '2021-03-24T10:00:40.065Z'
+      on_status:
+        examples:
+          - *ref_29
+          - &ref_30
+            summary: Return transit ticket order with status - Entered Paid Area
+            value:
+              context:
+                domain: nic2004:60221
+                country: IND
+                city: std:080
+                action: on_status
+                core_version: 0.9.4
+                bap_id: https://example-bap.com
+                bap_uri: https://mock_bap.com/beckn/
+                bpp_id: https://kmrl-bpp.com
+                bpp_uri: https://kmrl-bpp.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  id: '123413'
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - https://delhimetrorail.com/icons/sjt.ico
+                      fulfillment_id: '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                  provider:
+                    id: '1'
+                    descriptor:
+                      name: Delhi Metro Rail Limited
+                      images:
+                        - https://delhimetrorail.com/logos/logo.ico
+                  fulfillment:
+                    id: '3'
+                    state:
+                      descriptor:
+                        name: Entered paid area
+                    start:
+                      location:
+                        descriptor:
+                          name: Dwarka Sector 21
+                        gps: 9.05,12.06
+                      time:
+                        timestamp: '2021-10-15T00:32:19.000Z'
+                    end:
+                      location:
+                        descriptor:
+                          name: Shivaji Stadium
+                        gps: 9.07,12.07
+                      time:
+                        timestamp: '2021-10-15T00:43:21.000Z'
+                    vehicle:
+                      category: METRO
+                    tags:
+                      groups/0/list/0/descriptor/name: Transfers
+                      groups/0/list/0/value: '0'
+                      groups/0/list/1/descriptor/name: Duration
+                      groups/0/list/1/value: 30 min
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91 9812121212
+                  quote:
+                    price:
+                      currency: INR
+                      value: '60.5'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payment:
+                    uri: https://pay.razorpay.com?amt=60.5&cur=INR&ref=24566345563
+                    params:
+                      amount: '60.5'
+                      currency: INR
+                      transaction_id: '24566345563'
+                    status: PAID
+          - summary: Return transit ticket order with status - Exited paid area
+            value:
+              context:
+                domain: nic2004:60221
+                country: IND
+                city: std:080
+                action: on_status
+                core_version: 0.9.4
+                bap_id: https://example-bap.com
+                bap_uri: https://mock_bap.com/beckn/
+                bpp_id: https://kmrl-bpp.com
+                bpp_uri: https://kmrl-bpp.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  id: '123413'
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - https://delhimetrorail.com/icons/sjt.ico
+                      fulfillment_id: '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                  provider:
+                    id: '1'
+                    descriptor:
+                      name: Delhi Metro Rail Limited
+                      images:
+                        - https://delhimetrorail.com/logos/logo.ico
+                  fulfillment:
+                    id: '3'
+                    state:
+                      descriptor:
+                        name: Exited paid area
+                    start:
+                      location:
+                        descriptor:
+                          name: Dwarka Sector 21
+                        gps: 9.05,12.06
+                      time:
+                        timestamp: '2021-10-15T00:32:19.000Z'
+                    end:
+                      location:
+                        descriptor:
+                          name: Shivaji Stadium
+                        gps: 9.07,12.07
+                      time:
+                        timestamp: '2021-10-15T00:43:21.000Z'
+                    vehicle:
+                      category: METRO
+                    tags:
+                      groups/0/list/0/descriptor/name: Transfers
+                      groups/0/list/0/value: '0'
+                      groups/0/list/1/descriptor/name: Duration
+                      groups/0/list/1/value: 30 min
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91 9812121212
+                  quote:
+                    price:
+                      currency: INR
+                      value: '60.5'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payment:
+                    uri: https://pay.razorpay.com?amt=60.5&cur=INR&ref=24566345563
+                    params:
+                      amount: '60.5'
+                      currency: INR
+                      transaction_id: '24566345563'
+                    status: PAID
+      on_update:
+        examples:
+          - *ref_29
+          - *ref_30
+      on_rating:
+        examples:
+          - *ref_29
