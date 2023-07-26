@@ -21,7 +21,8 @@ function loadExample(data) {
         option.text = key;
         exampleDropDown.add(option);
     });
-    addExample("on-demand")
+    
+    addExample(Object.keys(examples)[0])
 }
 function addExample(example_set) {
     // let base = jsyaml.load(openApiYaml)

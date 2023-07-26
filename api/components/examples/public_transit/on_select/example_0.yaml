@@ -1,77 +1,87 @@
 summary: Return a quote offered by a public transit service provider
 value:
   context:
-    domain: ONDC:TRV10
-    country: IND
-    city: std:011
+    location:
+      country:
+        code: IND
+      city:
+        code: 'std:011'
+    domain: 'ONDC:TRV10'
     action: on_select
-    core_version: 1.0.0
-    bap_id: https://example-bap.com
-    bap_uri: https://mock_bap.com/beckn/
-    bpp_id: https://transit-solutions.com
-    bpp_uri: https://api.transit-solutions.com/beckn/
+    version: 1.1.0
+    bap_id: 'mock_bap.com'
+    bap_uri: 'https://mock_bap.com/beckn/'
+    bpp_id: 'api.transit-solutions.com'
+    bpp_uri: 'https://api.transit-solutions.com/beckn/'
     transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
     message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
     timestamp: '2021-03-23T10:00:40.065Z'
-message:
-  order:
-    id: "123413"
-    items:
-      - id: "3"
+  message:
+    order:
+      id: '123413'
+      items:
+        - id: '3'
+          descriptor:
+            name: Single Journey Ticket
+            images:
+              - url: 'https://delhimetrorail.com/icons/sjt.ico'
+          fulfillment_ids:
+            - '3'
+          price:
+            currency: INR
+            value: '55'
+          tags:
+            - list:
+                - descriptor:
+                    name: Validity
+                  value: 24 hours from the time of purchase
+      provider:
+        id: '1'
         descriptor:
-          name: Single Journey Ticket
+          name: Delhi Metro Rail Limited
           images:
-            - https://delhimetrorail.com/icons/sjt.ico
-        fulfillment_id: "3"
+            - url: 'https://delhimetrorail.com/logos/logo.ico'
+      fulfillments:
+        - id: '3'
+          stops:
+            - type: START
+              location:
+                descriptor:
+                  name: Dwarka Sector 21
+                gps: '9.05,12.06'
+              time:
+                timestamp: '2021-10-15T00:32:19.000Z'
+            - type: END
+              location:
+                descriptor:
+                  name: Dwarka Sector 21
+                gps: '9.07,12.07'
+              time:
+                timestamp: '2021-10-15T00:32:19.000Z'
+          vehicle:
+            category: METRO
+          tags:
+            - list:
+                - descriptor:
+                    name: Transfers
+                  value: '0'
+                - descriptor:
+                    name: Duration
+                  value: 30 min
+      quote:
         price:
-          currency: "55"
-          value: INR
-        tags:
-          groups/0/list/0/descriptor/name: Validity
-          groups/0/list/0/value: 24 hours from the time of purchase
-    provider:
-      id: "1"
-      descriptor:
-        name: Delhi Metro Rail Limited
-        images:
-          - https://delhimetrorail.com/logos/logo.ico
-    fulfillment:
-      id: "3"
-      start:
-        location:
-          descriptor:
-            name: Dwarka Sector 21
-          gps: 9.05,12.06
-        time:
-          timestamp: 2021-10-15T00:32:19.000Z
-      end:
-        location:
-          descriptor:
-            name: Shivaji Stadium
-          gps: 9.07,12.07
-        time:
-          timestamp: 2021-10-15T00:43:21.000Z
-      vehicle:
-        category: METRO
-      tags:
-        groups/0/list/0/descriptor/name: Transfers
-        groups/0/list/0/value: "0"
-        groups/0/list/1/descriptor/name: Duration
-        groups/0/list/1/value: 30 min
-    quote:
-      price:
-        value: "60.5"
-        currency: INR
-      breakup:
-        - title: Single Journey Ticket X 1
-          price:
-            currency: INR
-            value: "55"
-        - title: CGST @ 5%
-          price:
-            currency: INR
-            value: "2.75"
-        - title: SGST @ 5%
-          price:
-            currency: INR
-            value: "2.75"
+          value: '60.5'
+          currency: INR
+        breakup:
+          - title: Single Journey Ticket X 1
+            price:
+              currency: INR
+              value: '55'
+          - title: CGST @ 5%
+            price:
+              currency: INR
+              value: '2.75'
+          - title: SGST @ 5%
+            price:
+              currency: INR
+              value: '2.75'
