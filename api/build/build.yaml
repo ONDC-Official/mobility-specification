@@ -2447,10 +2447,8 @@ components:
           type: string
         callback_phone:
           type: string
-          format: phone
         phone:
           type: string
-          format: phone
         email:
           type: string
           format: email
@@ -3687,6 +3685,2806 @@ x-flows:
             message:
               order_id: 22e090fc-b8b1-4437-9126-ff7a71c7845c
 x-examples:
+  on-demand:
+    summary: On Demand Use Case Specification
+    description: >-
+      On-demand ride-hailing use case on the network would enable users to avail
+      commercial transit. Consumer/end-user can use the  specifications to 
+      select, book, pay and track the rides .While a provider platform can
+      consume the services  to validate rider  fares, including cash, passes,
+      and contactless options, as well as receive dynamically routed pick-up and
+      drop-off instructions. Driver manifests are continuously re-optimized
+      based on rider demand and changing traffic conditions to ensure the most
+      efficient route is taken each time.Gateway specifications are used to
+      brodcast demands originating from a consumer platform to all applicable 
+      provider platfrom in a transperent and un biased manner.
+    example_set:
+      search:
+        examples:
+          - summary: >-
+              Search for services in the city of Bengaluru by pickup and drop
+              location
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:41:16Z'
+                bap_id: https://example-test-bap.com
+                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                message_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                version: 1.0.0
+                action: search
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                intent:
+                  fulfillment:
+                    stops:
+                      - type: start
+                        location:
+                          gps: 13.008935, 77.6444085
+                      - type: end
+                        location:
+                          gps: 12.9711869, 77.5868122
+          - summary: Search by pickup and drop location with localization info
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:41:16Z'
+                bap_id: https://example-bap.com
+                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                message_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                version: 1.0.0
+                action: search
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                intent:
+                  fulfillment:
+                    stops:
+                      - type: start
+                        location:
+                          gps: 13.008935, 77.6444085
+                      - type: end
+                        location:
+                          gps: 12.9711869, 77.586812
+                    customer:
+                      person:
+                        tags:
+                          - descriptor:
+                              code: localization
+                              name: Localization
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: lang
+                                  name: Language
+                                value: en
+      select:
+        examples:
+          - summary: Get quote for a specific product from a mobility catalog
+            value:
+              context:
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDCTRV10
+                timestamp: '2023-03-23T04:46:45Z'
+                bap_id: https://example-bap.com
+                transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+                bpp_id: https://example-bpp.com
+                message_id: 432fdfd6-0457-47b6-9fac-80cbe5c0a75b
+                version: 1.0.0
+                action: select
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                ttl: P120S
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+              message:
+                order:
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                  fulfillments:
+                    - stops:
+                        - type: start
+                          location:
+                            gps: 13.008935, 77.6444085
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+          - summary: >-
+              Get quote for a specific product from a mobility catalog with gps
+              and address details
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:46:45Z'
+                bap_id: https://example-bap.com
+                transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+                bpp_id: https://example-bpp.com
+                message_id: 432fdfd6-0457-47b6-9fac-80cbe5c0a75b
+                version: 1.0.0
+                action: select
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                ttl: P120S
+              message:
+                order:
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                  fulfillments:
+                    - stops:
+                        - type: start
+                          location:
+                            gps: 13.008935, 77.6444085
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560091'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+          - summary: >-
+              Get quote for a specific product from a mobility catalog with
+              localization
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:46:45Z'
+                bap_id: https://example-bap.com
+                transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+                bpp_id: https://example-bpp.com
+                message_id: 432fdfd6-0457-47b6-9fac-80cbe5c0a75b
+                version: 1.0.0
+                action: select
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                ttl: P120S
+              message:
+                order:
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                  fulfillments:
+                    - stops:
+                        - type: start
+                          location:
+                            gps: 13.008935, 77.6444085
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560091'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                      customer:
+                        person:
+                          tags:
+                            - descriptor:
+                                code: localization
+                                name: Localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+          - summary: >-
+              Get quote for a specific product from a mobility catalog and
+              receive only one qutote
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:46:45Z'
+                bap_id: https://example-bap.com
+                transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+                bpp_id: https://example-bpp.com
+                message_id: 488f52a1-6c2f-445e-82fe-2762f8a7b53f
+                version: 1.0.0
+                action: select
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                ttl: P120S
+              message:
+                order:
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                  fulfillments:
+                    - stops:
+                        - type: start
+                          location:
+                            gps: 13.008935, 77.6444085
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+      init:
+        examples:
+          - summary: Initialize draft order and request for terms of service
+            value:
+              context:
+                action: init
+                bap_id: https://example-bap.com
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                bpp_id: https://example-bpp.com
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                version: 1.0.0
+                domain: ONDC:TRV10
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                timestamp: '2023-03-23T04:48:53Z'
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+              message:
+                order:
+                  fulfillments:
+                    - customer:
+                        contact:
+                          phone: +91-9897867564
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                code: localization
+                                name: Localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+                      agent:
+                        person:
+                          name: RAGHAVENDRA J
+                      stops:
+                        - type: start
+                          location:
+                            gps: 13.008935, 77.6444085
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560091'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                      id: 5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      vehicle:
+                        category: AUTO_RICKSHAW
+                  items:
+                    - fulfillment_ids:
+                        - 5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      payment_ids:
+                        - 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                  payments:
+                    - collected_by: BPP
+                      id: 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                      type: ON-FULFILLMENT
+                  provider:
+                    id: 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                  quote:
+                    breakup:
+                      - price:
+                          currency: INR
+                          value: '30'
+                        title: Base Fare
+                      - price:
+                          currency: INR
+                          value: '56'
+                        title: Per km fare
+                    price:
+                      currency: INR
+                      value: '76'
+      confirm:
+        examples:
+          - summary: Confirm ride booking
+            value:
+              context:
+                domain: ONDC:TRV10
+                location:
+                  city:
+                    code: Banglore
+                  country:
+                    code: IND
+                timestamp: '2023-03-23T04:41:16Z'
+                bap_id: https://example-test-bap.com
+                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                message_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                version: 1.0.0
+                action: confirm
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                order:
+                  fulfillments:
+                    - agent:
+                        person:
+                          name: RAGHAVENDRA J
+                      customer:
+                        contact:
+                          phone: +91-9897867564
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                code: localization
+                                name: Localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+                      stops:
+                        - type: start
+                          location:
+                            gps: 13.008935, 77.6444085
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560091'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                      id: fulf_5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      vehicle:
+                        category: AUTO_RICKSHAW
+                  id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
+                  items:
+                    - descriptor:
+                        code: RIDE
+                        name: Auto Ride
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      payment_ids:
+                        - '1'
+                      tags:
+                        - descriptor:
+                            code: fare_policy
+                            name: Daytime Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                code: extra_fare
+                            - descriptor:
+                                name: Rate above Min. Fare
+                              value: ₹15 / km
+                            - descriptor:
+                                code: pickup_charges
+                                name: Driver Pickup Charges
+                              value: ₹ 10
+                            - descriptor:
+                                code: nominal_fare
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 10
+                            - descriptor:
+                                code: waiting_charges
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 0 / min
+                        - descriptor:
+                            code: fare_policy
+                            name: Waiting Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                code: night_charges
+                                name: Night Charges
+                              value: >-
+                                1.5x of daytime charges applicable at night from
+                                10 PM to 5 PM
+                            - descriptor:
+                                code: night_shift_start_time
+                                name: Night Shift Start
+                              value: '22:00:00'
+                            - descriptor:
+                                code: night_shift_end_time
+                                name: Night Shift End
+                              value: '05:00:00'
+                        - descriptor:
+                            code: info
+                            name: General Information
+                          display: true
+                          list:
+                            - descriptor:
+                                code: distance_to_nearest_driver
+                                name: Distance to nearest driver
+                              value: 661 m
+                            - descriptor:
+                                code: waiting_time_estimated_threshold
+                                name: Wait time upto
+                              value: 3 min
+                  payments:
+                    - id: 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                      params:
+                        amount: '81'
+                        currency: INR
+                        transaction_status: NOT-PAID
+                      type: ON-FULFILLMENT
+                  provider:
+                    descriptor:
+                      name: Raghavendra J
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                  quote:
+                    breakup:
+                      - price:
+                          currency: INR
+                          value: '30'
+                        title: Base Fare
+                      - price:
+                          currency: INR
+                          value: '56'
+                        title: Per km fare
+                      - price:
+                          currency: INR
+                          value: '2.5'
+                        title: CGST @ 5%
+                      - price:
+                          currency: INR
+                          value: '2.5'
+                        title: SGST @ 5%
+                    price:
+                      currency: INR
+                      value: '81'
+      status:
+        examples:
+          - summary: Get latest fulfillment status of a booking
+            value:
+              context:
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                version: 1.0.0
+                action: status
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+              message:
+                order_id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
+      track:
+        examples:
+          - summary: Track an active ride
+            value:
+              context:
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                transaction_id: 4a398ca3-29ff-4aa6-b562-81f844b8bbd6
+                version: 1.0.0
+                action: track
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+              message:
+                order_id: 22e090fc-b8b1-4437-9126-ff7a71c7845c
+      cancel:
+        examples:
+          - summary: Cancel a ride with selected reason
+            value:
+              context:
+                action: cancel
+                bap_id: https://api.beckn.juspay.in/pilot/bap/cab/v1
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                bpp_id: >-
+                  https://api.beckn.juspay.in/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                version: 1.0.0
+                domain: ONDC:TRV10
+                message_id: be6a495a-e941-4fbf-9d59-f1e6166cccc8
+                timestamp: '2023-03-23T05:15:08Z'
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+              message:
+                cancellation_reason_id: '5'
+                order_id: b4232ad4-19ee-4c67-9223-a5189b13a741
+          - summary: Cancel a ride with user provided information
+            value:
+              context:
+                action: cancel
+                bap_id: https://api.beckn.juspay.in/pilot/bap/cab/v1
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                bpp_id: >-
+                  https://api.beckn.juspay.in/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                version: 1.0.0
+                domain: ONDC:TRV10
+                message_id: be6a495a-e941-4fbf-9d59-f1e6166cccc8
+                timestamp: '2023-03-23T05:15:08Z'
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+              message:
+                cancellation_reason_id: '7'
+                descriptor:
+                  short_desc: Accidenally booked the ride
+                order_id: b4232ad4-19ee-4c67-9223-a5189b13a741
+      support:
+        examples:
+          - summary: Fetch support information related to a particular order
+            value:
+              context:
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+                version: 1.0.0
+                action: support
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+              message:
+                ref_id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
+      rating:
+        examples:
+          - summary: Provide a rating
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:46:45Z'
+                bap_id: https://example-bap.com
+                transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+                bpp_id: https://example-bpp.com
+                message_id: b462a835-97d6-4479-bec8-9660a0f8513e
+                version: 1.0.0
+                action: rating
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                id: b0462745-f6c9-4100-bbe7-4fa3648b6b40
+                rating_category: DRIVER
+                value: 4
+          - summary: Provide a rating with feedback form data
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:46:45Z'
+                bap_id: https://example-bap.com
+                transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+                bpp_id: https://example-bpp.com
+                message_id: 849db48a-34c0-454b-86cb-60864482941b
+                version: 1.0.0
+                action: rating
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                id: b0462745-f6c9-4100-bbe7-4fa3648b6b40
+                rating_category: DRIVER
+                value: 4
+                feedback_form:
+                  - id: '1'
+                    answer: >-
+                      Driver took me on a route not shown by Google Maps and we
+                      reached 10 minutes before time
+      on_search:
+        examples:
+          - summary: Return a mobility catalog
+            value:
+              context:
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                location:
+                  city:
+                    code: std:080
+                  country:
+                    code: IND
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:43:02Z'
+                bap_id: https://example-bap.com
+                transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+                bpp_id: https://example-bpp.com
+                message_id: 21e54d3c-9c3b-47c1-aa3b-b0e7b20818ee
+                version: 1.0.0
+                action: on_search
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+            message:
+              catalog:
+                descriptor:
+                  name: Namma Yatri Partner
+                providers:
+                  - locations:
+                      - id: '1'
+                        gps: 12.9164682,77.6089985
+                      - id: '2'
+                        gps: 12.91671,77.6092983
+                      - id: '3'
+                        gps: 12.9165733,77.6152167
+                      - id: '4'
+                        gps: 12.9068578,77.6044567
+                    items:
+                      - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                        descriptor:
+                          name: Auto Ride
+                          code: RIDE
+                        price:
+                          maximum_value: '156'
+                          currency: INR
+                          minimum_value: '176'
+                          value: 156 - 176 INR
+                        tags:
+                          - descriptor:
+                              code: fare_policy
+                              name: Daytime Charges
+                            display: true
+                            list:
+                              - descriptor:
+                                  name: Min Fare upto 2 km
+                                value: ₹ 30 upto 2 km
+                              - descriptor:
+                                  code: extra_fare
+                              - descriptor:
+                                  name: Rate above Min. Fare
+                                value: ₹15 / km
+                              - descriptor:
+                                  code: pickup_charges
+                                  name: Driver Pickup Charges
+                                value: ₹ 10
+                              - descriptor:
+                                  code: nominal_fare
+                                  name: Nominal Fare
+                                  short_desc: >-
+                                    Driver may quote extra to cover fortraffic,
+                                    chance of return trip, etc.
+                                value: ₹ 10
+                              - descriptor:
+                                  code: waiting_charges
+                                  name: Nominal Fare
+                                  short_desc: >-
+                                    Driver may quote extra to cover fortraffic,
+                                    chance of return trip, etc.
+                                value: ₹ 0 / min
+                          - descriptor:
+                              code: fare_policy
+                              name: Waiting Charges
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: night_charges
+                                  name: Night Charges
+                                value: >-
+                                  1.5x of daytime charges applicable at night
+                                  from 10 PM to 5 PM
+                              - descriptor:
+                                  code: night_shift_start_time
+                                  name: Night Shift Start
+                                value: '22:00:00'
+                              - descriptor:
+                                  code: night_shift_end_time
+                                  name: Night Shift End
+                                value: '05:00:00'
+                          - descriptor:
+                              code: info
+                              name: General Information
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: distance_to_nearest_driver
+                                  name: Distance to nearest driver
+                                value: 661 m
+                              - descriptor:
+                                  code: waiting_time_estimated_threshold
+                                  name: Wait time upto
+                                value: 3 min
+                        fulfillment_id: fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                        payment_id: '1'
+                    fulfillments:
+                      stops:
+                        - type: start
+                          location:
+                            gps: 13.008935, 77.6444085
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560091'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                        - id: fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      vehicle:
+                        category: AUTO_RICKSHAW
+                      tags:
+                        - descriptor:
+                            code: route_info
+                            name: Route Information
+                          display: true
+                          list:
+                            - descriptor:
+                                code: encoded_polyline
+                                name: Path
+                              value: _p~iF~ps|U_ulLnnqC_mqNvxq`@
+                              list:
+                                - descriptor:
+                                    code: waypoints
+                                    name: Waypoints
+                                  value: >-
+                                    [{"gps":"12.9099828,
+                                    77.6118226"},{"gps":"12.9099828,77.6118226"},{"gps":"12.9099828,77.6118226"},{"gps":"12.9099828,
+                                    77.6118226"}]
+                    payments:
+                      - id: '1'
+                        type: ON-FULFILLMENT
+                        collected_by: BPP
+      on_select:
+        examples:
+          - summary: Return a quote offered by a provider
+            value:
+              context:
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+                version: 1.0.0
+                action: on_select
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+              message:
+                order:
+                  provider:
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                    descriptor:
+                      name: Raghavendra J
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      descriptor:
+                        name: Auto Ride
+                        code: RIDE
+                      tags:
+                        - descriptor:
+                            code: fare_policy
+                            name: Daytime Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                code: extra_fare
+                            - descriptor:
+                                name: Rate above Min. Fare
+                              value: ₹15 / km
+                            - descriptor:
+                                code: pickup_charges
+                                name: Driver Pickup Charges
+                              value: ₹ 10
+                            - descriptor:
+                                code: nominal_fare
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 10
+                            - descriptor:
+                                code: waiting_charges
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 0 / min
+                        - descriptor:
+                            code: fare_policy
+                            name: Waiting Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                code: night_charges
+                                name: Night Charges
+                              value: >-
+                                1.5x of daytime charges applicable at night from
+                                10 PM to 5 PM
+                            - descriptor:
+                                code: night_shift_start_time
+                                name: Night Shift Start
+                              value: '22:00:00'
+                            - descriptor:
+                                code: night_shift_end_time
+                                name: Night Shift End
+                              value: '05:00:00'
+                        - descriptor:
+                            code: info
+                            name: General Information
+                          display: true
+                          list:
+                            - descriptor:
+                                code: distance_to_nearest_driver
+                                name: Distance to nearest driver
+                              value: 661 m
+                            - descriptor:
+                                code: waiting_time_estimated_threshold
+                                name: Wait time upto
+                              value: 3 min
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      payment_ids:
+                        - '1'
+                  quote:
+                    price:
+                      value: '76'
+                      currency: INR
+                    breakup:
+                      - title: Base Fare
+                        price:
+                          value: '30'
+                          currency: INR
+                      - title: Per km fare
+                        price:
+                          value: '56'
+                          currency: INR
+                    ttl: P200S
+                  fulfillments:
+                    - id: fulf_5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      state:
+                        descriptor:
+                          name: Found drivers
+                          code: AGENTS_FOUND
+                      agent:
+                        person:
+                          name: RAGHAVENDRA J
+                        rating: '5'
+                      vehicle:
+                        category: AUTO_RICKSHAW
+      on_init:
+        examples:
+          - summary: Return draft order with payment terms
+            value:
+              context:
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                version: 1.0.0
+                action: on_init
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+              message:
+                order:
+                  id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
+                  provider:
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                    descriptor:
+                      name: Raghavendra J
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      descriptor:
+                        name: Auto Ride
+                        code: RIDE
+                      tags:
+                        - descriptor:
+                            code: fare_policy
+                            name: Daytime Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                code: extra_fare
+                            - descriptor:
+                                name: Rate above Min. Fare
+                              value: ₹15 / km
+                            - descriptor:
+                                code: pickup_charges
+                                name: Driver Pickup Charges
+                              value: ₹ 10
+                            - descriptor:
+                                code: nominal_fare
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 10
+                            - descriptor:
+                                code: waiting_charges
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 0 / min
+                        - descriptor:
+                            code: fare_policy
+                            name: Waiting Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                code: night_charges
+                                name: Night Charges
+                              value: >-
+                                1.5x of daytime charges applicable at night from
+                                10 PM to 5 PM
+                            - descriptor:
+                                code: night_shift_start_time
+                                name: Night Shift Start
+                              value: '22:00:00'
+                            - descriptor:
+                                code: night_shift_end_time
+                                name: Night Shift End
+                              value: '05:00:00'
+                        - descriptor:
+                            code: info
+                            name: General Information
+                          display: true
+                          list:
+                            - descriptor:
+                                code: distance_to_nearest_driver
+                                name: Distance to nearest driver
+                              value: 661 m
+                            - descriptor:
+                                code: waiting_time_estimated_threshold
+                                name: Wait time upto
+                              value: 3 min
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      payment_ids:
+                        - '1'
+                  quote:
+                    price:
+                      value: '81'
+                      currency: INR
+                    breakup:
+                      - title: Base Fare
+                        price:
+                          value: '30'
+                          currency: INR
+                      - title: Per km fare
+                        price:
+                          value: '56'
+                          currency: INR
+                      - title: CGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                      - title: SGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                  fulfillments:
+                    - id: fulf_5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      stops:
+                        - type: start
+                          location:
+                            gps: 13.008935, 77.6444085
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560091'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                      agent:
+                        person:
+                          name: RAGHAVENDRA J
+                        rating: '5'
+                      vehicle:
+                        category: AUTO_RICKSHAW
+                      customer:
+                        contact:
+                          phone: +91-9897867564
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                code: localization
+                                name: Localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+                  payments:
+                    - id: 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                      type: ON-FULFILLMENT
+                      params:
+                        amount: '81'
+                        currency: INR
+                        transaction_status: NOT-PAID
+      on_confirm:
+        examples:
+          - summary: Return confirmed order with latest fulfillment details
+            value:
+              context:
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                version: 1.0.0
+                action: on_confirm
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                location:
+                  city:
+                    code: std:080
+                  country:
+                    code: IND
+              message:
+                order:
+                  id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
+                  provider:
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                    descriptor:
+                      name: Raghavendra J
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      descriptor:
+                        name: Auto Ride
+                        code: RIDE
+                      tags:
+                        - descriptor:
+                            code: fare_policy
+                            name: Daytime Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                code: extra_fare
+                            - descriptor:
+                                name: Rate above Min. Fare
+                              value: ₹15 / km
+                            - descriptor:
+                                code: pickup_charges
+                                name: Driver Pickup Charges
+                              value: ₹ 10
+                            - descriptor:
+                                code: nominal_fare
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 10
+                            - descriptor:
+                                code: waiting_charges
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 0 / min
+                        - descriptor:
+                            code: fare_policy
+                            name: Waiting Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                code: night_charges
+                                name: Night Charges
+                              value: >-
+                                1.5x of daytime charges applicable at night from
+                                10 PM to 5 PM
+                            - descriptor:
+                                code: night_shift_start_time
+                                name: Night Shift Start
+                              value: '22:00:00'
+                            - descriptor:
+                                code: night_shift_end_time
+                                name: Night Shift End
+                              value: '05:00:00'
+                        - descriptor:
+                            code: info
+                            name: General Information
+                          display: true
+                          list:
+                            - descriptor:
+                                code: distance_to_nearest_driver
+                                name: Distance to nearest driver
+                              value: 661 m
+                            - descriptor:
+                                code: waiting_time_estimated_threshold
+                                name: Wait time upto
+                              value: 3 min
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      payment_ids:
+                        - '1'
+                  quote:
+                    price:
+                      value: '81'
+                      currency: INR
+                    breakup:
+                      - title: Base Fare
+                        price:
+                          value: '30'
+                          currency: INR
+                      - title: Per km fare
+                        price:
+                          value: '56'
+                          currency: INR
+                      - title: CGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                      - title: SGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                  fulfillments:
+                    - id: fulf_5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      state:
+                        descriptor:
+                          code: DRIVER_EN_ROUTE
+                          name: Driver is on the way
+                      agent:
+                        person:
+                          name: RAGHAVENDRA J
+                        contact:
+                          phone: +91-98978675645
+                        rating: '5'
+                      vehicle:
+                        category: AUTO_RICKSHAW
+                        registration: KA01JG1231
+                      customer:
+                        contact:
+                          phone: +91-9897867564
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                code: localization
+                                name: Localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+                  payments:
+                    - id: 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                      type: ON-FULFILLMENT
+                      params:
+                        amount: '81'
+                        currency: INR
+                        transaction_status: NOT-PAID
+      on_track:
+        examples:
+          - summary: Return tracking information for an order
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T05:41:09Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                message_id: ec3dea8c-c64c-4f06-b2a0-ec1f9584d7ba
+                version: 1.0.0
+                action: on_track
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+              message:
+                tracking:
+                  url: >-
+                    https://api.beckn.juspay.in/dobpp/ui/driver/location/abc9f0aa-bbfd-4e91-b378-41feee12f05f
+                  status: active
+      on_cancel:
+        examples:
+          - summary: Return order cancelled by rider with cancellation charges
+            value:
+              context:
+                action: on_cancel
+                bap_id: https://example-bap.com
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                bpp_id: https://example-bpp.com
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                version: 1.0.0
+                domain: ONDC:TRV10
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                timestamp: '2023-03-23T04:48:53Z'
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+              message:
+                order:
+                  fulfillments:
+                    - agent:
+                        person:
+                          name: RAGHAVENDRA J
+                        contact:
+                          phone: +91-98978675645
+                      customer:
+                        contact:
+                          phone: +91-9897867564
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                code: localization
+                                name: Localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+                      stops:
+                        - type: start
+                          location:
+                            gps: 13.008935, 77.6444085
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560091'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                      id: fulf_5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      state:
+                        descriptor:
+                          code: DRIVER_EN_ROUTE
+                          name: Driver is on the way
+                      vehicle:
+                        category: AUTO_RICKSHAW
+                        registration: KA01JG1231
+                  items:
+                    - descriptor:
+                        code: RIDE
+                        name: Auto Ride
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      payment_ids:
+                        - '1'
+                      tags:
+                        - descriptor:
+                            code: fare_policy
+                            name: Daytime Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                code: extra_fare
+                            - descriptor:
+                                name: Rate above Min. Fare
+                              value: ₹15 / km
+                            - descriptor:
+                                code: pickup_charges
+                                name: Driver Pickup Charges
+                              value: ₹ 10
+                            - descriptor:
+                                code: nominal_fare
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 10
+                            - descriptor:
+                                code: waiting_charges
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 0 / min
+                        - descriptor:
+                            code: fare_policy
+                            name: Waiting Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                code: night_charges
+                                name: Night Charges
+                              value: >-
+                                1.5x of daytime charges applicable at night from
+                                10 PM to 5 PM
+                            - descriptor:
+                                code: night_shift_start_time
+                                name: Night Shift Start
+                              value: '22:00:00'
+                            - descriptor:
+                                code: night_shift_end_time
+                                name: Night Shift End
+                              value: '05:00:00'
+                        - descriptor:
+                            code: info
+                            name: General Information
+                          display: true
+                          list:
+                            - descriptor:
+                                code: distance_to_nearest_driver
+                                name: Distance to nearest driver
+                              value: 661 m
+                            - descriptor:
+                                code: waiting_time_estimated_threshold
+                                name: Wait time upto
+                              value: 3 min
+                  payments:
+                    - id: 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                      params:
+                        amount: '30'
+                        bank_account: '32754478993'
+                        bank_account_name: RAGHAVENDRA J
+                        bank_code: SBIN0000575
+                        currency: INR
+                        transaction_status: NOT-PAID
+                      time:
+                        duration: P1D
+                      type: POST-FULFILLMENT
+                  provider:
+                    descriptor:
+                      name: Raghavendra J
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                  quote:
+                    breakup:
+                      - price:
+                          currency: INR
+                          value: '30'
+                        title: Cancellation charges
+                    price:
+                      currency: INR
+                      value: '30'
+          - summary: Return order cancelled by the driver
+            value:
+              context:
+                action: on_cancel
+                bap_id: https://example-bap.com
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                bpp_id: https://example-bpp.com
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                version: 1.0.0
+                domain: ONDC:TRV10
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                timestamp: '2023-03-23T04:48:53Z'
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+              message:
+                order:
+                  fulfillments:
+                    - agent:
+                        person:
+                          name: RAGHAVENDRA J
+                        contact:
+                          phone: +91-98978675645
+                      customer:
+                        contact:
+                          phone: +91-9897867564
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                code: localization
+                                name: Localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+                      id: 5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      stops:
+                        - type: start
+                          location:
+                            gps: 13.008935, 77.6444085
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                          authorization:
+                            token: '234234'
+                            type: OTP
+                      state:
+                        descriptor:
+                          code: RIDE_CANCELLED
+                          name: Oops! The driver had to cancel
+                      vehicle:
+                        category: AUTO_RICKSHAW
+                        registration: KA01JG1231
+                  id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
+                  items:
+                    - descriptor:
+                        code: RIDE
+                        name: Auto Ride
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      payment_ids:
+                        - '1'
+                      tags:
+                        - descriptor:
+                            code: fare_policy
+                            name: Daytime Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                code: extra_fare
+                            - descriptor:
+                                name: Rate above Min. Fare
+                              value: ₹15 / km
+                            - descriptor:
+                                code: pickup_charges
+                                name: Driver Pickup Charges
+                              value: ₹ 10
+                            - descriptor:
+                                code: nominal_fare
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 10
+                            - descriptor:
+                                code: waiting_charges
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 0 / min
+                        - descriptor:
+                            code: fare_policy
+                            name: Waiting Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                code: night_charges
+                                name: Night Charges
+                              value: >-
+                                1.5x of daytime charges applicable at night from
+                                10 PM to 5 PM
+                            - descriptor:
+                                code: night_shift_start_time
+                                name: Night Shift Start
+                              value: '22:00:00'
+                            - descriptor:
+                                code: night_shift_end_time
+                                name: Night Shift End
+                              value: '05:00:00'
+                        - descriptor:
+                            code: info
+                            name: General Information
+                          display: true
+                          list:
+                            - descriptor:
+                                code: distance_to_nearest_driver
+                                name: Distance to nearest driver
+                              value: 661 m
+                            - descriptor:
+                                code: waiting_time_estimated_threshold
+                                name: Wait time upto
+                              value: 3 min
+                  payments:
+                    - id: 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                      params:
+                        amount: '0'
+                        currency: INR
+                        transaction_status: CANCELLED
+                      type: POST-FULFILLMENT
+                  provider:
+                    descriptor:
+                      name: Raghavendra J
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                  quote:
+                    price:
+                      currency: INR
+                      value: '0'
+      on_update:
+        examples:
+          - summary: Return updated order with payment transaction status
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                version: 1.0.0
+                action: on_update
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                update_target: order.payment
+                order:
+                  id: ABC1234
+                  provider:
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                    descriptor:
+                      name: Raghavendra J
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      descriptor:
+                        name: Auto Ride
+                        code: RIDE
+                      tags:
+                        - descriptor:
+                            code: fare_policy
+                            name: Daytime Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                code: extra_fare
+                            - descriptor:
+                                name: Rate above Min. Fare
+                              value: ₹15 / km
+                            - descriptor:
+                                code: pickup_charges
+                                name: Driver Pickup Charges
+                              value: ₹ 10
+                            - descriptor:
+                                code: nominal_fare
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 10
+                            - descriptor:
+                                code: waiting_charges
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 0 / min
+                        - descriptor:
+                            code: fare_policy
+                            name: Waiting Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                code: night_charges
+                                name: Night Charges
+                              value: >-
+                                1.5x of daytime charges applicable at night from
+                                10 PM to 5 PM
+                            - descriptor:
+                                code: night_shift_start_time
+                                name: Night Shift Start
+                              value: '22:00:00'
+                            - descriptor:
+                                code: night_shift_end_time
+                                name: Night Shift End
+                              value: '05:00:00'
+                        - descriptor:
+                            code: info
+                            name: General Information
+                          display: true
+                          list:
+                            - descriptor:
+                                code: distance_to_nearest_driver
+                                name: Distance to nearest driver
+                              value: 661 m
+                            - descriptor:
+                                code: waiting_time_estimated_threshold
+                                name: Wait time upto
+                              value: 3 min
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      payment_ids:
+                        - '1'
+                  quote:
+                    price:
+                      value: '81'
+                      currency: INR
+                    breakup:
+                      - title: Base Fare
+                        price:
+                          value: '30'
+                          currency: INR
+                      - title: Per km fare
+                        price:
+                          value: '56'
+                          currency: INR
+                      - title: CGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                      - title: SGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                  fulfillments:
+                    - id: fulf_5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      state:
+                        descriptor:
+                          code: PAYMENT_COLLECTED
+                          name: Payment received
+                      agent:
+                        person:
+                          name: RAGHAVENDRA J
+                        contact:
+                          phone: +91-98978675645
+                        rating: '5'
+                      vehicle:
+                        category: AUTO_RICKSHAW
+                        registration: KA01JG1231
+                      customer:
+                        contact:
+                          phone: +91-9897867564
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                code: localization
+                                name: Localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+                  payments:
+                    - id: 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                      type: ON-FULFILLMENT
+                      params:
+                        amount: '81'
+                        currency: INR
+                        transaction_status: PAID
+          - summary: Return updated order with recomputed charges
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                version: 1.0.0
+                action: on_update
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                update_target: order.payment, order.quote
+                order:
+                  id: ABC1234
+                  provider:
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                    descriptor:
+                      name: Raghavendra J
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      descriptor:
+                        name: Auto Ride
+                        code: RIDE
+                      tags:
+                        - descriptor:
+                            code: fare_policy
+                            name: Daytime Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                code: extra_fare
+                            - descriptor:
+                                name: Rate above Min. Fare
+                              value: ₹15 / km
+                            - descriptor:
+                                code: pickup_charges
+                                name: Driver Pickup Charges
+                              value: ₹ 10
+                            - descriptor:
+                                code: nominal_fare
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 10
+                            - descriptor:
+                                code: waiting_charges
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 0 / min
+                        - descriptor:
+                            code: fare_policy
+                            name: Waiting Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                code: night_charges
+                                name: Night Charges
+                              value: >-
+                                1.5x of daytime charges applicable at night from
+                                10 PM to 5 PM
+                            - descriptor:
+                                code: night_shift_start_time
+                                name: Night Shift Start
+                              value: '22:00:00'
+                            - descriptor:
+                                code: night_shift_end_time
+                                name: Night Shift End
+                              value: '05:00:00'
+                        - descriptor:
+                            code: info
+                            name: General Information
+                          display: true
+                          list:
+                            - descriptor:
+                                code: distance_to_nearest_driver
+                                name: Distance to nearest driver
+                              value: 661 m
+                            - descriptor:
+                                code: waiting_time_estimated_threshold
+                                name: Wait time upto
+                              value: 3 min
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      payment_ids:
+                        - '1'
+                  quote:
+                    price:
+                      value: '75'
+                      currency: INR
+                    breakup:
+                      - title: Base Fare
+                        price:
+                          value: '30'
+                          currency: INR
+                      - title: Per km fare
+                        price:
+                          value: '40'
+                          currency: INR
+                      - title: CGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                      - title: SGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                  fulfillments:
+                    - id: fulf_5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      state:
+                        descriptor:
+                          code: RIDE_ENDED
+                          name: Your ride has ended
+                      stops:
+                        - type: start
+                          authorization:
+                            type: OTP
+                            token: '234234'
+                          location:
+                            gps: 13.008935, 77.6444085
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560091'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                      agent:
+                        person:
+                          name: RAGHAVENDRA J
+                        contact:
+                          phone: +91-98978675645
+                        rating: '5'
+                      vehicle:
+                        category: AUTO_RICKSHAW
+                        registration: KA01JG1231
+                      customer:
+                        contact:
+                          phone: +91-9897867564
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                code: localization
+                                name: Localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+                  payments:
+                    - id: 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                      type: ON-FULFILLMENT
+                      params:
+                        amount: '75'
+                        currency: INR
+                        transaction_status: NOT-PAID
+      on_status:
+        examples:
+          - summary: Return order with status - Driver at pickup
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                version: 1.0.0
+                action: on_status
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                order:
+                  id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
+                  provider:
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                    descriptor:
+                      name: Raghavendra J
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      descriptor:
+                        name: Auto Ride
+                        code: RIDE
+                      tags:
+                        - descriptor:
+                            code: fare_policy
+                            name: Daytime Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                code: extra_fare
+                            - descriptor:
+                                name: Rate above Min. Fare
+                              value: ₹15 / km
+                            - descriptor:
+                                code: pickup_charges
+                                name: Driver Pickup Charges
+                              value: ₹ 10
+                            - descriptor:
+                                code: nominal_fare
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 10
+                            - descriptor:
+                                code: waiting_charges
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 0 / min
+                        - descriptor:
+                            code: fare_policy
+                            name: Waiting Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                code: night_charges
+                                name: Night Charges
+                              value: >-
+                                1.5x of daytime charges applicable at night from
+                                10 PM to 5 PM
+                            - descriptor:
+                                code: night_shift_start_time
+                                name: Night Shift Start
+                              value: '22:00:00'
+                            - descriptor:
+                                code: night_shift_end_time
+                                name: Night Shift End
+                              value: '05:00:00'
+                        - descriptor:
+                            code: info
+                            name: General Information
+                          display: true
+                          list:
+                            - descriptor:
+                                code: distance_to_nearest_driver
+                                name: Distance to nearest driver
+                              value: 661 m
+                            - descriptor:
+                                code: waiting_time_estimated_threshold
+                                name: Wait time upto
+                              value: 3 min
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      payment_ids:
+                        - '1'
+                  quote:
+                    price:
+                      value: '81'
+                      currency: INR
+                    breakup:
+                      - title: Base Fare
+                        price:
+                          value: '30'
+                          currency: INR
+                      - title: Per km fare
+                        price:
+                          value: '56'
+                          currency: INR
+                      - title: CGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                      - title: SGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                  fulfillments:
+                    - id: fulf_5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      state:
+                        descriptor:
+                          code: DRIVER_AT_PICKUP
+                          name: Driver Arrived at Pickup Location
+                      stops:
+                        - type: start
+                          authorization:
+                            type: OTP
+                            token: '234234'
+                          location:
+                            gps: 13.008935, 77.6444085
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560091'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                      agent:
+                        person:
+                          name: RAGHAVENDRA J
+                        contact:
+                          phone: +91-98978675645
+                        rating: '5'
+                      vehicle:
+                        category: AUTO_RICKSHAW
+                        registration: KA01JG1231
+                      customer:
+                        contact:
+                          phone: +91-9897867564
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                code: localization
+                                name: Localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+                  payments:
+                    - id: 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                      type: ON-FULFILLMENT
+                      params:
+                        amount: '81'
+                        currency: INR
+                        transaction_status: NOT-PAID
+          - summary: >-
+              Return order with latest fulfillment status - Driver en-route to
+              pickup
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                version: 1.0.0
+                action: on_status
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                order:
+                  id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
+                  provider:
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                    descriptor:
+                      name: Raghavendra J
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      descriptor:
+                        name: Auto Ride
+                        code: RIDE
+                      tags:
+                        - descriptor:
+                            code: fare_policy
+                            name: Daytime Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                code: extra_fare
+                            - descriptor:
+                                name: Rate above Min. Fare
+                              value: ₹15 / km
+                            - descriptor:
+                                code: pickup_charges
+                                name: Driver Pickup Charges
+                              value: ₹ 10
+                            - descriptor:
+                                code: nominal_fare
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 10
+                            - descriptor:
+                                code: waiting_charges
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 0 / min
+                        - descriptor:
+                            code: fare_policy
+                            name: Waiting Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                code: night_charges
+                                name: Night Charges
+                              value: >-
+                                1.5x of daytime charges applicable at night from
+                                10 PM to 5 PM
+                            - descriptor:
+                                code: night_shift_start_time
+                                name: Night Shift Start
+                              value: '22:00:00'
+                            - descriptor:
+                                code: night_shift_end_time
+                                name: Night Shift End
+                              value: '05:00:00'
+                        - descriptor:
+                            code: info
+                            name: General Information
+                          display: true
+                          list:
+                            - descriptor:
+                                code: distance_to_nearest_driver
+                                name: Distance to nearest driver
+                              value: 661 m
+                            - descriptor:
+                                code: waiting_time_estimated_threshold
+                                name: Wait time upto
+                              value: 3 min
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      payment_ids:
+                        - '1'
+                  quote:
+                    price:
+                      value: '81'
+                      currency: INR
+                    breakup:
+                      - title: Base Fare
+                        price:
+                          value: '30'
+                          currency: INR
+                      - title: Per km fare
+                        price:
+                          value: '56'
+                          currency: INR
+                      - title: CGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                      - title: SGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                  fulfillments:
+                    - id: fulf_5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      state:
+                        descriptor:
+                          code: DRIVER_EN_ROUTE_TO_PICKUP
+                          name: Driver is en-route to your location
+                      stops:
+                        - type: start
+                          authorization:
+                            type: OTP
+                            token: '234234'
+                          location:
+                            gps: 13.008935, 77.6444085
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560091'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                      agent:
+                        person:
+                          name: RAGHAVENDRA J
+                        contact:
+                          phone: +91-98978675645
+                        rating: '5'
+                      vehicle:
+                        category: AUTO_RICKSHAW
+                        registration: KA01JG1231
+                      customer:
+                        contact:
+                          phone: +91-9897867564
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                code: localization
+                                name: Localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+                  payments:
+                    - id: 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                      type: ON-FULFILLMENT
+                      params:
+                        amount: '81'
+                        currency: INR
+                        transaction_status: NOT-PAID
+          - summary: Return order with latest status - Ride started
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                version: 1.0.0
+                action: on_status
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                order:
+                  id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
+                  provider:
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                    descriptor:
+                      name: Raghavendra J
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      descriptor:
+                        name: Auto Ride
+                        code: RIDE
+                      tags:
+                        - descriptor:
+                            code: fare_policy
+                            name: Daytime Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                code: extra_fare
+                            - descriptor:
+                                name: Rate above Min. Fare
+                              value: ₹15 / km
+                            - descriptor:
+                                code: pickup_charges
+                                name: Driver Pickup Charges
+                              value: ₹ 10
+                            - descriptor:
+                                code: nominal_fare
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 10
+                            - descriptor:
+                                code: waiting_charges
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 0 / min
+                        - descriptor:
+                            code: fare_policy
+                            name: Waiting Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                code: night_charges
+                                name: Night Charges
+                              value: >-
+                                1.5x of daytime charges applicable at night from
+                                10 PM to 5 PM
+                            - descriptor:
+                                code: night_shift_start_time
+                                name: Night Shift Start
+                              value: '22:00:00'
+                            - descriptor:
+                                code: night_shift_end_time
+                                name: Night Shift End
+                              value: '05:00:00'
+                        - descriptor:
+                            code: info
+                            name: General Information
+                          display: true
+                          list:
+                            - descriptor:
+                                code: distance_to_nearest_driver
+                                name: Distance to nearest driver
+                              value: 661 m
+                            - descriptor:
+                                code: waiting_time_estimated_threshold
+                                name: Wait time upto
+                              value: 3 min
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      payment_ids:
+                        - '1'
+                  quote:
+                    price:
+                      value: '81'
+                      currency: INR
+                    breakup:
+                      - title: Base Fare
+                        price:
+                          value: '30'
+                          currency: INR
+                      - title: Per km fare
+                        price:
+                          value: '56'
+                          currency: INR
+                      - title: CGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                      - title: SGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                  fulfillments:
+                    - id: fulf_5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      state:
+                        descriptor:
+                          code: RIDE_STARTED
+                          name: Your ride has started
+                      stops:
+                        - type: start
+                          authorization:
+                            type: OTP
+                            token: '234234'
+                          location:
+                            gps: 13.008935, 77.6444085
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560091'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                      agent:
+                        person:
+                          name: RAGHAVENDRA J
+                        contact:
+                          phone: +91-98978675645
+                        rating: '5'
+                      vehicle:
+                        category: AUTO_RICKSHAW
+                        registration: KA01JG1231
+                      customer:
+                        contact:
+                          phone: +91-9897867564
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                code: localization
+                                name: Localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+                  payments:
+                    - id: 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                      type: ON-FULFILLMENT
+                      params:
+                        amount: '81'
+                        currency: INR
+                        transaction_status: NOT-PAID
+          - summary: Return order with latest status - Ride Ended
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                version: 1.0.0
+                action: on_status
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                order:
+                  id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
+                  provider:
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                    descriptor:
+                      name: Raghavendra J
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      descriptor:
+                        name: Auto Ride
+                        code: RIDE
+                      tags:
+                        - descriptor:
+                            code: fare_policy
+                            name: Daytime Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                code: extra_fare
+                            - descriptor:
+                                name: Rate above Min. Fare
+                              value: ₹15 / km
+                            - descriptor:
+                                code: pickup_charges
+                                name: Driver Pickup Charges
+                              value: ₹ 10
+                            - descriptor:
+                                code: nominal_fare
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 10
+                            - descriptor:
+                                code: waiting_charges
+                                name: Nominal Fare
+                                short_desc: >-
+                                  Driver may quote extra to cover fortraffic,
+                                  chance of return trip, etc.
+                              value: ₹ 0 / min
+                        - descriptor:
+                            code: fare_policy
+                            name: Waiting Charges
+                          display: true
+                          list:
+                            - descriptor:
+                                code: night_charges
+                                name: Night Charges
+                              value: >-
+                                1.5x of daytime charges applicable at night from
+                                10 PM to 5 PM
+                            - descriptor:
+                                code: night_shift_start_time
+                                name: Night Shift Start
+                              value: '22:00:00'
+                            - descriptor:
+                                code: night_shift_end_time
+                                name: Night Shift End
+                              value: '05:00:00'
+                        - descriptor:
+                            code: info
+                            name: General Information
+                          display: true
+                          list:
+                            - descriptor:
+                                code: distance_to_nearest_driver
+                                name: Distance to nearest driver
+                              value: 661 m
+                            - descriptor:
+                                code: waiting_time_estimated_threshold
+                                name: Wait time upto
+                              value: 3 min
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      payment_ids:
+                        - '1'
+                  quote:
+                    price:
+                      value: '81'
+                      currency: INR
+                    breakup:
+                      - title: Base Fare
+                        price:
+                          value: '30'
+                          currency: INR
+                      - title: Per km fare
+                        price:
+                          value: '56'
+                          currency: INR
+                      - title: CGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                      - title: SGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                  fulfillments:
+                    - id: fulf_5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      state:
+                        descriptor:
+                          code: RIDE_ENDED
+                          name: Your ride has ended
+                      stops:
+                        - type: start
+                          authorization:
+                            type: OTP
+                            token: '234234'
+                          location:
+                            gps: 13.008935, 77.6444085
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                        - type: end
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            country:
+                              name: India
+                            state:
+                              name: Karnataka
+                            city:
+                              name: Bengaluru
+                            area_code: '560091'
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                      agent:
+                        person:
+                          name: RAGHAVENDRA J
+                        contact:
+                          phone: +91-98978675645
+                        rating: '5'
+                      vehicle:
+                        category: AUTO_RICKSHAW
+                        registration: KA01JG1231
+                      customer:
+                        contact:
+                          phone: +91-9897867564
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                code: localization
+                                name: Localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+                  payments:
+                    - id: 7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                      type: ON-FULFILLMENT
+                      params:
+                        amount: '81'
+                        currency: INR
+                        transaction_status: NOT-PAID
+      on_rating:
+        examples:
+          - summary: Return acknowledgement of rating and feedback
+            value:
+              context:
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T05:41:15Z'
+                bap_id: https://api.beckn.juspay.in/pilot/bap/cab/v1
+                bpp_id: >-
+                  https://api.beckn.juspay.in/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                message_id: 2a17e268-1dc4-4d1a-98a2-17554a50c7d2
+                version: 1.0.0
+                action: on_rating
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+              message:
+                feedback_ack: true
+                rating_ack: true
+      on_support:
+        examples:
+          - summary: Return support information related to an order
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T05:41:09Z'
+                bap_id: https://example-bap.com
+                bpp_id: https://example-bpp.com
+                message_id: ec3dea8c-c64c-4f06-b2a0-ec1f9584d7ba
+                version: 1.0.0
+                action: on_support
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+              message:
+                phone: '+918068870525'
+                email: support@nammayatri.in
+                url: https://support.nammayatri.com/gethelp
   public-transit:
     summary: Public Transit Use Case Specification
     description: >-
@@ -4525,6 +7323,1522 @@ x-examples:
                 domain: ONDC:TRV10
                 timestamp: '2023-03-23T05:41:15Z'
                 bap_id: api.example-bpp.com
+                bpp_id: api.example-bpp.com
+                message_id: 2a17e268-1dc4-4d1a-98a2-17554a50c7d2
+                version: 1.1.0
+                action: on_rating
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message:
+                feedback_form:
+                  form:
+                    url: https://transitsolutions.in/form
+  intra-city:
+    summary: Intra City Bus Service Use Case Specification
+    description: >-
+      Intra City Bus,use case on the network would enable user to avail public
+      transit.These below api's are utilized by consumer and provider platform.
+      At consumer platform every consumer/end-user would consume the services
+      available on the network. Consumer Platform use these  specifications to
+      perform e-commerce operations like select, book, pay and track.At provider
+      platform would use these specifications expose there specific invetory in
+      form of rides, seats, transit etc . Gateway specifications are used to
+      brodcast demands originating from a consumer  platform to all applicable
+      provider platfrom in a transperent and un biased manner.
+    example_set:
+      search:
+        examples:
+          - summary: >-
+              Search for intra city bus service mode of transit from a specific
+              position
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:41:16.000Z'
+                bap_id: example-test-bap.com
+                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                message_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                version: 1.1.0
+                action: search
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                intent:
+                  fulfillment:
+                    stops:
+                      - location:
+                          gps: 12.923608703179461, 77.61462964117527
+      select:
+        examples:
+          - summary: >-
+              Get a quote for a fare product selected from a intra city bus
+              service catalog
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+                domain: ONDC:TRV10
+                action: select
+                version: 1.0.0
+                bap_id: example-bap.com
+                bap_uri: https://mock_bap.com/beckn/
+                bpp_id: kmrl-bpp.com
+                bpp_uri: https://kmrl-bpp.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  items:
+                    - id: '1'
+                  provider:
+                    id: '1'
+      init:
+        examples:
+          - summary: Initialize the order by providing billing details
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+                domain: ONDC:TRV10
+                action: init
+                version: 1.1.0
+                bap_id: mock_bap.com
+                bap_uri: https://mock_bap.com/beckn/
+                bpp_id: kmrl-bpp.com
+                bpp_uri: https://kmrl-bpp.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  items:
+                    - id: '1'
+                  provider:
+                    id: '1'
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91-9897867564
+      confirm:
+        examples:
+          - summary: Confirm ticket booking
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+                domain: ONDC:TRV10
+                action: confirm
+                version: 1.1.0
+                bap_id: mock_bap.com
+                bap_uri: https://mock_bap.com/beckn/
+                bpp_id: kmrl-bpp.com
+                bpp_uri: https://kmrl-bpp.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  items:
+                    - id: '1'
+                  provider:
+                    id: '1'
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91-9897867564
+                  payments:
+                    - params:
+                        amount: '55'
+                        currency: INR
+                        transaction_id: '24566345563'
+      cancel:
+        examples:
+          - summary: Cancel a ticket booking before the cancellation period
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV10
+                action: cancel
+                version: 1.1.0
+                bap_id: example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order_id: b4232ad4-19ee-4c67-9223-a5189b13a741
+      status:
+        examples:
+          - summary: Get latest status of a transit ticket booking
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV10
+                action: status
+                version: 1.1.0
+                bap_id: example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order_id: '123413'
+      on_search:
+        examples:
+          - summary: Return a public transit catalog of fare products
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV10
+                action: on_search
+                version: 1.1.0
+                bap_id: mock_bap.com
+                bap_uri: https://mock_bap.com/beckn/
+                bpp_id: api.transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                catalog:
+                  descriptor:
+                    name: Transit Solutions
+                    images:
+                      - url: https://transitsolutions.in/logos/logo.ico
+                  providers:
+                    - id: '1'
+                      descriptor:
+                        name: Delhi Transport Corporation
+                        images:
+                          - url: >-
+                              https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                      items:
+                        - id: '1'
+                          descriptor:
+                            name: Single Journey Ticket
+                            images:
+                              - url: >-
+                                  https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                          fulfillment_ids:
+                            - '1'
+                          price:
+                            currency: INR
+                            value: '35'
+                        - id: '2'
+                          descriptor:
+                            name: Single Journey Ticket
+                            images:
+                              - url: >-
+                                  https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                          fulfillment_ids:
+                            - '2'
+                          price:
+                            currency: INR
+                            value: '64'
+                        - id: '3'
+                          descriptor:
+                            name: Single Journey Ticket
+                            images:
+                              - url: >-
+                                  https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                          fulfillment_ids:
+                            - '3'
+                          price:
+                            currency: INR
+                            value: '100'
+                        - id: '4'
+                          descriptor:
+                            name: Return Journey Ticket
+                            images:
+                              - url: >-
+                                  https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                          fulfillment_ids:
+                            - '1'
+                          price:
+                            currency: INR
+                            value: '100'
+                        - id: '5'
+                          descriptor:
+                            name: Return Journey Ticket
+                            images:
+                              - url: >-
+                                  https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                          fulfillment_ids:
+                            - '2'
+                          price:
+                            currency: INR
+                            value: '100'
+                        - id: '6'
+                          descriptor:
+                            name: Return Journey Ticket
+                            images:
+                              - url: >-
+                                  https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                          fulfillment_ids:
+                            - '3'
+                          price:
+                            currency: INR
+                            value: '100'
+                        - id: '7'
+                          descriptor:
+                            name: Monthly Pass
+                            images:
+                              - url: >-
+                                  https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                          price:
+                            currency: INR
+                            value: '250'
+                      fulfillments:
+                        - id: '1'
+                          stops:
+                            - type: START
+                              location:
+                                descriptor:
+                                  name: Dwarka Sector 10 - Blue Line
+                                gps: 28.5811261,77.0548206
+                            - type: END
+                              location:
+                                descriptor:
+                                  name: Patel Chowk - Yellow Line
+                                gps: 28.6230972,77.2099917
+                          vehicle:
+                            category: BUS
+                          tags:
+                            - list:
+                                - descriptor:
+                                    name: Transfers
+                                  value: '1'
+                                - descriptor:
+                                    name: Duration
+                                  value: 60 min
+                        - id: '2'
+                          stops:
+                            - type: START
+                              location:
+                                descriptor:
+                                  name: Dwarka Sector 10 - Blue Line
+                                gps: 28.5811261,77.0548206
+                            - type: END
+                              location:
+                                descriptor:
+                                  name: Shivaji Stadium -  Airport Express Line
+                                gps: 28.6288785,77.2085895
+                          vehicle:
+                            category: BUS
+                          tags:
+                            - list:
+                                - descriptor:
+                                    name: Transfers
+                                  value: '1'
+                                - descriptor:
+                                    name: Duration
+                                  value: 45 min
+                        - id: '3'
+                          stops:
+                            - type: START
+                              location:
+                                descriptor:
+                                  name: Dwarka Sector 21
+                                gps: 9.05,12.06
+                              time:
+                                timestamp: '2021-10-15T00:32:19.000Z'
+                            - type: END
+                              location:
+                                descriptor:
+                                  name: Shivaji Stadium
+                                gps: 9.07,12.07
+                              time:
+                                timestamp: '2021-10-15T00:43:21.000Z'
+                          vehicle:
+                            category: BUS
+                          tags:
+                            - list:
+                                - descriptor:
+                                    name: Transfers
+                                  value: '0'
+                                - descriptor:
+                                    name: Duration
+                                  value: 30 min
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Timetable
+                              value: https://dtc.delhi.gov.in/timetable.html
+                            - descriptor:
+                                name: GTFS Schedule
+                              value: https://dtc.delhi.gov.in/gtfs
+                              display: false
+      on_select:
+        examples:
+          - summary: Return a quote offered by a public transit service provider
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV10
+                action: on_select
+                version: 1.1.0
+                bap_id: example-bap.com
+                bap_uri: https://mock_bap.com/beckn/
+                bpp_id: transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  id: '123413'
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - url: https://dtc.delhi.gov.in/icons/sjt.ico
+                      fulfillment_ids:
+                        - '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Validity
+                              value: 24 hours from the time of purchase
+                  provider:
+                    id: '1'
+                    descriptor:
+                      name: Delhi Transport Corporation
+                      images:
+                        - url: >-
+                            https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                  fulfillments:
+                    - id: '3'
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: Dwarka Sector 21
+                            gps: 9.05,12.06
+                        - type: END
+                          location:
+                            descriptor:
+                              name: Dwarka Sector 21
+                            gps: 9.07,12.07
+                      vehicle:
+                        category: BUS
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Transfers
+                              value: '0'
+                            - descriptor:
+                                name: Duration
+                              value: 30 min
+                  quote:
+                    price:
+                      value: '60.5'
+                      currency: INR
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+      on_init:
+        examples:
+          - summary: >-
+              Return draft order for transit ticket with settlement via payment
+              link
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV10
+                action: on_init
+                version: 1.0.0
+                bap_id: example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - url: https://dtc.delhi.gov.in/sjt.ico
+                      fulfillment_ids:
+                        - '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Validity
+                              value: 24 hours from the time of purchase
+                  provider:
+                    id: '1'
+                  fulfillments:
+                    - id: '3'
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: Dwarka Sector 21
+                            gps: 9.05,12.06
+                          time:
+                            timestamp: '2021-10-15T00:32:19.000Z'
+                          instructions:
+                            name: Instructions
+                        - type: END
+                          location:
+                            descriptor:
+                              name: Shivaji Stadium
+                            gps: 9.07,12.07
+                          time:
+                            timestamp: '2021-10-15T00:43:21.000Z'
+                      vehicle:
+                        category: BUS
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Transfers
+                              value: '0'
+                            - descriptor:
+                                name: Duration
+                              value: 30 min
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91-9897867564
+                  quote:
+                    price:
+                      currency: INR
+                      value: '55'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payments:
+                    - type: PRE-ORDER
+                      url: >-
+                        https://pay.razorpay.com?amt=60.5&cur=INR&ref=24566345563
+                      status: NOT-PAID
+          - summary: >-
+              Return draft order for transit ticket with T+1 settlment via bank
+              transfer
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV10
+                action: on_init
+                version: 1.1.0
+                bap_id: example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - url: https://dtc.delhi.gov.in/sjt.ico
+                      fulfillment_ids:
+                        - '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Validity
+                              value: 24 hours from the time of purchase
+                  provider:
+                    id: '1'
+                  fulfillments:
+                    - id: '3'
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: Dwarka Sector 21
+                            gps: 9.05,12.06
+                          time:
+                            timestamp: '2021-10-15T00:32:19.000Z'
+                          instructions:
+                            name: Instructions
+                        - type: END
+                          location:
+                            descriptor:
+                              name: Shivaji Stadium
+                            gps: 9.07,12.07
+                          time:
+                            timestamp: '2021-10-15T00:43:21.000Z'
+                      vehicle:
+                        category: BUS
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Transfers
+                              value: '0'
+                            - descriptor:
+                                name: Duration
+                              value: 30 min
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91-9897867564
+                  quote:
+                    price:
+                      currency: INR
+                      value: '55'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payments:
+                    - type: POST-FULFILLMENT
+                      status: NOT-PAID
+                      params:
+                        amount: '60.5'
+                        currency: INR
+                        transaction_id: '24566345563'
+                        bank_account_number: '32756678999'
+                        bank_code: SBIN0000575
+                      time:
+                        range:
+                          start: '2021-03-23T10:00:40.065Z'
+                          end: '2021-03-24T10:00:40.065Z'
+      on_confirm:
+        examples:
+          - summary: Return confirmed ticket order with payment confirmation
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV10
+                action: on_confirm
+                version: 1.0.0
+                bap_id: api.example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: api.transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  id: '123413'
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - url: https://dtc.delhi.gov.in/sjt.ico
+                      fulfillment_ids:
+                        - '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Validity
+                              value: 24 hours from the time of purchase
+                  provider:
+                    id: '1'
+                  fulfillments:
+                    - id: '3'
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: Dwarka Sector 21
+                            gps: 9.05,12.06
+                          time:
+                            timestamp: '2021-10-15T00:32:19.000Z'
+                          instructions:
+                            name: Instructions
+                        - type: END
+                          location:
+                            descriptor:
+                              name: Shivaji Stadium
+                            gps: 9.07,12.07
+                          time:
+                            timestamp: '2021-10-15T00:43:21.000Z'
+                      vehicle:
+                        category: BUS
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Transfers
+                              value: '0'
+                            - descriptor:
+                                name: Duration
+                              value: 30 min
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91 9712312121
+                  quote:
+                    price:
+                      currency: INR
+                      value: '60.5'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payments:
+                    - type: PRE-ORDER
+                      status: PAID
+                      params:
+                        amount: '60.5'
+                        currency: INR
+                        transaction_id: '24566345563'
+          - summary: Return confirmed ticket order with T+1 pending settlement
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV10
+                action: on_confirm
+                version: 1.1.0
+                bap_id: example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  id: '123413'
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - url: https://dtc.delhi.gov.in/sjt.ico
+                      fulfillment_ids:
+                        - '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Validity
+                              value: 24 hours from the time of purchase
+                  provider:
+                    id: '1'
+                  fulfillments:
+                    - id: '3'
+                      state:
+                        descriptor:
+                          name: Ticket issued
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: Dwarka Sector 21
+                            gps: 9.05,12.06
+                          time:
+                            timestamp: '2021-10-15T00:32:19.000Z'
+                          instructions:
+                            name: Instructions
+                        - type: END
+                          location:
+                            descriptor:
+                              name: Shivaji Stadium
+                            gps: 9.07,12.07
+                          time:
+                            timestamp: '2021-10-15T00:43:21.000Z'
+                      vehicle:
+                        category: BUS
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Transfers
+                              value: '0'
+                            - descriptor:
+                                name: Duration
+                              value: 30 min
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91 9812311230
+                  quote:
+                    price:
+                      currency: INR
+                      value: '60.5'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payments:
+                    - type: POST-FULFILLMENT
+                      status: NOT-PAID
+                      params:
+                        amount: '60.5'
+                        currency: INR
+                        transaction_id: '24566345563'
+                        bank_account_number: '32756678999'
+                        bank_code: SBIN0000575
+                      time:
+                        range:
+                          start: '2021-03-23T10:00:40.065Z'
+                          end: '2021-03-24T10:00:40.065Z'
+      on_cancel:
+        examples:
+          - summary: Return cancelled ticket order with cancellation charges
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV10
+                action: on_cancel
+                version: 1.1.0
+                bap_id: api.example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  id: '123413'
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - url: https://dtc.delhi.gov.in/icons/sjt.ico
+                      fulfillment_ids:
+                        - '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Validity
+                              value: 24 hours from the time of purchase
+                  provider:
+                    id: '1'
+                  fulfillments:
+                    - id: '3'
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: Dwarka Sector 21
+                            gps: 9.05,12.06
+                          time:
+                            timestamp: '2021-10-15T00:32:19.000Z'
+                          instructions:
+                            name: Instructions
+                        - type: END
+                          location:
+                            descriptor:
+                              name: Shivaji Stadium
+                            gps: 9.07,12.07
+                          time:
+                            timestamp: '2021-10-15T00:43:21.000Z'
+                      vehicle:
+                        category: BUS
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Transfers
+                              value: '0'
+                            - descriptor:
+                                name: Duration
+                              value: 30 min
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91 9812121212
+                  quote:
+                    price:
+                      currency: INR
+                      value: '60.5'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payments:
+                    - type: POST-FULFILLMENT
+                      status: NOT-PAID
+                      params:
+                        amount: '10'
+                        currency: INR
+                        bank_account_number: '32756678999'
+                        bank_code: SBIN0000575
+                      time:
+                        range:
+                          start: '2021-03-23T10:00:40.065Z'
+                          end: '2021-03-24T10:00:40.065Z'
+      on_status:
+        examples:
+          - summary: Return transit ticket order with status - Ticket Issued
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+                domain: ONDC:TRV10
+                action: on_status
+                version: 1.1.0
+                bap_id: mock_bap.com
+                bap_uri: https://mock_bap.com/beckn/
+                bpp_id: kmrl-bpp.com
+                bpp_uri: https://kmrl-bpp.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  id: '123413'
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - url: https://dtc.delhi.gov.in/icons/sjt.ico
+                      fulfillment_ids:
+                        - '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                  provider:
+                    id: '1'
+                  fulfillments:
+                    - id: '3'
+                      state:
+                        descriptor:
+                          name: Ticket Issued
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: Dwarka Sector 21
+                            gps: 9.05,12.06
+                        - type: END
+                          location:
+                            descriptor:
+                              name: Shivaji Stadium
+                            gps: 9.07,12.07
+                          time:
+                            timestamp: '2021-10-15T00:43:21.000Z'
+                      vehicle:
+                        category: BUS
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Transfers
+                              value: '0'
+                            - descriptor:
+                                name: Duration
+                              value: 30 min
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91 9811212121
+                  quote:
+                    price:
+                      currency: INR
+                      value: '60.5'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payments:
+                    - url: >-
+                        https://pay.razorpay.com?amt=60.5&cur=INR&ref=24566345563
+                      params:
+                        amount: '60.5'
+                        currency: INR
+                        transaction_id: '24566345563'
+                      status: PAID
+          - summary: Return transit ticket order with status - Ticket Issued
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+                domain: ONDC:TRV10
+                action: on_status
+                version: 1.1.0
+                bap_id: mock_bap.com
+                bap_uri: https://mock_bap.com/beckn/
+                bpp_id: kmrl-bpp.com
+                bpp_uri: https://kmrl-bpp.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  id: '123413'
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - url: https://dtc.delhi.gov.in/icons/sjt.ico
+                      fulfillment_ids:
+                        - '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                  provider:
+                    id: '1'
+                  fulfillments:
+                    - id: '3'
+                      state:
+                        descriptor:
+                          name: Ticket Issued
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: Dwarka Sector 21
+                            gps: 9.05,12.06
+                        - type: END
+                          location:
+                            descriptor:
+                              name: Shivaji Stadium
+                            gps: 9.07,12.07
+                          time:
+                            timestamp: '2021-10-15T00:43:21.000Z'
+                      vehicle:
+                        category: BUS
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Transfers
+                              value: '0'
+                            - descriptor:
+                                name: Duration
+                              value: 30 min
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91 9811212121
+                  quote:
+                    price:
+                      currency: INR
+                      value: '60.5'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payments:
+                    - url: >-
+                        https://pay.razorpay.com?amt=60.5&cur=INR&ref=24566345563
+                      params:
+                        amount: '60.5'
+                        currency: INR
+                        transaction_id: '24566345563'
+                      status: PAID
+          - summary: Return transit ticket order with status - Ticket Issued
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+                domain: ONDC:TRV10
+                action: on_status
+                version: 1.1.0
+                bap_id: mock_bap.com
+                bap_uri: https://mock_bap.com/beckn/
+                bpp_id: kmrl-bpp.com
+                bpp_uri: https://kmrl-bpp.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+              message:
+                order:
+                  id: '123413'
+                  items:
+                    - id: '3'
+                      descriptor:
+                        name: Single Journey Ticket
+                        images:
+                          - url: https://dtc.delhi.gov.in/icons/sjt.ico
+                      fulfillment_ids:
+                        - '3'
+                      price:
+                        currency: INR
+                        value: '55'
+                  provider:
+                    id: '1'
+                  fulfillments:
+                    - id: '3'
+                      state:
+                        descriptor:
+                          name: Ticket Issued
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: Dwarka Sector 21
+                            gps: 9.05,12.06
+                        - type: END
+                          location:
+                            descriptor:
+                              name: Shivaji Stadium
+                            gps: 9.07,12.07
+                      vehicle:
+                        category: BUS
+                      tags:
+                        - list:
+                            - descriptor:
+                                name: Transfers
+                              value: '0'
+                            - descriptor:
+                                name: Duration
+                              value: 30 min
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91 9811212121
+                  quote:
+                    price:
+                      currency: INR
+                      value: '60.5'
+                    breakup:
+                      - title: Single Journey Ticket X 1
+                        price:
+                          currency: INR
+                          value: '55'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '2.75'
+                  payments:
+                    - url: >-
+                        https://pay.razorpay.com?amt=60.5&cur=INR&ref=24566345563
+                      params:
+                        amount: '60.5'
+                        currency: INR
+                        transaction_id: '24566345563'
+                      status: PAID
+      on_update:
+        examples:
+          - summary: Return update order with payment transition status
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: api.example-bap.com
+                bpp_id: example-bpp.com
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                version: 1.1.0
+                action: on_update
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                order:
+                  id: ABC1234
+                  provider:
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      descriptor:
+                        name: Bus Ride
+                        code: RIDE
+                      tags:
+                        - display: true
+                          descriptor:
+                            name: Daytime Charges
+                            code: fare_policy
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                name: Rate above Min. Fare
+                                code: extra_fare
+                              value: ₹15 / km
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      payment_ids:
+                        - '1'
+                  quote:
+                    price:
+                      value: '81'
+                      currency: INR
+                    breakup:
+                      - title: Base Fare
+                        price:
+                          value: '30'
+                          currency: INR
+                      - title: Per km fare
+                        price:
+                          value: '56'
+                          currency: INR
+                      - title: CGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                      - title: SGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                  fulfillments:
+                    - id: fulf_5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      state:
+                        descriptor:
+                          code: PAYMENT_COLLECTED
+                          name: Payment received
+                      stops:
+                        - type: START
+                          authorization:
+                            type: OTP
+                            token: '234234'
+                          location:
+                            gps: 13.008935, 77.6444085
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                            state:
+                              name: Karnataka 560061
+                            area_code: '560061'
+                            country:
+                              code: IND
+                        - type: END
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            address: >-
+                              Basavanagudi, Chikkanna Garden, Rangadore Memorial
+                              Hospital
+                      agent:
+                        person:
+                          name: RAGHAVENDRA J
+                        contact:
+                          phone: +91-98978675645
+                        rating: '5'
+                      vehicle:
+                        category: AC_BUS
+                        registration: KA01JG1231
+                      customer:
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                name: Localization
+                                code: localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    code: lang
+                                    name: Language
+                                  value: en
+                  payments:
+                    - type: ON-FULFILLMENT
+                      params:
+                        amount: '81'
+                        currency: INR
+          - summary: Updated orders with recomputed charges
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:48:53Z'
+                bap_id: api.example-bap.com
+                bpp_id: api.example-bpp.com
+                transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+                message_id: 8926b747-0362-4fcc-b795-0994a6287700
+                version: 1.1.0
+                action: on_update
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              message:
+                order:
+                  id: ABC1234
+                  provider:
+                    id: e8542642-0f4a-454c-9a9f-f46110c367a3
+                  items:
+                    - id: 5777a0bf-9a08-49aa-a97d-1e5561a9622e
+                      descriptor:
+                        name: Bus Ride
+                        code: RIDE
+                      tags:
+                        - descriptor:
+                            name: Daytime Charges
+                            code: fare_policy
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Min Fare upto 2 km
+                              value: ₹ 30 upto 2 km
+                            - descriptor:
+                                name: Rate above Min. Fare
+                              value: extra_fare
+                        - descriptor:
+                            name: Waiting Charges
+                            code: fare_policy
+                          display: true
+                          list:
+                            - descriptor:
+                                name: Night Charges
+                                code: night_charges
+                              value: >-
+                                1.5x of daytime charges applicable at night from
+                                10 PM to 5 PM
+                            - descriptor:
+                                name: Night Shift Start
+                                code: night_shift_start_time
+                              value: '79200'
+                      fulfillment_ids:
+                        - fb5c84d4-1b59-4b9d-96b5-9d79107432c5
+                      payment_ids:
+                        - '1'
+                  quote:
+                    price:
+                      value: '75'
+                      currency: INR
+                    breakup:
+                      - title: Base Fare
+                        price:
+                          value: '30'
+                          currency: INR
+                      - title: Per km fare
+                        price:
+                          value: '40'
+                          currency: INR
+                      - title: CGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                      - title: SGST @ 5%
+                        price:
+                          value: '2.5'
+                          currency: INR
+                  fulfillments:
+                    - id: fulf_5cf064d5-4c0a-42d3-b73d-5f19a6f7468e
+                      state:
+                        descriptor:
+                          code: RIDE_ENDED
+                          name: Your ride has ended
+                      stops:
+                        - type: START
+                          authorization:
+                            type: OTP
+                            token: '234234'
+                          location:
+                            gps: 13.008935, 77.6444085
+                            address: Uttarahalli Hobli, Ramanjaneyanagar
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            country:
+                              code: IND
+                        - type: END
+                          location:
+                            gps: 12.9711869, 77.5868122
+                            address: >-
+                              Basavanagudi, Chikkanna Garden, Rangadore Memorial
+                              Hospital
+                            city:
+                              name: Bengaluru
+                            area_code: '560061'
+                            country:
+                              code: IND
+                      agent:
+                        person:
+                          name: RAGHAVENDRA J
+                        contact:
+                          phone: +91-98978675645
+                        rating: '5'
+                      vehicle:
+                        category: AC_BUS
+                        registration: KA01JG1231
+                      customer:
+                        person:
+                          name: John Doe
+                          tags:
+                            - descriptor:
+                                name: Localization
+                                code: localization
+                              display: false
+                              list:
+                                - descriptor:
+                                    name: Language
+                                    code: lang
+                                  value: en
+                        contact:
+                          phone: +91-9897867564
+                  payments:
+                    - type: ON-FULFILLMENT
+                      params:
+                        amount: '75'
+                        currency: INR
+      on_rating:
+        examples:
+          - summary: Provide a rating
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    name: Bangalore
+                bpp_uri: >-
+                  https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T05:41:15Z'
+                bap_id: api.example-bap.com'
                 bpp_id: api.example-bpp.com
                 message_id: 2a17e268-1dc4-4d1a-98a2-17554a50c7d2
                 version: 1.1.0
