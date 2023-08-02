@@ -10,6 +10,6 @@ function onFirstLoad(build_spec){
       loadFlows(data["x-flows"])
 }
 
-// window.onload = function(){
-//       onFirstLoad(build_spec)
-// } 
+window.onload = function(){
+      onFirstLoad(build_spec)
+} 
