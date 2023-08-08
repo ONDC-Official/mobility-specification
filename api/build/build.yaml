@@ -2926,30 +2926,29 @@ x-tags:
   on_cancel: *ref_7
   on_update: *ref_7
 x-flows:
-  - summary: metro
+  - summary: Metro - Station Code Based Flow
     details:
       - description: >-
           The illustraive flow to perform a transaction of the nature where in a
-          buyer would like to book a public transport service form location
-          A(gps-cordinates) to localtion B(gps-cordinates) with metro
+          buyer would like to book a metro service form station A to station B
     reference: if any
     steps:
-      - summary: Search for the public transport
+      - summary: Search for the metro by city
         api: search
         details:
           - description: >-
-              Users searches over the network to avail the public mode of
-              transport from position A to position B (gps)
+              Users searches over the network to avail the metro mode of
+              transport in the city
         reference: if any
-        example: &ref_8
-          summary: Search for a public mode of transit from a specific position
+        example:
+          summary: Search for public  transit for city and type of vehicle
           value:
             context:
               location:
                 country:
                   code: IND
                 city:
-                  code: std:080
+                  code: std:011
               domain: ONDC:TRV11
               timestamp: '2023-03-23T04:41:16.000Z'
               bap_id: api.example-bap.com
@@ -2961,27 +2960,19 @@ x-flows:
             message:
               intent:
                 fulfillment:
-                  stops:
-                    - type: START
-                      location:
-                        gps: 12.923608703179461, 77.61462964117527
-                    - type: END
-                      location:
-                        gps: 12.9346302, 77.61533969999999
                   vehicle:
                     category: METRO
-      - summary: Return a metro catalog of fare products
+      - summary: Return a metro catalog of all fulfillments in the city
         api: on_search
         details:
           - description: >-
               Provider plateform sends the catalog of all the service that can
-              be used for transit from position A to position B with estimated
-              fair
+              be used for transit using metro in the city
         reference: if any
-        example: &ref_13
+        example: &ref_8
           summary: >-
-            Return a metro catalog of available fulfillments based on search by
-            city
+            Return a metro catalog of fare products based on station code or gps
+            based search
           value:
             context:
               location:
@@ -3056,6 +3047,7 @@ x-flows:
                           - F2
                     fulfillments:
                       - id: F1
+                        type: TRIP
                         stops:
                           - type: START
                             location:
@@ -3194,6 +3186,7 @@ x-flows:
                         vehicle:
                           category: METRO
                       - id: F2
+                        type: TRIP
                         stops:
                           - type: START
                             location:
@@ -3225,11 +3218,374 @@ x-flows:
                                 value: '0'
                         vehicle:
                           category: METRO
+      - summary: Search for the metro by station code
+        api: search
+        details:
+          - description: >-
+              Users searches over the network to avail the metro mode of
+              transport from one station to another
+        reference: if any
+        example:
+          summary: Search for public  transit via station code and vehicle type
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV11
+              timestamp: '2023-03-23T04:41:16.000Z'
+              bap_id: api.example-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/ondc/metro
+            message:
+              intent:
+                fulfillment:
+                  stops:
+                    - type: START
+                      location:
+                        descriptor:
+                          code: SHAHEED_STHAL
+                    - type: END
+                      location:
+                        descriptor:
+                          code: AZADPUR
+                  vehicle:
+                    category: METRO
+      - summary: >-
+          Return a metro catalog of all metro service form from one station to
+          another
+        api: on_search
+        details:
+          - description: >-
+              Provider plateform sends the catalog of all the service that can
+              be used for transit using metro from station A to station B
+        reference: if any
+        example: &ref_18
+          summary: >-
+            Return a metro catalog of available fulfillments based on search by
+            city
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV11
+              action: on_search
+              version: 2.0.0
+              bpp_id: api.example-bpp.com
+              bap_uri: https://api.example-bap.com/ondc/metro
+              bap_id: api.example-bap.com
+              bpp_uri: https://api.example-bpp.com/ondc/metro
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+              timestamp: '2021-03-23T10:00:40.065Z'
+            message:
+              catalog:
+                descriptor:
+                  name: Transit Solutions
+                  images:
+                    - url: https://transitsolutions.in/logos/logo.ico
+                providers:
+                  - id: P1
+                    descriptor:
+                      name: Delhi Metro Rail Limited
+                      images:
+                        - url: https://delhimetrorail.com/logos/logo.ico
+                    fulfillments:
+                      - id: F1
+                        type: ROUTE
+                        stops:
+                          - type: START
+                            instructions:
+                              name: Stop 1
+                            location:
+                              descriptor:
+                                code: SAMAYPUR_BADLI
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 2
+                            location:
+                              descriptor:
+                                code: ROHINI_SECTOR18,19
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 3
+                            location:
+                              descriptor:
+                                code: HAIDERPUR_BADLI_MOR
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 4
+                            location:
+                              descriptor:
+                                code: JAHANGIRPURI
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 5
+                            location:
+                              descriptor:
+                                code: ADARSH_NAGAR
+                          - type: TRANSIT_STOP
+                            instructions:
+                              name: Stop 6
+                              short_desc: Change for Pink Line
+                            location:
+                              descriptor:
+                                code: AZADPUR
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 7
+                            location:
+                              descriptor:
+                                code: MODEL_TOWN
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 8
+                            location:
+                              descriptor:
+                                code: GTB_NAGAR
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 9
+                            location:
+                              descriptor:
+                                code: VISHWA_VIDYALAYA
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 10
+                            location:
+                              descriptor:
+                                code: VIDHAN_SABHA
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 11
+                            location:
+                              descriptor:
+                                code: CIVIL_LINES
+                          - type: TRANSIT_STOP
+                            instructions:
+                              name: Stop 12
+                              short_desc: Change for Red and Violet Line
+                            location:
+                              descriptor:
+                                code: KASHMERE_GATE
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 13
+                            location:
+                              descriptor:
+                                code: CHANDNI_CHOWK
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 14
+                            location:
+                              descriptor:
+                                code: CHAWRI_BAZAR
+                          - type: TRANSIT_STOP
+                            instructions:
+                              name: Stop 15
+                              short_desc: Change for Airport Express
+                            location:
+                              descriptor:
+                                code: NEW_DELHI
+                          - type: TRANSIT_STOP
+                            instructions:
+                              name: Stop 16
+                              short_desc: Change for Blue Line
+                            location:
+                              descriptor:
+                                code: RAJIV_CHOWK
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 17
+                            location:
+                              descriptor:
+                                code: PATEL_CHOWK
+                          - type: TRANSIT_STOP
+                            instructions:
+                              name: Stop 18
+                              short_desc: Change for Violet Line
+                            location:
+                              descriptor:
+                                code: CENTRAL_SECRETARIAT
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 19
+                            location:
+                              descriptor:
+                                code: UDYOG_BHAWAN
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 20
+                            location:
+                              descriptor:
+                                code: LOK_KALYAN_MARG
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 21
+                            location:
+                              descriptor:
+                                code: JOR_BAGH
+                          - type: TRANSIT_STOP
+                            instructions:
+                              name: Stop 22
+                              short_desc: Change for Pink Line
+                            location:
+                              descriptor:
+                                code: DILLI_HAAT_INA
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 23
+                            location:
+                              descriptor:
+                                code: AIIMS
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 24
+                            location:
+                              descriptor:
+                                code: GREEN_PARK
+                          - type: TRANSIT_STOP
+                            instructions:
+                              name: Stop 25
+                              short_desc: Change for Magenta Line
+                            location:
+                              descriptor:
+                                code: HAUZ_KHAS
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 26
+                            location:
+                              descriptor:
+                                code: MALVIYA_NAGAR
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 27
+                            location:
+                              descriptor:
+                                code: SAKET
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 28
+                            location:
+                              descriptor:
+                                code: QUTAB_MINAR
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 29
+                            location:
+                              descriptor:
+                                code: CHHATARPUR
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 30
+                            location:
+                              descriptor:
+                                code: SULTANPUR
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 31
+                            location:
+                              descriptor:
+                                code: GHITORNI
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 32
+                            location:
+                              descriptor:
+                                code: ARJAN_GARH
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 33
+                            location:
+                              descriptor:
+                                code: GURU_DRONACHARYA
+                          - type: TRANSIT_STOP
+                            instructions:
+                              name: Stop 34
+                              short_desc: Change for Rapid Metro
+                            location:
+                              descriptor:
+                                code: SIKANDERPUR
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 35
+                            location:
+                              descriptor:
+                                code: MG_ROAD
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 36
+                            location:
+                              descriptor:
+                                code: IFFCO_CHOWK
+                          - type: END
+                            instructions:
+                              name: Stop 37
+                            location:
+                              descriptor:
+                                code: HUDA_CITY_CENTRE
+                      - id: F2
+                        type: ROUTE
+                        stops:
+                          - type: START
+                            instructions:
+                              name: Stop 1
+                            location:
+                              descriptor:
+                                code: NEW_DELHI
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 1
+                            location:
+                              descriptor:
+                                code: SHIVAJI_STADIUM
+                          - type: TRANSIT_STOP
+                            instructions:
+                              name: Stop 2
+                              short_desc: Change for Pink Line
+                            location:
+                              descriptor:
+                                code: DHAULA_KUAN
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 3
+                            location:
+                              descriptor:
+                                code: DELHI_AEROCITY
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 4
+                            location:
+                              descriptor:
+                                code: IGI_AIRPORT
+                          - type: TRANSIT_STOP
+                            instructions:
+                              name: Stop 5
+                              short_desc: Change for Blue Line
+                            location:
+                              descriptor:
+                                code: DWARKA_SECTOR_21
+                          - type: END
+                            instructions:
+                              name: Stop 6
+                            location:
+                              descriptor:
+                                code: ECC_CENTRE_DWARKA_SECTOR_25
+                        vehicle:
+                          category: METRO
       - summary: Selection of specific service
         api: select
         details:
           - description: >-
-              The end consumer have to select the specific service and wou;ld
+              The end consumer have to select the specific service and would
               like to have the neccesary details
         reference: if any
         example: &ref_9
@@ -3270,7 +3626,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: &ref_14
+        example: &ref_10
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -3467,7 +3823,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: &ref_10
+        example: &ref_11
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -3511,7 +3867,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: &ref_15
+        example: &ref_12
           summary: Return draft order for transit ticket with settlement details
           value:
             context:
@@ -3729,7 +4085,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmantion as per the terms of order
         reference: if any
-        example: &ref_11
+        example: &ref_13
           summary: Confirm ticket booking
           value:
             context:
@@ -3778,7 +4134,7 @@ x-flows:
               Provider platform confirms the order and provides  details of the
               journey on confirmation
         reference: if any
-        example: &ref_16
+        example: &ref_14
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -4006,7 +4362,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status
         reference: if any
-        example: &ref_12
+        example: &ref_15
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -4034,7 +4390,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: &ref_17
+        example: &ref_16
           summary: Return transit ticket order with status - Journey Completed
           value:
             context:
@@ -4250,6 +4606,126 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_TYPE
                             value: UPI
+  - summary: Metro - GPS Based Flow
+    details:
+      - description: >-
+          The illustraive flow to perform a transaction of the nature where in a
+          buyer would like to book a metro service form location
+          A(gps-cordinates) to localtion B(gps-cordinates) with metro
+    reference: if any
+    steps:
+      - summary: Search for the metro from point A(gps) to point B(gps)
+        api: search
+        details:
+          - description: >-
+              Users searches over the network to avail the metro mode of
+              transport from point A(gps) to point B(gps)
+        reference: if any
+        example: &ref_17
+          summary: Search for a public mode of transit from a specific position
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV11
+              timestamp: '2023-03-23T04:41:16.000Z'
+              bap_id: api.example-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/ondc/metro
+            message:
+              intent:
+                fulfillment:
+                  stops:
+                    - type: START
+                      location:
+                        gps: 12.923608, 77.614629
+                    - type: END
+                      location:
+                        gps: 12.934630, 77.615339
+                  vehicle:
+                    category: METRO
+      - summary: >-
+          Return a metro catalog of all metro service form point A(gps) to point
+          B(gps)
+        api: on_search
+        details:
+          - description: >-
+              Provider plateform sends the catalog of all the service that can
+              be used for transit using metro service form point A(gps) to point
+              B(gps)
+        reference: if any
+        example: *ref_8
+      - summary: Selection of specific service
+        api: select
+        details:
+          - description: >-
+              The end consumer have to select the specific service and would
+              like to have the neccesary details
+        reference: if any
+        example: *ref_9
+      - summary: Provider platform provides the quote for selected service of metro
+        api: on_select
+        details:
+          - description: >-
+              Provider platform responds with the service detailed information
+              and quotes for the specific service that consumer would like to
+              avail
+        reference: if any
+        example: *ref_10
+      - summary: Consumer platform initializes the order
+        api: init
+        details:
+          - description: >-
+              Consumer platform shares the terms of order and initializes the
+              order
+        reference: if any
+        example: *ref_11
+      - summary: Provider platform accepts/appends the terms of orders
+        api: on_init
+        details:
+          - description: >-
+              Provider platform accepts the terms of orders and appends its own
+              terms and responds with the final draft
+        reference: if any
+        example: *ref_12
+      - summary: Consumer confirms the
+        api: confirm
+        details:
+          - description: >-
+              Consumer platform confirms the booking and provides all
+              information required for confirmantion as per the terms of order
+        reference: if any
+        example: *ref_13
+      - summary: Provider platform confirms the order
+        api: on_confirm
+        details:
+          - description: >-
+              Provider platform confirms the order and provides  details of the
+              journey on confirmation
+        reference: if any
+        example: *ref_14
+      - summary: Consumer platform requests for latest status
+        api: status
+        details:
+          - description: >-
+              Consumer platform request the provider platform to provide with
+              latest order status
+        reference: if any
+        example: *ref_15
+      - summary: Provider platform provides latest order status
+        api: on_status
+        details:
+          - description: >-
+              Provider platform provides the updated order status to the
+              consumer
+        reference: if any
+        example: *ref_16
 x-examples:
   metro:
     summary: Metro Use Case Specification
@@ -4270,16 +4746,16 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_8
+          - *ref_17
       select:
         examples:
           - *ref_9
       init:
         examples:
-          - *ref_10
+          - *ref_11
       confirm:
         examples:
-          - *ref_11
+          - *ref_13
       cancel:
         examples:
           - summary: Cancel a transit ticket booking before the cancellation period
@@ -4304,19 +4780,19 @@ x-examples:
                 order_id: 077b248f
       status:
         examples:
-          - *ref_12
+          - *ref_15
       on_search:
         examples:
-          - *ref_13
+          - *ref_18
       on_select:
         examples:
-          - *ref_14
+          - *ref_10
       on_init:
         examples:
-          - *ref_15
+          - *ref_12
       on_confirm:
         examples:
-          - *ref_16
+          - *ref_14
       on_cancel:
         examples:
           - summary: Return cancelled ticket order with cancellation charges
@@ -4536,4 +5012,4 @@ x-examples:
                               value: UPI
       on_status:
         examples:
-          - *ref_17
+          - *ref_16
