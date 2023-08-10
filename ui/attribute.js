@@ -71,9 +71,10 @@ function flattenObject(obj, prefix = "", result = {},requiredAttr) {
     cell1.textContent = prefix;
     cell2.textContent = obj["required"];
     cell3.textContent = obj["usage"];
-    cell4.textContent = obj["type"];
-    cell5.textContent = obj["owner"];
+    cell4.textContent = obj["owner"];
+    cell5.textContent = obj["type"];
     cell6.textContent = obj["description"];
+    
     newRow.appendChild(cell1);
     newRow.appendChild(cell2);
     newRow.appendChild(cell3);
