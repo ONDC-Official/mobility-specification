@@ -24,7 +24,7 @@ async function readBuildFile(branchName) {
     onFirstLoad(build_spec);
   } catch (error) {
     console.log("Error fetching contract", error?.message || error);
-    alert('Something went wrong, Please try again later')
+    //alert('Something went wrong, Please try again later')
   }
 }
 
