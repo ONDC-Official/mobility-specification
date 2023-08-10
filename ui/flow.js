@@ -29,8 +29,12 @@ async function loadSteps(steps) {
       for (const [innerIndex, detail] of details.entries()) {
         var mermaidPane = document.createElement("description-mermaid");
         const { description, mermaid: mermaidGraph } = detail;
-        let removeBacktick = mermaidGraph.replace(/`/g, "");
-        const { svg } = await mermaid.render(`content${index}`, removeBacktick);
+        let svg = ''
+        if(mermaidGraph){
+          let removeBacktick = mermaidGraph?.replace(/`/g, "");
+            svg  = await mermaid.render(`summary${index}`, removeBacktick)?.svg;
+        }
+  
         mermaidPane.innerHTML =
           "<p>" +
           `${innerIndex + 1}) ${description}` +
@@ -42,9 +46,13 @@ async function loadSteps(steps) {
         mermaidDiv.appendChild(mermaidPane);
       }
     }
-    yamlDiv.innerHTML =
-      '<pre class="yaml-content">' +
-      JSON.stringify(step.example.value, null, 2) +
+    // yamlDiv.innerHTML =
+    //   '<pre class="yaml-content">' +
+    //   JSON.stringify(step.example.value, null, 2) +
+    //   "</pre>";
+    yamlDiv.innerHTML = step?.api === "form" ? '<div>'+'<pre class="yaml-content">'+'<xmp>'+step.example.value+'</xmp>'+'</pre>'+'<div class="flow-forms">'+step.example.value+'</div>'+'</div>'
+      :'<pre class="yaml-content">' +
+       JSON.stringify(step.example.value, null, 2) +
       "</pre>";
     content.innerHTML = "<div>" + "<h3>" + step.summary + "</h3>" + "</div>";
 
@@ -87,8 +95,12 @@ async function loadFlow(flowName) {
     for (const [index, detail] of selectedFlow["details"].entries()) {
       var mermaidPane = document.createElement("description-summary");
       const { description, mermaid: mermaidGraph } = detail;
-      let removeBacktick = mermaidGraph.replace(/`/g, "");
-      const { svg } = await mermaid.render(`summary${index}`, removeBacktick);
+      let svg
+      if(mermaidGraph){
+        let removeBacktick = mermaidGraph?.replace(/`/g, "");
+          svg  = await mermaid.render(`summary${index}`, removeBacktick)?.svg;
+      }
+     
       mermaidPane.innerHTML =
         "<p>" + `${index + 1}) ${description}` + "<p>" + "<p>" + svg + "<p>";
 
