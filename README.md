@@ -14,10 +14,10 @@ ONDC mobility specification swagger [link](https://ondc-official.github.io/mobil
 
 ## Earlier Versions
 
-| Version | Release Date | beckn Version                      | Comments                                                                                                                             |
-| ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| v1.0.0  | 14 Jun 2023  | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for on-demand ride hailing use case                                                                   |
-| v1.1.0  | TBD          | mobility - 0.8.2                   | - Added UI for specification visual<br />- Restructured on-demand ride hailing for contribution<br />- Added Ticket Booking use case |
+| Version | Release Date | beckn Version                      | Comments                                                           |
+| ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------ |
+| v1.0.0  | 14 Jun 2023  | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for on-demand ride hailing use case |
+| v2.0.0  | TBD          | core - 1.1.0                       | Metro use case                                                     |
 
 ## Introduction
 

@@ -69,12 +69,12 @@ sudo npm install -g swagger-cli
 
 ```
 cd ./api/components
-npm install
-node ./app.js
+./ondc-build-utility
 ```
 
 - If the command runs successfully, you should see an output like this,
 
 ```
-span
+Created temp.yaml from ./beckn_yaml.yaml
+Temporary file deleted
 ```
