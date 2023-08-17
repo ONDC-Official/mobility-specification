@@ -1,6 +1,11 @@
-summary: Return confirmed order with latest fulfillment details
+summary: Return order with status - Driver at pickup
 value:
   context:
+    location:
+      country:
+        code: IND
+      city:
+        code: std:080
     bpp_uri: https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
     domain: ONDC:TRV10
     timestamp: "2023-03-23T04:48:53Z"
@@ -9,13 +14,8 @@ value:
     transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
     message_id: 8926b747-0362-4fcc-b795-0994a6287700
     version: 2.0.0
-    action: on_confirm
+    action: on_status
     bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
-    location:
-      city:
-        code: std:080
-      country: 
-        code: IND
   message:
     order:
       provider:
@@ -95,14 +95,17 @@ value:
       fulfillments:
         - id: F1
           type: DELIVERY
-          status:
+          state:
+            descriptor:
+              code: DRIVER_AT_PICKUP
+              name: Driver Arrived at Pickup Location
             
           customer:
             person:
               name: Joe Adams
             contact:
               phone: '9876556789'
-          Agent:
+          agent:
             person:
               name: Jason Roy
             contact:
@@ -145,13 +148,17 @@ value:
               code: RIDE_ENROUTE_PICKUP
           reason_required: true
           cancellation_fee:
-            amount: "30"
+           amount: 
+              currency: INR
+              value: "50"
         - fulfillment_state:
             descriptor:
               code: RIDE_ARRIVED_PICKUP
           reason_required: true
           cancellation_fee:
-            amount: "50"
+            amount: 
+              currency: INR
+              value: "50"
         - fulfillment_state:
             descriptor:
               code: RIDE_STARTED
@@ -161,7 +168,7 @@ value:
       payments:
         - id: PA1
           collected_by: BAP
-          status: PAID
+          status: NOT-PAID
           type: PRE-ORDER
           params:
             bank_code: XXXXXXXX

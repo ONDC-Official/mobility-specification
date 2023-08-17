@@ -1,4 +1,4 @@
-summary: Return draft order with payment terms
+summary: Return updated order with updated billing details
 value:
   context:
     bpp_uri: https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
@@ -9,16 +9,16 @@ value:
     transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
     message_id: 8926b747-0362-4fcc-b795-0994a6287700
     version: 2.0.0
-    action: on_init
+    action: on_update
     bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
     location:
-      country:
-        code: IND
       city:
         code: std:080
+      country: 
+        code: IND
   message:
+    update_target: order.billing
     order:
-      id: O1
       provider:
         id: P1
       items:
@@ -96,6 +96,18 @@ value:
       fulfillments:
         - id: F1
           type: DELIVERY
+          #status:
+            
+          customer:
+            person:
+              name: Joe Adams
+            contact:
+              phone: '9876556789'
+          agent:
+            person:
+              name: Jason Roy
+            contact:
+              phone: '9856798567'
           stops:
             - type: START
               location:
@@ -105,6 +117,9 @@ value:
                 gps: 12.971186, 77.586812
           vehicle:
             category: AUTO_RICKSHAW
+            make: Bajaj
+            model: Compact RE
+            registration: KA-01-AD-9876
           tags:
             - descriptor:
                 code: ROUTE_INFO
@@ -151,7 +166,7 @@ value:
       payments:
         - id: PA1
           collected_by: BAP
-          status: NOT-PAID
+          status: PAID
           type: PRE-ORDER
           params:
             bank_code: XXXXXXXX
@@ -172,3 +187,8 @@ value:
                 - descriptor: 
                     code: BUYER_FINDER_FEES_PERCENTAGE
                   value: "1"
+      billing:
+        name: Jane Doe
+        email: jane.doe@example.com
+        phone: +91-9897867564
+
