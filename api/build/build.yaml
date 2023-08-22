@@ -2809,7 +2809,7 @@ x-enum:
               - code: TRANSIT_STOP
                 description: Describes the transit stops of fulfillment
                 reference: <PR/Issue/Discussion Links md format text
-          state:
+          state: &ref_5
             descriptor:
               code:
                 - code: DRIVER_EN_ROUTE
@@ -2904,24 +2904,7 @@ x-enum:
         fulfillments: *ref_1
         payments: *ref_3
         cancellation_terms:
-          fulfillment_state:
-            descriptor:
-              code:
-                - code: RIDE_ASSIGNED
-                  description: Defines fullfilment state for the ride
-                  reference: <PR/Issue/Discussion Links md format text
-                - code: RIDE_ENROUTE_PICKUP
-                  description: Defines fullfilment state of drive enroute pickup
-                  reference: <PR/Issue/Discussion Links md format text
-                - code: RIDE_ARRIVED_PICKUP
-                  description: Defines fullfilment state when ride is arrived
-                  reference: <PR/Issue/Discussion Links md format text
-                - code: RIDE_STARTED
-                  description: Defines fullfilment state when ride is started
-                  reference: <PR/Issue/Discussion Links md format text
-                - code: RIDE_CONFIRMED
-                  description: Defines fullfilment state when ride is confirmed
-                  reference: <PR/Issue/Discussion Links md format text
+          fulfillment_state: *ref_5
   confirm:
     context: *ref_0
     message:
@@ -2946,7 +2929,7 @@ x-tags:
   search:
     message:
       intent:
-        fulfillment: &ref_5
+        fulfillment: &ref_6
           tags:
             - code: TRIP_DETAILS
               description: Details of trips not covered as part of the fulfillment object
@@ -2959,7 +2942,7 @@ x-tags:
                   description: >-
                     count of trips already utilized in reference to the
                     fulfullment
-        payment: &ref_6
+        payment: &ref_7
           tags:
             - code: SETTLEMENT_DETAILS
               description: Settlement details to identify specifics of settlement
@@ -2982,13 +2965,13 @@ x-tags:
     message:
       catalog:
         providers:
-          fulfillments: *ref_5
-          payments: *ref_6
-  select: &ref_7
+          fulfillments: *ref_6
+          payments: *ref_7
+  select: &ref_8
     message:
       order:
-        fulfillments: *ref_5
-        payments: *ref_6
+        fulfillments: *ref_6
+        payments: *ref_7
         items:
           tags:
             - code: FARE_POLICY
@@ -3016,14 +2999,14 @@ x-tags:
                 - code: NIGHT_SHIFT_END_TIME
                   description: describes the night charge
                   reference: <PR/Issue/Discussion Links md format text>
-  on_select: *ref_7
-  init: *ref_7
-  on_init: *ref_7
-  confirm: *ref_7
-  on_confirm: *ref_7
-  on_status: *ref_7
-  on_cancel: *ref_7
-  on_update: *ref_7
+  on_select: *ref_8
+  init: *ref_8
+  on_init: *ref_8
+  confirm: *ref_8
+  on_confirm: *ref_8
+  on_status: *ref_8
+  on_cancel: *ref_8
+  on_update: *ref_8
 x-flows:
   - summary: Metro - Station Code Based Flow
     details:
@@ -3078,7 +3061,7 @@ x-flows:
               Provider plateform sends the catalog of all the service that can
               be used for transit using metro in the city
         reference: if any
-        example: &ref_29
+        example: &ref_30
           summary: >-
             Return a metro catalog of available fulfillments based on search by
             city
@@ -3452,7 +3435,7 @@ x-flows:
               Provider plateform sends the catalog of all the service that can
               be used for transit using metro from station A to station B
         reference: if any
-        example: &ref_8
+        example: &ref_9
           summary: >-
             Return a metro catalog of fare products based on station code or gps
             based search
@@ -3709,7 +3692,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the neccesary details
         reference: if any
-        example: &ref_9
+        example: &ref_10
           summary: >-
             Get a quote for a fare product selected from a public transit
             catalog
@@ -3748,7 +3731,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: &ref_10
+        example: &ref_11
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -3946,7 +3929,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: &ref_11
+        example: &ref_12
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -3998,7 +3981,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: &ref_12
+        example: &ref_13
           summary: Return draft order for transit ticket with settlement details
           value:
             context:
@@ -4229,7 +4212,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmantion as per the terms of order
         reference: if any
-        example: &ref_13
+        example: &ref_14
           summary: Confirm ticket booking
           value:
             context:
@@ -4287,7 +4270,7 @@ x-flows:
               Provider platform confirms the order and provides  details of the
               journey on confirmation
         reference: if any
-        example: &ref_14
+        example: &ref_15
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -4528,7 +4511,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status
         reference: if any
-        example: &ref_15
+        example: &ref_16
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -4557,7 +4540,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: &ref_16
+        example: &ref_17
           summary: Return transit ticket order with status - Journey Completed
           value:
             context:
@@ -4794,7 +4777,7 @@ x-flows:
               Users searches over the network to avail the metro mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_28
+        example: &ref_29
           summary: Search for a public mode of transit from a specific position
           value:
             context:
@@ -4843,7 +4826,7 @@ x-flows:
               be used for transit using metro service form point A(gps) to point
               B(gps)
         reference: if any
-        example: *ref_8
+        example: *ref_9
       - summary: Selection of specific service
         api: select
         details:
@@ -4851,7 +4834,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the neccesary details
         reference: if any
-        example: *ref_9
+        example: *ref_10
       - summary: Provider platform provides the quote for selected service of metro
         api: on_select
         details:
@@ -4860,7 +4843,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: *ref_10
+        example: *ref_11
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -4868,7 +4851,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: *ref_11
+        example: *ref_12
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -4876,7 +4859,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: *ref_12
+        example: *ref_13
       - summary: Consumer confirms the
         api: confirm
         details:
@@ -4884,7 +4867,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmantion as per the terms of order
         reference: if any
-        example: *ref_13
+        example: *ref_14
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -4892,7 +4875,7 @@ x-flows:
               Provider platform confirms the order and provides  details of the
               journey on confirmation
         reference: if any
-        example: *ref_14
+        example: *ref_15
       - summary: Consumer platform requests for latest status
         api: status
         details:
@@ -4900,7 +4883,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status
         reference: if any
-        example: *ref_15
+        example: *ref_16
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -4908,7 +4891,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: *ref_16
+        example: *ref_17
   - summary: On-Demand - Assign driver on on-confrim
     details:
       - description: >-
@@ -4923,7 +4906,7 @@ x-flows:
               Users search over the network to avail a mobility service from
               Location A to Location B (GPS)
         reference: if any
-        example: &ref_17
+        example: &ref_18
           summary: Search for cab services by pickup and drop location
           value:
             context:
@@ -4968,7 +4951,7 @@ x-flows:
               the catalog of all services that can be used for transit from A to
               B, along with estimated fare
         reference: if any
-        example: &ref_18
+        example: &ref_19
           summary: Return a mobility catalog
           value:
             context:
@@ -5137,7 +5120,7 @@ x-flows:
               set to 1, the consumer platform will consider only one on_select
               response for the quotation
         reference: if any
-        example: &ref_19
+        example: &ref_20
           summary: Get quote for a specific product from a mobility catalog
           value:
             context:
@@ -5171,7 +5154,7 @@ x-flows:
               The provider platform responds with detailed information and quote
               for the specific service that the consumer would like to avail
         reference: if any
-        example: &ref_20
+        example: &ref_21
           summary: Return a quote offered by a provider
           value:
             context:
@@ -5302,7 +5285,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: &ref_21
+        example: &ref_22
           summary: Initialize draft order and request for terms of service
           value:
             context:
@@ -5367,7 +5350,7 @@ x-flows:
               Provider platform accepts the terms of order and appends its own
               terms and responds with the final draft
         reference: if any
-        example: &ref_22
+        example: &ref_23
           summary: Return draft order with payment terms
           value:
             context:
@@ -5555,7 +5538,7 @@ x-flows:
               required information for confirmation, as per the terms of the
               order
         reference: if any
-        example: &ref_23
+        example: &ref_24
           summary: Confirm ride booking
           value:
             context:
@@ -5618,7 +5601,7 @@ x-flows:
               Provider platform confirms the order and provides ride details on
               confirmation
         reference: if any
-        example: &ref_26
+        example: &ref_27
           summary: Return confirmed order with latest fulfillment details
           value:
             context:
@@ -5821,7 +5804,7 @@ x-flows:
               Provider platform provides the latest update on ride details to
               the consumer
         reference: if any
-        example: &ref_31
+        example: &ref_32
           summary: Return updated order with payment status
           value:
             context:
@@ -6021,7 +6004,7 @@ x-flows:
               The consumer platform requests the provider platform to provide
               the latest order status
         reference: if any
-        example: &ref_24
+        example: &ref_25
           summary: Get latest fulfillment status of a booking
           value:
             context:
@@ -6051,7 +6034,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: &ref_25
+        example: &ref_26
           summary: Return order with status - Driver at pickup
           value:
             context:
@@ -6261,7 +6244,7 @@ x-flows:
               Users search over the network to avail a mobility service from
               Location A to Location B (GPS)
         reference: if any
-        example: *ref_17
+        example: *ref_18
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -6270,7 +6253,7 @@ x-flows:
               the catalog of all services that can be used for transit from A to
               B, along with estimated fare
         reference: if any
-        example: *ref_18
+        example: *ref_19
       - summary: Selection of a specific service
         api: select
         details:
@@ -6280,7 +6263,7 @@ x-flows:
               set to 1, the consumer platform will consider only one on_select
               response for the quotation
         reference: if any
-        example: *ref_19
+        example: *ref_20
       - summary: Provider platform provides the quote for selected service
         api: on_select
         details:
@@ -6288,7 +6271,7 @@ x-flows:
               The provider platform responds with detailed information and quote
               for the specific service that the consumer would like to avail
         reference: if any
-        example: *ref_20
+        example: *ref_21
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -6296,7 +6279,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: *ref_21
+        example: *ref_22
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -6304,7 +6287,7 @@ x-flows:
               Provider platform accepts the terms of order and appends its own
               terms and responds with the final draft
         reference: if any
-        example: *ref_22
+        example: *ref_23
       - summary: Consumer confirms the ride
         api: confirm
         details:
@@ -6313,7 +6296,7 @@ x-flows:
               required information for confirmation, as per the terms of the
               order
         reference: if any
-        example: *ref_23
+        example: *ref_24
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -6722,7 +6705,7 @@ x-flows:
               The consumer platform requests the provider platform to provide
               the latest order status
         reference: if any
-        example: *ref_24
+        example: *ref_25
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -6730,7 +6713,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: *ref_25
+        example: *ref_26
   - summary: On-Demand - Ride cancel
     details:
       - description: >-
@@ -6746,7 +6729,7 @@ x-flows:
               Users search over the network to avail a mobility service from
               Location A to Location B (GPS)
         reference: if any
-        example: *ref_17
+        example: *ref_18
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -6755,7 +6738,7 @@ x-flows:
               the catalog of all services that can be used for transit from A to
               B, along with estimated fare
         reference: if any
-        example: *ref_18
+        example: *ref_19
       - summary: Selection of a specific service
         api: select
         details:
@@ -6765,7 +6748,7 @@ x-flows:
               set to 1, the consumer platform will consider only one on_select
               response for the quotation
         reference: if any
-        example: *ref_19
+        example: *ref_20
       - summary: Provider platform provides the quote for selected service
         api: on_select
         details:
@@ -6773,7 +6756,7 @@ x-flows:
               The provider platform responds with detailed information and quote
               for the specific service that the consumer would like to avail
         reference: if any
-        example: *ref_20
+        example: *ref_21
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -6781,7 +6764,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: *ref_21
+        example: *ref_22
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -6789,7 +6772,7 @@ x-flows:
               Provider platform accepts the terms of order and appends its own
               terms and responds with the final draft
         reference: if any
-        example: *ref_22
+        example: *ref_23
       - summary: Consumer confirms the ride
         api: confirm
         details:
@@ -6798,7 +6781,7 @@ x-flows:
               required information for confirmation, as per the terms of the
               order
         reference: if any
-        example: *ref_23
+        example: *ref_24
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -6806,13 +6789,13 @@ x-flows:
               Provider platform confirms the order and provides ride details on
               confirmation
         reference: if any
-        example: *ref_26
+        example: *ref_27
       - summary: Consumer platform cancels the request
         api: cancel
         details:
           - description: Consumer platform requests for cancellation of ride
         reference: if any
-        example: &ref_30
+        example: &ref_31
           summary: Cancel a ride with user provided information
           value:
             context:
@@ -6838,7 +6821,7 @@ x-flows:
               cancellation_reason_id: '7'
               descriptor:
                 short_desc: Accidenally booked the ride
-              order_id: '01'
+              order_id: O1
       - summary: Provider platform accepts/appends the terms of cancellation
         api: on_cancel
         details:
@@ -6846,7 +6829,7 @@ x-flows:
               Provider platform accepts the terms of cancel request and provides
               with latest order update
         reference: if any
-        example: &ref_27
+        example: &ref_28
           summary: Return order cancelled by rider with cancellation charges
           value:
             context:
@@ -7045,7 +7028,7 @@ x-flows:
               Provider platform cancels the request and provides with latest
               order update
         reference: if any
-        example: *ref_27
+        example: *ref_28
       - summary: Provider platform returns latest order status
         api: on_status
         details:
@@ -7165,8 +7148,8 @@ x-flows:
                         location:
                           gps: 12.971186, 77.586812
                     vehicle:
-                      category: AUTO_RICKSHAW
-                      make: Bajaj
+                      category: CAB
+                      make: Mahindra
                       model: Compact RE
                       registration: KA-01-AD-9876
                     tags:
@@ -7249,7 +7232,7 @@ x-flows:
               Users search over the network to avail a mobility service from
               Location A to Location B (GPS)
         reference: if any
-        example: *ref_17
+        example: *ref_18
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -7258,7 +7241,7 @@ x-flows:
               the catalog of all services that can be used for transit from A to
               B, along with estimated fare
         reference: if any
-        example: *ref_18
+        example: *ref_19
       - summary: Selection of a specific service
         api: select
         details:
@@ -7496,7 +7479,7 @@ x-flows:
                         location:
                           gps: 12.971186, 77.586812
                     vehicle:
-                      category: AUTO_RICKSHAW
+                      category: CAB
                 payments:
                   - collected_by: BAP
                     status: NOT-PAID
@@ -8178,7 +8161,7 @@ x-flows:
               The consumer platform requests the provider platform to provide
               the latest order status
         reference: if any
-        example: *ref_24
+        example: *ref_25
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -8186,7 +8169,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: *ref_25
+        example: *ref_26
   - summary: On-Demand - Rental Ride
     details:
       - description: >-
@@ -8200,7 +8183,7 @@ x-flows:
               Users search over the network to avail a mobility service from
               Location A for certain duration of time.
         reference: if any
-        example: *ref_17
+        example: *ref_18
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -8209,7 +8192,7 @@ x-flows:
               the catalog of all services including the one which can be used
               for rental purpose
         reference: if any
-        example: *ref_18
+        example: *ref_19
       - summary: Selection of a specific service
         api: select
         details:
@@ -8357,7 +8340,7 @@ x-flows:
                         time:
                           duration: PT2H
                     vehicle:
-                      category: AUTO_RICKSHAW
+                      category: CAB
                     tags:
                       - descriptor:
                           code: ROUTE_INFO
@@ -8552,7 +8535,7 @@ x-flows:
                         time:
                           duration: PT2H
                     vehicle:
-                      category: AUTO_RICKSHAW
+                      category: CAB
                     tags:
                       - descriptor:
                           code: ROUTE_INFO
@@ -9094,7 +9077,7 @@ x-flows:
               The consumer platform requests the provider platform to provide
               the latest order status
         reference: if any
-        example: *ref_24
+        example: *ref_25
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -9223,8 +9206,8 @@ x-flows:
                         time:
                           duration: PT2H
                     vehicle:
-                      category: AUTO_RICKSHAW
-                      make: Bajaj
+                      category: CAB
+                      make: Mahindra
                       model: Compact RE
                       registration: KA-01-AD-9876
                     tags:
@@ -9311,7 +9294,7 @@ x-flows:
               Users search over the network to schedule a rental service from
               Location A for certain duration of time.
         reference: if any
-        example: *ref_17
+        example: *ref_18
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -9320,7 +9303,7 @@ x-flows:
               the catalog of all services including the one which can be used
               for rental purpose
         reference: if any
-        example: *ref_18
+        example: *ref_19
       - summary: Selection of a specific service
         api: select
         details:
@@ -9471,7 +9454,7 @@ x-flows:
                           duration: PT2H
                           timestamp: '2023-08-23T12:00:40.065Z'
                     vehicle:
-                      category: AUTO_RICKSHAW
+                      category: CAB
                     tags:
                       - descriptor:
                           code: ROUTE_INFO
@@ -9668,7 +9651,7 @@ x-flows:
                           duration: PT2H
                           timestamp: '2023-08-23T12:00:40.065Z'
                     vehicle:
-                      category: AUTO_RICKSHAW
+                      category: CAB
                     tags:
                       - descriptor:
                           code: ROUTE_INFO
@@ -10210,7 +10193,7 @@ x-flows:
               The consumer platform requests the provider platform to provide
               the latest order status
         reference: if any
-        example: *ref_24
+        example: *ref_25
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -10340,8 +10323,8 @@ x-flows:
                           duration: PT2H
                           timestamp: '2023-08-23T12:00:40.065Z'
                     vehicle:
-                      category: AUTO_RICKSHAW
-                      make: Bajaj
+                      category: CAB
+                      make: Mahindra
                       model: Compact RE
                       registration: KA-01-AD-9876
                     tags:
@@ -10434,16 +10417,16 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_28
+          - *ref_29
       select:
         examples:
-          - *ref_9
+          - *ref_10
       init:
         examples:
-          - *ref_11
+          - *ref_12
       confirm:
         examples:
-          - *ref_13
+          - *ref_14
       cancel:
         examples:
           - summary: Cancel a transit ticket booking before the cancellation period
@@ -10469,19 +10452,19 @@ x-examples:
                 order_id: 077b248f
       status:
         examples:
-          - *ref_15
+          - *ref_16
       on_search:
         examples:
-          - *ref_29
+          - *ref_30
       on_select:
         examples:
-          - *ref_10
+          - *ref_11
       on_init:
         examples:
-          - *ref_12
+          - *ref_13
       on_confirm:
         examples:
-          - *ref_14
+          - *ref_15
       on_cancel:
         examples:
           - summary: Return cancelled ticket order with cancellation charges
@@ -10690,14 +10673,14 @@ x-examples:
                           value: '0'
       on_status:
         examples:
-          - *ref_16
+          - *ref_17
   on-demand:
     summary: On Demand Use Case Specification
     description: On Demand Use Case Specification
     example_set:
       search:
         examples:
-          - *ref_17
+          - *ref_18
           - summary: >-
               Search for on-schedule cab services by pickup and drop location
               using timestamp
@@ -10740,16 +10723,16 @@ x-examples:
                             value: '1'
       select:
         examples:
-          - *ref_19
+          - *ref_20
       init:
         examples:
-          - *ref_21
+          - *ref_22
       confirm:
         examples:
-          - *ref_23
+          - *ref_24
       status:
         examples:
-          - *ref_24
+          - *ref_25
       track:
         examples:
           - summary: Track an active ride
@@ -10799,8 +10782,8 @@ x-examples:
                 ttl: PT30S
               message:
                 cancellation_reason_id: '5'
-                order_id: '01'
-          - *ref_30
+                order_id: O1
+          - *ref_31
       support:
         examples:
           - summary: Fetch support information related to a particular order
@@ -10827,16 +10810,16 @@ x-examples:
                 ref_id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
       on_search:
         examples:
-          - *ref_18
+          - *ref_19
       on_select:
         examples:
-          - *ref_20
+          - *ref_21
       on_init:
         examples:
-          - *ref_22
+          - *ref_23
       on_confirm:
         examples:
-          - *ref_26
+          - *ref_27
       on_track:
         examples:
           - summary: Return tracking information for an order
@@ -10866,7 +10849,7 @@ x-examples:
                   status: active
       on_cancel:
         examples:
-          - *ref_27
+          - *ref_28
           - summary: Return order cancelled by driver
             value:
               context:
@@ -11050,7 +11033,7 @@ x-examples:
                               value: '1'
       on_update:
         examples:
-          - *ref_31
+          - *ref_32
           - summary: Return updated order with recomputed charges
             value:
               context:
@@ -11417,7 +11400,7 @@ x-examples:
                     phone: +91-9897867564
       on_status:
         examples:
-          - *ref_25
+          - *ref_26
           - summary: >-
               Return order with latest fulfillment status - Driver en-route to
               pickup
@@ -11931,8 +11914,8 @@ x-examples:
                           location:
                             gps: 12.971186, 77.586812
                       vehicle:
-                        category: AUTO_RICKSHAW
-                        make: Bajaj
+                        category: CAB
+                        make: Mahindra
                         model: Compact RE
                         registration: KA-01-AD-9876
                       tags:
@@ -13801,7 +13784,7 @@ x-attributes:
                   required: false
                   type: string
                   owner: BAP
-                  usage: METRO
+                  usage: CAB
                   description: Describes category of a vehicle
             payment:
               tags:
@@ -13840,7 +13823,7 @@ x-attributes:
                 required: true
                 type: string
                 owner: BPP
-                usage: Transit Solutions
+                usage: Mobility Servies BPP
                 description: Physical description of something.
             providers:
               id:
@@ -13889,7 +13872,7 @@ x-attributes:
                       defined by the network policy.
                   location:
                     gps:
-                      required: false
+                      required: true
                       type: string
                       owner: BPP
                       usage: 28.707358, 77.180910
@@ -13899,18 +13882,18 @@ x-attributes:
                     required: false
                     type: string
                     owner: BPP
-                    usage: METRO
+                    usage: CAB
                     description: Describes category of a vehicle
               items:
                 id:
-                  required: false
+                  required: true
                   type: string
                   owner: BPP
                   usage: I1
                   description: ID of the item.
                 descriptor:
                   code:
-                    required: false
+                    required: true
                     type: string
                     owner: BPP
                     usage: Single Journey Ticket
@@ -14299,7 +14282,7 @@ x-attributes:
                   required: false
                   type: string
                   owner: BPP
-                  usage: METRO
+                  usage: CAB
                   description: Describes vehicle category
             fulfillment:
               type:
@@ -15211,7 +15194,3405 @@ x-attributes:
                   required: false
                   type: string
                   owner: BPP
-                  usage: METRO
+                  usage: CAB
+                  description: Describes vehicle category
+                make:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Bajaj
+                  description: Describes vehicle manufacturer
+                model:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: compact-re
+                  description: Describes vehicle model
+                registration:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: HR-20AS-4578
+                  description: Describes vehicle RC
+              customer:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: Jason Roy
+                    description: Name of the customer
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 9898657512
+                    description: Contact number of the customer
+              agent:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: John Doe
+                    description: Name of the agent
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 7845981268
+                    description: Contact number of the agent
+              type:
+                required: false
+                type: string
+                owner: BPP
+                usage: Delivery
+                description: Describes type of fullfilment
+              state:
+                descriptor:
+                  "code\n\n":
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: DRIVER_ENROUTE
+                    description: Physical description of something.
+                  name:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: Driver is on the way
+                    description: Describes the current state
+            quote:
+              price:
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  currency:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  value:
+                    required: true
+                    type: integer
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+            payments:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: PA1
+                description: >-
+                  ID of the payment term that can be referred at an item or an
+                  order level in a catalog
+              collected_by:
+                required: true
+                type: string
+                owner: BPP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: true
+                type: string
+                owner: BPP
+                usage: NOT-PAID
+                description: Payment Status
+              type:
+                required: true
+                type: string
+                owner: BPP
+                usage: PRE-ORDER
+                description: Payment type
+              params:
+                bank_code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                virtual_payment_address:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 9988199772@okicic
+                  description: Virtual payment address associated with payment activity
+              tags:
+                descriptor:
+                  code:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: SETTLEMENT_DETAILS
+                    description: Physical description of something.
+                display:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: false
+                  description: Indicates the display properties of the tag group.
+                list:
+                  descriptor:
+                    code:
+                      required: true
+                      type: string
+                      owner: BPP
+                      usage: SETTLEMENT_TYPE
+                      description: >-
+                        Description of the Tag, can be used to store detailed
+                        information.
+                  value:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: UPI
+                    description: >-
+                      The value of the tag. This set by the BPP and rendered
+                      as-is by the BAP.
+  rental:
+    attribute_set:
+      search:
+        message:
+          intent:
+            fulfillment:
+              stops:
+                type:
+                  required: true
+                  type: string
+                  owner: BAP
+                  usage: START
+                  description: >-
+                    A logical point in space and time during the fulfillment of
+                    an order.
+                location:
+                  gps:
+                    required: true
+                    type: string
+                    owner: BAP
+                    usage: 12.923608, 77.614629
+                    description: Describes a GPS coordinate
+            payment:
+              tags:
+                descriptor:
+                  code:
+                    required: false
+                    type: string
+                    owner: BAP
+                    usage: BUYER_FINDER_FEES
+                    description: Physical description of something.
+                display:
+                  required: false
+                  type: boolean
+                  owner: BAP
+                  usage: false
+                  description: Display tag Items
+                list:
+                  descriptor:
+                    code:
+                      required: false
+                      type: string
+                      owner: BAP
+                      usage: BUYER_FINDER_FEES_PERCENTAGE
+                      description: Physical description of something.
+                  value:
+                    required: false
+                    type: string
+                    owner: BAP
+                    usage: 1
+                    description: Descriptor value
+      on_search:
+        message:
+          catalog:
+            descriptor:
+              name:
+                required: true
+                type: string
+                owner: BPP
+                usage: Mobility Servies BPP
+                description: Physical description of something.
+            providers:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+              locations:
+                id:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: L1
+                  description: Provider Locations this item is available in
+                gps:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 28.707358, 77.180910
+                  description: The GPS co-ordinates of this location.
+              fulfillments:
+                id:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: F1
+                  description: Unique reference ID to the fulfillment of an order
+                type:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: DELIVERY
+                  description: >-
+                    A code that describes the mode of fulfillment. This is
+                    typically set when there are multiple ways an order can be
+                    fulfilled. 
+                stops:
+                  type:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: INTERMEDIATE_STOP
+                    description: >-
+                      The type of stop. Allowed values of this property can be
+                      defined by the network policy.
+                  time:
+                    duration:
+                      required: true
+                      type: string
+                      owner: BPP
+                      usage: PT2H
+                      description: Duration value of the stop.
+                  location:
+                    gps:
+                      required: false
+                      type: string
+                      owner: BPP
+                      usage: 28.707358, 77.180910
+                      description: The GPS co-ordinates of this location.
+                vehicle:
+                  category:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: CAB
+                    description: Describes category of a vehicle
+              items:
+                id:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: I1
+                  description: ID of the item.
+                descriptor:
+                  code:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: RIDE
+                    description: Physical description of something.
+                  name:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: Auto Ride
+                    description: Physical description of something.
+                price:
+                  currency:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  value:
+                    required: false
+                    type: integer
+                    owner: BPP
+                    usage: 60
+                    description: Describes the currency of a product or service
+                  maximum_value:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 176
+                    description: Describes a maximum value in decimal form
+                  minimum_value:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 50
+                    description: Describes a minimum value in decimal form
+                location_ids:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: L1
+                  description: Provider Locations this item is available in
+                fulfillment_ids:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: F1
+                  description: Unique reference ID to the fulfillment of an order
+      select:
+        message:
+          order:
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: 'Human-readable ID of the order. '
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+      on_select:
+        message:
+          order:
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: ID of the item.
+              descriptor:
+                name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Cab Ride
+                  description: Physical description of something.
+                code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: RIDE
+                  description: Physical description of something.
+              price:
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Price of the selected item.
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes a numerical value in decimal form
+                maximum_value:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: 176
+                  description: Describes a maximum value in decimal form
+              location_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: L1
+                description: Provider Locations this item is available in
+              tags:
+                descriptor:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: Daytime charges
+                    description: Physical description of something.
+                  code:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: FARE_POLICY
+                    description: Physical description of something.
+                display:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: true
+                  description: Boolean
+                list:
+                  descriptor:
+                    code:
+                      required: false
+                      type: string
+                      owner: BPP
+                      usage: MIN_FARE
+                      description: Physical description of something.
+                  value:
+                    required: false
+                    type: integer
+                    owner: BPP
+                    usage: 30
+                    description: Price Fair
+              fulfillment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+            fulfillments:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              type:
+                required: false
+                type: string
+                owner: BPP
+                usage: START
+                description: >-
+                  The type of stop. Allowed values of this property can be
+                  defined by the network policy.
+              stops:
+                type:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes a GPS coordinate
+                time:
+                  duration:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: PT2H
+                    description: TIme duration
+              vehicle:
+                category:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+            quote:
+              price:
+                value:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  value:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  currency:
+                    required: true
+                    type: integer
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+              ttl:
+                required: true
+                type: integer
+                owner: BPP
+                usage: P200s
+                description: Time to live in seconds for an instance of this schema
+      init:
+        message:
+          order:
+            id:
+              required: true
+              type: string
+              owner: BPP
+              usage: 1
+              description: 'Human-readable ID of the order. '
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: 'Human-readable ID of the order. '
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+            billing:
+              name:
+                required: true
+                type: string
+                owner: BAP
+                usage: John Doe
+                description: Name of the billable entity
+            payments:
+              collected_by:
+                required: true
+                type: string
+                owner: BAP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: true
+                type: string
+                owner: BAP
+                usage: NOT-PAID
+                description: Payment status
+              type:
+                required: true
+                type: string
+                owner: BAP
+                usage: PRE-ORDER
+                description: Payment Type
+            fulfillments:
+              id:
+                required: false
+                type: string
+                owner: BAP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              customer:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BAP
+                    usage: Jason Roy
+                    description: Name of the customer
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BAP
+                    usage: 9898657512
+                    description: Contact number of the customer
+              stops:
+                type:
+                  required: true
+                  type: string
+                  owner: BAP
+                  usage: INTERMEDIATE_STOP
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: true
+                    type: string
+                    owner: BAP
+                    usage: 28.707358, 77.180910
+                    description: The GPS co-ordinates of this location.
+                time:
+                  duration:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: PT2H
+                    description: TIme duration
+              vehicle:
+                category:
+                  required: false
+                  type: string
+                  owner: BAP
+                  usage: CAB
+                  description: Describes vehicle category
+      on_init:
+        message:
+          order:
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: ID of the item.
+              descriptor:
+                name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Cab Ride
+                  description: Physical description of something.
+                code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: RIDE
+                  description: Physical description of something.
+              price:
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Price of the selected item.
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes a numerical value in decimal form
+                maximum_value:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: 176
+                  description: Describes a maximum value in decimal form
+              location_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: L1
+                description: Provider Locations this item is available in
+              fulfillment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              payment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+            fulfillments:
+              id:
+                required: false
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              stops:
+                type:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes a GPS coordinate
+                time:
+                  duration:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: PT2H
+                    description: Describes the stop duration
+              vehicle:
+                category:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+            fulfillment:
+              type:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+            quote:
+              price:
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  currency:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  value:
+                    required: true
+                    type: integer
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+            payments:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: PA1
+                description: >-
+                  ID of the payment term that can be referred at an item or an
+                  order level in a catalog
+              collected_by:
+                required: true
+                type: string
+                owner: BPP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: true
+                type: string
+                owner: BPP
+                usage: NOT-PAID
+                description: Payment Status
+              type:
+                required: true
+                type: string
+                owner: BPP
+                usage: PRE-ORDER
+                description: Payment type
+              params:
+                bank_code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                virtual_payment_address:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 9988199772@okicic
+                  description: Virtual payment address associated with payment activity
+              tags:
+                descriptor:
+                  code:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: SETTLEMENT_DETAILS
+                    description: Physical description of something.
+                display:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: false
+                  description: >-
+                    Indicates the display properties of the tag group. If
+                    display is set to false, then the group will not be
+                    displayed. If it is set to true, it should be displayed.
+                    However, group-level display properties can be overriden by
+                    individual tag-level display property. As this schema is
+                    purely for catalog display purposes, it is not recommended
+                    to send this value during search.
+                list:
+                  descriptor:
+                    code:
+                      required: true
+                      type: string
+                      owner: BPP
+                      usage: SETTLEMENT_TYPE
+                      description: >-
+                        Description of the Tag, can be used to store detailed
+                        information.
+                  value:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: UPI
+                    description: >-
+                      The value of the tag. This set by the BPP and rendered
+                      as-is by the BAP.
+            cancellation_terms:
+              fulfillment_state:
+                descriptor:
+                  code:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 2
+                    description: Physical description of something.
+                reason_required:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: RIDE_ENROUTE_PICKUP
+                  description: Indicates whether a reason is required to cancel the order
+                cancellation_fee:
+                  percentage:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 2
+                    description: Percentage of a value
+      confirm:
+        message:
+          order:
+            id:
+              required: true
+              type: string
+              owner: BPP
+              usage: 077b248f
+              description: 'Human-readable ID of the order. '
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: 'Human-readable ID of the order. '
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+            billing:
+              name:
+                required: true
+                type: string
+                owner: BAP
+                usage: John Doe
+                description: Name of the billable entity
+            payments:
+              id:
+                required: true
+                type: string
+                owner: BAP
+                usage: PA1
+                description: >-
+                  ID of the payment term that can be referred at an item or an
+                  order level in a catalog
+              collected_by:
+                required: true
+                type: string
+                owner: BAP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: true
+                type: string
+                owner: BAP
+                usage: NOT-PAID
+                description: Payment status
+              type:
+                required: true
+                type: string
+                owner: BAP
+                usage: PRE-ORDER
+                description: Payment Type
+            fulfillments:
+              id:
+                required: false
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              customer:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: Jason Roy
+                    description: Name of the customer
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 9898657512
+                    description: Contact number of the customer
+              stops:
+                type:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes a GPS coordinate
+                time:
+                  duration:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: PT2H
+                    description: Describes the stop duration
+              vehicle:
+                category:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+      on_confirm:
+        message:
+          order:
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: ID of the item.
+              descriptor:
+                name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Cab Ride
+                  description: Physical description of something.
+                code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: RIDE
+                  description: Physical description of something.
+              price:
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Price of the selected item.
+                value:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes a numerical value in decimal form
+                maximum_value:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: 176
+                  description: Describes a maximum value in decimal form
+                minimum_value:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: 50
+                  description: Describes a minimum value in decimal form
+              location_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: L1
+                description: Provider Locations this item is available in
+              fulfillment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              payment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+            fulfillments:
+              id:
+                required: false
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              type:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+              customer:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: Jason Roy
+                    description: Name of the customer
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 9898657512
+                    description: Contact number of the customer
+              agent:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: John Doe
+                    description: Name of the agent
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 7845981268
+                    description: Contact number of the agent
+              stops:
+                type:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INTERMEDIATE_STOP
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 28.707358, 77.180910
+                    description: The GPS co-ordinates of this location.
+                time:
+                  duration:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: PT2H
+                    description: Describes the stop duration
+              vehicle:
+                category:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+                make:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Bajaj
+                  description: Describes vehicle manufacturer
+                model:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: compact-re
+                  description: Describes vehicle model
+                registration:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: HR-20AS-4578
+                  description: Describes vehicle RC
+            quote:
+              price:
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  currency:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  value:
+                    required: true
+                    type: integer
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+              ttl:
+                required: true
+                type: integer
+                owner: BPP
+                usage: P200s
+                description: Time to live in seconds for an instance of this schema
+            payments:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: PA1
+                description: Physical description of something.
+              collected_by:
+                required: true
+                type: string
+                owner: BPP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: true
+                type: string
+                owner: BPP
+                usage: NOT-PAID
+                description: Payment Status
+              type:
+                required: true
+                type: string
+                owner: BPP
+                usage: PRE-ORDER
+                description: Payment type
+              params:
+                bank_code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                virtual_payment_address:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 9988199772@okicic
+                  description: Virtual payment address associated with payment activity
+              tags:
+                descriptor:
+                  code:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: SETTLEMENT_DETAILS
+                    description: Physical description of something.
+                display:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: false
+                  description: Indicates the display properties of the tag group.
+                list:
+                  descriptor:
+                    code:
+                      required: true
+                      type: string
+                      owner: BPP
+                      usage: SETTLEMENT_TYPE
+                      description: >-
+                        Description of the Tag, can be used to store detailed
+                        information.
+                  value:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: UPI
+                    description: >-
+                      The value of the tag. This set by the BPP and rendered
+                      as-is by the BAP.
+            cancellation_terms:
+              fulfillment_state:
+                descriptor:
+                  code:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 2
+                    description: Physical description of something.
+                reason_required:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: RIDE_ENROUTE_PICKUP
+                  description: Indicates whether a reason is required to cancel the order
+                cancellation_fee:
+                  percentage:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 2
+                    description: Percentage of a value
+                  amount:
+                    currency:
+                      required: false
+                      type: string
+                      owner: BPP
+                      usage: INR
+                      description: Describes the currency of a product or service
+                    value:
+                      required: false
+                      type: string
+                      owner: BPP
+                      usage: 30
+                      description: Describes the price of a product or service
+      cancel:
+        message:
+          order_id:
+            required: true
+            type: string
+            owner: BPP
+            usage: 077b248f
+            description: 'Human-readable ID of the order. '
+          cancellation_reason_id:
+            required: true
+            type: string
+            owner: BPP
+            usage: 7
+            description: Reason Id for cancellation
+          descriptor:
+            short_desc:
+              required: false
+              type: string
+              owner: BPP
+              usage: Accidantaly book the ride
+              description: Short description for cancellaion
+      on_cancel:
+        message:
+          order:
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: ID of the item.
+              descriptor:
+                name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Cab Ride
+                  description: Physical description of something.
+                code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: RIDE
+                  description: Physical description of something.
+              fulfillment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              payment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+              descriptor:
+                name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Delhi Metro Rail Limited
+                  description: Physical description of something.
+            fulfillments:
+              id:
+                required: false
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              stops:
+                type:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes a GPS coordinate
+              customer:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: Jason Roy
+                    description: Name of the customer
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 9898657512
+                    description: Contact number of the customer
+              agent:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: John Doe
+                    description: Name of the agent
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 7845981268
+                    description: Contact number of the agent
+              vehicle:
+                category:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+                registration:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: HR-20AS-4578
+                  description: Describes vehicle RC
+              state:
+                descriptor:
+                  code:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: DRIVER_ENROUTE
+                    description: Physical description of something.
+                  name:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: Driver is on the way
+                    description: Describes the current state
+            quote:
+              price:
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  currency:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  value:
+                    required: true
+                    type: integer
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+            payments:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: PA1
+                description: >-
+                  ID of the payment term that can be referred at an item or an
+                  order level in a catalog
+              type:
+                required: true
+                type: string
+                owner: BPP
+                usage: PRE-ORDER
+                description: Payment type
+              params:
+                transaction_status:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Cancelled
+                  description: Describes transaction status of the payment
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes currency value in string form
+                amount:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes a numerical value in decimal form
+                bank_code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                bank_account_name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Raghvinder J
+                  description: Bank account holder name
+              time:
+                duration:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: P1D
+                  description: Describes time transaction duration
+      status:
+        message:
+          order_id:
+            required: true
+            type: string
+            owner: BPP
+            usage: 077b248f
+            description: 'Human-readable ID of the order. '
+      on_status:
+        message:
+          order:
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: ID of the item.
+              descriptor:
+                name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Cab Ride
+                  description: Physical description of something.
+                code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: RIDE
+                  description: Physical description of something.
+              price:
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Price of the selected item.
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes a numerical value in decimal form
+                maximum_value:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: 176
+                  description: Describes a maximum value in decimal form
+              location_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: L1
+                description: Provider Locations this item is available in
+              fulfillment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              payment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+            fulfillments:
+              id:
+                required: false
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              stops:
+                type:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes a GPS coordinate
+              vehicle:
+                category:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+                make:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Bajaj
+                  description: Describes vehicle manufacturer
+                model:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: compact-re
+                  description: Describes vehicle model
+                registration:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: HR-20AS-4578
+                  description: Describes vehicle RC
+              customer:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: Jason Roy
+                    description: Name of the customer
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 9898657512
+                    description: Contact number of the customer
+              agent:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: John Doe
+                    description: Name of the agent
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 7845981268
+                    description: Contact number of the agent
+              type:
+                required: false
+                type: string
+                owner: BPP
+                usage: Delivery
+                description: Describes type of fullfilment
+              state:
+                descriptor:
+                  "code\n\n":
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: DRIVER_ENROUTE
+                    description: Physical description of something.
+                  name:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: Driver is on the way
+                    description: Describes the current state
+            quote:
+              price:
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  currency:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  value:
+                    required: true
+                    type: integer
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+            payments:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: PA1
+                description: >-
+                  ID of the payment term that can be referred at an item or an
+                  order level in a catalog
+              collected_by:
+                required: true
+                type: string
+                owner: BPP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: true
+                type: string
+                owner: BPP
+                usage: NOT-PAID
+                description: Payment Status
+              type:
+                required: true
+                type: string
+                owner: BPP
+                usage: PRE-ORDER
+                description: Payment type
+              params:
+                bank_code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                virtual_payment_address:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 9988199772@okicic
+                  description: Virtual payment address associated with payment activity
+              tags:
+                descriptor:
+                  code:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: SETTLEMENT_DETAILS
+                    description: Physical description of something.
+                display:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: false
+                  description: Indicates the display properties of the tag group.
+                list:
+                  descriptor:
+                    code:
+                      required: true
+                      type: string
+                      owner: BPP
+                      usage: SETTLEMENT_TYPE
+                      description: >-
+                        Description of the Tag, can be used to store detailed
+                        information.
+                  value:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: UPI
+                    description: >-
+                      The value of the tag. This set by the BPP and rendered
+                      as-is by the BAP.
+  schedule:
+    attribute_set:
+      search:
+        message:
+          intent:
+            fulfillment:
+              stops:
+                type:
+                  required: true
+                  type: string
+                  owner: BAP
+                  usage: START
+                  description: >-
+                    A logical point in space and time during the fulfillment of
+                    an order.
+                location:
+                  gps:
+                    required: true
+                    type: string
+                    owner: BAP
+                    usage: 12.923608, 77.614629
+                    description: Describes a GPS coordinate
+            payment:
+              tags:
+                descriptor:
+                  code:
+                    required: false
+                    type: string
+                    owner: BAP
+                    usage: BUYER_FINDER_FEES
+                    description: Physical description of something.
+                display:
+                  required: false
+                  type: boolean
+                  owner: BAP
+                  usage: false
+                  description: Display tag Items
+                list:
+                  descriptor:
+                    code:
+                      required: false
+                      type: string
+                      owner: BAP
+                      usage: BUYER_FINDER_FEES_PERCENTAGE
+                      description: Physical description of something.
+                  value:
+                    required: false
+                    type: string
+                    owner: BAP
+                    usage: 1
+                    description: Descriptor value
+      on_search:
+        message:
+          catalog:
+            descriptor:
+              name:
+                required: true
+                type: string
+                owner: BPP
+                usage: Mobility Servies BPP
+                description: Physical description of something.
+            providers:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+              locations:
+                id:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: L1
+                  description: Provider Locations this item is available in
+                gps:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 28.707358, 77.180910
+                  description: The GPS co-ordinates of this location.
+              fulfillments:
+                id:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: F1
+                  description: Unique reference ID to the fulfillment of an order
+                type:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: DELIVERY
+                  description: >-
+                    A code that describes the mode of fulfillment. This is
+                    typically set when there are multiple ways an order can be
+                    fulfilled. 
+                stops:
+                  type:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: INTERMEDIATE_STOP
+                    description: >-
+                      The type of stop. Allowed values of this property can be
+                      defined by the network policy.
+                  time:
+                    range:
+                      start:
+                        required: true
+                        type: string
+                        owner: BPP
+                        usage: PT2H
+                        description: Duration value of the stop.
+                  location:
+                    gps:
+                      required: false
+                      type: string
+                      owner: BPP
+                      usage: 28.707358, 77.180910
+                      description: The GPS co-ordinates of this location.
+                vehicle:
+                  category:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: CAB
+                    description: Describes category of a vehicle
+              items:
+                id:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: I1
+                  description: ID of the item.
+                descriptor:
+                  code:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: RIDE
+                    description: Physical description of something.
+                  name:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: Auto Ride
+                    description: Physical description of something.
+                price:
+                  currency:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  value:
+                    required: false
+                    type: integer
+                    owner: BPP
+                    usage: 60
+                    description: Describes the currency of a product or service
+                  maximum_value:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 176
+                    description: Describes a maximum value in decimal form
+                  minimum_value:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 50
+                    description: Describes a minimum value in decimal form
+                location_ids:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: L1
+                  description: Provider Locations this item is available in
+                fulfillment_ids:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: F1
+                  description: Unique reference ID to the fulfillment of an order
+      select:
+        message:
+          order:
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: 'Human-readable ID of the order. '
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+      on_select:
+        message:
+          order:
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: ID of the item.
+              descriptor:
+                name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Cab Ride
+                  description: Physical description of something.
+                code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: RIDE
+                  description: Physical description of something.
+              price:
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Price of the selected item.
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes a numerical value in decimal form
+                maximum_value:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: 176
+                  description: Describes a maximum value in decimal form
+              location_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: L1
+                description: Provider Locations this item is available in
+              tags:
+                descriptor:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: Daytime charges
+                    description: Physical description of something.
+                  code:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: FARE_POLICY
+                    description: Physical description of something.
+                display:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: true
+                  description: Boolean
+                list:
+                  descriptor:
+                    code:
+                      required: false
+                      type: string
+                      owner: BPP
+                      usage: MIN_FARE
+                      description: Physical description of something.
+                  value:
+                    required: false
+                    type: integer
+                    owner: BPP
+                    usage: 30
+                    description: Price Fair
+              fulfillment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+            fulfillments:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              type:
+                required: false
+                type: string
+                owner: BPP
+                usage: START
+                description: >-
+                  The type of stop. Allowed values of this property can be
+                  defined by the network policy.
+              stops:
+                type:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes a GPS coordinate
+                time:
+                  range:
+                    start:
+                      required: true
+                      type: string
+                      owner: BPP
+                      usage: PT2H
+                      description: TIme duration
+              vehicle:
+                category:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+            quote:
+              price:
+                value:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  value:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  currency:
+                    required: true
+                    type: integer
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+              ttl:
+                required: true
+                type: integer
+                owner: BPP
+                usage: P200s
+                description: Time to live in seconds for an instance of this schema
+      init:
+        message:
+          order:
+            id:
+              required: true
+              type: string
+              owner: BPP
+              usage: 1
+              description: 'Human-readable ID of the order. '
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: 'Human-readable ID of the order. '
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+            billing:
+              name:
+                required: true
+                type: string
+                owner: BAP
+                usage: John Doe
+                description: Name of the billable entity
+            payments:
+              collected_by:
+                required: true
+                type: string
+                owner: BAP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: true
+                type: string
+                owner: BAP
+                usage: NOT-PAID
+                description: Payment status
+              type:
+                required: true
+                type: string
+                owner: BAP
+                usage: PRE-ORDER
+                description: Payment Type
+            fulfillments:
+              id:
+                required: false
+                type: string
+                owner: BAP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              customer:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BAP
+                    usage: Jason Roy
+                    description: Name of the customer
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BAP
+                    usage: 9898657512
+                    description: Contact number of the customer
+              stops:
+                type:
+                  required: true
+                  type: string
+                  owner: BAP
+                  usage: INTERMEDIATE_STOP
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: true
+                    type: string
+                    owner: BAP
+                    usage: 28.707358, 77.180910
+                    description: The GPS co-ordinates of this location.
+                time:
+                  range:
+                    start:
+                      required: true
+                      type: string
+                      owner: BPP
+                      usage: PT2H
+                      description: TIme duration
+              vehicle:
+                category:
+                  required: false
+                  type: string
+                  owner: BAP
+                  usage: CAB
+                  description: Describes vehicle category
+      on_init:
+        message:
+          order:
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: ID of the item.
+              descriptor:
+                name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Cab Ride
+                  description: Physical description of something.
+                code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: RIDE
+                  description: Physical description of something.
+              price:
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Price of the selected item.
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes a numerical value in decimal form
+                maximum_value:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: 176
+                  description: Describes a maximum value in decimal form
+              location_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: L1
+                description: Provider Locations this item is available in
+              fulfillment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              payment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+            fulfillments:
+              id:
+                required: false
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              stops:
+                type:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes a GPS coordinate
+                time:
+                  range:
+                    start:
+                      required: true
+                      type: string
+                      owner: BPP
+                      usage: PT2H
+                      description: Describes the stop duration
+              vehicle:
+                category:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+            fulfillment:
+              type:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+            quote:
+              price:
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  currency:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  value:
+                    required: true
+                    type: integer
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+            payments:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: PA1
+                description: >-
+                  ID of the payment term that can be referred at an item or an
+                  order level in a catalog
+              collected_by:
+                required: true
+                type: string
+                owner: BPP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: true
+                type: string
+                owner: BPP
+                usage: NOT-PAID
+                description: Payment Status
+              type:
+                required: true
+                type: string
+                owner: BPP
+                usage: PRE-ORDER
+                description: Payment type
+              params:
+                bank_code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                virtual_payment_address:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 9988199772@okicic
+                  description: Virtual payment address associated with payment activity
+              tags:
+                descriptor:
+                  code:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: SETTLEMENT_DETAILS
+                    description: Physical description of something.
+                display:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: false
+                  description: >-
+                    Indicates the display properties of the tag group. If
+                    display is set to false, then the group will not be
+                    displayed. If it is set to true, it should be displayed.
+                    However, group-level display properties can be overriden by
+                    individual tag-level display property. As this schema is
+                    purely for catalog display purposes, it is not recommended
+                    to send this value during search.
+                list:
+                  descriptor:
+                    code:
+                      required: true
+                      type: string
+                      owner: BPP
+                      usage: SETTLEMENT_TYPE
+                      description: >-
+                        Description of the Tag, can be used to store detailed
+                        information.
+                  value:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: UPI
+                    description: >-
+                      The value of the tag. This set by the BPP and rendered
+                      as-is by the BAP.
+            cancellation_terms:
+              fulfillment_state:
+                descriptor:
+                  code:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 2
+                    description: Physical description of something.
+                reason_required:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: RIDE_ENROUTE_PICKUP
+                  description: Indicates whether a reason is required to cancel the order
+                cancellation_fee:
+                  percentage:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 2
+                    description: Percentage of a value
+      confirm:
+        message:
+          order:
+            id:
+              required: true
+              type: string
+              owner: BPP
+              usage: 077b248f
+              description: 'Human-readable ID of the order. '
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: 'Human-readable ID of the order. '
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+            billing:
+              name:
+                required: true
+                type: string
+                owner: BAP
+                usage: John Doe
+                description: Name of the billable entity
+            payments:
+              id:
+                required: true
+                type: string
+                owner: BAP
+                usage: PA1
+                description: >-
+                  ID of the payment term that can be referred at an item or an
+                  order level in a catalog
+              collected_by:
+                required: true
+                type: string
+                owner: BAP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: true
+                type: string
+                owner: BAP
+                usage: NOT-PAID
+                description: Payment status
+              type:
+                required: true
+                type: string
+                owner: BAP
+                usage: PRE-ORDER
+                description: Payment Type
+            fulfillments:
+              id:
+                required: false
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              customer:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: Jason Roy
+                    description: Name of the customer
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 9898657512
+                    description: Contact number of the customer
+              stops:
+                type:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes a GPS coordinate
+                time:
+                  range:
+                    start:
+                      required: true
+                      type: string
+                      owner: BPP
+                      usage: PT2H
+                      description: Describes the stop duration
+              vehicle:
+                category:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+      on_confirm:
+        message:
+          order:
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: ID of the item.
+              descriptor:
+                name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Cab Ride
+                  description: Physical description of something.
+                code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: RIDE
+                  description: Physical description of something.
+              price:
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Price of the selected item.
+                value:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes a numerical value in decimal form
+                maximum_value:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: 176
+                  description: Describes a maximum value in decimal form
+                minimum_value:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: 50
+                  description: Describes a minimum value in decimal form
+              location_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: L1
+                description: Provider Locations this item is available in
+              fulfillment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              payment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+            fulfillments:
+              id:
+                required: false
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              type:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+              customer:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: Jason Roy
+                    description: Name of the customer
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 9898657512
+                    description: Contact number of the customer
+              agent:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: John Doe
+                    description: Name of the agent
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 7845981268
+                    description: Contact number of the agent
+              stops:
+                type:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INTERMEDIATE_STOP
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 28.707358, 77.180910
+                    description: The GPS co-ordinates of this location.
+                time:
+                  range:
+                    start:
+                      required: true
+                      type: string
+                      owner: BPP
+                      usage: PT2H
+                      description: Describes the stop duration
+              vehicle:
+                category:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+                make:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Bajaj
+                  description: Describes vehicle manufacturer
+                model:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: compact-re
+                  description: Describes vehicle model
+                registration:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: HR-20AS-4578
+                  description: Describes vehicle RC
+            quote:
+              price:
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  currency:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  value:
+                    required: true
+                    type: integer
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+              ttl:
+                required: true
+                type: integer
+                owner: BPP
+                usage: P200s
+                description: Time to live in seconds for an instance of this schema
+            payments:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: PA1
+                description: Physical description of something.
+              collected_by:
+                required: true
+                type: string
+                owner: BPP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: true
+                type: string
+                owner: BPP
+                usage: NOT-PAID
+                description: Payment Status
+              type:
+                required: true
+                type: string
+                owner: BPP
+                usage: PRE-ORDER
+                description: Payment type
+              params:
+                bank_code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                virtual_payment_address:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 9988199772@okicic
+                  description: Virtual payment address associated with payment activity
+              tags:
+                descriptor:
+                  code:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: SETTLEMENT_DETAILS
+                    description: Physical description of something.
+                display:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: false
+                  description: Indicates the display properties of the tag group.
+                list:
+                  descriptor:
+                    code:
+                      required: true
+                      type: string
+                      owner: BPP
+                      usage: SETTLEMENT_TYPE
+                      description: >-
+                        Description of the Tag, can be used to store detailed
+                        information.
+                  value:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: UPI
+                    description: >-
+                      The value of the tag. This set by the BPP and rendered
+                      as-is by the BAP.
+            cancellation_terms:
+              fulfillment_state:
+                descriptor:
+                  code:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 2
+                    description: Physical description of something.
+                reason_required:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: RIDE_ENROUTE_PICKUP
+                  description: Indicates whether a reason is required to cancel the order
+                cancellation_fee:
+                  percentage:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 2
+                    description: Percentage of a value
+                  amount:
+                    currency:
+                      required: false
+                      type: string
+                      owner: BPP
+                      usage: INR
+                      description: Describes the currency of a product or service
+                    value:
+                      required: false
+                      type: string
+                      owner: BPP
+                      usage: 30
+                      description: Describes the price of a product or service
+      cancel:
+        message:
+          order_id:
+            required: true
+            type: string
+            owner: BPP
+            usage: 077b248f
+            description: 'Human-readable ID of the order. '
+          cancellation_reason_id:
+            required: true
+            type: string
+            owner: BPP
+            usage: 7
+            description: Reason Id for cancellation
+          descriptor:
+            short_desc:
+              required: false
+              type: string
+              owner: BPP
+              usage: Accidantaly book the ride
+              description: Short description for cancellaion
+      on_cancel:
+        message:
+          order:
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: ID of the item.
+              descriptor:
+                name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Cab Ride
+                  description: Physical description of something.
+                code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: RIDE
+                  description: Physical description of something.
+              fulfillment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              payment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+              descriptor:
+                name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Delhi Metro Rail Limited
+                  description: Physical description of something.
+            fulfillments:
+              id:
+                required: false
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              stops:
+                type:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes a GPS coordinate
+              customer:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: Jason Roy
+                    description: Name of the customer
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 9898657512
+                    description: Contact number of the customer
+              agent:
+                person:
+                  name:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: John Doe
+                    description: Name of the agent
+                contact:
+                  phone:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: 7845981268
+                    description: Contact number of the agent
+              vehicle:
+                category:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+                registration:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: HR-20AS-4578
+                  description: Describes vehicle RC
+              state:
+                descriptor:
+                  code:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: DRIVER_ENROUTE
+                    description: Physical description of something.
+                  name:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: Driver is on the way
+                    description: Describes the current state
+            quote:
+              price:
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  currency:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  value:
+                    required: true
+                    type: integer
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+            payments:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: PA1
+                description: >-
+                  ID of the payment term that can be referred at an item or an
+                  order level in a catalog
+              type:
+                required: true
+                type: string
+                owner: BPP
+                usage: PRE-ORDER
+                description: Payment type
+              params:
+                transaction_status:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Cancelled
+                  description: Describes transaction status of the payment
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes currency value in string form
+                amount:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes a numerical value in decimal form
+                bank_code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                bank_account_name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Raghvinder J
+                  description: Bank account holder name
+              time:
+                duration:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: P1D
+                  description: Describes time transaction duration
+      status:
+        message:
+          order_id:
+            required: true
+            type: string
+            owner: BPP
+            usage: 077b248f
+            description: 'Human-readable ID of the order. '
+      on_status:
+        message:
+          order:
+            items:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: I1
+                description: ID of the item.
+              descriptor:
+                name:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: Cab Ride
+                  description: Physical description of something.
+                code:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: RIDE
+                  description: Physical description of something.
+              price:
+                currency:
+                  required: true
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Price of the selected item.
+                value:
+                  required: true
+                  type: integer
+                  owner: BPP
+                  usage: 60
+                  description: Describes a numerical value in decimal form
+                maximum_value:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: 176
+                  description: Describes a maximum value in decimal form
+              location_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: L1
+                description: Provider Locations this item is available in
+              fulfillment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              payment_ids:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+            provider:
+              id:
+                required: true
+                type: string
+                owner: BPP
+                usage: P1
+                description: Id of the provider
+            fulfillments:
+              id:
+                required: false
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              stops:
+                type:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: false
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes a GPS coordinate
+              vehicle:
+                category:
+                  required: false
+                  type: string
+                  owner: BPP
+                  usage: CAB
                   description: Describes vehicle category
                 make:
                   required: true
