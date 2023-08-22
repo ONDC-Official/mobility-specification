@@ -1,0 +1,83 @@
+summary: On-Demand - Assign driver post on-confrim
+details: 
+  - description: The illustraive flow to perform a transaction of the nature where in a buyer would like to book a mobility service form location A(gps-cordinates) to localtion B(gps-cordinates)
+steps:
+  - summary: Search for ride
+    api: search
+    details: 
+      - description: Users search over the network to avail a mobility service from Location A to Location B (GPS)
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/search/search_0.yaml"
+  - summary: Get a list of all services from Provider Platform 1
+    api: on_search
+    details: 
+      - description: Provider Platform 1, which is a mobility provider platform, sends the catalog of all services that can be used for transit from A to B, along with estimated fare
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_search/on_search_0.yaml" 
+  - summary: Selection of a specific service
+    api: select
+    details: 
+      - description: The end consumer has selected a specific service and would like to obtain a quotation for that service. Since the max_callbacks is set to 1, the consumer platform will consider only one on_select response for the quotation
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/select/select_0.yaml"
+  - summary:  Provider platform provides the quote for selected service
+    api: on_select
+    details: 
+      - description: The provider platform responds with detailed information and quote for the specific service that the consumer would like to avail
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_select/on_select_0.yaml" 
+  - summary: Consumer platform initializes the order
+    api: init
+    details: 
+      - description: Consumer platform shares the terms of order and initializes the order
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/init/init_0.yaml"
+
+  - summary: Provider platform accepts/appends the terms of orders
+    api: on_init
+    details: 
+      - description: Provider platform accepts the terms of order and appends its own terms and responds with the final draft  
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_init/on_init_0.yaml"
+  - summary: Consumer confirms the ride
+    api: confirm
+    details: 
+      - description: The consumer platform confirms the booking and provides all the required information for confirmation, as per the terms of the order
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/confirm/confirm_0.yaml"
+  - summary: Provider platform confirms the order
+    api: on_confirm
+    details: 
+      - description: Provider platform confirms the order.
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_confirm/on_confirm_1.yaml"
+  - summary: Provider platform provides latest update on the order
+    api: on_update
+    details: 
+      - description: Provider platform provides the agent details when assigned.
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_update/on_update_3.yaml"   
+  - summary: Consumer platform requests for latest status
+    api: status
+    details: 
+      - description: The consumer platform requests the provider platform to provide the latest order status
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/status/status_0.yaml"                          
+  - summary: Provider platform provides latest order status 
+    api: on_status
+    details: 
+      - description: Provider platform provides the updated order status to the consumer
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_status/on_status_0.yaml"     
+  
