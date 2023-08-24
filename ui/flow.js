@@ -102,7 +102,7 @@ async function loadFlow(flowName) {
       }
      
       mermaidPane.innerHTML =
-        "<p>" + `${index + 1}) ${description}` + "<p>" + "<p>" + svg + "<p>";
+        "<p>" + `${index + 1}) ${description}` + "<p>" + "<p>" + (svg || '' ) + "<p>";
 
       mermaidDiv.appendChild(mermaidPane);
     }
