@@ -2795,6 +2795,9 @@ x-enum:
               - code: CAB
                 description: CAB Vehicle Type
                 reference: <PR/Issue/Discussion Links md format text
+              - code: BUS
+                description: BUS Vehicle Type
+                reference: <PR/Issue/Discussion Links md format text
           stops:
             type:
               - code: START
@@ -2838,6 +2841,18 @@ x-enum:
     message:
       catalog:
         providers:
+          categories:
+            descriptor:
+              code:
+                - code: SEATER
+                  description: Represents type of bus seats available
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: SLEEPER
+                  description: Represents type of bus seats available
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: SEMI_SLEEPER
+                  description: Represents type of bus seats available
+                  reference: <PR/Issue/Discussion Links md format text
           items: &ref_2
             descriptor:
               code:
@@ -2852,6 +2867,9 @@ x-enum:
                   reference: <PR/Issue/Discussion Links md format text
                 - code: PASS
                   description: Describes the kind of ticket Pass (multiple use ticket)
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: SEAT
+                  description: Describes the kind of ticket seat
                   reference: <PR/Issue/Discussion Links md format text
           fulfillments: *ref_1
           payments: &ref_3
@@ -2999,6 +3017,34 @@ x-tags:
                 - code: NIGHT_SHIFT_END_TIME
                   description: describes the night charge
                   reference: <PR/Issue/Discussion Links md format text>
+            - code: SEAT_GRID
+              description: Seat details to identify specifics of seat
+              reference: <PR/Issue/Discussion Links md format text>
+              list:
+                - code: X
+                  description: describes the x-axis co-ordinate of seat.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: 'Y'
+                  description: describes the y-axis co-ordinate of seat.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: Z
+                  description: describes the z-axis co-ordinate of seat.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: X_SIZE
+                  description: describes the x-axis size of seat.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: Y_SIZE
+                  description: describes the y-axis size of seat.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: NUMBER
+                  description: describes seat number for assigned ticket.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: RESTRICTED_GENDER
+                  description: describes restricted gender for assigned ticket.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: SINGLE_SEAT
+                  description: describes if assigned ticket seat is single or not.
+                  reference: <PR/Issue/Discussion Links md format text>
   on_select: *ref_8
   init: *ref_8
   on_init: *ref_8
@@ -3061,7 +3107,7 @@ x-flows:
               Provider plateform sends the catalog of all the service that can
               be used for transit using metro in the city
         reference: if any
-        example: &ref_30
+        example: &ref_40
           summary: >-
             Return a metro catalog of available fulfillments based on search by
             city
@@ -4777,7 +4823,7 @@ x-flows:
               Users searches over the network to avail the metro mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_29
+        example: &ref_39
           summary: Search for a public mode of transit from a specific position
           value:
             context:
@@ -5810,7 +5856,7 @@ x-flows:
               Provider platform provides the latest update on ride details to
               the consumer
         reference: if any
-        example: &ref_32
+        example: &ref_42
           summary: Return updated order with payment status
           value:
             context:
@@ -6804,7 +6850,7 @@ x-flows:
         details:
           - description: Consumer platform requests for cancellation of ride
         reference: if any
-        example: &ref_31
+        example: &ref_41
           summary: Cancel a ride with user provided information
           value:
             context:
@@ -10424,6 +10470,1697 @@ x-flows:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
+  - summary: InterCity(Bus) - GPS Based Flow
+    details:
+      - description: >-
+          The illustrative flow to perform a transaction of the nature where in
+          a buyer would like to book an intercity service form location
+          A(gps-cordinates) to location B(gps-cordinates) with bus
+    reference: if any
+    steps:
+      - summary: Search for the bus from point A(gps) to point B(gps)
+        api: search
+        details:
+          - description: >-
+              Users searches over the network to avail the intercity bus mode of
+              transport from point A(gps) to point B(gps)
+        reference: if any
+        example: &ref_44
+          summary: Search for all services from given start and end location(gps)
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 1ba2dca2-144d-41a2-add5-2cc65014fa23
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/
+              ttl: PT30S
+            message:
+              intent:
+                fulfillment:
+                  stops:
+                    - type: START
+                      location:
+                        gps: 12.979759, 77.590427
+                      time:
+                        label: DATE_OF_JOURNEY
+                        timestamp: '2023-09-06T00:00:00.000Z'
+                    - type: END
+                      location:
+                        gps: 17.399832, 78.471200
+                  vehicle:
+                    category: BUS
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+      - summary: >-
+          Return an intercity bus catalog of all fulfillments form point A(gps)
+          to point B(gps)
+        api: on_search
+        details:
+          - description: >-
+              Provider platform sends the catalog of all the service that can be
+              used for transit using bus service form point A(gps) to point
+              B(gps)
+        reference: if any
+        example: &ref_29
+          summary: >-
+            Return services available for provided start and end code or gps
+            with journey date
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 1ba2dca2-144d-41a2-add5-2cc65014fa23
+              version: 2.0.0
+              action: on_search
+              ttl: PT30S
+          message:
+            catalog:
+              descriptor:
+                name: ABC Bus Services Solutions
+                images:
+                  - url: https://abc-bus.in/logos/logo.ico
+              providers:
+                - id: P1
+                  descriptor:
+                    name: ABC Operator 1 Bus Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                  categories:
+                    - descriptor:
+                        name: Seater
+                        code: SEATER
+                      id: C1
+                    - descriptor:
+                        name: Sleeper
+                        code: SLEEPER
+                      id: C2
+                    - descriptor:
+                        name: Semi Sleeper
+                        code: SEMI_SLEEPER
+                      id: C3
+                  items:
+                    - id: I1
+                      descriptor:
+                        name: Seater Ticket
+                        code: SEAT
+                      price:
+                        currency: INR
+                        value: '899'
+                      quantity:
+                        available:
+                          count: 1
+                        maximum:
+                          count: 1
+                      fulfillment_ids:
+                        - F1
+                      category_ids:
+                        - C1
+                      tags:
+                        - descriptor:
+                            code: SEAT_GRID
+                          list:
+                            - descriptor:
+                                code: X
+                              value: '0'
+                            - descriptor:
+                                code: 'Y'
+                              value: '0'
+                            - descriptor:
+                                code: Z
+                              value: '0'
+                            - descriptor:
+                                code: X_SIZE
+                              value: '1'
+                            - descriptor:
+                                code: Y_SIZE
+                              value: '1'
+                            - descriptor:
+                                code: NUMBER
+                              value: A1
+                            - descriptor:
+                                code: RESTRICTED_GENDER
+                              value: MALE
+                            - descriptor:
+                                code: SINGLE_SEAT
+                              value: 'TRUE'
+                    - id: I2
+                      descriptor:
+                        name: Sleeper Ticket
+                        code: SEAT
+                      price:
+                        currency: INR
+                        value: '1899'
+                      quantity:
+                        available:
+                          count: 1
+                      fulfillment_ids:
+                        - F1
+                      category_ids:
+                        - C1
+                      tags:
+                        - descriptor:
+                            code: SEAT_GRID
+                          list:
+                            - descriptor:
+                                code: X
+                              value: '0'
+                            - descriptor:
+                                code: 'Y'
+                              value: '0'
+                            - descriptor:
+                                code: Z
+                              value: '1'
+                            - descriptor:
+                                code: X_SIZE
+                              value: '1'
+                            - descriptor:
+                                code: Y_SIZE
+                              value: '2'
+                            - descriptor:
+                                code: NUMBER
+                              value: S1
+                            - descriptor:
+                                code: RESTRICTED_GENDER
+                              value: ANY
+                            - descriptor:
+                                code: SINGLE_SEAT
+                              value: 'TRUE'
+                  fulfillments:
+                    - id: F1
+                      type: TRIP
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: Bangalore
+                              code: std:080
+                        - id: S1
+                          type: PICKUP
+                          location:
+                            descriptor:
+                              name: Agara
+                              code: std:080-pincode:560034
+                            gps: 12.924479, 77.648999
+                          time:
+                            label: DATE_TIME
+                            timestamp: '2023-09-06T06:30:00.000Z'
+                        - id: S2
+                          type: PICKUP
+                          location:
+                            descriptor:
+                              name: Bellandur
+                              code: std:080-pincode:560103
+                            gps: 12.930839, 77.677941
+                          time:
+                            label: DATE_TIME
+                            timestamp: '2023-09-06T06:45:00.000Z'
+                        - type: END
+                          location:
+                            descriptor:
+                              name: Hyderabad
+                              code: std:040
+                        - id: S3
+                          type: DROP
+                          location:
+                            descriptor:
+                              name: Ameerpet
+                              code: std:040-pincode:500016
+                            gps: 17.441586, 78.441581
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T15:10:00.000Z'
+                        - id: S4
+                          type: DROP
+                          location:
+                            descriptor:
+                              name: Central Bus Station
+                              code: std:040-pincode:500012
+                            gps: 17.379024, 78.482443
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T15:30:00.000Z'
+                      vehicle:
+                        category: BUS
+                      tags:
+                        - descriptor:
+                            code: VEHICLE_GRID
+                            display: false
+                          list:
+                            - descriptor:
+                                code: X_MAX
+                              value: '14'
+                            - descriptor:
+                                code: Y_MAX
+                              value: '3'
+                            - descriptor:
+                                code: Z_MAX
+                              value: '1'
+                            - descriptor:
+                                code: X_LOBBY_START
+                              value: '0'
+                            - descriptor:
+                                code: X_LOBBY_SIZE
+                              value: '12'
+                            - descriptor:
+                                code: Y_LOBBY_START
+                              value: '1'
+                            - descriptor:
+                                code: Y_LOBBY_SIZE
+                              value: '1'
+                        - descriptor:
+                            code: VEHICLE_AVAIBALITY
+                            display: false
+                          list:
+                            - descriptor:
+                                code: AVALIABLE_SEATS
+                              value: 20
+                        - descriptor:
+                            code: VEHICLE_AMENITIES
+                          list:
+                            - value: WATER_BOTTLE
+                            - value: WIFI
+                            - value: BLANKET
+                            - value: CCTV
+                    - id: F2
+                      type: TRIP
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: Bangalore
+                              code: std:080
+                            gps: 12.979759, 77.590427
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T20:00:00.000Z'
+                        - type: PICKUP
+                          location:
+                            descriptor:
+                              name: Agara
+                              code: std:080-pincode:560034
+                            gps: 12.924479, 77.648999
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T20:30:00.000Z'
+                        - type: PICKUP
+                          location:
+                            descriptor:
+                              name: Bellandur
+                              code: std:080-pincode:560103
+                            gps: 12.930839, 77.677941
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T20:50:00.000Z'
+                        - type: END
+                          location:
+                            descriptor:
+                              name: Hyderabad
+                              code: std:040
+                            gps: 17.399832, 78.505532
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-07T06:00:00.000Z'
+                        - type: DROP
+                          location:
+                            descriptor:
+                              name: Ameerpet
+                              code: std:040-pincode:500016
+                            gps: 17.441586, 78.441581
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-07T06:10:00.000Z'
+                        - type: DROP
+                          location:
+                            descriptor:
+                              name: Central Bus Station
+                              code: std:040-pincode:500012
+                            gps: 17.379024, 78.482443
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-07T06:30:00.000Z'
+                      vehicle:
+                        category: BUS
+                      tags:
+                        - descriptor:
+                            code: VEHICLE_GRID
+                            display: false
+                          list:
+                            - descriptor:
+                                code: X_MAX
+                              value: '14'
+                            - descriptor:
+                                code: Y_MAX
+                              value: '3'
+                            - descriptor:
+                                code: Z_MAX
+                              value: '1'
+                            - descriptor:
+                                code: X_LOBBY_START
+                              value: '0'
+                            - descriptor:
+                                code: X_LOBBY_SIZE
+                              value: '12'
+                            - descriptor:
+                                code: Y_LOBBY_START
+                              value: '1'
+                            - descriptor:
+                                code: Y_LOBBY_SIZE
+                              value: '1'
+                        - descriptor:
+                            code: VEHICLE_AVAIBALITY
+                            display: false
+                          list:
+                            - descriptor:
+                                code: AVALIABLE_SEATS
+                              value: 22
+                        - descriptor:
+                            code: VEHICLE_AMENITIES
+                          list:
+                            - value: WIFI
+                            - value: BLANKET
+                            - value: CCTV
+      - summary: Selection of a specific service
+        api: select
+        details:
+          - description: >-
+              The end consumer have to select the specific service and would
+              like to have the necesary details
+        reference: if any
+        example: &ref_30
+          summary: Get Quote of a selected seat
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: f05fea5e-ca35-449d-b653-f31b6d94ec33
+              version: 2.0.0
+              action: select
+              ttl: PT30S
+            message:
+              order:
+                items:
+                  - id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                fulfillments:
+                  - id: F1
+                    stops:
+                      - id: S1
+                      - id: S3
+                provider:
+                  id: P1
+      - summary: Provider platform provides the quote for selected service of bus
+        api: on_select
+        details:
+          - description: >-
+              Provider platform responds with the service detailed information
+              and quotes for the specific service that consumer would like to
+              avail
+        reference: if any
+        example: &ref_31
+          summary: Return a quote offered by a intercity bus  service provider
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: f05fea5e-ca35-449d-b653-f31b6d94ec33
+              version: 2.0.0
+              action: on_select
+              ttl: PT30S
+          message:
+            order:
+              items:
+                - id: I1
+                  descriptor:
+                    name: Seater Ticket
+                    code: SEAT
+                  price:
+                    currency: INR
+                    value: '899'
+                  quantity:
+                    selected:
+                      count: 1
+                  fulfillment_ids:
+                    - F1
+                  category_ids:
+                    - C1
+                  tags:
+                    - descriptor:
+                        code: SEAT_GRID
+                      list:
+                        - descriptor:
+                            code: X
+                          value: '0'
+                        - descriptor:
+                            code: 'Y'
+                          value: '0'
+                        - descriptor:
+                            code: Z
+                          value: '0'
+                        - descriptor:
+                            code: X_SIZE
+                          value: '1'
+                        - descriptor:
+                            code: Y_SIZE
+                          value: '1'
+                        - descriptor:
+                            code: NUMBER
+                          value: A1
+                        - descriptor:
+                            code: RESTRICTED_GENDER
+                          value: ANY
+                        - descriptor:
+                            code: SINGLE_SEAT
+                          value: 'TRUE'
+              provider:
+                id: P1
+                descriptor:
+                  name: ABC Operator 1 Bus Services
+                  images:
+                    - url: https://operator1.com/logos/logo.ico
+              fulfillments:
+                - id: F1
+                  type: TRIP
+                  stops:
+                    - id: S1
+                      type: PICKUP
+                      location:
+                        descriptor:
+                          name: Agara
+                          code: std:080-pincode:560034
+                        gps: 12.924479, 77.648999
+                      time:
+                        label: DATE_TIME
+                        timestamp: '2023-09-06T06:30:00.000Z'
+                    - id: S3
+                      type: DROP
+                      location:
+                        descriptor:
+                          name: Ameerpet
+                          code: std:040-pincode:500016
+                        gps: 17.441586, 78.441581
+                      time:
+                        label: DATE_TIME
+                        timestamp: '2023-09-06T15:10:00.000Z'
+                  vehicle:
+                    category: BUS
+              quote:
+                price:
+                  value: '899'
+                  currency: INR
+                breakup:
+                  - title: BASE_FARE
+                    price:
+                      currency: INR
+                      value: '800'
+                  - title: CGST @ 5%
+                    price:
+                      currency: INR
+                      value: '40'
+                  - title: SGST @ 5%
+                    price:
+                      currency: INR
+                      value: '40'
+                  - title: CONVEANCE_FEE
+                    price:
+                      currency: INR
+                      value: '19'
+      - summary: Consumer platform initializes the order
+        api: init
+        details:
+          - description: >-
+              Consumer platform shares the terms of order and initializes the
+              order
+        reference: if any
+        example: &ref_32
+          summary: Initialize the order by providing billing details
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: init
+              ttl: PT30S
+            message:
+              order:
+                items:
+                  - id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                fulfillments:
+                  - id: F1
+                    stops:
+                      - id: S1
+                      - id: S3
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                provider:
+                  id: P1
+                billing:
+                  name: Joe Adams
+                  phone: +91-9988776655
+                  tax_id: GSTIN:22AAAAA0000A1Z5
+                payments:
+                  - collected_by: BAP
+                    status: NOT-PAID
+                    type: PRE-ORDER
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+      - summary: Provider platform accepts/appends the terms of orders
+        api: on_init
+        details:
+          - description: >-
+              Provider platform accepts the terms of orders and appends its own
+              terms and responds with the final draft
+        reference: if any
+        example: &ref_33
+          summary: >-
+            Return draft order for transit ticket with settlement via payment
+            link
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: on_init
+              ttl: PT30S
+            message:
+              order:
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Seater Ticket
+                      code: SEAT
+                    price:
+                      currency: INR
+                      value: '899'
+                    quantity:
+                      selected:
+                        count: 1
+                    fulfillment_ids:
+                      - F1
+                    category_ids:
+                      - C1
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: X_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: Y_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: NUMBER
+                            value: A1
+                          - descriptor:
+                              code: RESTRICTED_GENDER
+                            value: ANY
+                          - descriptor:
+                              code: SINGLE_SEAT
+                            value: 'TRUE'
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator 1 Bus Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - id: S1
+                        type: PICKUP
+                        location:
+                          descriptor:
+                            name: Agara
+                            code: std:080-pincode:560034
+                          gps: 12.924479, 77.648999
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T06:30:00.000Z'
+                      - id: S3
+                        type: DROP
+                        location:
+                          descriptor:
+                            name: Ameerpet
+                            code: std:040-pincode:500016
+                          gps: 17.441586, 78.441581
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T15:10:00.000Z'
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                    vehicle:
+                      category: BUS
+                quote:
+                  price:
+                    value: '899'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      price:
+                        currency: INR
+                        value: '800'
+                    - title: CGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: SGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: CONVEANCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: NOT-PAID
+                    type: PRE-ORDER
+                    params:
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: SETTLEMENT_DETAILS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+      - summary: Consumer confirms the booking and provides details.
+        api: confirm
+        details:
+          - description: >-
+              Consumer platform confirms the booking and provides all
+              information required for confirmation as per the terms of order
+        reference: if any
+        example: &ref_34
+          summary: Confirm ticket booking
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: confirm
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                items:
+                  - id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                fulfillments:
+                  - id: F1
+                    stops:
+                      - id: S1
+                      - id: S3
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                provider:
+                  id: P1
+                billing:
+                  name: Joe Adams
+                  phone: +91-9988776655
+                  tax_id: GSTIN:22AAAAA0000A1Z5
+                payments:
+                  - collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                      currency: INR
+                      amount: '899'
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+      - summary: Provider platform confirms the order
+        api: on_confirm
+        details:
+          - description: >-
+              Provider platform confirms the order and provides details of the
+              journey upon confirmation
+        reference: if any
+        example: &ref_35
+          summary: Return confirmed ticket order with payment confirmation
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: on_confirm
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                status: ACTIVE
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Seater Ticket
+                      code: SEAT
+                    price:
+                      currency: INR
+                      value: '899'
+                    quantity:
+                      selected:
+                        count: 1
+                    fulfillment_ids:
+                      - F1
+                    category_ids:
+                      - C1
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: X_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: Y_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: NUMBER
+                            value: A1
+                          - descriptor:
+                              code: RESTRICTED_GENDER
+                            value: ANY
+                          - descriptor:
+                              code: SINGLE_SEAT
+                            value: 'TRUE'
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator 1 Bus Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - id: S1
+                        type: PICKUP
+                        location:
+                          descriptor:
+                            name: Agara
+                            code: std:080-pincode:560034
+                          gps: 12.924479, 77.648999
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T06:30:00.000Z'
+                        authorization:
+                          type: QR
+                          token: >-
+                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                      - id: S3
+                        type: DROP
+                        location:
+                          descriptor:
+                            name: Ameerpet
+                            code: std:040-pincode:500016
+                          gps: 17.441586, 78.441581
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T15:10:00.000Z'
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                    vehicle:
+                      category: BUS
+                quote:
+                  price:
+                    value: '899'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      price:
+                        currency: INR
+                        value: '800'
+                    - title: CGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: SGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: CONVEANCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                      currency: INR
+                      amount: '899'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: SETTLEMENT_DETAILS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+      - summary: Consumer platform updates the ride details
+        api: update
+        details:
+          - description: >-
+              The consumer platform updates the ride with some certain details
+              he wants to be updated.
+        reference: if any
+        example: &ref_36
+          summary: Update customer details
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: update
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                fulfillments:
+                  - id: F1
+                    customer:
+                      person:
+                        name: Joe Lopez
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+      - summary: Provider platform provides latest update on the order
+        api: on_update
+        details:
+          - description: Provider platform provides the ride details with updated context.
+        reference: if any
+        example: &ref_45
+          summary: Return updated order with customer details
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: on_update
+              ttl: PT30S
+            message:
+              update_target: order.fulfillments
+              order:
+                id: O1
+                status: ACTIVE
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Seater Ticket
+                      code: SEAT
+                    price:
+                      currency: INR
+                      value: '899'
+                    quantity:
+                      selected:
+                        count: 1
+                    fulfillment_ids:
+                      - F1
+                    category_ids:
+                      - C1
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: X_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: Y_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: NUMBER
+                            value: A1
+                          - descriptor:
+                              code: RESTRICTED_GENDER
+                            value: ANY
+                          - descriptor:
+                              code: SINGLE_SEAT
+                            value: 'TRUE'
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator 1 Bus Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - id: S1
+                        type: PICKUP
+                        location:
+                          descriptor:
+                            name: Agara
+                            code: std:080-pincode:560034
+                          gps: 12.924479, 77.648999
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T06:30:00.000Z'
+                        authorization:
+                          type: QR
+                          token: >-
+                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                      - id: S3
+                        type: DROP
+                        location:
+                          descriptor:
+                            name: Ameerpet
+                            code: std:040-pincode:500016
+                          gps: 17.441586, 78.441581
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T15:10:00.000Z'
+                    customer:
+                      person:
+                        name: Joe Lopez
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                    vehicle:
+                      category: BUS
+                quote:
+                  price:
+                    value: '899'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      price:
+                        currency: INR
+                        value: '800'
+                    - title: CGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: SGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: CONVEANCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                      currency: INR
+                      amount: '899'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: SETTLEMENT_DETAILS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+      - summary: Consumer platform requests for latest status
+        api: status
+        details:
+          - description: >-
+              Consumer platform request the provider platform to provide with
+              latest order status
+        reference: if any
+        example: &ref_37
+          summary: Get latest status of a transit ticket booking
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: status
+              ttl: PT30S
+            message:
+              order_id: O1
+      - summary: Provider platform provides latest order status
+        api: on_status
+        details:
+          - description: >-
+              Provider platform provides the updated order status to the
+              consumer
+        reference: if any
+        example: &ref_38
+          summary: Return transit ticket order with status - Journey Completed
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: on_status
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                status: COMPLETE
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Seater Ticket
+                      code: SEAT
+                    price:
+                      currency: INR
+                      value: '899'
+                    quantity:
+                      selected:
+                        count: 1
+                    fulfillment_ids:
+                      - F1
+                    category_ids:
+                      - C1
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: X_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: Y_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: NUMBER
+                            value: A1
+                          - descriptor:
+                              code: RESTRICTED_GENDER
+                            value: ANY
+                          - descriptor:
+                              code: SINGLE_SEAT
+                            value: 'TRUE'
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator 1 Bus Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - id: S1
+                        type: PICKUP
+                        location:
+                          descriptor:
+                            name: Agara
+                            code: std:080-pincode:560034
+                          gps: 12.924479, 77.648999
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T06:30:00.000Z'
+                        authorization:
+                          type: QR
+                          token: >-
+                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                      - id: S3
+                        type: DROP
+                        location:
+                          descriptor:
+                            name: Ameerpet
+                            code: std:040-pincode:500016
+                          gps: 17.441586, 78.441581
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T15:10:00.000Z'
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                    vehicle:
+                      category: BUS
+                quote:
+                  price:
+                    value: '899'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      price:
+                        currency: INR
+                        value: '800'
+                    - title: CGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: SGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: CONVEANCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
+                      currency: INR
+                      amount: '120'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: SETTLEMENT_DETAILS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+  - summary: InterCity(Bus) - Station Code Based Flow
+    details:
+      - description: >-
+          The illustrative flow to perform a transaction of the nature where in
+          a buyer would like to book an intercity service form station A to
+          station B
+    reference: if any
+    steps:
+      - summary: Search for the bus by station code
+        api: search
+        details:
+          - description: >-
+              Users searches over the network to avail the intercity bus mode of
+              transport from one station to another
+        reference: if any
+        example: &ref_43
+          summary: Search for all services from given start and end location(code)
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 1ba2dca2-144d-41a2-add5-2cc65014fa23
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/
+              ttl: PT30S
+            message:
+              intent:
+                fulfillment:
+                  stops:
+                    - type: START
+                      location:
+                        descriptor:
+                          code: std:080
+                      time:
+                        label: DATE_OF_JOURNEY
+                        timestamp: '2023-09-06T00:00:00.000Z'
+                    - type: END
+                      location:
+                        descriptor:
+                          code: std:040
+                  vehicle:
+                    category: BUS
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+      - summary: >-
+          Return an intercity catalog of all bus services from one station to
+          another
+        api: on_search
+        details:
+          - description: >-
+              Provider platform sends the catalog of all the service that can be
+              used for transit using bus from station A to station B
+        reference: if any
+        example: *ref_29
+      - summary: Selection of specific service
+        api: select
+        details:
+          - description: >-
+              The end consumer have to select the specific service and would
+              like to have the necesary details
+        reference: if any
+        example: *ref_30
+      - summary: Provider platform provides the quote for selected service of bus
+        api: on_select
+        details:
+          - description: >-
+              Provider platform responds with the service detailed information
+              and quotes for the specific service that consumer would like to
+              avail
+        reference: if any
+        example: *ref_31
+      - summary: Consumer platform initializes the order
+        api: init
+        details:
+          - description: >-
+              Consumer platform shares the terms of order and initializes the
+              order
+        reference: if any
+        example: *ref_32
+      - summary: Provider platform accepts/appends the terms of orders
+        api: on_init
+        details:
+          - description: >-
+              Provider platform accepts the terms of orders and appends its own
+              terms and responds with the final draft
+        reference: if any
+        example: *ref_33
+      - summary: Consumer confirms the booking and provides details.
+        api: confirm
+        details:
+          - description: >-
+              Consumer platform confirms the booking and provides all
+              information required for confirmation as per the terms of order
+        reference: if any
+        example: *ref_34
+      - summary: Provider platform confirms the order
+        api: on_confirm
+        details:
+          - description: >-
+              Provider platform confirms the order and provides details of the
+              journey upon confirmation
+        reference: if any
+        example: *ref_35
+      - summary: Consumer platform updates the ride details
+        api: update
+        details:
+          - description: >-
+              The consumer platform updates the ride with some certain details
+              he wants to be updated.
+        reference: if any
+        example: *ref_36
+      - summary: Provider platform provides latest update on the order
+        api: on_update
+        details:
+          - description: Provider platform provides the ride details with updated context.
+        reference: if any
+        example: &ref_46
+          summary: Return updated order with agent details
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: on_update
+              ttl: PT30S
+            message:
+              update_target: order.fulfillments
+              order:
+                id: O1
+                status: ACTIVE
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Seater Ticket
+                      code: SEAT
+                    price:
+                      currency: INR
+                      value: '899'
+                    quantity:
+                      selected:
+                        count: 1
+                    fulfillment_ids:
+                      - F1
+                    category_ids:
+                      - C1
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: X_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: Y_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: NUMBER
+                            value: A1
+                          - descriptor:
+                              code: RESTRICTED_GENDER
+                            value: ANY
+                          - descriptor:
+                              code: SINGLE_SEAT
+                            value: 'TRUE'
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator 1 Bus Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - id: S1
+                        type: PICKUP
+                        location:
+                          descriptor:
+                            name: Agara
+                            code: std:080-pincode:560034
+                          gps: 12.924479, 77.648999
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T06:30:00.000Z'
+                        authorization:
+                          type: QR
+                          token: >-
+                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                      - id: S3
+                        type: DROP
+                        location:
+                          descriptor:
+                            name: Ameerpet
+                            code: std:040-pincode:500016
+                          gps: 17.441586, 78.441581
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T15:10:00.000Z'
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                    agent:
+                      person:
+                        name: Jason Roy
+                      contact:
+                        phone: '9856798567'
+                    vehicle:
+                      category: BUS
+                quote:
+                  price:
+                    value: '899'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      price:
+                        currency: INR
+                        value: '800'
+                    - title: CGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: SGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: CONVEANCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                      currency: INR
+                      amount: '899'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: SETTLEMENT_DETAILS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+      - summary: Consumer platform requests for latest status
+        api: status
+        details:
+          - description: >-
+              Consumer platform request the provider platform to provide with
+              latest order status
+        reference: if any
+        example: *ref_37
+      - summary: Provider platform provides latest order status
+        api: on_status
+        details:
+          - description: >-
+              Provider platform provides the updated order status to the
+              consumer
+        reference: if any
+        example: *ref_38
 x-examples:
   metro:
     summary: Metro Use Case Specification
@@ -10444,7 +12181,7 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_29
+          - *ref_39
       select:
         examples:
           - *ref_10
@@ -10482,7 +12219,7 @@ x-examples:
           - *ref_16
       on_search:
         examples:
-          - *ref_30
+          - *ref_40
       on_select:
         examples:
           - *ref_11
@@ -10810,7 +12547,7 @@ x-examples:
               message:
                 cancellation_reason_id: '5'
                 order_id: O1
-          - *ref_31
+          - *ref_41
       support:
         examples:
           - summary: Fetch support information related to a particular order
@@ -11060,7 +12797,7 @@ x-examples:
                               value: '1'
       on_update:
         examples:
-          - *ref_32
+          - *ref_42
           - summary: Return updated order with recomputed charges
             value:
               context:
@@ -12068,6 +13805,227 @@ x-examples:
                   phone: '+918068870525'
                   email: support@nammayatri.in
                   url: https://support.nammayatri.com/gethelp
+  intercity-bus:
+    summary: Intercity Bus Use Case Specification
+    description: Intercity Bus Use Case Specification
+    example_set:
+      search:
+        examples:
+          - summary: Search for all services form the given start location(code)
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                domain: ONDC:TRV13
+                timestamp: '2023-09-03T01:55:08.143Z'
+                bap_id: https://example-bap.com
+                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                message_id: 7a95183e-6812-431e-9bfc-e09e392d3adc
+                version: 2.0.0
+                action: search
+                bap_uri: https://api.example-bap.com/
+                ttl: PT30S
+              message:
+                intent:
+                  fulfillment:
+                    stops:
+                      - type: START
+                        location:
+                          descriptor:
+                            code: std:080
+                    vehicle:
+                      category: BUS
+                  payment:
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+          - *ref_43
+          - summary: Search for all services from given start and end location(gps)
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                domain: ONDC:TRV13
+                timestamp: '2023-09-03T01:55:08.143Z'
+                bap_id: https://example-bap.com
+                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                message_id: 7a95183e-6812-431e-9bfc-e09e392d3adc
+                version: 2.0.0
+                action: search
+                bap_uri: https://api.example-bap.com/
+                ttl: PT30S
+              message:
+                intent:
+                  fulfillment:
+                    stops:
+                      - type: START
+                        location:
+                          gps: 12.979759, 77.590427
+                    vehicle:
+                      category: BUS
+                  payment:
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+          - *ref_44
+      select:
+        examples:
+          - *ref_30
+      init:
+        examples:
+          - *ref_32
+      confirm:
+        examples:
+          - *ref_34
+      status:
+        examples:
+          - *ref_37
+      update:
+        examples:
+          - *ref_36
+      on_search:
+        examples:
+          - summary: Return services available for provided start code or gps
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                domain: ONDC:TRV13
+                timestamp: '2023-09-03T01:55:08.143Z'
+                bap_id: https://example-bap.com
+                bap_uri: https://api.example-bap.com
+                bpp_id: https://example-bpp.com
+                bpp_uri: https://api.example-bpp.com/
+                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                message_id: 7a95183e-6812-431e-9bfc-e09e392d3adc
+                version: 2.0.0
+                action: on_search
+                ttl: PT30S
+            message:
+              catalog:
+                descriptor:
+                  name: ABC Bus Services Solutions
+                  images:
+                    - url: https://abc-bus.in/logos/logo.ico
+                providers:
+                  - id: P1
+                    descriptor:
+                      name: ABC Operator 1 Bus Services
+                      images:
+                        - url: https://operator1.com/logos/logo.ico
+                    fulfillments:
+                      - id: F1
+                        type: TRIP
+                        stops:
+                          - type: START
+                            location:
+                              descriptor:
+                                name: Bangalore
+                                code: std:080
+                              gps: 12.979759, 77.590427
+                          - type: PICKUP
+                            location:
+                              descriptor:
+                                name: Agara
+                                code: std:080-pincode:560034
+                              gps: 12.924479, 77.648999
+                          - type: PICKUP
+                            location:
+                              descriptor:
+                                name: Bellandur
+                                code: std:080-pincode:560103
+                              gps: 12.930839, 77.677941
+                          - type: END
+                            location:
+                              descriptor:
+                                name: Hyderabad
+                                code: std:040
+                              gps: 17.399832, 78.505532
+                          - type: DROP
+                            location:
+                              descriptor:
+                                name: Ameerpet
+                                code: std:040-pincode:500016
+                              gps: 17.441586, 78.441581
+                          - type: DROP
+                            location:
+                              descriptor:
+                                name: Central Bus Station
+                                code: std:040-pincode:500012
+                              gps: 17.379024, 78.482443
+                        vehicle:
+                          category: BUS
+                      - id: F2
+                        type: TRIP
+                        stops:
+                          - type: START
+                            location:
+                              descriptor:
+                                name: Bangalore
+                                code: std:080
+                              gps: 12.979759, 77.590427
+                          - type: PICKUP
+                            location:
+                              descriptor:
+                                name: Agara
+                                code: std:080-pincode:560034
+                              gps: 12.924479, 77.648999
+                          - type: PICKUP
+                            location:
+                              descriptor:
+                                name: Bellandur
+                                code: std:080-pincode:560103
+                              gps: 12.930839, 77.677941
+                          - type: END
+                            location:
+                              descriptor:
+                                name: CHENNAI
+                                code: std:040
+                              gps: 17.399832, 78.505532
+                          - type: DROP
+                            location:
+                              descriptor:
+                                name: Ameerpet
+                                code: std:040-pincode:500016
+                              gps: 17.441586, 78.441581
+                          - type: DROP
+                            location:
+                              descriptor:
+                                name: Central Bus Station
+                                code: std:040-pincode:500012
+                              gps: 17.379024, 78.482443
+                        vehicle:
+                          category: BUS
+          - *ref_29
+      on_select:
+        examples:
+          - *ref_31
+      on_init:
+        examples:
+          - *ref_33
+      on_confirm:
+        examples:
+          - *ref_35
+      on_status:
+        examples:
+          - *ref_38
+      on_update:
+        examples:
+          - *ref_45
+          - *ref_46
 x-attributes:
   metro:
     attribute_set:
