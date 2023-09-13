@@ -3107,7 +3107,7 @@ x-flows:
               Provider plateform sends the catalog of all the service that can
               be used for transit using metro in the city
         reference: if any
-        example: &ref_40
+        example: &ref_41
           summary: >-
             Return a metro catalog of available fulfillments based on search by
             city
@@ -4823,7 +4823,7 @@ x-flows:
               Users searches over the network to avail the metro mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_39
+        example: &ref_40
           summary: Search for a public mode of transit from a specific position
           value:
             context:
@@ -5856,7 +5856,7 @@ x-flows:
               Provider platform provides the latest update on ride details to
               the consumer
         reference: if any
-        example: &ref_42
+        example: &ref_43
           summary: Return updated order with payment status
           value:
             context:
@@ -6850,7 +6850,7 @@ x-flows:
         details:
           - description: Consumer platform requests for cancellation of ride
         reference: if any
-        example: &ref_41
+        example: &ref_42
           summary: Cancel a ride with user provided information
           value:
             context:
@@ -10478,6 +10478,167 @@ x-flows:
           A(gps-cordinates) to location B(gps-cordinates) with bus
     reference: if any
     steps:
+      - summary: Search for intercity bus
+        api: search
+        details:
+          - description: >-
+              Users searches over the network to avail the intercity bus mode of
+              transport based on gps
+        reference: if any
+        example: &ref_46
+          summary: Search for all services from given start and end location(gps)
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 7a95183e-6812-431e-9bfc-e09e392d3adc
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/
+              ttl: PT30S
+            message:
+              intent:
+                fulfillment:
+                  stops:
+                    - type: START
+                      location:
+                        gps: 12.979759, 77.590427
+                  vehicle:
+                    category: BUS
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+      - summary: Return an intercity bus catalog of all fulfillments
+        api: on_search
+        details:
+          - description: >-
+              Provider platform sends the catalog of all the service that can be
+              used for transit using bus service based on gps
+        reference: if any
+        example: &ref_29
+          summary: Return services available for provided start code or gps
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 7a95183e-6812-431e-9bfc-e09e392d3adc
+              version: 2.0.0
+              action: on_search
+              ttl: PT30S
+            message:
+              catalog:
+                descriptor:
+                  name: ABC Bus Services Solutions
+                  images:
+                    - url: https://abc-bus.in/logos/logo.ico
+                providers:
+                  - id: P1
+                    descriptor:
+                      name: ABC Operator 1 Bus Services
+                      images:
+                        - url: https://operator1.com/logos/logo.ico
+                    fulfillments:
+                      - id: F1
+                        type: TRIP
+                        stops:
+                          - type: START
+                            location:
+                              descriptor:
+                                name: Bangalore
+                                code: std:080
+                              gps: 12.979759, 77.590427
+                          - type: PICKUP
+                            location:
+                              descriptor:
+                                name: Agara
+                                code: std:080-pincode:560034
+                              gps: 12.924479, 77.648999
+                          - type: PICKUP
+                            location:
+                              descriptor:
+                                name: Bellandur
+                                code: std:080-pincode:560103
+                              gps: 12.930839, 77.677941
+                          - type: END
+                            location:
+                              descriptor:
+                                name: Hyderabad
+                                code: std:040
+                              gps: 17.399832, 78.505532
+                          - type: DROP
+                            location:
+                              descriptor:
+                                name: Ameerpet
+                                code: std:040-pincode:500016
+                              gps: 17.441586, 78.441581
+                          - type: DROP
+                            location:
+                              descriptor:
+                                name: Central Bus Station
+                                code: std:040-pincode:500012
+                              gps: 17.379024, 78.482443
+                        vehicle:
+                          category: BUS
+                      - id: F2
+                        type: TRIP
+                        stops:
+                          - type: START
+                            location:
+                              descriptor:
+                                name: Bangalore
+                                code: std:080
+                              gps: 12.979759, 77.590427
+                          - type: PICKUP
+                            location:
+                              descriptor:
+                                name: Agara
+                                code: std:080-pincode:560034
+                              gps: 12.924479, 77.648999
+                          - type: PICKUP
+                            location:
+                              descriptor:
+                                name: Bellandur
+                                code: std:080-pincode:560103
+                              gps: 12.930839, 77.677941
+                          - type: END
+                            location:
+                              descriptor:
+                                name: CHENNAI
+                                code: std:040
+                              gps: 17.399832, 78.505532
+                          - type: DROP
+                            location:
+                              descriptor:
+                                name: Ameerpet
+                                code: std:040-pincode:500016
+                              gps: 17.441586, 78.441581
+                          - type: DROP
+                            location:
+                              descriptor:
+                                name: Central Bus Station
+                                code: std:040-pincode:500012
+                              gps: 17.379024, 78.482443
+                        vehicle:
+                          category: BUS
       - summary: Search for the bus from point A(gps) to point B(gps)
         api: search
         details:
@@ -10485,7 +10646,7 @@ x-flows:
               Users searches over the network to avail the intercity bus mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_44
+        example: &ref_47
           summary: Search for all services from given start and end location(gps)
           value:
             context:
@@ -10535,7 +10696,7 @@ x-flows:
               used for transit using bus service form point A(gps) to point
               B(gps)
         reference: if any
-        example: &ref_29
+        example: &ref_30
           summary: >-
             Return services available for provided start and end code or gps
             with journey date
@@ -10555,312 +10716,312 @@ x-flows:
               version: 2.0.0
               action: on_search
               ttl: PT30S
-          message:
-            catalog:
-              descriptor:
-                name: ABC Bus Services Solutions
-                images:
-                  - url: https://abc-bus.in/logos/logo.ico
-              providers:
-                - id: P1
-                  descriptor:
-                    name: ABC Operator 1 Bus Services
-                    images:
-                      - url: https://operator1.com/logos/logo.ico
-                  categories:
-                    - descriptor:
-                        name: Seater
-                        code: SEATER
-                      id: C1
-                    - descriptor:
-                        name: Sleeper
-                        code: SLEEPER
-                      id: C2
-                    - descriptor:
-                        name: Semi Sleeper
-                        code: SEMI_SLEEPER
-                      id: C3
-                  items:
-                    - id: I1
-                      descriptor:
-                        name: Seater Ticket
-                        code: SEAT
-                      price:
-                        currency: INR
-                        value: '899'
-                      quantity:
-                        available:
-                          count: 1
-                        maximum:
-                          count: 1
-                      fulfillment_ids:
-                        - F1
-                      category_ids:
-                        - C1
-                      tags:
-                        - descriptor:
-                            code: SEAT_GRID
-                          list:
-                            - descriptor:
-                                code: X
-                              value: '0'
-                            - descriptor:
-                                code: 'Y'
-                              value: '0'
-                            - descriptor:
-                                code: Z
-                              value: '0'
-                            - descriptor:
-                                code: X_SIZE
-                              value: '1'
-                            - descriptor:
-                                code: Y_SIZE
-                              value: '1'
-                            - descriptor:
-                                code: NUMBER
-                              value: A1
-                            - descriptor:
-                                code: RESTRICTED_GENDER
-                              value: MALE
-                            - descriptor:
-                                code: SINGLE_SEAT
-                              value: 'TRUE'
-                    - id: I2
-                      descriptor:
-                        name: Sleeper Ticket
-                        code: SEAT
-                      price:
-                        currency: INR
-                        value: '1899'
-                      quantity:
-                        available:
-                          count: 1
-                      fulfillment_ids:
-                        - F1
-                      category_ids:
-                        - C1
-                      tags:
-                        - descriptor:
-                            code: SEAT_GRID
-                          list:
-                            - descriptor:
-                                code: X
-                              value: '0'
-                            - descriptor:
-                                code: 'Y'
-                              value: '0'
-                            - descriptor:
-                                code: Z
-                              value: '1'
-                            - descriptor:
-                                code: X_SIZE
-                              value: '1'
-                            - descriptor:
-                                code: Y_SIZE
-                              value: '2'
-                            - descriptor:
-                                code: NUMBER
-                              value: S1
-                            - descriptor:
-                                code: RESTRICTED_GENDER
-                              value: ANY
-                            - descriptor:
-                                code: SINGLE_SEAT
-                              value: 'TRUE'
-                  fulfillments:
-                    - id: F1
-                      type: TRIP
-                      stops:
-                        - type: START
-                          location:
-                            descriptor:
-                              name: Bangalore
-                              code: std:080
-                        - id: S1
-                          type: PICKUP
-                          location:
-                            descriptor:
-                              name: Agara
-                              code: std:080-pincode:560034
-                            gps: 12.924479, 77.648999
-                          time:
-                            label: DATE_TIME
-                            timestamp: '2023-09-06T06:30:00.000Z'
-                        - id: S2
-                          type: PICKUP
-                          location:
-                            descriptor:
-                              name: Bellandur
-                              code: std:080-pincode:560103
-                            gps: 12.930839, 77.677941
-                          time:
-                            label: DATE_TIME
-                            timestamp: '2023-09-06T06:45:00.000Z'
-                        - type: END
-                          location:
-                            descriptor:
-                              name: Hyderabad
-                              code: std:040
-                        - id: S3
-                          type: DROP
-                          location:
-                            descriptor:
-                              name: Ameerpet
-                              code: std:040-pincode:500016
-                            gps: 17.441586, 78.441581
+            message:
+              catalog:
+                descriptor:
+                  name: ABC Bus Services Solutions
+                  images:
+                    - url: https://abc-bus.in/logos/logo.ico
+                providers:
+                  - id: P1
+                    descriptor:
+                      name: ABC Operator 1 Bus Services
+                      images:
+                        - url: https://operator1.com/logos/logo.ico
+                    categories:
+                      - descriptor:
+                          name: Seater
+                          code: SEATER
+                        id: C1
+                      - descriptor:
+                          name: Sleeper
+                          code: SLEEPER
+                        id: C2
+                      - descriptor:
+                          name: Semi Sleeper
+                          code: SEMI_SLEEPER
+                        id: C3
+                    items:
+                      - id: I1
+                        descriptor:
+                          name: Seater Ticket
+                          code: SEAT
+                        price:
+                          currency: INR
+                          value: '899'
+                        quantity:
+                          available:
+                            count: 1
+                          maximum:
+                            count: 1
+                        fulfillment_ids:
+                          - F1
+                        category_ids:
+                          - C1
+                        tags:
+                          - descriptor:
+                              code: SEAT_GRID
+                            list:
+                              - descriptor:
+                                  code: X
+                                value: '0'
+                              - descriptor:
+                                  code: 'Y'
+                                value: '0'
+                              - descriptor:
+                                  code: Z
+                                value: '0'
+                              - descriptor:
+                                  code: X_SIZE
+                                value: '1'
+                              - descriptor:
+                                  code: Y_SIZE
+                                value: '1'
+                              - descriptor:
+                                  code: NUMBER
+                                value: A1
+                              - descriptor:
+                                  code: RESTRICTED_GENDER
+                                value: MALE
+                              - descriptor:
+                                  code: SINGLE_SEAT
+                                value: 'TRUE'
+                      - id: I2
+                        descriptor:
+                          name: Sleeper Ticket
+                          code: SEAT
+                        price:
+                          currency: INR
+                          value: '1899'
+                        quantity:
+                          available:
+                            count: 1
+                        fulfillment_ids:
+                          - F1
+                        category_ids:
+                          - C1
+                        tags:
+                          - descriptor:
+                              code: SEAT_GRID
+                            list:
+                              - descriptor:
+                                  code: X
+                                value: '0'
+                              - descriptor:
+                                  code: 'Y'
+                                value: '0'
+                              - descriptor:
+                                  code: Z
+                                value: '1'
+                              - descriptor:
+                                  code: X_SIZE
+                                value: '1'
+                              - descriptor:
+                                  code: Y_SIZE
+                                value: '2'
+                              - descriptor:
+                                  code: NUMBER
+                                value: S1
+                              - descriptor:
+                                  code: RESTRICTED_GENDER
+                                value: ANY
+                              - descriptor:
+                                  code: SINGLE_SEAT
+                                value: 'TRUE'
+                    fulfillments:
+                      - id: F1
+                        type: TRIP
+                        stops:
+                          - type: START
+                            location:
+                              descriptor:
+                                name: Bangalore
+                                code: std:080
+                          - id: S1
+                            type: PICKUP
+                            location:
+                              descriptor:
+                                name: Agara
+                                code: std:080-pincode:560034
+                              gps: 12.924479, 77.648999
                             time:
                               label: DATE_TIME
-                              timestamp: '2023-09-06T15:10:00.000Z'
-                        - id: S4
-                          type: DROP
-                          location:
-                            descriptor:
-                              name: Central Bus Station
-                              code: std:040-pincode:500012
-                            gps: 17.379024, 78.482443
+                              timestamp: '2023-09-06T06:30:00.000Z'
+                          - id: S2
+                            type: PICKUP
+                            location:
+                              descriptor:
+                                name: Bellandur
+                                code: std:080-pincode:560103
+                              gps: 12.930839, 77.677941
                             time:
                               label: DATE_TIME
-                              timestamp: '2023-09-06T15:30:00.000Z'
-                      vehicle:
-                        category: BUS
-                      tags:
-                        - descriptor:
-                            code: VEHICLE_GRID
-                            display: false
-                          list:
-                            - descriptor:
-                                code: X_MAX
-                              value: '14'
-                            - descriptor:
-                                code: Y_MAX
-                              value: '3'
-                            - descriptor:
-                                code: Z_MAX
-                              value: '1'
-                            - descriptor:
-                                code: X_LOBBY_START
-                              value: '0'
-                            - descriptor:
-                                code: X_LOBBY_SIZE
-                              value: '12'
-                            - descriptor:
-                                code: Y_LOBBY_START
-                              value: '1'
-                            - descriptor:
-                                code: Y_LOBBY_SIZE
-                              value: '1'
-                        - descriptor:
-                            code: VEHICLE_AVAIBALITY
-                            display: false
-                          list:
-                            - descriptor:
-                                code: AVALIABLE_SEATS
-                              value: 20
-                        - descriptor:
-                            code: VEHICLE_AMENITIES
-                          list:
-                            - value: WATER_BOTTLE
-                            - value: WIFI
-                            - value: BLANKET
-                            - value: CCTV
-                    - id: F2
-                      type: TRIP
-                      stops:
-                        - type: START
-                          location:
-                            descriptor:
-                              name: Bangalore
-                              code: std:080
-                            gps: 12.979759, 77.590427
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-09-06T20:00:00.000Z'
-                        - type: PICKUP
-                          location:
-                            descriptor:
-                              name: Agara
-                              code: std:080-pincode:560034
-                            gps: 12.924479, 77.648999
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-09-06T20:30:00.000Z'
-                        - type: PICKUP
-                          location:
-                            descriptor:
-                              name: Bellandur
-                              code: std:080-pincode:560103
-                            gps: 12.930839, 77.677941
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-09-06T20:50:00.000Z'
-                        - type: END
-                          location:
-                            descriptor:
-                              name: Hyderabad
-                              code: std:040
-                            gps: 17.399832, 78.505532
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-09-07T06:00:00.000Z'
-                        - type: DROP
-                          location:
-                            descriptor:
-                              name: Ameerpet
-                              code: std:040-pincode:500016
-                            gps: 17.441586, 78.441581
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-09-07T06:10:00.000Z'
-                        - type: DROP
-                          location:
-                            descriptor:
-                              name: Central Bus Station
-                              code: std:040-pincode:500012
-                            gps: 17.379024, 78.482443
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-09-07T06:30:00.000Z'
-                      vehicle:
-                        category: BUS
-                      tags:
-                        - descriptor:
-                            code: VEHICLE_GRID
-                            display: false
-                          list:
-                            - descriptor:
-                                code: X_MAX
-                              value: '14'
-                            - descriptor:
-                                code: Y_MAX
-                              value: '3'
-                            - descriptor:
-                                code: Z_MAX
-                              value: '1'
-                            - descriptor:
-                                code: X_LOBBY_START
-                              value: '0'
-                            - descriptor:
-                                code: X_LOBBY_SIZE
-                              value: '12'
-                            - descriptor:
-                                code: Y_LOBBY_START
-                              value: '1'
-                            - descriptor:
-                                code: Y_LOBBY_SIZE
-                              value: '1'
-                        - descriptor:
-                            code: VEHICLE_AVAIBALITY
-                            display: false
-                          list:
-                            - descriptor:
-                                code: AVALIABLE_SEATS
-                              value: 22
-                        - descriptor:
-                            code: VEHICLE_AMENITIES
-                          list:
-                            - value: WIFI
-                            - value: BLANKET
-                            - value: CCTV
+                              timestamp: '2023-09-06T06:45:00.000Z'
+                          - type: END
+                            location:
+                              descriptor:
+                                name: Hyderabad
+                                code: std:040
+                          - id: S3
+                            type: DROP
+                            location:
+                              descriptor:
+                                name: Ameerpet
+                                code: std:040-pincode:500016
+                              gps: 17.441586, 78.441581
+                              time:
+                                label: DATE_TIME
+                                timestamp: '2023-09-06T15:10:00.000Z'
+                          - id: S4
+                            type: DROP
+                            location:
+                              descriptor:
+                                name: Central Bus Station
+                                code: std:040-pincode:500012
+                              gps: 17.379024, 78.482443
+                              time:
+                                label: DATE_TIME
+                                timestamp: '2023-09-06T15:30:00.000Z'
+                        vehicle:
+                          category: BUS
+                        tags:
+                          - descriptor:
+                              code: VEHICLE_GRID
+                              display: false
+                            list:
+                              - descriptor:
+                                  code: X_MAX
+                                value: '14'
+                              - descriptor:
+                                  code: Y_MAX
+                                value: '3'
+                              - descriptor:
+                                  code: Z_MAX
+                                value: '1'
+                              - descriptor:
+                                  code: X_LOBBY_START
+                                value: '0'
+                              - descriptor:
+                                  code: X_LOBBY_SIZE
+                                value: '12'
+                              - descriptor:
+                                  code: Y_LOBBY_START
+                                value: '1'
+                              - descriptor:
+                                  code: Y_LOBBY_SIZE
+                                value: '1'
+                          - descriptor:
+                              code: VEHICLE_AVAIBALITY
+                              display: false
+                            list:
+                              - descriptor:
+                                  code: AVALIABLE_SEATS
+                                value: 20
+                          - descriptor:
+                              code: VEHICLE_AMENITIES
+                            list:
+                              - value: WATER_BOTTLE
+                              - value: WIFI
+                              - value: BLANKET
+                              - value: CCTV
+                      - id: F2
+                        type: TRIP
+                        stops:
+                          - type: START
+                            location:
+                              descriptor:
+                                name: Bangalore
+                                code: std:080
+                              gps: 12.979759, 77.590427
+                              time:
+                                label: DATE_TIME
+                                timestamp: '2023-09-06T20:00:00.000Z'
+                          - type: PICKUP
+                            location:
+                              descriptor:
+                                name: Agara
+                                code: std:080-pincode:560034
+                              gps: 12.924479, 77.648999
+                              time:
+                                label: DATE_TIME
+                                timestamp: '2023-09-06T20:30:00.000Z'
+                          - type: PICKUP
+                            location:
+                              descriptor:
+                                name: Bellandur
+                                code: std:080-pincode:560103
+                              gps: 12.930839, 77.677941
+                              time:
+                                label: DATE_TIME
+                                timestamp: '2023-09-06T20:50:00.000Z'
+                          - type: END
+                            location:
+                              descriptor:
+                                name: Hyderabad
+                                code: std:040
+                              gps: 17.399832, 78.505532
+                              time:
+                                label: DATE_TIME
+                                timestamp: '2023-09-07T06:00:00.000Z'
+                          - type: DROP
+                            location:
+                              descriptor:
+                                name: Ameerpet
+                                code: std:040-pincode:500016
+                              gps: 17.441586, 78.441581
+                              time:
+                                label: DATE_TIME
+                                timestamp: '2023-09-07T06:10:00.000Z'
+                          - type: DROP
+                            location:
+                              descriptor:
+                                name: Central Bus Station
+                                code: std:040-pincode:500012
+                              gps: 17.379024, 78.482443
+                              time:
+                                label: DATE_TIME
+                                timestamp: '2023-09-07T06:30:00.000Z'
+                        vehicle:
+                          category: BUS
+                        tags:
+                          - descriptor:
+                              code: VEHICLE_GRID
+                              display: false
+                            list:
+                              - descriptor:
+                                  code: X_MAX
+                                value: '14'
+                              - descriptor:
+                                  code: Y_MAX
+                                value: '3'
+                              - descriptor:
+                                  code: Z_MAX
+                                value: '1'
+                              - descriptor:
+                                  code: X_LOBBY_START
+                                value: '0'
+                              - descriptor:
+                                  code: X_LOBBY_SIZE
+                                value: '12'
+                              - descriptor:
+                                  code: Y_LOBBY_START
+                                value: '1'
+                              - descriptor:
+                                  code: Y_LOBBY_SIZE
+                                value: '1'
+                          - descriptor:
+                              code: VEHICLE_AVAIBALITY
+                              display: false
+                            list:
+                              - descriptor:
+                                  code: AVALIABLE_SEATS
+                                value: 22
+                          - descriptor:
+                              code: VEHICLE_AMENITIES
+                            list:
+                              - value: WIFI
+                              - value: BLANKET
+                              - value: CCTV
       - summary: Selection of a specific service
         api: select
         details:
@@ -10868,7 +11029,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the necesary details
         reference: if any
-        example: &ref_30
+        example: &ref_31
           summary: Get Quote of a selected seat
           value:
             context:
@@ -10908,7 +11069,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: &ref_31
+        example: &ref_32
           summary: Return a quote offered by a intercity bus  service provider
           value:
             context:
@@ -10926,104 +11087,104 @@ x-flows:
               version: 2.0.0
               action: on_select
               ttl: PT30S
-          message:
-            order:
-              items:
-                - id: I1
+            message:
+              order:
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Seater Ticket
+                      code: SEAT
+                    price:
+                      currency: INR
+                      value: '899'
+                    quantity:
+                      selected:
+                        count: 1
+                    fulfillment_ids:
+                      - F1
+                    category_ids:
+                      - C1
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: X_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: Y_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: NUMBER
+                            value: A1
+                          - descriptor:
+                              code: RESTRICTED_GENDER
+                            value: ANY
+                          - descriptor:
+                              code: SINGLE_SEAT
+                            value: 'TRUE'
+                provider:
+                  id: P1
                   descriptor:
-                    name: Seater Ticket
-                    code: SEAT
+                    name: ABC Operator 1 Bus Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - id: S1
+                        type: PICKUP
+                        location:
+                          descriptor:
+                            name: Agara
+                            code: std:080-pincode:560034
+                          gps: 12.924479, 77.648999
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T06:30:00.000Z'
+                      - id: S3
+                        type: DROP
+                        location:
+                          descriptor:
+                            name: Ameerpet
+                            code: std:040-pincode:500016
+                          gps: 17.441586, 78.441581
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T15:10:00.000Z'
+                    vehicle:
+                      category: BUS
+                quote:
                   price:
-                    currency: INR
                     value: '899'
-                  quantity:
-                    selected:
-                      count: 1
-                  fulfillment_ids:
-                    - F1
-                  category_ids:
-                    - C1
-                  tags:
-                    - descriptor:
-                        code: SEAT_GRID
-                      list:
-                        - descriptor:
-                            code: X
-                          value: '0'
-                        - descriptor:
-                            code: 'Y'
-                          value: '0'
-                        - descriptor:
-                            code: Z
-                          value: '0'
-                        - descriptor:
-                            code: X_SIZE
-                          value: '1'
-                        - descriptor:
-                            code: Y_SIZE
-                          value: '1'
-                        - descriptor:
-                            code: NUMBER
-                          value: A1
-                        - descriptor:
-                            code: RESTRICTED_GENDER
-                          value: ANY
-                        - descriptor:
-                            code: SINGLE_SEAT
-                          value: 'TRUE'
-              provider:
-                id: P1
-                descriptor:
-                  name: ABC Operator 1 Bus Services
-                  images:
-                    - url: https://operator1.com/logos/logo.ico
-              fulfillments:
-                - id: F1
-                  type: TRIP
-                  stops:
-                    - id: S1
-                      type: PICKUP
-                      location:
-                        descriptor:
-                          name: Agara
-                          code: std:080-pincode:560034
-                        gps: 12.924479, 77.648999
-                      time:
-                        label: DATE_TIME
-                        timestamp: '2023-09-06T06:30:00.000Z'
-                    - id: S3
-                      type: DROP
-                      location:
-                        descriptor:
-                          name: Ameerpet
-                          code: std:040-pincode:500016
-                        gps: 17.441586, 78.441581
-                      time:
-                        label: DATE_TIME
-                        timestamp: '2023-09-06T15:10:00.000Z'
-                  vehicle:
-                    category: BUS
-              quote:
-                price:
-                  value: '899'
-                  currency: INR
-                breakup:
-                  - title: BASE_FARE
-                    price:
-                      currency: INR
-                      value: '800'
-                  - title: CGST @ 5%
-                    price:
-                      currency: INR
-                      value: '40'
-                  - title: SGST @ 5%
-                    price:
-                      currency: INR
-                      value: '40'
-                  - title: CONVEANCE_FEE
-                    price:
-                      currency: INR
-                      value: '19'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      price:
+                        currency: INR
+                        value: '800'
+                    - title: CGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: SGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: CONVEANCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -11031,7 +11192,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: &ref_32
+        example: &ref_33
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -11093,7 +11254,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: &ref_33
+        example: &ref_34
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -11249,7 +11410,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmation as per the terms of order
         reference: if any
-        example: &ref_34
+        example: &ref_35
           summary: Confirm ticket booking
           value:
             context:
@@ -11316,7 +11477,7 @@ x-flows:
               Provider platform confirms the order and provides details of the
               journey upon confirmation
         reference: if any
-        example: &ref_35
+        example: &ref_36
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -11479,7 +11640,7 @@ x-flows:
               The consumer platform updates the ride with some certain details
               he wants to be updated.
         reference: if any
-        example: &ref_36
+        example: &ref_37
           summary: Update customer details
           value:
             context:
@@ -11498,6 +11659,7 @@ x-flows:
               action: update
               ttl: PT30S
             message:
+              update_target: order.fulfillments.customer.name
               order:
                 id: O1
                 fulfillments:
@@ -11514,7 +11676,7 @@ x-flows:
         details:
           - description: Provider platform provides the ride details with updated context.
         reference: if any
-        example: &ref_45
+        example: &ref_48
           summary: Return updated order with customer details
           value:
             context:
@@ -11533,7 +11695,6 @@ x-flows:
               action: on_update
               ttl: PT30S
             message:
-              update_target: order.fulfillments
               order:
                 id: O1
                 status: ACTIVE
@@ -11678,7 +11839,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status
         reference: if any
-        example: &ref_37
+        example: &ref_38
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -11705,7 +11866,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: &ref_38
+        example: &ref_39
           summary: Return transit ticket order with status - Journey Completed
           value:
             context:
@@ -11862,14 +12023,64 @@ x-flows:
           station B
     reference: if any
     steps:
-      - summary: Search for the bus by station code
+      - summary: Search for intercity bus
+        api: search
+        details:
+          - description: >-
+              Users searches over the network to avail the intercity bus mode of
+              transport based on station code
+        reference: if any
+        example: &ref_44
+          summary: Search for all services form the given start location(code)
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 7a95183e-6812-431e-9bfc-e09e392d3adc
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/
+              ttl: PT30S
+            message:
+              intent:
+                fulfillment:
+                  stops:
+                    - type: START
+                      location:
+                        descriptor:
+                          code: std:080
+                  vehicle:
+                    category: BUS
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+      - summary: Return an intercity bus catalog of all fulfillments
+        api: on_search
+        details:
+          - description: >-
+              Provider platform sends the catalog of all the service that can be
+              used for transit using bus service based on station code
+        reference: if any
+        example: *ref_29
+      - summary: Search for the bus by start and end station code
         api: search
         details:
           - description: >-
               Users searches over the network to avail the intercity bus mode of
               transport from one station to another
         reference: if any
-        example: &ref_43
+        example: &ref_45
           summary: Search for all services from given start and end location(code)
           value:
             context:
@@ -11920,7 +12131,7 @@ x-flows:
               Provider platform sends the catalog of all the service that can be
               used for transit using bus from station A to station B
         reference: if any
-        example: *ref_29
+        example: *ref_30
       - summary: Selection of specific service
         api: select
         details:
@@ -11928,7 +12139,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the necesary details
         reference: if any
-        example: *ref_30
+        example: *ref_31
       - summary: Provider platform provides the quote for selected service of bus
         api: on_select
         details:
@@ -11937,7 +12148,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: *ref_31
+        example: *ref_32
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -11945,7 +12156,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: *ref_32
+        example: *ref_33
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -11953,7 +12164,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: *ref_33
+        example: *ref_34
       - summary: Consumer confirms the booking and provides details.
         api: confirm
         details:
@@ -11961,7 +12172,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmation as per the terms of order
         reference: if any
-        example: *ref_34
+        example: *ref_35
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -11969,7 +12180,7 @@ x-flows:
               Provider platform confirms the order and provides details of the
               journey upon confirmation
         reference: if any
-        example: *ref_35
+        example: *ref_36
       - summary: Consumer platform updates the ride details
         api: update
         details:
@@ -11977,13 +12188,13 @@ x-flows:
               The consumer platform updates the ride with some certain details
               he wants to be updated.
         reference: if any
-        example: *ref_36
+        example: *ref_37
       - summary: Provider platform provides latest update on the order
         api: on_update
         details:
           - description: Provider platform provides the ride details with updated context.
         reference: if any
-        example: &ref_46
+        example: &ref_49
           summary: Return updated order with agent details
           value:
             context:
@@ -12152,7 +12363,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status
         reference: if any
-        example: *ref_37
+        example: *ref_38
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -12160,7 +12371,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: *ref_38
+        example: *ref_39
 x-examples:
   metro:
     summary: Metro Use Case Specification
@@ -12181,7 +12392,7 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_39
+          - *ref_40
       select:
         examples:
           - *ref_10
@@ -12219,7 +12430,7 @@ x-examples:
           - *ref_16
       on_search:
         examples:
-          - *ref_40
+          - *ref_41
       on_select:
         examples:
           - *ref_11
@@ -12547,7 +12758,7 @@ x-examples:
               message:
                 cancellation_reason_id: '5'
                 order_id: O1
-          - *ref_41
+          - *ref_42
       support:
         examples:
           - summary: Fetch support information related to a particular order
@@ -12797,7 +13008,7 @@ x-examples:
                               value: '1'
       on_update:
         examples:
-          - *ref_42
+          - *ref_43
           - summary: Return updated order with recomputed charges
             value:
               context:
@@ -13811,221 +14022,45 @@ x-examples:
     example_set:
       search:
         examples:
-          - summary: Search for all services form the given start location(code)
-            value:
-              context:
-                location:
-                  country:
-                    code: IND
-                domain: ONDC:TRV13
-                timestamp: '2023-09-03T01:55:08.143Z'
-                bap_id: https://example-bap.com
-                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
-                message_id: 7a95183e-6812-431e-9bfc-e09e392d3adc
-                version: 2.0.0
-                action: search
-                bap_uri: https://api.example-bap.com/
-                ttl: PT30S
-              message:
-                intent:
-                  fulfillment:
-                    stops:
-                      - type: START
-                        location:
-                          descriptor:
-                            code: std:080
-                    vehicle:
-                      category: BUS
-                  payment:
-                    tags:
-                      - descriptor:
-                          code: BUYER_FINDER_FEES
-                        display: false
-                        list:
-                          - descriptor:
-                              code: BUYER_FINDER_FEES_PERCENTAGE
-                            value: '1'
-          - *ref_43
-          - summary: Search for all services from given start and end location(gps)
-            value:
-              context:
-                location:
-                  country:
-                    code: IND
-                domain: ONDC:TRV13
-                timestamp: '2023-09-03T01:55:08.143Z'
-                bap_id: https://example-bap.com
-                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
-                message_id: 7a95183e-6812-431e-9bfc-e09e392d3adc
-                version: 2.0.0
-                action: search
-                bap_uri: https://api.example-bap.com/
-                ttl: PT30S
-              message:
-                intent:
-                  fulfillment:
-                    stops:
-                      - type: START
-                        location:
-                          gps: 12.979759, 77.590427
-                    vehicle:
-                      category: BUS
-                  payment:
-                    tags:
-                      - descriptor:
-                          code: BUYER_FINDER_FEES
-                        display: false
-                        list:
-                          - descriptor:
-                              code: BUYER_FINDER_FEES_PERCENTAGE
-                            value: '1'
           - *ref_44
-      select:
-        examples:
-          - *ref_30
-      init:
-        examples:
-          - *ref_32
-      confirm:
-        examples:
-          - *ref_34
-      status:
-        examples:
-          - *ref_37
-      update:
-        examples:
-          - *ref_36
-      on_search:
-        examples:
-          - summary: Return services available for provided start code or gps
-            value:
-              context:
-                location:
-                  country:
-                    code: IND
-                domain: ONDC:TRV13
-                timestamp: '2023-09-03T01:55:08.143Z'
-                bap_id: https://example-bap.com
-                bap_uri: https://api.example-bap.com
-                bpp_id: https://example-bpp.com
-                bpp_uri: https://api.example-bpp.com/
-                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
-                message_id: 7a95183e-6812-431e-9bfc-e09e392d3adc
-                version: 2.0.0
-                action: on_search
-                ttl: PT30S
-            message:
-              catalog:
-                descriptor:
-                  name: ABC Bus Services Solutions
-                  images:
-                    - url: https://abc-bus.in/logos/logo.ico
-                providers:
-                  - id: P1
-                    descriptor:
-                      name: ABC Operator 1 Bus Services
-                      images:
-                        - url: https://operator1.com/logos/logo.ico
-                    fulfillments:
-                      - id: F1
-                        type: TRIP
-                        stops:
-                          - type: START
-                            location:
-                              descriptor:
-                                name: Bangalore
-                                code: std:080
-                              gps: 12.979759, 77.590427
-                          - type: PICKUP
-                            location:
-                              descriptor:
-                                name: Agara
-                                code: std:080-pincode:560034
-                              gps: 12.924479, 77.648999
-                          - type: PICKUP
-                            location:
-                              descriptor:
-                                name: Bellandur
-                                code: std:080-pincode:560103
-                              gps: 12.930839, 77.677941
-                          - type: END
-                            location:
-                              descriptor:
-                                name: Hyderabad
-                                code: std:040
-                              gps: 17.399832, 78.505532
-                          - type: DROP
-                            location:
-                              descriptor:
-                                name: Ameerpet
-                                code: std:040-pincode:500016
-                              gps: 17.441586, 78.441581
-                          - type: DROP
-                            location:
-                              descriptor:
-                                name: Central Bus Station
-                                code: std:040-pincode:500012
-                              gps: 17.379024, 78.482443
-                        vehicle:
-                          category: BUS
-                      - id: F2
-                        type: TRIP
-                        stops:
-                          - type: START
-                            location:
-                              descriptor:
-                                name: Bangalore
-                                code: std:080
-                              gps: 12.979759, 77.590427
-                          - type: PICKUP
-                            location:
-                              descriptor:
-                                name: Agara
-                                code: std:080-pincode:560034
-                              gps: 12.924479, 77.648999
-                          - type: PICKUP
-                            location:
-                              descriptor:
-                                name: Bellandur
-                                code: std:080-pincode:560103
-                              gps: 12.930839, 77.677941
-                          - type: END
-                            location:
-                              descriptor:
-                                name: CHENNAI
-                                code: std:040
-                              gps: 17.399832, 78.505532
-                          - type: DROP
-                            location:
-                              descriptor:
-                                name: Ameerpet
-                                code: std:040-pincode:500016
-                              gps: 17.441586, 78.441581
-                          - type: DROP
-                            location:
-                              descriptor:
-                                name: Central Bus Station
-                                code: std:040-pincode:500012
-                              gps: 17.379024, 78.482443
-                        vehicle:
-                          category: BUS
-          - *ref_29
-      on_select:
-        examples:
-          - *ref_31
-      on_init:
-        examples:
-          - *ref_33
-      on_confirm:
-        examples:
-          - *ref_35
-      on_status:
-        examples:
-          - *ref_38
-      on_update:
-        examples:
           - *ref_45
           - *ref_46
+          - *ref_47
+      select:
+        examples:
+          - *ref_31
+      init:
+        examples:
+          - *ref_33
+      confirm:
+        examples:
+          - *ref_35
+      status:
+        examples:
+          - *ref_38
+      update:
+        examples:
+          - *ref_37
+      on_search:
+        examples:
+          - *ref_29
+          - *ref_30
+      on_select:
+        examples:
+          - *ref_32
+      on_init:
+        examples:
+          - *ref_34
+      on_confirm:
+        examples:
+          - *ref_36
+      on_status:
+        examples:
+          - *ref_39
+      on_update:
+        examples:
+          - *ref_48
+          - *ref_49
 x-attributes:
   metro:
     attribute_set:
