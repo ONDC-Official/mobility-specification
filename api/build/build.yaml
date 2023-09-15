@@ -1182,6 +1182,8 @@ components:
       type: object
       additionalProperties: false
       properties:
+        organization:
+          $ref: '#/components/schemas/Organization'
         person:
           $ref: '#/components/schemas/Person'
         contact:
@@ -1299,6 +1301,9 @@ components:
       type: object
       additionalProperties: false
       properties:
+        id:
+          description: The form identifier.
+          type: string
         url:
           description: >-
             The URL from where the form can be fetched. The content fetched from
@@ -1324,9 +1329,32 @@ components:
           enum:
             - text/html
             - application/xml
-        submission_id:
-          type: string
-          format: uuid
+        resubmit:
+          type: boolean
+        multiple_sumbissions:
+          type: boolean
+    FormHead:
+      description: Provides the header information for the xinput.
+      additionalProperties: false
+      type: object
+      properties:
+        descriptor:
+          $ref: '#/components/schemas/Descriptor'
+        index:
+          additionalProperties: false
+          type: object
+          properties:
+            min:
+              type: integer
+            cur:
+              type: integer
+            max:
+              type: integer
+        headings:
+          type: array
+          items:
+            type: string
+            description: The heading names of the forms
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
       type: object
@@ -2011,8 +2039,6 @@ components:
             will be sent as url params. Two url param values,
             ```$transaction_id``` and ```$amount``` are mandatory.
           format: uri
-        tl_method:
-          type: string
         params:
           type: object
           properties:
@@ -2054,41 +2080,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
-        '@ondc/org/buyer_app_finder_fee_type':
-          type: string
-        '@ondc/org/buyer_app_finder_fee_amount':
-          type: string
-        '@ondc/org/settlement_details':
-          type: array
-          items:
-            description: Describes a settlement.
-            type: object
-            additionalProperties: false
-            properties:
-              settlement_counterparty:
-                type: string
-              settlement_phase:
-                type: string
-              settlement_type:
-                type: string
-              upi_address:
-                type: string
-              settlement_bank_account_no:
-                type: string
-              settlement_ifsc_code:
-                type: string
-              beneficiary_name:
-                type: string
-              bank_name:
-                type: string
-              branch_name:
-                type: string
-              settlement_reference:
-                type: string
-              settlement_status:
-                type: string
-              settlement_timestamp:
-                type: string
     Person:
       description: Describes a person as any individual
       type: object
@@ -2482,14 +2473,14 @@ components:
       type: object
       additionalProperties: false
       properties:
+        order_id:
+          type: string
         ref_id:
           type: string
         callback_phone:
           type: string
-          format: phone
         phone:
           type: string
-          format: phone
         email:
           type: string
           format: email
@@ -2684,8 +2675,28 @@ components:
       type: object
       additionalProperties: false
       properties:
+        head:
+          $ref: '#/components/schemas/FormHead'
         form:
           $ref: '#/components/schemas/Form'
+        form_response:
+          description: Describes the response to a form submission
+          type: object
+          additionalProperties: false
+          properties:
+            status:
+              description: Contains the status of form submission.
+              type: boolean
+              default: true
+            signature:
+              type: string
+            submission_id:
+              type: string
+              format: uuid
+            errors:
+              type: array
+              items:
+                $ref: '#/components/schemas/Error'
         required:
           description: >-
             Indicates whether the form data is mandatorily required by the BPP
@@ -2846,6 +2857,12 @@ x-enum:
                   reference: <PR/Issue/Discussion Links md format text
                 - code: SEMI_SLEEPER
                   description: Represents type of bus seats available
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: TICKET
+                  description: Represents type of category
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: PASS
+                  description: Represents type of category
                   reference: <PR/Issue/Discussion Links md format text
           items: &ref_2
             descriptor:
@@ -3143,7 +3160,7 @@ x-flows:
               Provider plateform sends the catalog of all the service that can
               be used for transit using metro in the city
         reference: if any
-        example: &ref_41
+        example: &ref_43
           summary: >-
             Return a metro catalog of available fulfillments based on search by
             city
@@ -3173,6 +3190,19 @@ x-flows:
                     - url: https://transitsolutions.in/logos/logo.ico
                 providers:
                   - id: P1
+                    categories:
+                      - descriptor:
+                          name: Ticket
+                          code: TICKET
+                        id: C1
+                      - descriptor:
+                          name: Pass
+                          code: PASS
+                        id: C2
+                    time:
+                      range:
+                        start: '2023-09-14T05:30:00.000Z'
+                        end: '2023-09-14T23:30:00.000Z'
                     descriptor:
                       name: Delhi Metro Rail Limited
                       images:
@@ -3591,12 +3621,27 @@ x-flows:
                     - url: https://transitsolutions.in/logos/logo.ico
                 providers:
                   - id: P1
+                    categories:
+                      - descriptor:
+                          name: Ticket
+                          code: TICKET
+                        id: C1
+                      - descriptor:
+                          name: Pass
+                          code: PASS
+                        id: C2
+                    time:
+                      range:
+                        start: '2023-09-14T05:30:00.000Z'
+                        end: '2023-09-14T23:30:00.000Z'
                     descriptor:
                       name: Delhi Metro Rail Limited
                       images:
                         - url: https://delhimetrorail.com/logos/logo.ico
                     items:
                       - id: I1
+                        category_ids:
+                          - C1
                         descriptor:
                           name: Single Journey Ticket
                           code: SJT
@@ -3611,6 +3656,8 @@ x-flows:
                         fulfillment_ids:
                           - F1
                       - id: I2
+                        category_ids:
+                          - C1
                         descriptor:
                           name: Round Journey Ticket
                           code: RJT
@@ -3625,6 +3672,9 @@ x-flows:
                         fulfillment_ids:
                           - F1
                       - id: I3
+                        category_ids:
+                          - '1'
+                          - '2'
                         descriptor:
                           name: Journey Pass
                           code: Pass
@@ -3902,6 +3952,8 @@ x-flows:
               order:
                 items:
                   - id: I1
+                    category_ids:
+                      - C1
                     descriptor:
                       name: Single Journey Ticket
                       code: SJT
@@ -3919,6 +3971,10 @@ x-flows:
                     name: Delhi Metro Rail Limited
                     images:
                       - url: https://delhimetrorail.com/logos/logo.ico
+                  time:
+                    range:
+                      start: '2023-09-14T05:30:00.000Z'
+                      end: '2023-09-14T23:30:00.000Z'
                 fulfillments:
                   - id: F1
                     stops:
@@ -4172,6 +4228,8 @@ x-flows:
               order:
                 items:
                   - id: I1
+                    category_ids:
+                      - C1
                     descriptor:
                       name: Single Journey Ticket
                       code: SJT
@@ -4189,6 +4247,10 @@ x-flows:
                     name: Delhi Metro Rail Limited
                     images:
                       - url: https://delhimetrorail.com/logos/logo.ico
+                  time:
+                    range:
+                      start: '2023-09-14T05:30:00.000Z'
+                      end: '2023-09-14T23:30:00.000Z'
                 fulfillments:
                   - id: F1
                     stops:
@@ -4483,6 +4545,8 @@ x-flows:
                 status: ACTIVE
                 items:
                   - id: I1
+                    category_ids:
+                      - C1
                     descriptor:
                       name: Single Journey Ticket
                       code: SJT
@@ -4500,6 +4564,10 @@ x-flows:
                     name: Delhi Metro Rail Limited
                     images:
                       - url: https://delhimetrorail.com/logos/logo.ico
+                  time:
+                    range:
+                      start: '2023-09-14T05:30:00.000Z'
+                      end: '2023-09-14T23:30:00.000Z'
                 fulfillments:
                   - id: F1
                     stops:
@@ -4776,6 +4844,8 @@ x-flows:
                     descriptor:
                       name: Single Journey Ticket
                       code: SJT
+                    category_ids:
+                      - C1
                     price:
                       currency: INR
                       value: '60'
@@ -4790,6 +4860,10 @@ x-flows:
                     name: Delhi Metro Rail Limited
                     images:
                       - url: https://delhimetrorail.com/logos/logo.ico
+                  time:
+                    range:
+                      start: '2023-09-14T05:30:00.000Z'
+                      end: '2023-09-14T23:30:00.000Z'
                 fulfillments:
                   - id: F1
                     stops:
@@ -5004,7 +5078,7 @@ x-flows:
               Users searches over the network to avail the metro mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_40
+        example: &ref_42
           summary: Search for a public mode of transit from a specific position
           value:
             context:
@@ -6037,7 +6111,7 @@ x-flows:
               Provider platform provides the latest update on ride details to
               the consumer
         reference: if any
-        example: &ref_43
+        example: &ref_45
           summary: Return updated order with payment status
           value:
             context:
@@ -7031,7 +7105,7 @@ x-flows:
         details:
           - description: Consumer platform requests for cancellation of ride
         reference: if any
-        example: &ref_42
+        example: &ref_44
           summary: Cancel a ride with user provided information
           value:
             context:
@@ -10666,7 +10740,7 @@ x-flows:
               Users searches over the network to avail the intercity bus mode of
               transport based on gps
         reference: if any
-        example: &ref_46
+        example: &ref_48
           summary: Search for all services from given start and end location(gps)
           value:
             context:
@@ -10827,7 +10901,7 @@ x-flows:
               Users searches over the network to avail the intercity bus mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_47
+        example: &ref_49
           summary: Search for all services from given start and end location(gps)
           value:
             context:
@@ -11050,9 +11124,9 @@ x-flows:
                                 name: Ameerpet
                                 code: std:040-pincode:500016
                               gps: 17.441586, 78.441581
-                              time:
-                                label: DATE_TIME
-                                timestamp: '2023-09-06T15:10:00.000Z'
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T15:10:00.000Z'
                           - id: S4
                             type: DROP
                             location:
@@ -11060,15 +11134,15 @@ x-flows:
                                 name: Central Bus Station
                                 code: std:040-pincode:500012
                               gps: 17.379024, 78.482443
-                              time:
-                                label: DATE_TIME
-                                timestamp: '2023-09-06T15:30:00.000Z'
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T15:30:00.000Z'
                         vehicle:
                           category: BUS
                         tags:
                           - descriptor:
                               code: VEHICLE_GRID
-                              display: false
+                            display: false
                             list:
                               - descriptor:
                                   code: X_MAX
@@ -11093,11 +11167,11 @@ x-flows:
                                 value: '1'
                           - descriptor:
                               code: VEHICLE_AVAIBALITY
-                              display: false
+                            display: false
                             list:
                               - descriptor:
                                   code: AVALIABLE_SEATS
-                                value: 20
+                                value: '20'
                           - descriptor:
                               code: VEHICLE_AMENITIES
                             list:
@@ -11114,60 +11188,60 @@ x-flows:
                                 name: Bangalore
                                 code: std:080
                               gps: 12.979759, 77.590427
-                              time:
-                                label: DATE_TIME
-                                timestamp: '2023-09-06T20:00:00.000Z'
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T20:00:00.000Z'
                           - type: PICKUP
                             location:
                               descriptor:
                                 name: Agara
                                 code: std:080-pincode:560034
                               gps: 12.924479, 77.648999
-                              time:
-                                label: DATE_TIME
-                                timestamp: '2023-09-06T20:30:00.000Z'
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T20:30:00.000Z'
                           - type: PICKUP
                             location:
                               descriptor:
                                 name: Bellandur
                                 code: std:080-pincode:560103
                               gps: 12.930839, 77.677941
-                              time:
-                                label: DATE_TIME
-                                timestamp: '2023-09-06T20:50:00.000Z'
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T20:50:00.000Z'
                           - type: END
                             location:
                               descriptor:
                                 name: Hyderabad
                                 code: std:040
                               gps: 17.399832, 78.505532
-                              time:
-                                label: DATE_TIME
-                                timestamp: '2023-09-07T06:00:00.000Z'
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-07T06:00:00.000Z'
                           - type: DROP
                             location:
                               descriptor:
                                 name: Ameerpet
                                 code: std:040-pincode:500016
                               gps: 17.441586, 78.441581
-                              time:
-                                label: DATE_TIME
-                                timestamp: '2023-09-07T06:10:00.000Z'
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-07T06:10:00.000Z'
                           - type: DROP
                             location:
                               descriptor:
                                 name: Central Bus Station
                                 code: std:040-pincode:500012
                               gps: 17.379024, 78.482443
-                              time:
-                                label: DATE_TIME
-                                timestamp: '2023-09-07T06:30:00.000Z'
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-07T06:30:00.000Z'
                         vehicle:
                           category: BUS
                         tags:
                           - descriptor:
                               code: VEHICLE_GRID
-                              display: false
+                            display: false
                             list:
                               - descriptor:
                                   code: X_MAX
@@ -11192,11 +11266,11 @@ x-flows:
                                 value: '1'
                           - descriptor:
                               code: VEHICLE_AVAIBALITY
-                              display: false
+                            display: false
                             list:
                               - descriptor:
                                   code: AVALIABLE_SEATS
-                                value: 22
+                                value: '22'
                           - descriptor:
                               code: VEHICLE_AMENITIES
                             list:
@@ -11539,6 +11613,11 @@ x-flows:
                         phone: +91-9988776655
                     vehicle:
                       category: BUS
+                cancellation_terms:
+                  - cancel_by:
+                      duration: PT60M
+                    cancellation_fee:
+                      percentage: '0'
                 quote:
                   price:
                     value: '899'
@@ -11766,6 +11845,217 @@ x-flows:
                         phone: +91-9988776655
                     vehicle:
                       category: BUS
+                cancellation_terms:
+                  - cancel_by:
+                      duration: PT60M
+                    cancellation_fee:
+                      percentage: '0'
+                quote:
+                  price:
+                    value: '899'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      price:
+                        currency: INR
+                        value: '800'
+                    - title: CGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: SGST @ 5%
+                      price:
+                        currency: INR
+                        value: '40'
+                    - title: CONVEANCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                      currency: INR
+                      amount: '899'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: SETTLEMENT_DETAILS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+      - summary: Consumer platform cancels the request
+        api: cancel
+        details:
+          - description: Consumer platform requests for cancellation of bus service
+        reference: if any
+        example: &ref_37
+          summary: Cancel a transit ticket booking before the cancellation period
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: cancel
+              ttl: PT30S
+            message:
+              order_id: O1
+      - summary: Provider platform accepts/appends the terms of cancellation
+        api: on_cancel
+        details:
+          - description: >-
+              Provider platform accepts the terms of cancel request and provides
+              with latest order update
+        reference: if any
+        example: &ref_38
+          summary: Return cancelled ticket order with cancellation charges
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: https://example-bap.com
+              bap_uri: https://api.example-bap.com
+              bpp_id: https://example-bpp.com
+              bpp_uri: https://api.example-bpp.com/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: on_cancel
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                status: CANCELLED
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Seater Ticket
+                      code: SEAT
+                    price:
+                      currency: INR
+                      value: '899'
+                    quantity:
+                      selected:
+                        count: 1
+                    fulfillment_ids:
+                      - F1
+                    category_ids:
+                      - C1
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: X_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: Y_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: NUMBER
+                            value: A1
+                          - descriptor:
+                              code: RESTRICTED_GENDER
+                            value: ANY
+                          - descriptor:
+                              code: SINGLE_SEAT
+                            value: 'TRUE'
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator 1 Bus Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - id: S1
+                        type: PICKUP
+                        location:
+                          descriptor:
+                            name: Agara
+                            code: std:080-pincode:560034
+                          gps: 12.924479, 77.648999
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T06:30:00.000Z'
+                        authorization:
+                          type: QR
+                          token: >-
+                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                      - id: S3
+                        type: DROP
+                        location:
+                          descriptor:
+                            name: Ameerpet
+                            code: std:040-pincode:500016
+                          gps: 17.441586, 78.441581
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T15:10:00.000Z'
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                    vehicle:
+                      category: BUS
+                cancellation:
+                  cancelled_by: CONSUMER
+                  time: '2023-09-03T02:00:08.143Z'
+                cancellation_terms:
+                  - cancel_by:
+                      duration: PT60M
+                    cancellation_fee:
+                      percentage: '0'
+                refund_terms:
+                  - fulfillment_state:
+                      name: Ride Cancelled
+                      code: RIDE_CANCELLED
+                    refund_eligible: true
+                    refund_within:
+                      duration: PT1440M
+                    refund_amount:
+                      currency: INR
+                      value: '899'
                 quote:
                   price:
                     value: '899'
@@ -11821,7 +12111,7 @@ x-flows:
               The consumer platform updates the ride with some certain details
               he wants to be updated.
         reference: if any
-        example: &ref_37
+        example: &ref_39
           summary: Update customer details
           value:
             context:
@@ -11857,7 +12147,7 @@ x-flows:
         details:
           - description: Provider platform provides the ride details with updated context.
         reference: if any
-        example: &ref_48
+        example: &ref_50
           summary: Return updated order with customer details
           value:
             context:
@@ -11965,6 +12255,11 @@ x-flows:
                         phone: +91-9988776655
                     vehicle:
                       category: BUS
+                cancellation_terms:
+                  - cancel_by:
+                      duration: PT60M
+                    cancellation_fee:
+                      percentage: '0'
                 quote:
                   price:
                     value: '899'
@@ -12020,7 +12315,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status
         reference: if any
-        example: &ref_38
+        example: &ref_40
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -12047,7 +12342,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: &ref_39
+        example: &ref_41
           summary: Return transit ticket order with status - Journey Completed
           value:
             context:
@@ -12155,6 +12450,11 @@ x-flows:
                         phone: +91-9988776655
                     vehicle:
                       category: BUS
+                cancellation_terms:
+                  - cancel_by:
+                      duration: PT60M
+                    cancellation_fee:
+                      percentage: '0'
                 quote:
                   price:
                     value: '899'
@@ -12211,7 +12511,7 @@ x-flows:
               Users searches over the network to avail the intercity bus mode of
               transport based on station code
         reference: if any
-        example: &ref_44
+        example: &ref_46
           summary: Search for all services form the given start location(code)
           value:
             context:
@@ -12261,7 +12561,7 @@ x-flows:
               Users searches over the network to avail the intercity bus mode of
               transport from one station to another
         reference: if any
-        example: &ref_45
+        example: &ref_47
           summary: Search for all services from given start and end location(code)
           value:
             context:
@@ -12362,6 +12662,20 @@ x-flows:
               journey upon confirmation
         reference: if any
         example: *ref_36
+      - summary: Consumer platform cancels the request
+        api: cancel
+        details:
+          - description: Consumer platform requests for cancellation of bus service
+        reference: if any
+        example: *ref_37
+      - summary: Provider platform accepts/appends the terms of cancellation
+        api: on_cancel
+        details:
+          - description: >-
+              Provider platform accepts the terms of cancel request and provides
+              with latest order update
+        reference: if any
+        example: *ref_38
       - summary: Consumer platform updates the ride details
         api: update
         details:
@@ -12369,13 +12683,13 @@ x-flows:
               The consumer platform updates the ride with some certain details
               he wants to be updated.
         reference: if any
-        example: *ref_37
+        example: *ref_39
       - summary: Provider platform provides latest update on the order
         api: on_update
         details:
           - description: Provider platform provides the ride details with updated context.
         reference: if any
-        example: &ref_49
+        example: &ref_51
           summary: Return updated order with agent details
           value:
             context:
@@ -12489,6 +12803,11 @@ x-flows:
                         phone: '9856798567'
                     vehicle:
                       category: BUS
+                cancellation_terms:
+                  - cancel_by:
+                      duration: PT60M
+                    cancellation_fee:
+                      percentage: '0'
                 quote:
                   price:
                     value: '899'
@@ -12544,7 +12863,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status
         reference: if any
-        example: *ref_38
+        example: *ref_40
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -12552,7 +12871,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: *ref_39
+        example: *ref_41
   - summary: IntraCity - GPS Based Flow
     details:
       - description: >-
@@ -12568,7 +12887,7 @@ x-flows:
               Users searches over the network to avail the intracity bus mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_50
+        example: &ref_52
           summary: >-
             Search for intra city bus service mode of transit from a specific
             position
@@ -12608,7 +12927,7 @@ x-flows:
               used for transit using bus service from point A(gps) to point
               B(gps)
         reference: if any
-        example: &ref_54
+        example: &ref_56
           summary: Return a public transit catalog of fare products
           value:
             context:
@@ -12653,6 +12972,7 @@ x-flows:
                               size_type: xs
                         fulfillment_ids:
                           - F1
+                          - F2
                         price:
                           currency: INR
                           value: '35'
@@ -12721,29 +13041,14 @@ x-flows:
                                 name: Yamuna Bazar
                                 code: YAMUNA BAZAR
                               gps: 28.625972,77.209917
-                          - type: TRANSIT_STOP
+                          - type: END
                             instructions:
                               name: Stop 3
-                              short_desc: Please Change here for next stop
                             location:
                               descriptor:
                                 name: dhaula kuan
                                 code: DHAULA_KUAN
                               gps: 28.610972,77.201717
-                          - type: INTERMEDIATE_STOP
-                            instructions:
-                              name: Stop 4
-                            location:
-                              descriptor:
-                                name: gpo
-                                code: GPO
-                              gps: 28.623097,77.209917
-                          - type: END
-                            location:
-                              descriptor:
-                                name: Greater Kailash
-                                code: GREATER_KAILASH
-                              gps: 28.548230, 77.238039
                         vehicle:
                           category: BUS
                         tags:
@@ -12780,6 +13085,22 @@ x-flows:
                               gps: 28.548230, 77.238039
                         vehicle:
                           category: BUS
+                      - id: F3
+                        stops:
+                          - type: START
+                            location:
+                              descriptor:
+                                name: gpo
+                                code: GPO
+                              gps: 28.623097,77.209917
+                          - type: END
+                            location:
+                              descriptor:
+                                name: Greater Kailash
+                                code: GREATER_KAILASH
+                              gps: 28.548230, 77.238039
+                        vehicle:
+                          category: BUS
       - summary: Selection of specific service
         api: select
         details:
@@ -12787,7 +13108,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the necessary details
         reference: if any
-        example: &ref_51
+        example: &ref_53
           summary: >-
             Get a quote for a fare product selected from a intra city bus
             service catalog
@@ -12827,7 +13148,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: &ref_55
+        example: &ref_57
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -12930,13 +13251,15 @@ x-flows:
                     vehicle:
                       category: BUS
                     tags:
-                      - list:
+                      - descriptor:
+                          code: ROUTE_INFO
+                        list:
                           - descriptor:
-                              name: Transfers
-                            value: '0'
+                              code: ROUTE_NUMBER
+                            value: '242'
                           - descriptor:
-                              name: Duration
-                            value: 30 min
+                              code: DURATION
+                            value: PT30M
                 quote:
                   price:
                     value: '70'
@@ -12955,7 +13278,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: &ref_52
+        example: &ref_54
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -13007,7 +13330,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: &ref_56
+        example: &ref_58
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -13049,10 +13372,15 @@ x-flows:
                       selected:
                         count: 2
                     tags:
-                      - list:
+                      - descriptor:
+                          code: ROUTE_INFO
+                        list:
                           - descriptor:
-                              name: Validity
-                            value: 24 hours from the time of purchase
+                              code: ROUTE_NUMBER
+                            value: '242'
+                          - descriptor:
+                              code: DURATION
+                            value: PT30M
                 provider:
                   id: P1
                   descriptor:
@@ -13160,7 +13488,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmation as per the terms of order
         reference: if any
-        example: &ref_53
+        example: &ref_55
           summary: Confirm ticket booking
           value:
             context:
@@ -13217,7 +13545,7 @@ x-flows:
               Provider platform confirms the order and provides details of the
               journey on confirmation
         reference: if any
-        example: &ref_57
+        example: &ref_59
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -13257,10 +13585,15 @@ x-flows:
                       selected:
                         count: 2
                     tags:
-                      - list:
+                      - descriptor:
+                          code: ROUTE_INFO
+                        list:
                           - descriptor:
-                              name: Validity
-                            value: 24 hours from the time of purchase
+                              code: ROUTE_NUMBER
+                            value: '242'
+                          - descriptor:
+                              code: DURATION
+                            value: PT30M
                 provider:
                   id: P1
                   descriptor:
@@ -13389,7 +13722,7 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_40
+          - *ref_42
       select:
         examples:
           - *ref_10
@@ -13427,7 +13760,7 @@ x-examples:
           - *ref_16
       on_search:
         examples:
-          - *ref_41
+          - *ref_43
       on_select:
         examples:
           - *ref_11
@@ -13464,6 +13797,8 @@ x-examples:
                   status: CANCELLED
                   items:
                     - id: I1
+                      category_ids:
+                        - C1
                       descriptor:
                         name: Single Journey Ticket
                         code: SJT
@@ -13481,6 +13816,10 @@ x-examples:
                       name: Delhi Metro Rail Limited
                       images:
                         - url: https://delhimetrorail.com/logos/logo.ico
+                    time:
+                      range:
+                        start: '2023-09-14T05:30:00.000Z'
+                        end: '2023-09-14T23:30:00.000Z'
                   fulfillments:
                     - id: F1
                       stops:
@@ -13775,7 +14114,7 @@ x-examples:
               message:
                 cancellation_reason_id: '5'
                 order_id: O1
-          - *ref_42
+          - *ref_44
       support:
         examples:
           - summary: Fetch support information related to a particular order
@@ -14025,7 +14364,7 @@ x-examples:
                               value: '1'
       on_update:
         examples:
-          - *ref_43
+          - *ref_45
           - summary: Return updated order with recomputed charges
             value:
               context:
@@ -15039,10 +15378,10 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_44
-          - *ref_45
           - *ref_46
           - *ref_47
+          - *ref_48
+          - *ref_49
       select:
         examples:
           - *ref_31
@@ -15052,12 +15391,15 @@ x-examples:
       confirm:
         examples:
           - *ref_35
-      status:
-        examples:
-          - *ref_38
-      update:
+      cancel:
         examples:
           - *ref_37
+      status:
+        examples:
+          - *ref_40
+      update:
+        examples:
+          - *ref_39
       on_search:
         examples:
           - *ref_29
@@ -15073,27 +15415,30 @@ x-examples:
           - *ref_36
       on_status:
         examples:
-          - *ref_39
+          - *ref_41
       on_update:
         examples:
-          - *ref_48
-          - *ref_49
+          - *ref_50
+          - *ref_51
+      on_cancel:
+        examples:
+          - *ref_38
   intracity-bus:
     summary: Intracity Bus Use Case Specification
     description: Intra city Bus Use Case Specification
     example_set:
       search:
         examples:
-          - *ref_50
+          - *ref_52
       select:
         examples:
-          - *ref_51
+          - *ref_53
       init:
         examples:
-          - *ref_52
+          - *ref_54
       confirm:
         examples:
-          - *ref_53
+          - *ref_55
       cancel:
         examples:
           - summary: Cancel a ticket booking before the cancellation period
@@ -15140,16 +15485,16 @@ x-examples:
                 order_id: '123413'
       on_search:
         examples:
-          - *ref_54
+          - *ref_56
       on_select:
         examples:
-          - *ref_55
+          - *ref_57
       on_init:
         examples:
-          - *ref_56
+          - *ref_58
       on_confirm:
         examples:
-          - *ref_57
+          - *ref_59
 x-attributes:
   metro:
     attribute_set:
