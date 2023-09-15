@@ -6,78 +6,115 @@ value:
         code: IND
       city:
         code: 'std:011'
-    domain: 'ONDC:TRV10'
+    domain: 'ONDC:TRV11'
     action: on_select
-    version: 1.1.0
+    version: 2.0.0
     bap_id: 'example-bap.com'
     bap_uri: 'https://mock_bap.com/beckn/'
     bpp_id: 'transit-solutions.com'
     bpp_uri: 'https://api.transit-solutions.com/beckn/'
     transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
-    message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+    message_id: c5342e0e-d1ae-4d8b-89d1-b5242f5cd601
     timestamp: '2021-03-23T10:00:40.065Z'
   message:
     order:
-      id: '123413'
+      id: 'O1'
       items:
-        - id: '3'
+        - id: 'I1'
           descriptor:
             name: Single Journey Ticket
+            code: SJT
             images:
-              - url: 'https://dtc.delhi.gov.in/icons/sjt.ico'
+              - url: 'https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png'
+                size_type: xs
           fulfillment_ids:
-            - '3'
+            - 'F1'
           price:
             currency: INR
-            value: '55'
+            value: '35'
+          quantity:
+            selected:
+              count: 2
           tags:
             - list:
-                - descriptor:
-                    name: Validity
-                  value: 24 hours from the time of purchase
+              - descriptor:
+                  name: Validity
+                value: 24 hours from the time of purchase
       provider:
-        id: '1'
+        id: 'P1'
         descriptor:
           name: Delhi Transport Corporation
           images:
             - url: 'https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png'
+              size_type: xs
       fulfillments:
-        - id: '3'
+        - id: 'F1'
           stops:
             - type: START
               location:
                 descriptor:
-                  name: Dwarka Sector 21
-                gps: '9.05,12.06'
+                  name: kashmere gate
+                  code: KASHMERE_GATE
+                gps: '28.666576, 77.233332'
+            - type: INTERMEDIATE_STOP
+              instructions:
+                name: Stop 1
+              location:
+                descriptor:
+                  name: Indira Gandhi Technical Unviversity
+                  code: INDIRA_GANDHI_TECHNICAL_UNIV
+                gps: '28.624097, 77.204991'   
+            - type: INTERMEDIATE_STOP
+              instructions:
+                name: Stop 2
+              location:
+                descriptor:
+                  name: Yamuna Bazar
+                  code: YAMUNA BAZAR
+                gps: '28.625972,77.209917' 
+            - type: TRANSIT_STOP
+              instructions:
+                name: Stop 3
+                short_desc: Please Change here for next stop
+              location:
+                descriptor:
+                  name: dhaula kuan
+                  code: DHAULA_KUAN
+                gps: '28.610972,77.201717'      
+            - type: INTERMEDIATE_STOP
+              instructions:
+                name: Stop 4
+              location:
+                descriptor:
+                  name: gpo
+                  code: GPO 
+                gps: '28.623097,77.209917'      
             - type: END
               location:
                 descriptor:
-                  name: Dwarka Sector 21
-                gps: '9.07,12.07'
+                  name: Greater Kailash
+                  code: GREATER_KAILASH
+                gps: '28.548230, 77.238039'
           vehicle:
             category: BUS
           tags:
-            - list:
+            - descriptor:
+                code: ROUTE_INFO
+              list:
                 - descriptor:
-                    name: Transfers
-                  value: '0'
+                    code: ROUTE_NUMBER
+                  value: '242'
                 - descriptor:
-                    name: Duration
-                  value: 30 min
+                    code: DURATION
+                  value: 'PT30M'
       quote:
         price:
-          value: '60.5'
+          value: '70'
           currency: INR
         breakup:
-          - title: Single Journey Ticket X 1
+          - title: Base Fare
+            item:
+              id: I1
             price:
               currency: INR
-              value: '55'
-          - title: CGST @ 5%
-            price:
-              currency: INR
-              value: '2.75'
-          - title: SGST @ 5%
-            price:
-              currency: INR
-              value: '2.75'
+              value: '35'
