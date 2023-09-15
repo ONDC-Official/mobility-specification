@@ -6,14 +6,14 @@ value:
         code: IND
       city:
         code: 'std:011'
-    domain: 'ONDC:TRV10'
+    domain: 'ONDC:TRV11'
     action: on_search
-    version: 1.1.0
+    version: 2.0.0
     bap_id: 'mock_bap.com'
     bap_uri: 'https://mock_bap.com/beckn/'
     bpp_id: 'api.transit-solutions.com'
     bpp_uri: 'https://api.transit-solutions.com/beckn/'
-    transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+    transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
     message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
     timestamp: '2021-03-23T10:00:40.065Z'
   message:
@@ -22,158 +22,167 @@ value:
         name: Transit Solutions
         images:
           - url: 'https://transitsolutions.in/logos/logo.ico'
+            size_type: xs
       providers:
-        - id: '1'
+        - id: 'P1'
           descriptor:
             name: Delhi Transport Corporation
             images:
               - url: 'https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png'
+                size_type: xs
           items:
-            - id: '1'
+            - id: 'I1'
               descriptor:
                 name: Single Journey Ticket
+                code: SJT
                 images:
                   - url: 'https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png'
+                    size_type: xs
               fulfillment_ids:
-                - '1'
+                - 'F1'
+                - 'F2'
               price:
                 currency: INR
                 value: '35'
-            - id: '2'
+              quantity:
+                maximum:
+                  count: 6
+                minimum:
+                  count: 1  
+            - id: 'I2'
               descriptor:
-                name: Single Journey Ticket
+                name: Journey Pass
+                code: PASS
                 images:
                   - url: 'https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png'
+                    size_type: xs
               fulfillment_ids:
-                - '2'
+                - 'F2'
               price:
                 currency: INR
-                value: '64'
-            - id: '3'
+                value: '350'
+              quantity:
+                maximum:
+                  count: 1
+                minimum:
+                  count: 1 
+            - id: 'I3'
               descriptor:
-                name: Single Journey Ticket
+                name: Round Journey Ticket
                 images:
                   - url: 'https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png'
+                    size_type: xs
               fulfillment_ids:
-                - '3'
+                - 'F2'
               price:
                 currency: INR
-                value: '100'
-            - id: '4'
-              descriptor:
-                name: Return Journey Ticket
-                images:
-                  - url: 'https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png'
-              fulfillment_ids:
-                - '1'
-              price:
-                currency: INR
-                value: '100'
-            - id: '5'
-              descriptor:
-                name: Return Journey Ticket
-                images:
-                  - url: 'https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png'
-              fulfillment_ids:
-                - '2'
-              price:
-                currency: INR
-                value: '100'
-            - id: '6'
-              descriptor:
-                name: Return Journey Ticket
-                images:
-                  - url: 'https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png'
-              fulfillment_ids:
-                - '3'
-              price:
-                currency: INR
-                value: '100'
-            - id: '7'
-              descriptor:
-                name: Monthly Pass
-                images:
-                  - url: 'https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png'
-              price:
-                currency: INR
-                value: '250'
+                value: '60'
+              quantity:
+                maximum:
+                  count: 6
+                minimum:
+                  count: 1 
           fulfillments:
-            - id: '1'
+            - id: 'F1'
               stops:
                 - type: START
                   location:
                     descriptor:
-                      name: Dwarka Sector 10 - Blue Line
-                    gps: '28.5811261,77.0548206'
-                - type: END
+                      name: kashmere gate
+                      code: KASHMERE_GATE
+                    gps: '28.666576, 77.233332'
+                - type: INTERMEDIATE_STOP
+                  instructions:
+                    name: Stop 1
                   location:
                     descriptor:
-                      name: Patel Chowk - Yellow Line
-                    gps: '28.6230972,77.2099917'
+                      name: Indira Gandhi Technical Unviversity
+                      code: INDIRA_GANDHI_TECHNICAL_UNIV
+                    gps: '28.624097, 77.204991'   
+                - type: INTERMEDIATE_STOP
+                  instructions:
+                    name: Stop 2
+                  location:
+                    descriptor:
+                      name: Yamuna Bazar
+                      code: YAMUNA BAZAR
+                    gps: '28.625972,77.209917' 
+                - type: END
+                  instructions:
+                    name: Stop 3
+                  location:
+                    descriptor:
+                      name: dhaula kuan
+                      code: DHAULA_KUAN
+                    gps: '28.610972,77.201717'      
+                # - type: INTERMEDIATE_STOP
+                #   instructions:
+                #     name: Stop 4
+                #   location:
+                #     descriptor:
+                #       name: gpo
+                #       code: GPO 
+                #     gps: '28.623097,77.209917'      
+                # - type: END
+                #   location:
+                #     descriptor:
+                #       name: Greater Kailash
+                #       code: GREATER_KAILASH
+                #     gps: '28.548230, 77.238039'
               vehicle:
                 category: BUS
               tags:
-                - list:
-                    - descriptor:
-                        name: Transfers
-                      value: '1'
-                    - descriptor:
-                        name: Duration
-                      value: 60 min
-            - id: '2'
-              stops:
-                - type: START
-                  location:
-                    descriptor:
-                      name: Dwarka Sector 10 - Blue Line
-                    gps: '28.5811261,77.0548206'
-                - type: END
-                  location:
-                    descriptor:
-                      name: Shivaji Stadium -  Airport Express Line
-                    gps: '28.6288785,77.2085895'
-              vehicle:
-                category: BUS
-              tags:
-                - list:
-                    - descriptor:
-                        name: Transfers
-                      value: '1'
-                    - descriptor:
-                        name: Duration
-                      value: 45 min
-            - id: '3'
-              stops:
-                - type: START
-                  location:
-                    descriptor:
-                      name: Dwarka Sector 21
-                    gps: '9.05,12.06'
-                  time:
-                    timestamp: '2021-10-15T00:32:19.000Z'
-                - type: END
-                  location:
-                    descriptor:
-                      name: Shivaji Stadium
-                    gps: '9.07,12.07'
-                  time:
-                    timestamp: '2021-10-15T00:43:21.000Z'
-              vehicle:
-                category: BUS
-              tags:
-                - list:
-                    - descriptor:
-                        name: Transfers
-                      value: '0'
-                    - descriptor:
-                        name: Duration
-                      value: 30 min
-          tags:
-            - list:
                 - descriptor:
-                    name: Timetable
-                  value: 'https://dtc.delhi.gov.in/timetable.html'
-                - descriptor:
-                    name: GTFS Schedule
-                  value: 'https://dtc.delhi.gov.in/gtfs'
-                  display: false
+                    code: ROUTE_INFO
+                  list:
+                    - descriptor:
+                        code: ROUTE_NUMBER
+                      value: '242'
+                    - descriptor:
+                        code: DURATION
+                      value: 'PT30M'
+            - id: 'F2'
+              stops:
+                - type: START
+                  location:
+                    descriptor:
+                      name: kashmere gate
+                      code: KASHMERE_GATE
+                    gps: '28.666576, 77.233332'
+                - type: INTERMEDIATE_STOP
+                  instructions:
+                    name: Stop 1
+                  location:
+                    descriptor:
+                      name: Indira Gandhi Technical Unviversity
+                      code: INDIRA_GANDHI_TECHNICAL_UNIV
+                    gps: '28.624097, 77.204991'    
+                - type: END
+                  location:
+                    descriptor:
+                      name: Greater Kailash
+                      code: GREATER_KAILASH
+                    gps: '28.548230, 77.238039'
+              vehicle:
+                category: BUS
+            - id: 'F3'
+              stops:
+                - type: START
+                  location:
+                    descriptor:
+                      name: gpo
+                      code: GPO
+                    gps: '28.623097,77.209917'   
+                - type: END
+                  location:
+                    descriptor:
+                      name: Greater Kailash
+                      code: GREATER_KAILASH
+                    gps: '28.548230, 77.238039'
+              vehicle:
+                category: BUS
+          # tags:
+          #   - list:
+          #     - descriptor:
+          #         name: Timetable
+          #       value: 'https://dtc.delhi.gov.in/timetable.html'
