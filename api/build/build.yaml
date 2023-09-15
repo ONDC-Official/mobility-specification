@@ -1391,12 +1391,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
-        '@ondc/org/provider_name':
-          type: string
-        '@ondc/org/category':
-          type: string
-        '@ondc/org/TAT':
-          type: string
     FulfillmentState:
       description: Describes the state of fulfillment
       type: object
@@ -2960,6 +2954,48 @@ x-tags:
                   description: >-
                     count of trips already utilized in reference to the
                     fulfullment
+            - code: VEHICLE_GRID
+              description: vehicle details to identify specifics of vehicle
+              reference: <PR/Issue/Discussion Links md format text>
+              list:
+                - code: X_MAX
+                  description: describes the max x-axis co-ordinate of vehicle.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: Y_MAX
+                  description: describes the max y-axis co-ordinate of vehicle.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: Z_MAX
+                  description: describes the max z-axis co-ordinate of vehicle.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: X_LOBBY_START
+                  description: describes the x-axis starting point.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: X_LOBBY_SIZE
+                  description: describes the x-axis size of lobby.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: Y_LOBBY_START
+                  description: describes the y-axis starting point.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: Y_LOBBY_SIZE
+                  description: describes the y-axis size of lobby.
+                  reference: <PR/Issue/Discussion Links md format text>
+            - code: VEHICLE_AVAIBALITY
+              description: vehicle details to identify specifics of vehicle
+              reference: <PR/Issue/Discussion Links md format text>
+              list:
+                - code: AVALIABLE_SEATS
+                  description: describes available seats present in vehicle.
+                  reference: <PR/Issue/Discussion Links md format text>
+            - code: ROUTE_INFO
+              description: describes the route info.
+              reference: <PR/Issue/Discussion Links md format text>
+              list:
+                - code: ROUTE_NUMBER
+                  description: describes the route number of the journey for bus.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: DURATION
+                  description: describes the duration of a particular route.
+                  reference: <PR/Issue/Discussion Links md format text>
         payment: &ref_7
           tags:
             - code: SETTLEMENT_DETAILS
@@ -12566,14 +12602,16 @@ x-flows:
                         vehicle:
                           category: BUS
                         tags:
-                          - list:
+                          - descriptor:
+                              code: ROUTE_INFO
+                            list:
                               - descriptor:
-                                  name: Transfers
-                                value: '1'
+                                  code: ROUTE_NUMBER
+                                value: '242'
                               - descriptor:
-                                  name: Duration
-                                value: 60 min
-                      - id: '2'
+                                  code: DURATION
+                                value: PT30M
+                      - id: F2
                         stops:
                           - type: START
                             location:
@@ -12597,19 +12635,6 @@ x-flows:
                               gps: 28.548230, 77.238039
                         vehicle:
                           category: BUS
-                        tags:
-                          - list:
-                              - descriptor:
-                                  name: Transfers
-                                value: '1'
-                              - descriptor:
-                                  name: Duration
-                                value: 45 min
-                    tags:
-                      - list:
-                          - descriptor:
-                              name: Timetable
-                            value: https://dtc.delhi.gov.in/timetable.html
       - summary: Selection of specific service
         api: select
         details:
