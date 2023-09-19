@@ -1182,6 +1182,8 @@ components:
       type: object
       additionalProperties: false
       properties:
+        organization:
+          $ref: '#/components/schemas/Organization'
         person:
           $ref: '#/components/schemas/Person'
         contact:
@@ -1299,6 +1301,9 @@ components:
       type: object
       additionalProperties: false
       properties:
+        id:
+          description: The form identifier.
+          type: string
         url:
           description: >-
             The URL from where the form can be fetched. The content fetched from
@@ -1324,9 +1329,32 @@ components:
           enum:
             - text/html
             - application/xml
-        submission_id:
-          type: string
-          format: uuid
+        resubmit:
+          type: boolean
+        multiple_sumbissions:
+          type: boolean
+    FormHead:
+      description: Provides the header information for the xinput.
+      additionalProperties: false
+      type: object
+      properties:
+        descriptor:
+          $ref: '#/components/schemas/Descriptor'
+        index:
+          additionalProperties: false
+          type: object
+          properties:
+            min:
+              type: integer
+            cur:
+              type: integer
+            max:
+              type: integer
+        headings:
+          type: array
+          items:
+            type: string
+            description: The heading names of the forms
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
       type: object
@@ -1391,12 +1419,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
-        '@ondc/org/provider_name':
-          type: string
-        '@ondc/org/category':
-          type: string
-        '@ondc/org/TAT':
-          type: string
     FulfillmentState:
       description: Describes the state of fulfillment
       type: object
@@ -2017,8 +2039,6 @@ components:
             will be sent as url params. Two url param values,
             ```$transaction_id``` and ```$amount``` are mandatory.
           format: uri
-        tl_method:
-          type: string
         params:
           type: object
           properties:
@@ -2060,41 +2080,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
-        '@ondc/org/buyer_app_finder_fee_type':
-          type: string
-        '@ondc/org/buyer_app_finder_fee_amount':
-          type: string
-        '@ondc/org/settlement_details':
-          type: array
-          items:
-            description: Describes a settlement.
-            type: object
-            additionalProperties: false
-            properties:
-              settlement_counterparty:
-                type: string
-              settlement_phase:
-                type: string
-              settlement_type:
-                type: string
-              upi_address:
-                type: string
-              settlement_bank_account_no:
-                type: string
-              settlement_ifsc_code:
-                type: string
-              beneficiary_name:
-                type: string
-              bank_name:
-                type: string
-              branch_name:
-                type: string
-              settlement_reference:
-                type: string
-              settlement_status:
-                type: string
-              settlement_timestamp:
-                type: string
     Person:
       description: Describes a person as any individual
       type: object
@@ -2488,14 +2473,14 @@ components:
       type: object
       additionalProperties: false
       properties:
+        order_id:
+          type: string
         ref_id:
           type: string
         callback_phone:
           type: string
-          format: phone
         phone:
           type: string
-          format: phone
         email:
           type: string
           format: email
@@ -2690,8 +2675,28 @@ components:
       type: object
       additionalProperties: false
       properties:
+        head:
+          $ref: '#/components/schemas/FormHead'
         form:
           $ref: '#/components/schemas/Form'
+        form_response:
+          description: Describes the response to a form submission
+          type: object
+          additionalProperties: false
+          properties:
+            status:
+              description: Contains the status of form submission.
+              type: boolean
+              default: true
+            signature:
+              type: string
+            submission_id:
+              type: string
+              format: uuid
+            errors:
+              type: array
+              items:
+                $ref: '#/components/schemas/Error'
         required:
           description: >-
             Indicates whether the form data is mandatorily required by the BPP
@@ -12892,15 +12897,15 @@ x-flows:
                 country:
                   code: IND
                 city:
-                  code: std:080
+                  code: std:011
               domain: ONDC:TRV11
               timestamp: '2023-03-23T04:41:16.000Z'
-              bap_id: example-test-bap.com
-              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              bap_id: api.example-bap.com
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
               version: 2.0.0
               action: search
-              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
             message:
               intent:
@@ -12912,6 +12917,15 @@ x-flows:
                     - type: END
                       location:
                         gps: 28.548230, 77.238039
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
       - summary: >-
           Return a bus catalog of all intracity bus services from point A(gps)
           to point B(gps)
@@ -12934,11 +12948,11 @@ x-flows:
               domain: ONDC:TRV11
               action: on_search
               version: 2.0.0
-              bap_id: mock_bap.com
-              bap_uri: https://mock_bap.com/beckn/
+              bap_id: api.example-bap.com
+              bap_uri: https://api.example-bap.com/beckn/
               bpp_id: api.transit-solutions.com
               bpp_uri: https://api.transit-solutions.com/beckn/
-              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
               timestamp: '2021-03-23T10:00:40.065Z'
             message:
@@ -12967,7 +12981,6 @@ x-flows:
                               size_type: xs
                         fulfillment_ids:
                           - F1
-                          - F2
                         price:
                           currency: INR
                           value: '35'
@@ -12978,6 +12991,136 @@ x-flows:
                             count: 1
                       - id: I2
                         descriptor:
+                          name: Special Fair Single Journey Ticket
+                          code: SFSJT
+                          images:
+                            - url: >-
+                                https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                              size_type: xs
+                        fulfillment_ids:
+                          - F1
+                        price:
+                          currency: INR
+                          value: '25'
+                        quantity:
+                          maximum:
+                            count: 6
+                          minimum:
+                            count: 1
+                        tags:
+                          - descriptor:
+                              code: FARE_POLICY
+                            list:
+                              - descriptor:
+                                  code: RESTRICTED_PERSON
+                                value: STUDENT
+                              - descriptor:
+                                  code: RESTRICTION_PROOF
+                                value: STUDENT_ID
+                      - id: I3
+                        descriptor:
+                          name: Special Fair Single Journey Ticket
+                          code: SFSJT
+                          images:
+                            - url: >-
+                                https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                              size_type: xs
+                        fulfillment_ids:
+                          - F1
+                        price:
+                          currency: INR
+                          value: '20'
+                        quantity:
+                          maximum:
+                            count: 6
+                          minimum:
+                            count: 1
+                        tags:
+                          - descriptor:
+                              code: FARE_POLICY
+                            list:
+                              - descriptor:
+                                  code: RESTRICTED_PERSON
+                                value: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: RESTRICTION_PROOF
+                                value: GOVERMENT_ID
+                      - id: I4
+                        descriptor:
+                          name: Single Journey Ticket
+                          code: SJT
+                          images:
+                            - url: >-
+                                https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                              size_type: xs
+                        fulfillment_ids:
+                          - F3
+                        price:
+                          currency: INR
+                          value: '30'
+                        quantity:
+                          maximum:
+                            count: 6
+                          minimum:
+                            count: 1
+                      - id: I5
+                        descriptor:
+                          name: Special Fair Single Journey Ticket
+                          code: SFSJT
+                          images:
+                            - url: >-
+                                https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                              size_type: xs
+                        fulfillment_ids:
+                          - F3
+                        price:
+                          currency: INR
+                          value: '20'
+                        quantity:
+                          maximum:
+                            count: 6
+                          minimum:
+                            count: 1
+                        tags:
+                          - descriptor:
+                              code: FARE_POLICY
+                            list:
+                              - descriptor:
+                                  code: RESTRICTED_PERSON
+                                value: STUDENT
+                              - descriptor:
+                                  code: RESTRICTION_PROOF
+                                value: STUDENT_ID
+                      - id: I6
+                        descriptor:
+                          name: Special Fair Single Journey Ticket
+                          code: SFSJT
+                          images:
+                            - url: >-
+                                https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                              size_type: xs
+                        fulfillment_ids:
+                          - F3
+                        price:
+                          currency: INR
+                          value: '15'
+                        quantity:
+                          maximum:
+                            count: 6
+                          minimum:
+                            count: 1
+                        tags:
+                          - descriptor:
+                              code: FARE_POLICY
+                            list:
+                              - descriptor:
+                                  code: RESTRICTED_PERSON
+                                value: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: RESTRICTION_PROOF
+                                value: GOVERMENT_ID
+                      - id: I7
+                        descriptor:
                           name: Journey Pass
                           code: PASS
                           images:
@@ -12985,30 +13128,14 @@ x-flows:
                                 https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
                               size_type: xs
                         fulfillment_ids:
-                          - F2
+                          - F1
+                          - F3
                         price:
                           currency: INR
                           value: '350'
                         quantity:
                           maximum:
                             count: 1
-                          minimum:
-                            count: 1
-                      - id: I3
-                        descriptor:
-                          name: Round Journey Ticket
-                          images:
-                            - url: >-
-                                https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
-                              size_type: xs
-                        fulfillment_ids:
-                          - F2
-                        price:
-                          currency: INR
-                          value: '60'
-                        quantity:
-                          maximum:
-                            count: 6
                           minimum:
                             count: 1
                     fulfillments:
@@ -13034,7 +13161,7 @@ x-flows:
                             location:
                               descriptor:
                                 name: Yamuna Bazar
-                                code: YAMUNA BAZAR
+                                code: YAMUNA_BAZAR
                               gps: 28.625972,77.209917
                           - type: INTERMEDIATE_STOP
                             instructions:
@@ -13065,15 +13192,12 @@ x-flows:
                               code: ROUTE_INFO
                             list:
                               - descriptor:
-                                  code: ROUTE_NUMBER
+                                  code: ROUTE_ID
                                 value: '242'
                               - descriptor:
-                                  code: DURATION
-                                value: PT30M
-                              - descriptor:
-                                  code: ROOT_DIRECTION
+                                  code: ROUTE_DIRECTION
                                 value: UP
-                      - id: F2
+                      - id: F3
                         stops:
                           - type: START
                             location:
@@ -13102,14 +13226,11 @@ x-flows:
                               code: ROUTE_INFO
                             list:
                               - descriptor:
-                                  code: ROUTE_NUMBER
-                                value: '242'
+                                  code: ROUTE_ID
+                                value: '241'
                               - descriptor:
-                                  code: DURATION
-                                value: PT30M
-                              - descriptor:
-                                  code: ROOT_DIRECTION
-                                value: DOWN
+                                  code: ROUTE_DIRECTION
+                                value: UP
       - summary: Selection of specific service
         api: select
         details:
@@ -13127,14 +13248,14 @@ x-flows:
                 country:
                   code: IND
                 city:
-                  code: std:080
+                  code: std:011
               domain: ONDC:TRV11
               action: select
               version: 2.0.0
-              bap_id: example-bap.com
-              bap_uri: https://mock_bap.com/beckn/
-              bpp_id: kmrl-bpp.com
-              bpp_uri: https://kmrl-bpp.com/beckn/
+              bap_id: api.example-bap.com
+              bap_uri: https://api.example-bap.com/beckn/
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: c5342e0e-d1ae-4d8b-89d1-b5242f5cd601
               timestamp: '2021-03-23T10:00:40.065Z'
@@ -13169,16 +13290,15 @@ x-flows:
               domain: ONDC:TRV11
               action: on_select
               version: 2.0.0
-              bap_id: example-bap.com
-              bap_uri: https://mock_bap.com/beckn/
-              bpp_id: transit-solutions.com
+              bap_id: api.example-bap.com
+              bap_uri: https://api.example-bap.com/beckn/
+              bpp_id: api.transit-solutions.com
               bpp_uri: https://api.transit-solutions.com/beckn/
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: c5342e0e-d1ae-4d8b-89d1-b5242f5cd601
               timestamp: '2021-03-23T10:00:40.065Z'
             message:
               order:
-                id: O1
                 items:
                   - id: I1
                     descriptor:
@@ -13196,11 +13316,6 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
-                    tags:
-                      - list:
-                          - descriptor:
-                              name: Validity
-                            value: 24 hours from the time of purchase
                 provider:
                   id: P1
                   descriptor:
@@ -13232,12 +13347,11 @@ x-flows:
                         location:
                           descriptor:
                             name: Yamuna Bazar
-                            code: YAMUNA BAZAR
+                            code: YAMUNA_BAZAR
                           gps: 28.625972,77.209917
                       - type: INTERMEDIATE_STOP
                         instructions:
                           name: Stop 3
-                          short_desc: Please Change here for next stop
                         location:
                           descriptor:
                             name: dhaula kuan
@@ -13264,11 +13378,11 @@ x-flows:
                           code: ROUTE_INFO
                         list:
                           - descriptor:
-                              code: ROUTE_NUMBER
+                              code: ROUTE_ID
                             value: '242'
                           - descriptor:
-                              code: DURATION
-                            value: PT30M
+                              code: ROUTE_DIRECTION
+                            value: UP
                 quote:
                   price:
                     value: '70'
@@ -13279,7 +13393,7 @@ x-flows:
                         id: I1
                       price:
                         currency: INR
-                        value: '35'
+                        value: '70'
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -13295,14 +13409,14 @@ x-flows:
                 country:
                   code: IND
                 city:
-                  code: std:080
+                  code: std:011
               domain: ONDC:TRV11
               action: init
               version: 2.0.0
-              bap_id: mock_bap.com
-              bap_uri: https://mock_bap.com/beckn/
-              bpp_id: kmrl-bpp.com
-              bpp_uri: https://kmrl-bpp.com/beckn/
+              bap_id: api.example-bap.com
+              bap_uri: https://api.example-bap.com/beckn/
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: 85216bd7-8ce4-4e27-b0f6-07287e5ede32
               timestamp: '2021-03-23T10:00:40.065Z'
@@ -13353,9 +13467,9 @@ x-flows:
               domain: ONDC:TRV11
               action: on_init
               version: 2.0.0
-              bap_id: example-bap.com
+              bap_id: api.example-bap.com
               bap_uri: https://api.example-bap.com/beckn/
-              bpp_id: transit-solutions.com
+              bpp_id: api.transit-solutions.com
               bpp_uri: https://api.transit-solutions.com/beckn/
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: 85216bd7-8ce4-4e27-b0f6-07287e5ede32
@@ -13380,25 +13494,14 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
-                    tags:
-                      - descriptor:
-                          code: ROUTE_INFO
-                        list:
-                          - descriptor:
-                              code: ROUTE_NUMBER
-                            value: '242'
-                          - descriptor:
-                              code: DURATION
-                            value: PT30M
-                          - descriptor:
-                              code: ROOT_DIRECTION
-                            value: UP
                 provider:
                   id: P1
                   descriptor:
-                    name: Delhi Metro Rail Limited
+                    name: Delhi Transport Corporation
                     images:
-                      - url: https://delhimetrorail.com/logos/logo.ico
+                      - url: >-
+                          https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                        size_type: xs
                 fulfillments:
                   - id: F1
                     stops:
@@ -13422,12 +13525,11 @@ x-flows:
                         location:
                           descriptor:
                             name: Yamuna Bazar
-                            code: YAMUNA BAZAR
+                            code: YAMUNA_BAZAR
                           gps: 28.625972,77.209917
-                      - type: TRANSIT_STOP
+                      - type: INTERMEDIATE_STOP
                         instructions:
                           name: Stop 3
-                          short_desc: Please Change here for next stop
                         location:
                           descriptor:
                             name: dhaula kuan
@@ -13449,6 +13551,16 @@ x-flows:
                           gps: 28.548230, 77.238039
                     vehicle:
                       category: BUS
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                        list:
+                          - descriptor:
+                              code: ROUTE_ID
+                            value: '242'
+                          - descriptor:
+                              code: ROUTE_DIRECTION
+                            value: UP
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
@@ -13468,7 +13580,7 @@ x-flows:
                         id: I1
                       price:
                         currency: INR
-                        value: '35'
+                        value: '70'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -13508,14 +13620,14 @@ x-flows:
                 country:
                   code: IND
                 city:
-                  code: std:080
+                  code: std:011
               domain: ONDC:TRV11
               action: confirm
               version: 2.0.0
-              bap_id: mock_bap.com
-              bap_uri: https://mock_bap.com/beckn/
-              bpp_id: kmrl-bpp.com
-              bpp_uri: https://kmrl-bpp.com/beckn/
+              bap_id: api.example-bap.com
+              bap_uri: https://api.example-bap.com/beckn/
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: 33145cb7-88f8-4f41-9784-b1a760c7a4eb
               timestamp: '2021-03-23T10:00:40.065Z'
@@ -13579,6 +13691,7 @@ x-flows:
             message:
               order:
                 id: O1
+                status: ACTIVE
                 items:
                   - id: I1
                     descriptor:
@@ -13596,25 +13709,14 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
-                    tags:
-                      - descriptor:
-                          code: ROUTE_INFO
-                        list:
-                          - descriptor:
-                              code: ROUTE_NUMBER
-                            value: '242'
-                          - descriptor:
-                              code: DURATION
-                            value: PT30M
-                          - descriptor:
-                              code: ROOT_DIRECTION
-                            value: UP
                 provider:
                   id: P1
                   descriptor:
-                    name: Delhi Metro Rail Limited
+                    name: Delhi Transport Corporation
                     images:
-                      - url: https://delhimetrorail.com/logos/logo.ico
+                      - url: >-
+                          https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                        size_type: xs
                 fulfillments:
                   - id: F1
                     stops:
@@ -13643,12 +13745,11 @@ x-flows:
                         location:
                           descriptor:
                             name: Yamuna Bazar
-                            code: YAMUNA BAZAR
+                            code: YAMUNA_BAZAR
                           gps: 28.625972,77.209917
-                      - type: TRANSIT_STOP
+                      - type: INTERMEDIATE_STOP
                         instructions:
                           name: Stop 3
-                          short_desc: Please Change here for next stop
                         location:
                           descriptor:
                             name: dhaula kuan
@@ -13670,6 +13771,16 @@ x-flows:
                           gps: 28.548230, 77.238039
                     vehicle:
                       category: BUS
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                        list:
+                          - descriptor:
+                              code: ROUTE_ID
+                            value: '242'
+                          - descriptor:
+                              code: ROUTE_DIRECTION
+                            value: UP
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
@@ -13689,7 +13800,7 @@ x-flows:
                         id: I1
                       price:
                         currency: INR
-                        value: '35'
+                        value: '70'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -13734,9 +13845,9 @@ x-flows:
               domain: ONDC:TRV11
               action: update
               version: 2.0.0
-              bap_id: example-bap.com
+              bap_id: api.example-bap.com
               bap_uri: https://api.example-bap.com/beckn/
-              bpp_id: transit-solutions.com
+              bpp_id: api.transit-solutions.com
               bpp_uri: https://api.transit-solutions.com/beckn/
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: 85216bd7-8ce4-4e27-b0f6-07287e5ede32
@@ -13795,25 +13906,14 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
-                    tags:
-                      - descriptor:
-                          code: ROUTE_INFO
-                        list:
-                          - descriptor:
-                              code: ROUTE_NUMBER
-                            value: '242'
-                          - descriptor:
-                              code: DURATION
-                            value: PT30M
-                          - descriptor:
-                              code: ROOT_DIRECTION
-                            value: UP
                 provider:
                   id: P1
                   descriptor:
-                    name: Delhi Metro Rail Limited
+                    name: Delhi Transport Corporation
                     images:
-                      - url: https://delhimetrorail.com/logos/logo.ico
+                      - url: >-
+                          https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                        size_type: xs
                 fulfillments:
                   - id: F1
                     stops:
@@ -13842,12 +13942,11 @@ x-flows:
                         location:
                           descriptor:
                             name: Yamuna Bazar
-                            code: YAMUNA BAZAR
+                            code: YAMUNA_BAZAR
                           gps: 28.625972,77.209917
-                      - type: TRANSIT_STOP
+                      - type: INTERMEDIATE_STOP
                         instructions:
                           name: Stop 3
-                          short_desc: Please Change here for next stop
                         location:
                           descriptor:
                             name: dhaula kuan
@@ -13869,6 +13968,16 @@ x-flows:
                           gps: 28.548230, 77.238039
                     vehicle:
                       category: BUS
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                        list:
+                          - descriptor:
+                              code: ROUTE_ID
+                            value: '242'
+                          - descriptor:
+                              code: ROUTE_DIRECTION
+                            value: UP
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
@@ -13876,7 +13985,7 @@ x-flows:
                       percentage: '0'
                 billing:
                   name: John Doe
-                  email: john_doe@example.com
+                  email: john.doe@example.com
                   phone: +91-9897867564
                 quote:
                   price:
@@ -13935,16 +14044,16 @@ x-flows:
               domain: ONDC:TRV10
               action: status
               version: 2.0.0
-              bap_id: example-bap.com
+              bap_id: api.example-bap.com
               bap_uri: https://api.example-bap.com/beckn/
-              bpp_id: transit-solutions.com
+              bpp_id: api.transit-solutions.com
               bpp_uri: https://api.transit-solutions.com/beckn/
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
               timestamp: '2021-03-23T10:00:40.065Z'
               ttl: PT30S
             message:
-              order_id: 077b248f
+              order_id: O1
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -13992,25 +14101,14 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
-                    tags:
-                      - descriptor:
-                          code: ROUTE_INFO
-                        list:
-                          - descriptor:
-                              code: ROUTE_NUMBER
-                            value: '242'
-                          - descriptor:
-                              code: DURATION
-                            value: PT30M
-                          - descriptor:
-                              code: ROOT_DIRECTION
-                            value: UP
                 provider:
                   id: P1
                   descriptor:
-                    name: Delhi Metro Rail Limited
+                    name: Delhi Transport Corporation
                     images:
-                      - url: https://delhimetrorail.com/logos/logo.ico
+                      - url: >-
+                          https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                        size_type: xs
                 fulfillments:
                   - id: F1
                     stops:
@@ -14020,6 +14118,11 @@ x-flows:
                             name: kashmere gate
                             code: KASHMERE_GATE
                           gps: 28.666576, 77.233332
+                        authorization:
+                          type: QR
+                          token: >-
+                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2021-03-23T23:59:59.999Z'
                       - type: INTERMEDIATE_STOP
                         instructions:
                           name: Stop 1
@@ -14034,12 +14137,11 @@ x-flows:
                         location:
                           descriptor:
                             name: Yamuna Bazar
-                            code: YAMUNA BAZAR
+                            code: YAMUNA_BAZAR
                           gps: 28.625972,77.209917
-                      - type: TRANSIT_STOP
+                      - type: INTERMEDIATE_STOP
                         instructions:
                           name: Stop 3
-                          short_desc: Please Change here for next stop
                         location:
                           descriptor:
                             name: dhaula kuan
@@ -14061,6 +14163,16 @@ x-flows:
                           gps: 28.548230, 77.238039
                     vehicle:
                       category: BUS
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                        list:
+                          - descriptor:
+                              code: ROUTE_ID
+                            value: '242'
+                          - descriptor:
+                              code: ROUTE_DIRECTION
+                            value: UP
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
@@ -14068,7 +14180,7 @@ x-flows:
                       percentage: '0'
                 billing:
                   name: John Doe
-                  email: john_doe@example.com
+                  email: john.doe@example.com
                   phone: +91-9897867564
                 quote:
                   price:
@@ -14101,6 +14213,13 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_TYPE
                             value: UPI
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
   - summary: Intracity - Code Based Flow
     details:
       - description: >-
@@ -14109,7 +14228,7 @@ x-flows:
           A(code) to localtion B(code)
         reference: if any
     steps:
-      - summary: Search for the intracity bus from a point(code)
+      - summary: Search for all the intracity bus for a city
         api: search
         details:
           - description: >-
@@ -14127,18 +14246,27 @@ x-flows:
                   code: std:011
               domain: ONDC:TRV11
               timestamp: '2023-03-23T04:41:16.000Z'
-              bap_id: example-test-bap.com
-              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              bap_id: api.example-bap.com
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
               version: 2.0.0
               action: search
-              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
             message:
               intent:
                 fulfillment:
                   vehicle:
                     category: BUS
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
       - summary: >-
           Return a bus catalog of all intracity bus services from the given
           point(code)
@@ -14149,7 +14277,7 @@ x-flows:
               used for transit using bus service from a given point(code)
         reference: if any
         example:
-          summary: Return a public transit catalog of fare products
+          summary: Return a public transit catalog of all routes in serverd
           value:
             context:
               location:
@@ -14160,11 +14288,11 @@ x-flows:
               domain: ONDC:TRV11
               action: on_search
               version: 2.0.0
-              bap_id: mock_bap.com
-              bap_uri: https://mock_bap.com/beckn/
+              bap_id: api.example-bap.com
+              bap_uri: https://api.example-bap.com/beckn/
               bpp_id: api.transit-solutions.com
               bpp_uri: https://api.transit-solutions.com/beckn/
-              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
               timestamp: '2021-03-23T10:00:40.065Z'
             message:
@@ -14205,7 +14333,7 @@ x-flows:
                             location:
                               descriptor:
                                 name: Yamuna Bazar
-                                code: YAMUNA BAZAR
+                                code: YAMUNA_BAZAR
                               gps: 28.625972,77.209917
                           - type: INTERMEDIATE_STOP
                             instructions:
@@ -14236,15 +14364,70 @@ x-flows:
                               code: ROUTE_INFO
                             list:
                               - descriptor:
-                                  code: ROUTE_NUMBER
+                                  code: ROUTE_ID
                                 value: '242'
                               - descriptor:
-                                  code: DURATION
-                                value: PT30M
-                              - descriptor:
-                                  code: ROOT_DIRECTION
+                                  code: ROUTE_DIRECTION
                                 value: UP
                       - id: F2
+                        stops:
+                          - type: START
+                            location:
+                              descriptor:
+                                name: Greater Kailash
+                                code: GREATER_KAILASH
+                              gps: 28.548230, 77.238039
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 1
+                            location:
+                              descriptor:
+                                name: gpo
+                                code: GPO
+                              gps: 28.623097,77.209917
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 2
+                            location:
+                              descriptor:
+                                name: dhaula kuan
+                                code: DHAULA_KUAN
+                              gps: 28.610972,77.201717
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 3
+                            location:
+                              descriptor:
+                                name: Yamuna Bazar
+                                code: YAMUNA_BAZAR
+                              gps: 28.625972,77.209917
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 4
+                            location:
+                              descriptor:
+                                name: Indira Gandhi Technical Unviversity
+                                code: INDIRA_GANDHI_TECHNICAL_UNIV
+                              gps: 28.624097, 77.204991
+                          - type: END
+                            location:
+                              descriptor:
+                                name: kashmere gate
+                                code: KASHMERE_GATE
+                              gps: 28.666576, 77.233332
+                        vehicle:
+                          category: BUS
+                        tags:
+                          - descriptor:
+                              code: ROUTE_INFO
+                            list:
+                              - descriptor:
+                                  code: ROUTE_ID
+                                value: '242'
+                              - descriptor:
+                                  code: ROUTE_DIRECTION
+                                value: DOWN
+                      - id: F3
                         stops:
                           - type: START
                             location:
@@ -14268,6 +14451,50 @@ x-flows:
                               gps: 28.548230, 77.238039
                         vehicle:
                           category: BUS
+                        tags:
+                          - descriptor:
+                              code: ROUTE_INFO
+                            list:
+                              - descriptor:
+                                  code: ROUTE_ID
+                                value: '241'
+                              - descriptor:
+                                  code: ROUTE_DIRECTION
+                                value: UP
+                      - id: F4
+                        stops:
+                          - type: START
+                            location:
+                              descriptor:
+                                name: Greater Kailash
+                                code: GREATER_KAILASH
+                              gps: 28.548230, 77.238039
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 1
+                            location:
+                              descriptor:
+                                name: Indira Gandhi Technical Unviversity
+                                code: INDIRA_GANDHI_TECHNICAL_UNIV
+                              gps: 28.624097, 77.204991
+                          - type: END
+                            location:
+                              descriptor:
+                                name: kashmere gate
+                                code: KASHMERE_GATE
+                              gps: 28.666576, 77.233332
+                        vehicle:
+                          category: BUS
+                        tags:
+                          - descriptor:
+                              code: ROUTE_INFO
+                            list:
+                              - descriptor:
+                                  code: ROUTE_ID
+                                value: '241'
+                              - descriptor:
+                                  code: ROUTE_DIRECTION
+                                value: DOWN
       - summary: Search for the intracity bus from point A to point B
         api: search
         details:
@@ -14286,12 +14513,12 @@ x-flows:
                   code: std:011
               domain: ONDC:TRV11
               timestamp: '2023-03-23T04:41:16.000Z'
-              bap_id: example-test-bap.com
-              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              bap_id: api.example-bap.com
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
               version: 2.0.0
               action: search
-              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
             message:
               intent:
@@ -14300,17 +14527,22 @@ x-flows:
                     - type: START
                       location:
                         descriptor:
-                          name: kashmere gate
                           code: KASHMERE_GATE
-                        gps: 28.666576, 77.233332
                     - type: END
                       location:
                         descriptor:
-                          name: Greater Kailash
                           code: GREATER_KAILASH
-                        gps: 28.548230, 77.238039
                   vehicle:
                     category: BUS
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
       - summary: >-
           Return a bus catalog of all intracity bus services from point A(code)
           to point B(code)
@@ -16123,15 +16355,15 @@ x-examples:
                 domain: ONDC:TRV10
                 action: cancel
                 version: 1.1.0
-                bap_id: example-bap.com
+                bap_id: api.example-bap.com
                 bap_uri: https://api.example-bap.com/beckn/
-                bpp_id: transit-solutions.com
+                bpp_id: api.transit-solutions.com
                 bpp_uri: https://api.transit-solutions.com/beckn/
                 transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
                 message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
                 timestamp: '2021-03-23T10:00:40.065Z'
               message:
-                order_id: b4232ad4-19ee-4c67-9223-a5189b13a741
+                order_id: O1
       status:
         examples:
           - *ref_60
