@@ -1182,8 +1182,6 @@ components:
       type: object
       additionalProperties: false
       properties:
-        organization:
-          $ref: '#/components/schemas/Organization'
         person:
           $ref: '#/components/schemas/Person'
         contact:
@@ -1301,9 +1299,6 @@ components:
       type: object
       additionalProperties: false
       properties:
-        id:
-          description: The form identifier.
-          type: string
         url:
           description: >-
             The URL from where the form can be fetched. The content fetched from
@@ -1329,32 +1324,9 @@ components:
           enum:
             - text/html
             - application/xml
-        resubmit:
-          type: boolean
-        multiple_sumbissions:
-          type: boolean
-    FormHead:
-      description: Provides the header information for the xinput.
-      additionalProperties: false
-      type: object
-      properties:
-        descriptor:
-          $ref: '#/components/schemas/Descriptor'
-        index:
-          additionalProperties: false
-          type: object
-          properties:
-            min:
-              type: integer
-            cur:
-              type: integer
-            max:
-              type: integer
-        headings:
-          type: array
-          items:
-            type: string
-            description: The heading names of the forms
+        submission_id:
+          type: string
+          format: uuid
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
       type: object
@@ -2039,6 +2011,8 @@ components:
             will be sent as url params. Two url param values,
             ```$transaction_id``` and ```$amount``` are mandatory.
           format: uri
+        tl_method:
+          type: string
         params:
           type: object
           properties:
@@ -2080,6 +2054,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        '@ondc/org/buyer_app_finder_fee_type':
+          type: string
+        '@ondc/org/buyer_app_finder_fee_amount':
+          type: string
+        '@ondc/org/settlement_details':
+          type: array
+          items:
+            description: Describes a settlement.
+            type: object
+            additionalProperties: false
+            properties:
+              settlement_counterparty:
+                type: string
+              settlement_phase:
+                type: string
+              settlement_type:
+                type: string
+              upi_address:
+                type: string
+              settlement_bank_account_no:
+                type: string
+              settlement_ifsc_code:
+                type: string
+              beneficiary_name:
+                type: string
+              bank_name:
+                type: string
+              branch_name:
+                type: string
+              settlement_reference:
+                type: string
+              settlement_status:
+                type: string
+              settlement_timestamp:
+                type: string
     Person:
       description: Describes a person as any individual
       type: object
@@ -2473,14 +2482,14 @@ components:
       type: object
       additionalProperties: false
       properties:
-        order_id:
-          type: string
         ref_id:
           type: string
         callback_phone:
           type: string
+          format: phone
         phone:
           type: string
+          format: phone
         email:
           type: string
           format: email
@@ -2675,28 +2684,8 @@ components:
       type: object
       additionalProperties: false
       properties:
-        head:
-          $ref: '#/components/schemas/FormHead'
         form:
           $ref: '#/components/schemas/Form'
-        form_response:
-          description: Describes the response to a form submission
-          type: object
-          additionalProperties: false
-          properties:
-            status:
-              description: Contains the status of form submission.
-              type: boolean
-              default: true
-            signature:
-              type: string
-            submission_id:
-              type: string
-              format: uuid
-            errors:
-              type: array
-              items:
-                $ref: '#/components/schemas/Error'
         required:
           description: >-
             Indicates whether the form data is mandatorily required by the BPP
@@ -3160,7 +3149,7 @@ x-flows:
               Provider plateform sends the catalog of all the service that can
               be used for transit using metro in the city
         reference: if any
-        example: &ref_43
+        example: &ref_50
           summary: >-
             Return a metro catalog of available fulfillments based on search by
             city
@@ -5078,7 +5067,7 @@ x-flows:
               Users searches over the network to avail the metro mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_42
+        example: &ref_49
           summary: Search for a public mode of transit from a specific position
           value:
             context:
@@ -6111,7 +6100,7 @@ x-flows:
               Provider platform provides the latest update on ride details to
               the consumer
         reference: if any
-        example: &ref_45
+        example: &ref_52
           summary: Return updated order with payment status
           value:
             context:
@@ -7105,7 +7094,7 @@ x-flows:
         details:
           - description: Consumer platform requests for cancellation of ride
         reference: if any
-        example: &ref_44
+        example: &ref_51
           summary: Cancel a ride with user provided information
           value:
             context:
@@ -10740,7 +10729,7 @@ x-flows:
               Users searches over the network to avail the intercity bus mode of
               transport based on gps
         reference: if any
-        example: &ref_48
+        example: &ref_55
           summary: Search for all services from given start and end location(gps)
           value:
             context:
@@ -10901,7 +10890,7 @@ x-flows:
               Users searches over the network to avail the intercity bus mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_49
+        example: &ref_56
           summary: Search for all services from given start and end location(gps)
           value:
             context:
@@ -12147,7 +12136,7 @@ x-flows:
         details:
           - description: Provider platform provides the ride details with updated context.
         reference: if any
-        example: &ref_50
+        example: &ref_57
           summary: Return updated order with customer details
           value:
             context:
@@ -12511,7 +12500,7 @@ x-flows:
               Users searches over the network to avail the intercity bus mode of
               transport based on station code
         reference: if any
-        example: &ref_46
+        example: &ref_53
           summary: Search for all services form the given start location(code)
           value:
             context:
@@ -12561,7 +12550,7 @@ x-flows:
               Users searches over the network to avail the intercity bus mode of
               transport from one station to another
         reference: if any
-        example: &ref_47
+        example: &ref_54
           summary: Search for all services from given start and end location(code)
           value:
             context:
@@ -12689,7 +12678,7 @@ x-flows:
         details:
           - description: Provider platform provides the ride details with updated context.
         reference: if any
-        example: &ref_51
+        example: &ref_58
           summary: Return updated order with agent details
           value:
             context:
@@ -12887,7 +12876,7 @@ x-flows:
               Users searches over the network to avail the intracity bus mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_52
+        example: &ref_59
           summary: >-
             Search for intra city bus service mode of transit from a specific
             position
@@ -12927,7 +12916,7 @@ x-flows:
               used for transit using bus service from point A(gps) to point
               B(gps)
         reference: if any
-        example: &ref_56
+        example: &ref_42
           summary: Return a public transit catalog of fare products
           value:
             context:
@@ -13041,7 +13030,7 @@ x-flows:
                                 name: Yamuna Bazar
                                 code: YAMUNA BAZAR
                               gps: 28.625972,77.209917
-                          - type: END
+                          - type: INTERMEDIATE_STOP
                             instructions:
                               name: Stop 3
                             location:
@@ -13049,6 +13038,20 @@ x-flows:
                                 name: dhaula kuan
                                 code: DHAULA_KUAN
                               gps: 28.610972,77.201717
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 4
+                            location:
+                              descriptor:
+                                name: gpo
+                                code: GPO
+                              gps: 28.623097,77.209917
+                          - type: END
+                            location:
+                              descriptor:
+                                name: Greater Kailash
+                                code: GREATER_KAILASH
+                              gps: 28.548230, 77.238039
                         vehicle:
                           category: BUS
                         tags:
@@ -13061,6 +13064,9 @@ x-flows:
                               - descriptor:
                                   code: DURATION
                                 value: PT30M
+                              - descriptor:
+                                  code: ROOT_DIRECTION
+                                value: UP
                       - id: F2
                         stops:
                           - type: START
@@ -13085,22 +13091,19 @@ x-flows:
                               gps: 28.548230, 77.238039
                         vehicle:
                           category: BUS
-                      - id: F3
-                        stops:
-                          - type: START
-                            location:
-                              descriptor:
-                                name: gpo
-                                code: GPO
-                              gps: 28.623097,77.209917
-                          - type: END
-                            location:
-                              descriptor:
-                                name: Greater Kailash
-                                code: GREATER_KAILASH
-                              gps: 28.548230, 77.238039
-                        vehicle:
-                          category: BUS
+                        tags:
+                          - descriptor:
+                              code: ROUTE_INFO
+                            list:
+                              - descriptor:
+                                  code: ROUTE_NUMBER
+                                value: '242'
+                              - descriptor:
+                                  code: DURATION
+                                value: PT30M
+                              - descriptor:
+                                  code: ROOT_DIRECTION
+                                value: DOWN
       - summary: Selection of specific service
         api: select
         details:
@@ -13108,7 +13111,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the necessary details
         reference: if any
-        example: &ref_53
+        example: &ref_43
           summary: >-
             Get a quote for a fare product selected from a intra city bus
             service catalog
@@ -13148,7 +13151,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: &ref_57
+        example: &ref_44
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -13260,6 +13263,9 @@ x-flows:
                           - descriptor:
                               code: DURATION
                             value: PT30M
+                          - descriptor:
+                              code: ROOT_DIRECTION
+                            value: UP
                 quote:
                   price:
                     value: '70'
@@ -13278,7 +13284,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: &ref_54
+        example: &ref_45
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -13330,7 +13336,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: &ref_58
+        example: &ref_46
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -13341,9 +13347,9 @@ x-flows:
                   code: IND
                 city:
                   code: std:011
-              domain: ONDC:TRV10
+              domain: ONDC:TRV11
               action: on_init
-              version: 1.0.0
+              version: 2.0.0
               bap_id: example-bap.com
               bap_uri: https://api.example-bap.com/beckn/
               bpp_id: transit-solutions.com
@@ -13381,6 +13387,9 @@ x-flows:
                           - descriptor:
                               code: DURATION
                             value: PT30M
+                          - descriptor:
+                              code: ROOT_DIRECTION
+                            value: UP
                 provider:
                   id: P1
                   descriptor:
@@ -13488,7 +13497,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmation as per the terms of order
         reference: if any
-        example: &ref_55
+        example: &ref_47
           summary: Confirm ticket booking
           value:
             context:
@@ -13545,7 +13554,7 @@ x-flows:
               Provider platform confirms the order and provides details of the
               journey on confirmation
         reference: if any
-        example: &ref_59
+        example: &ref_48
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -13594,6 +13603,9 @@ x-flows:
                           - descriptor:
                               code: DURATION
                             value: PT30M
+                          - descriptor:
+                              code: ROOT_DIRECTION
+                            value: UP
                 provider:
                   id: P1
                   descriptor:
@@ -13702,6 +13714,662 @@ x-flows:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
+      - summary: Consumer platform updates the billing details
+        api: update
+        details:
+          - description: Consumer platform updates the billing details.
+        reference: if any
+        example:
+          summary: Update customer details for inter-city bus service
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV11
+              action: update
+              version: 2.0.0
+              bap_id: example-bap.com
+              bap_uri: https://api.example-bap.com/beckn/
+              bpp_id: transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: 85216bd7-8ce4-4e27-b0f6-07287e5ede32
+              timestamp: '2021-03-23T10:00:40.065Z'
+            message:
+              update_target: order.billing
+              order:
+                id: O1
+                billing:
+                  name: ''
+                  email: john_doe@example.com
+                  phone: ''
+      - summary: Provider platform provides latest update on the order
+        api: on_update
+        details:
+          - description: >-
+              Provider platform provides the latest details with updated
+              context.
+        reference: if any
+        example:
+          summary: Return confirmed ticket order with payment confirmation
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV11
+              action: on_update
+              version: 2.0.0
+              bap_id: api.example-bap.com
+              bap_uri: https://api.example-bap.com/beckn/
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: 33145cb7-88f8-4f41-9784-b1a760c7a4eb
+              timestamp: '2021-03-23T10:00:40.065Z'
+            message:
+              order:
+                id: O1
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Single Journey Ticket
+                      code: SJT
+                      images:
+                        - url: >-
+                            https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                          size_type: xs
+                    fulfillment_ids:
+                      - F1
+                    price:
+                      currency: INR
+                      value: '35'
+                    quantity:
+                      selected:
+                        count: 2
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                        list:
+                          - descriptor:
+                              code: ROUTE_NUMBER
+                            value: '242'
+                          - descriptor:
+                              code: DURATION
+                            value: PT30M
+                          - descriptor:
+                              code: ROOT_DIRECTION
+                            value: UP
+                provider:
+                  id: P1
+                  descriptor:
+                    name: Delhi Metro Rail Limited
+                    images:
+                      - url: https://delhimetrorail.com/logos/logo.ico
+                fulfillments:
+                  - id: F1
+                    stops:
+                      - type: START
+                        location:
+                          descriptor:
+                            name: kashmere gate
+                            code: KASHMERE_GATE
+                          gps: 28.666576, 77.233332
+                        authorization:
+                          type: QR
+                          token: >-
+                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2021-03-23T23:59:59.999Z'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 1
+                        location:
+                          descriptor:
+                            name: Indira Gandhi Technical Unviversity
+                            code: INDIRA_GANDHI_TECHNICAL_UNIV
+                          gps: 28.624097, 77.204991
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 2
+                        location:
+                          descriptor:
+                            name: Yamuna Bazar
+                            code: YAMUNA BAZAR
+                          gps: 28.625972,77.209917
+                      - type: TRANSIT_STOP
+                        instructions:
+                          name: Stop 3
+                          short_desc: Please Change here for next stop
+                        location:
+                          descriptor:
+                            name: dhaula kuan
+                            code: DHAULA_KUAN
+                          gps: 28.610972,77.201717
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 4
+                        location:
+                          descriptor:
+                            name: gpo
+                            code: GPO
+                          gps: 28.623097,77.209917
+                      - type: END
+                        location:
+                          descriptor:
+                            name: Greater Kailash
+                            code: GREATER_KAILASH
+                          gps: 28.548230, 77.238039
+                    vehicle:
+                      category: BUS
+                cancellation_terms:
+                  - cancel_by:
+                      duration: PT60M
+                    cancellation_fee:
+                      percentage: '0'
+                billing:
+                  name: John Doe
+                  email: john_doe@example.com
+                  phone: +91-9897867564
+                quote:
+                  price:
+                    value: '70'
+                    currency: INR
+                  breakup:
+                    - title: Base Fare
+                      item:
+                        id: I1
+                      price:
+                        currency: INR
+                        value: '35'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
+                      currency: INR
+                      amount: '70'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: SETTLEMENT_DETAILS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+      - summary: Consumer platform requests for latest status
+        api: status
+        details:
+          - description: >-
+              Consumer platform request the provider platform to provide with
+              latest order status.
+        reference: if any
+        example: &ref_60
+          summary: Get latest status of a transit ticket booking
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV10
+              action: status
+              version: 2.0.0
+              bap_id: example-bap.com
+              bap_uri: https://api.example-bap.com/beckn/
+              bpp_id: transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+              timestamp: '2021-03-23T10:00:40.065Z'
+              ttl: PT30S
+            message:
+              order_id: 077b248f
+      - summary: Provider platform provides latest order status
+        api: on_status
+        details:
+          - description: >-
+              Provider platform provides the updated order status to the
+              consumer.
+        reference: if any
+        example:
+          summary: Provider platform provides latest order status
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV11
+              action: on_status
+              version: 2.0.0
+              bap_id: api.example-bap.com
+              bap_uri: https://api.example-bap.com/beckn/
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: 33145cb7-88f8-4f41-9784-b1a760c7a4eb
+              timestamp: '2021-03-23T10:00:40.065Z'
+            message:
+              order:
+                id: O1
+                status: COMPLETE
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Single Journey Ticket
+                      code: SJT
+                      images:
+                        - url: >-
+                            https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                          size_type: xs
+                    fulfillment_ids:
+                      - F1
+                    price:
+                      currency: INR
+                      value: '35'
+                    quantity:
+                      selected:
+                        count: 2
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                        list:
+                          - descriptor:
+                              code: ROUTE_NUMBER
+                            value: '242'
+                          - descriptor:
+                              code: DURATION
+                            value: PT30M
+                          - descriptor:
+                              code: ROOT_DIRECTION
+                            value: UP
+                provider:
+                  id: P1
+                  descriptor:
+                    name: Delhi Metro Rail Limited
+                    images:
+                      - url: https://delhimetrorail.com/logos/logo.ico
+                fulfillments:
+                  - id: F1
+                    stops:
+                      - type: START
+                        location:
+                          descriptor:
+                            name: kashmere gate
+                            code: KASHMERE_GATE
+                          gps: 28.666576, 77.233332
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 1
+                        location:
+                          descriptor:
+                            name: Indira Gandhi Technical Unviversity
+                            code: INDIRA_GANDHI_TECHNICAL_UNIV
+                          gps: 28.624097, 77.204991
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 2
+                        location:
+                          descriptor:
+                            name: Yamuna Bazar
+                            code: YAMUNA BAZAR
+                          gps: 28.625972,77.209917
+                      - type: TRANSIT_STOP
+                        instructions:
+                          name: Stop 3
+                          short_desc: Please Change here for next stop
+                        location:
+                          descriptor:
+                            name: dhaula kuan
+                            code: DHAULA_KUAN
+                          gps: 28.610972,77.201717
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 4
+                        location:
+                          descriptor:
+                            name: gpo
+                            code: GPO
+                          gps: 28.623097,77.209917
+                      - type: END
+                        location:
+                          descriptor:
+                            name: Greater Kailash
+                            code: GREATER_KAILASH
+                          gps: 28.548230, 77.238039
+                    vehicle:
+                      category: BUS
+                cancellation_terms:
+                  - cancel_by:
+                      duration: PT60M
+                    cancellation_fee:
+                      percentage: '0'
+                billing:
+                  name: John Doe
+                  email: john_doe@example.com
+                  phone: +91-9897867564
+                quote:
+                  price:
+                    value: '70'
+                    currency: INR
+                  breakup:
+                    - title: Base Fare
+                      item:
+                        id: I1
+                      price:
+                        currency: INR
+                        value: '35'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
+                      currency: INR
+                      amount: '70'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: SETTLEMENT_DETAILS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+  - summary: Intracity - Code Based Flow
+    details:
+      - description: >-
+          The illustraive flow to perform a transaction of the nature where in a
+          buyer would like to book a bus service(intracity) form location
+          A(code) to localtion B(code)
+        reference: if any
+    steps:
+      - summary: Search for the intracity bus from a point(code)
+        api: search
+        details:
+          - description: >-
+              Users searches over the network to avail the intracity bus mode of
+              transport from a point(code)
+        reference: if any
+        example:
+          summary: Search for intra city bus service, with city and type of vehicle
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV11
+              timestamp: '2023-03-23T04:41:16.000Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              intent:
+                fulfillment:
+                  vehicle:
+                    category: BUS
+      - summary: >-
+          Return a bus catalog of all intracity bus services from the given
+          point(code)
+        api: on_search
+        details:
+          - description: >-
+              Provider platform sends the catalog of all the service that can be
+              used for transit using bus service from a given point(code)
+        reference: if any
+        example:
+          summary: Return a public transit catalog of fare products
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV11
+              action: on_search
+              version: 2.0.0
+              bap_id: mock_bap.com
+              bap_uri: https://mock_bap.com/beckn/
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+              timestamp: '2021-03-23T10:00:40.065Z'
+            message:
+              catalog:
+                descriptor:
+                  name: Transit Solutions
+                  images:
+                    - url: https://transitsolutions.in/logos/logo.ico
+                      size_type: xs
+                providers:
+                  - id: P1
+                    descriptor:
+                      name: Delhi Transport Corporation
+                      images:
+                        - url: >-
+                            https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                          size_type: xs
+                    fulfillments:
+                      - id: F1
+                        stops:
+                          - type: START
+                            location:
+                              descriptor:
+                                name: kashmere gate
+                                code: KASHMERE_GATE
+                              gps: 28.666576, 77.233332
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 1
+                            location:
+                              descriptor:
+                                name: Indira Gandhi Technical Unviversity
+                                code: INDIRA_GANDHI_TECHNICAL_UNIV
+                              gps: 28.624097, 77.204991
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 2
+                            location:
+                              descriptor:
+                                name: Yamuna Bazar
+                                code: YAMUNA BAZAR
+                              gps: 28.625972,77.209917
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 3
+                            location:
+                              descriptor:
+                                name: dhaula kuan
+                                code: DHAULA_KUAN
+                              gps: 28.610972,77.201717
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 4
+                            location:
+                              descriptor:
+                                name: gpo
+                                code: GPO
+                              gps: 28.623097,77.209917
+                          - type: END
+                            location:
+                              descriptor:
+                                name: Greater Kailash
+                                code: GREATER_KAILASH
+                              gps: 28.548230, 77.238039
+                        vehicle:
+                          category: BUS
+                        tags:
+                          - descriptor:
+                              code: ROUTE_INFO
+                            list:
+                              - descriptor:
+                                  code: ROUTE_NUMBER
+                                value: '242'
+                              - descriptor:
+                                  code: DURATION
+                                value: PT30M
+                              - descriptor:
+                                  code: ROOT_DIRECTION
+                                value: UP
+                      - id: F2
+                        stops:
+                          - type: START
+                            location:
+                              descriptor:
+                                name: kashmere gate
+                                code: KASHMERE_GATE
+                              gps: 28.666576, 77.233332
+                          - type: INTERMEDIATE_STOP
+                            instructions:
+                              name: Stop 1
+                            location:
+                              descriptor:
+                                name: Indira Gandhi Technical Unviversity
+                                code: INDIRA_GANDHI_TECHNICAL_UNIV
+                              gps: 28.624097, 77.204991
+                          - type: END
+                            location:
+                              descriptor:
+                                name: Greater Kailash
+                                code: GREATER_KAILASH
+                              gps: 28.548230, 77.238039
+                        vehicle:
+                          category: BUS
+      - summary: Search for the intracity bus from point A to point B
+        api: search
+        details:
+          - description: >-
+              Users searches over the network to avail the intracity bus mode of
+              transport from point A(code) to point B(code)
+        reference: if any
+        example:
+          summary: Search for intra city bus service, with city and type of vehicle
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV11
+              timestamp: '2023-03-23T04:41:16.000Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              intent:
+                fulfillment:
+                  stops:
+                    - type: START
+                      location:
+                        descriptor:
+                          name: kashmere gate
+                          code: KASHMERE_GATE
+                        gps: 28.666576, 77.233332
+                    - type: END
+                      location:
+                        descriptor:
+                          name: Greater Kailash
+                          code: GREATER_KAILASH
+                        gps: 28.548230, 77.238039
+                  vehicle:
+                    category: BUS
+      - summary: >-
+          Return a bus catalog of all intracity bus services from point A(code)
+          to point B(code)
+        api: on_search
+        details:
+          - description: >-
+              Provider platform sends the catalog of all the service that can be
+              used for transit using bus service from point A(code) to point
+              B(code)
+        reference: if any
+        example: *ref_42
+      - summary: Selection of specific service
+        api: select
+        details:
+          - description: >-
+              The end consumer have to select the specific service and would
+              like to have the necessary details
+        reference: if any
+        example: *ref_43
+      - summary: >-
+          Provider platform provides the quote for selected service of intracity
+          bus
+        api: on_select
+        details:
+          - description: >-
+              Provider platform responds with the service detailed information
+              and quotes for the specific service that consumer would like to
+              avail
+        reference: if any
+        example: *ref_44
+      - summary: Consumer platform initializes the order
+        api: init
+        details:
+          - description: >-
+              Consumer platform shares the terms of order and initializes the
+              order
+        reference: if any
+        example: *ref_45
+      - summary: Provider platform accepts/appends the terms of orders
+        api: on_init
+        details:
+          - description: >-
+              Provider platform accepts the terms of orders and appends its own
+              terms and responds with the final draft
+        reference: if any
+        example: *ref_46
+      - summary: Consumer confirms the booking and provides details.
+        api: confirm
+        details:
+          - description: >-
+              Consumer platform confirms the booking and provides all
+              information required for confirmation as per the terms of order
+        reference: if any
+        example: *ref_47
+      - summary: Provider platform confirms the order
+        api: on_confirm
+        details:
+          - description: >-
+              Provider platform confirms the order and provides details of the
+              journey on confirmation
+        reference: if any
+        example: *ref_48
 x-examples:
   metro:
     summary: Metro Use Case Specification
@@ -13722,7 +14390,7 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_42
+          - *ref_49
       select:
         examples:
           - *ref_10
@@ -13760,7 +14428,7 @@ x-examples:
           - *ref_16
       on_search:
         examples:
-          - *ref_43
+          - *ref_50
       on_select:
         examples:
           - *ref_11
@@ -14114,7 +14782,7 @@ x-examples:
               message:
                 cancellation_reason_id: '5'
                 order_id: O1
-          - *ref_44
+          - *ref_51
       support:
         examples:
           - summary: Fetch support information related to a particular order
@@ -14364,7 +15032,7 @@ x-examples:
                               value: '1'
       on_update:
         examples:
-          - *ref_45
+          - *ref_52
           - summary: Return updated order with recomputed charges
             value:
               context:
@@ -15378,10 +16046,10 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_46
-          - *ref_47
-          - *ref_48
-          - *ref_49
+          - *ref_53
+          - *ref_54
+          - *ref_55
+          - *ref_56
       select:
         examples:
           - *ref_31
@@ -15418,8 +16086,8 @@ x-examples:
           - *ref_41
       on_update:
         examples:
-          - *ref_50
-          - *ref_51
+          - *ref_57
+          - *ref_58
       on_cancel:
         examples:
           - *ref_38
@@ -15429,16 +16097,16 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_52
+          - *ref_59
       select:
         examples:
-          - *ref_53
+          - *ref_43
       init:
         examples:
-          - *ref_54
+          - *ref_45
       confirm:
         examples:
-          - *ref_55
+          - *ref_47
       cancel:
         examples:
           - summary: Cancel a ticket booking before the cancellation period
@@ -15463,38 +16131,19 @@ x-examples:
                 order_id: b4232ad4-19ee-4c67-9223-a5189b13a741
       status:
         examples:
-          - summary: Get latest status of a transit ticket booking
-            value:
-              context:
-                location:
-                  country:
-                    code: IND
-                  city:
-                    code: std:011
-                domain: ONDC:TRV10
-                action: status
-                version: 1.1.0
-                bap_id: example-bap.com
-                bap_uri: https://api.example-bap.com/beckn/
-                bpp_id: transit-solutions.com
-                bpp_uri: https://api.transit-solutions.com/beckn/
-                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
-                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
-                timestamp: '2021-03-23T10:00:40.065Z'
-              message:
-                order_id: '123413'
+          - *ref_60
       on_search:
         examples:
-          - *ref_56
+          - *ref_42
       on_select:
         examples:
-          - *ref_57
+          - *ref_44
       on_init:
         examples:
-          - *ref_58
+          - *ref_46
       on_confirm:
         examples:
-          - *ref_59
+          - *ref_48
 x-attributes:
   metro:
     attribute_set:
