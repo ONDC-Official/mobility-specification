@@ -1,12 +1,75 @@
 summary: Metro - Station Code Based Flow
 details: 
-  - description: The illustraive flow to perform a transaction of the nature where in a buyer would like to book a metro service form station A to station B 
+  - description: The illustraive flow to perform a transaction of the nature where in a buyer would like to book a metro service form station A to station B
+    mermaid: >-
+      sequenceDiagram
+        title Metro Discovery
+        Buyer Platform (BAP)->>Gateway (BG): search
+        Gateway (BG) ->> Buyer Platform (BAP): ACK
+        Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+        Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+        Gateway (BG)->>Seller Platform (BPP): search
+        Seller Platform (BPP)->>Gateway (BG) : ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+        Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+  - description: Ordering
+    mermaid: >-
+      sequenceDiagram
+        title  Selection
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): select
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - description: Initializing the order 
+    mermaid: >-
+      sequenceDiagram
+        title Initializing Order
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): init
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - description: Order Confirmation 
+    mermaid: >-
+      sequenceDiagram
+        title  Order Confirmation
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - description: Fulfillment  
+    mermaid: >-
+      sequenceDiagram
+        title Order Fulfillment
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK                          
 reference: if any
 steps:
   - summary: Search for the metro by city
     api: search
     details: 
       - description: Users searches over the network to avail the metro mode of transport in the city
+        mermaid: &search >- 
+          sequenceDiagram
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
     reference: if any
     example:
       $ref: "../../examples/metro/search/example_1.yaml"
@@ -14,6 +77,18 @@ steps:
     api: on_search
     details: 
       - description: Provider plateform sends the catalog of all the service that can be used for transit using metro in the city
+        mermaid: &on_search >-
+          sequenceDiagram
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+            end
     reference: if any
     example:
       $ref: "../../examples/metro/on_search/example_0.yaml" 
@@ -21,6 +96,7 @@ steps:
     api: search
     details: 
       - description: Users searches over the network to avail the metro mode of transport from one station to another
+        mermaid: *search
     reference: if any
     example:
       $ref: "../../examples/metro/search/example_2.yaml"
@@ -28,6 +104,7 @@ steps:
     api: on_search
     details: 
       - description: Provider plateform sends the catalog of all the service that can be used for transit using metro from station A to station B
+        mermaid: *on_search
     reference: if any
     example:
       $ref: "../../examples/metro/on_search/example_1.yaml" 
@@ -35,6 +112,16 @@ steps:
     api: select
     details: 
       - description: The end consumer have to select the specific service and would like to have the neccesary details
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
     reference: if any
     example:
       $ref: "../../examples/metro/select/example_0.yaml"
@@ -42,6 +129,16 @@ steps:
     api: on_select
     details: 
       - description: Provider platform responds with the service detailed information and quotes for the specific service that consumer would like to avail
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
     reference: if any
     example:
       $ref: "../../examples/metro/on_select/example_0.yaml" 
@@ -49,20 +146,53 @@ steps:
     api: init
     details: 
       - description: Consumer platform shares the terms of order and initializes the order
+        mermaid: >-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
     reference: if any
     example:
       $ref: "../../examples/metro/init/example_0.yaml"
   - summary: Provider platform accepts/appends the terms of orders
     api: on_init
     details: 
-      - description: Provider platform accepts the terms of orders and appends its own terms and responds with the final draft   
+      - description: Provider platform accepts the terms of orders and appends its own terms and responds with the final draft
+        mermaid: >-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end   
     reference: if any
     example:
       $ref: "../../examples/metro/on_init/example_0.yaml"
   - summary: Consumer confirms the 
     api: confirm
     details: 
-      - description: Consumer platform confirms the booking and provides all information required for confirmantion as per the terms of order 
+      - description: Consumer platform confirms the booking and provides all information required for confirmantion as per the terms of order
+        mermaid: >-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
     reference: if any
     example:
       $ref: "../../examples/metro/confirm/example_0.yaml"
@@ -70,13 +200,35 @@ steps:
     api: on_confirm
     details: 
       - description: Provider platform confirms the order and provides  details of the journey on confirmation
+        mermaid: >-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
     reference: if any
     example:
       $ref: "../../examples/metro/on_confirm/example_0.yaml"
   - summary: Consumer platform requests for latest status
     api: status
     details: 
-      - description: Consumer platform request the provider platform to provide with latest order status 
+      - description: Consumer platform request the provider platform to provide with latest order status
+        mermaid: >-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
     reference: if any
     example:
       $ref: "../../examples/metro/status/example_0.yaml"                          
@@ -84,6 +236,17 @@ steps:
     api: on_status
     details: 
       - description: Provider platform provides the updated order status to the consumer
+        mermaid: >-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end 
     reference: if any
     example:
       $ref: "../../examples/metro/on_status/example_0.yaml"     
