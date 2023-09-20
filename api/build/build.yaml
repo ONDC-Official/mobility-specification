@@ -1182,8 +1182,6 @@ components:
       type: object
       additionalProperties: false
       properties:
-        organization:
-          $ref: '#/components/schemas/Organization'
         person:
           $ref: '#/components/schemas/Person'
         contact:
@@ -1301,9 +1299,6 @@ components:
       type: object
       additionalProperties: false
       properties:
-        id:
-          description: The form identifier.
-          type: string
         url:
           description: >-
             The URL from where the form can be fetched. The content fetched from
@@ -1329,32 +1324,9 @@ components:
           enum:
             - text/html
             - application/xml
-        resubmit:
-          type: boolean
-        multiple_sumbissions:
-          type: boolean
-    FormHead:
-      description: Provides the header information for the xinput.
-      additionalProperties: false
-      type: object
-      properties:
-        descriptor:
-          $ref: '#/components/schemas/Descriptor'
-        index:
-          additionalProperties: false
-          type: object
-          properties:
-            min:
-              type: integer
-            cur:
-              type: integer
-            max:
-              type: integer
-        headings:
-          type: array
-          items:
-            type: string
-            description: The heading names of the forms
+        submission_id:
+          type: string
+          format: uuid
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
       type: object
@@ -1419,6 +1391,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        '@ondc/org/provider_name':
+          type: string
+        '@ondc/org/category':
+          type: string
+        '@ondc/org/TAT':
+          type: string
     FulfillmentState:
       description: Describes the state of fulfillment
       type: object
@@ -2039,6 +2017,8 @@ components:
             will be sent as url params. Two url param values,
             ```$transaction_id``` and ```$amount``` are mandatory.
           format: uri
+        tl_method:
+          type: string
         params:
           type: object
           properties:
@@ -2080,6 +2060,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        '@ondc/org/buyer_app_finder_fee_type':
+          type: string
+        '@ondc/org/buyer_app_finder_fee_amount':
+          type: string
+        '@ondc/org/settlement_details':
+          type: array
+          items:
+            description: Describes a settlement.
+            type: object
+            additionalProperties: false
+            properties:
+              settlement_counterparty:
+                type: string
+              settlement_phase:
+                type: string
+              settlement_type:
+                type: string
+              upi_address:
+                type: string
+              settlement_bank_account_no:
+                type: string
+              settlement_ifsc_code:
+                type: string
+              beneficiary_name:
+                type: string
+              bank_name:
+                type: string
+              branch_name:
+                type: string
+              settlement_reference:
+                type: string
+              settlement_status:
+                type: string
+              settlement_timestamp:
+                type: string
     Person:
       description: Describes a person as any individual
       type: object
@@ -2473,14 +2488,14 @@ components:
       type: object
       additionalProperties: false
       properties:
-        order_id:
-          type: string
         ref_id:
           type: string
         callback_phone:
           type: string
+          format: phone
         phone:
           type: string
+          format: phone
         email:
           type: string
           format: email
@@ -2675,28 +2690,8 @@ components:
       type: object
       additionalProperties: false
       properties:
-        head:
-          $ref: '#/components/schemas/FormHead'
         form:
           $ref: '#/components/schemas/Form'
-        form_response:
-          description: Describes the response to a form submission
-          type: object
-          additionalProperties: false
-          properties:
-            status:
-              description: Contains the status of form submission.
-              type: boolean
-              default: true
-            signature:
-              type: string
-            submission_id:
-              type: string
-              format: uuid
-            errors:
-              type: array
-              items:
-                $ref: '#/components/schemas/Error'
         required:
           description: >-
             Indicates whether the form data is mandatorily required by the BPP
@@ -2873,6 +2868,11 @@ x-enum:
                 - code: SJT
                   description: Describes the kind of ticket Single Journey Ticket
                   reference: <PR/Issue/Discussion Links md format text
+                - code: SFSJT
+                  description: >-
+                    Describes the kind of ticket special fair Single Journey
+                    Ticket
+                  reference: <PR/Issue/Discussion Links md format text
                 - code: RJT
                   description: Describes the kind of ticket Return Journey Ticket
                   reference: <PR/Issue/Discussion Links md format text
@@ -3007,11 +3007,11 @@ x-tags:
               description: describes the route info.
               reference: <PR/Issue/Discussion Links md format text>
               list:
-                - code: ROUTE_NUMBER
-                  description: describes the route number of the journey for bus.
+                - code: ROUTE_ID
+                  description: describes the route id of the journey for bus.
                   reference: <PR/Issue/Discussion Links md format text>
-                - code: DURATION
-                  description: describes the duration of a particular route.
+                - code: ROUTE_DIRECTION
+                  description: describes the direction of a particular route.
                   reference: <PR/Issue/Discussion Links md format text>
         payment: &ref_7
           tags:
@@ -3036,76 +3036,83 @@ x-tags:
     message:
       catalog:
         providers:
+          items: &ref_8
+            tags:
+              - code: FARE_POLICY
+                description: Settlement details to identify specifics of settlement
+                reference: <PR/Issue/Discussion Links md format text>
+                list:
+                  - code: MIN_FARE
+                    description: describes the minimum fare
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: MIN_FARE_DISTANCE_KM
+                    description: describes the minimum fare per KM
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: PER_KM_CHARGE
+                    description: describes the per km charge
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: PICKUP_CHARGE
+                    description: describes the pickup charge
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: WAITING_CHARGE_PER_MIN
+                    description: describes the waiting charge per minute
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: NIGHT_CHARGE_MULTIPLIER
+                    description: describes the night charge
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: NIGHT_SHIFT_END_TIME
+                    description: describes the night charge
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: RESTRICTED_PERSON
+                    description: describes the restricted person
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: RESTRICTION_PROOF
+                    description: describes the proof neededed for restriction
+                    reference: <PR/Issue/Discussion Links md format text>
+              - code: SEAT_GRID
+                description: Seat details to identify specifics of seat
+                reference: <PR/Issue/Discussion Links md format text>
+                list:
+                  - code: X
+                    description: describes the x-axis co-ordinate of seat.
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: 'Y'
+                    description: describes the y-axis co-ordinate of seat.
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: Z
+                    description: describes the z-axis co-ordinate of seat.
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: X_SIZE
+                    description: describes the x-axis size of seat.
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: Y_SIZE
+                    description: describes the y-axis size of seat.
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: NUMBER
+                    description: describes seat number for assigned ticket.
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: RESTRICTED_GENDER
+                    description: describes restricted gender for assigned ticket.
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: SINGLE_SEAT
+                    description: describes if assigned ticket seat is single or not.
+                    reference: <PR/Issue/Discussion Links md format text>
           fulfillments: *ref_6
           payments: *ref_7
-  select: &ref_8
+  select: &ref_9
     message:
       order:
         fulfillments: *ref_6
         payments: *ref_7
-        items:
-          tags:
-            - code: FARE_POLICY
-              description: Settlement details to identify specifics of settlement
-              reference: <PR/Issue/Discussion Links md format text>
-              list:
-                - code: MIN_FARE
-                  description: describes the minimum fare
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: MIN_FARE_DISTANCE_KM
-                  description: describes the minimum fare per KM
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: PER_KM_CHARGE
-                  description: describes the per km charge
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: PICKUP_CHARGE
-                  description: describes the pickup charge
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: WAITING_CHARGE_PER_MIN
-                  description: describes the waiting charge per minute
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: NIGHT_CHARGE_MULTIPLIER
-                  description: describes the night charge
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: NIGHT_SHIFT_END_TIME
-                  description: describes the night charge
-                  reference: <PR/Issue/Discussion Links md format text>
-            - code: SEAT_GRID
-              description: Seat details to identify specifics of seat
-              reference: <PR/Issue/Discussion Links md format text>
-              list:
-                - code: X
-                  description: describes the x-axis co-ordinate of seat.
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: 'Y'
-                  description: describes the y-axis co-ordinate of seat.
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: Z
-                  description: describes the z-axis co-ordinate of seat.
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: X_SIZE
-                  description: describes the x-axis size of seat.
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: Y_SIZE
-                  description: describes the y-axis size of seat.
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: NUMBER
-                  description: describes seat number for assigned ticket.
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: RESTRICTED_GENDER
-                  description: describes restricted gender for assigned ticket.
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: SINGLE_SEAT
-                  description: describes if assigned ticket seat is single or not.
-                  reference: <PR/Issue/Discussion Links md format text>
-  on_select: *ref_8
-  init: *ref_8
-  on_init: *ref_8
-  confirm: *ref_8
-  on_confirm: *ref_8
-  on_status: *ref_8
-  on_cancel: *ref_8
-  on_update: *ref_8
+        items: *ref_8
+  on_select: *ref_9
+  init: *ref_9
+  on_init: *ref_9
+  confirm: *ref_9
+  on_confirm: *ref_9
+  on_status: *ref_9
+  on_cancel: *ref_9
+  on_update: *ref_9
 x-flows:
   - summary: Metro - Station Code Based Flow
     details:
@@ -3160,7 +3167,7 @@ x-flows:
               Provider plateform sends the catalog of all the service that can
               be used for transit using metro in the city
         reference: if any
-        example: &ref_50
+        example: &ref_51
           summary: >-
             Return a metro catalog of available fulfillments based on search by
             city
@@ -3591,7 +3598,7 @@ x-flows:
               Provider plateform sends the catalog of all the service that can
               be used for transit using metro from station A to station B
         reference: if any
-        example: &ref_9
+        example: &ref_10
           summary: >-
             Return a metro catalog of fare products based on station code or gps
             based search
@@ -3889,7 +3896,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the neccesary details
         reference: if any
-        example: &ref_10
+        example: &ref_11
           summary: >-
             Get a quote for a fare product selected from a public transit
             catalog
@@ -3928,7 +3935,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: &ref_11
+        example: &ref_12
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -4152,7 +4159,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: &ref_12
+        example: &ref_13
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -4204,7 +4211,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: &ref_13
+        example: &ref_14
           summary: Return draft order for transit ticket with settlement details
           value:
             context:
@@ -4461,7 +4468,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmantion as per the terms of order
         reference: if any
-        example: &ref_14
+        example: &ref_15
           summary: Confirm ticket booking
           value:
             context:
@@ -4519,7 +4526,7 @@ x-flows:
               Provider platform confirms the order and provides  details of the
               journey on confirmation
         reference: if any
-        example: &ref_15
+        example: &ref_16
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -4786,7 +4793,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status
         reference: if any
-        example: &ref_16
+        example: &ref_17
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -4815,7 +4822,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: &ref_17
+        example: &ref_18
           summary: Return transit ticket order with status - Journey Completed
           value:
             context:
@@ -5078,7 +5085,7 @@ x-flows:
               Users searches over the network to avail the metro mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_49
+        example: &ref_50
           summary: Search for a public mode of transit from a specific position
           value:
             context:
@@ -5127,7 +5134,7 @@ x-flows:
               be used for transit using metro service form point A(gps) to point
               B(gps)
         reference: if any
-        example: *ref_9
+        example: *ref_10
       - summary: Selection of specific service(Optional)
         api: select
         details:
@@ -5135,7 +5142,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the neccesary details
         reference: if any
-        example: *ref_10
+        example: *ref_11
       - summary: Provider platform provides the quote for selected service of metro
         api: on_select
         details:
@@ -5144,7 +5151,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: *ref_11
+        example: *ref_12
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -5152,7 +5159,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: *ref_12
+        example: *ref_13
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -5160,7 +5167,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: *ref_13
+        example: *ref_14
       - summary: Consumer confirms the
         api: confirm
         details:
@@ -5168,7 +5175,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmantion as per the terms of order
         reference: if any
-        example: *ref_14
+        example: *ref_15
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -5176,7 +5183,7 @@ x-flows:
               Provider platform confirms the order and provides  details of the
               journey on confirmation
         reference: if any
-        example: *ref_15
+        example: *ref_16
       - summary: Consumer platform requests for latest status
         api: status
         details:
@@ -5184,7 +5191,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status
         reference: if any
-        example: *ref_16
+        example: *ref_17
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -5192,7 +5199,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: *ref_17
+        example: *ref_18
   - summary: On-Demand - Assign driver on on-confrim
     details:
       - description: >-
@@ -5207,7 +5214,7 @@ x-flows:
               Users search over the network to avail a mobility service from
               Location A to Location B (GPS)
         reference: if any
-        example: &ref_18
+        example: &ref_19
           summary: Search for cab services by pickup and drop location
           value:
             context:
@@ -5252,7 +5259,7 @@ x-flows:
               the catalog of all services that can be used for transit from A to
               B, along with estimated fare
         reference: if any
-        example: &ref_19
+        example: &ref_20
           summary: Return a mobility catalog
           value:
             context:
@@ -5421,7 +5428,7 @@ x-flows:
               set to 1, the consumer platform will consider only one on_select
               response for the quotation
         reference: if any
-        example: &ref_20
+        example: &ref_21
           summary: Get quote for a specific product from a mobility catalog
           value:
             context:
@@ -5455,7 +5462,7 @@ x-flows:
               The provider platform responds with detailed information and quote
               for the specific service that the consumer would like to avail
         reference: if any
-        example: &ref_21
+        example: &ref_22
           summary: Return a quote offered by a provider
           value:
             context:
@@ -5586,7 +5593,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: &ref_22
+        example: &ref_23
           summary: Initialize draft order and request for terms of service
           value:
             context:
@@ -5651,7 +5658,7 @@ x-flows:
               Provider platform accepts the terms of order and appends its own
               terms and responds with the final draft
         reference: if any
-        example: &ref_23
+        example: &ref_24
           summary: Return draft order with payment terms
           value:
             context:
@@ -5839,7 +5846,7 @@ x-flows:
               required information for confirmation, as per the terms of the
               order
         reference: if any
-        example: &ref_24
+        example: &ref_25
           summary: Confirm ride booking
           value:
             context:
@@ -5905,7 +5912,7 @@ x-flows:
               Provider platform confirms the order and provides ride details on
               confirmation
         reference: if any
-        example: &ref_27
+        example: &ref_28
           summary: Return confirmed order with latest fulfillment details
           value:
             context:
@@ -6111,7 +6118,7 @@ x-flows:
               Provider platform provides the latest update on ride details to
               the consumer
         reference: if any
-        example: &ref_52
+        example: &ref_53
           summary: Return updated order with payment status
           value:
             context:
@@ -6311,7 +6318,7 @@ x-flows:
               The consumer platform requests the provider platform to provide
               the latest order status
         reference: if any
-        example: &ref_25
+        example: &ref_26
           summary: Get latest fulfillment status of a booking
           value:
             context:
@@ -6341,7 +6348,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: &ref_26
+        example: &ref_27
           summary: Return order with status - Driver at pickup
           value:
             context:
@@ -6551,7 +6558,7 @@ x-flows:
               Users search over the network to avail a mobility service from
               Location A to Location B (GPS)
         reference: if any
-        example: *ref_18
+        example: *ref_19
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -6560,7 +6567,7 @@ x-flows:
               the catalog of all services that can be used for transit from A to
               B, along with estimated fare
         reference: if any
-        example: *ref_19
+        example: *ref_20
       - summary: Selection of a specific service
         api: select
         details:
@@ -6570,7 +6577,7 @@ x-flows:
               set to 1, the consumer platform will consider only one on_select
               response for the quotation
         reference: if any
-        example: *ref_20
+        example: *ref_21
       - summary: Provider platform provides the quote for selected service
         api: on_select
         details:
@@ -6578,7 +6585,7 @@ x-flows:
               The provider platform responds with detailed information and quote
               for the specific service that the consumer would like to avail
         reference: if any
-        example: *ref_21
+        example: *ref_22
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -6586,7 +6593,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: *ref_22
+        example: *ref_23
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -6594,7 +6601,7 @@ x-flows:
               Provider platform accepts the terms of order and appends its own
               terms and responds with the final draft
         reference: if any
-        example: *ref_23
+        example: *ref_24
       - summary: Consumer confirms the ride
         api: confirm
         details:
@@ -6603,7 +6610,7 @@ x-flows:
               required information for confirmation, as per the terms of the
               order
         reference: if any
-        example: *ref_24
+        example: *ref_25
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -7015,7 +7022,7 @@ x-flows:
               The consumer platform requests the provider platform to provide
               the latest order status
         reference: if any
-        example: *ref_25
+        example: *ref_26
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -7023,7 +7030,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: *ref_26
+        example: *ref_27
   - summary: On-Demand - Ride cancel
     details:
       - description: >-
@@ -7039,7 +7046,7 @@ x-flows:
               Users search over the network to avail a mobility service from
               Location A to Location B (GPS)
         reference: if any
-        example: *ref_18
+        example: *ref_19
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -7048,7 +7055,7 @@ x-flows:
               the catalog of all services that can be used for transit from A to
               B, along with estimated fare
         reference: if any
-        example: *ref_19
+        example: *ref_20
       - summary: Selection of a specific service
         api: select
         details:
@@ -7058,7 +7065,7 @@ x-flows:
               set to 1, the consumer platform will consider only one on_select
               response for the quotation
         reference: if any
-        example: *ref_20
+        example: *ref_21
       - summary: Provider platform provides the quote for selected service
         api: on_select
         details:
@@ -7066,7 +7073,7 @@ x-flows:
               The provider platform responds with detailed information and quote
               for the specific service that the consumer would like to avail
         reference: if any
-        example: *ref_21
+        example: *ref_22
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -7074,7 +7081,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: *ref_22
+        example: *ref_23
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -7082,7 +7089,7 @@ x-flows:
               Provider platform accepts the terms of order and appends its own
               terms and responds with the final draft
         reference: if any
-        example: *ref_23
+        example: *ref_24
       - summary: Consumer confirms the ride
         api: confirm
         details:
@@ -7091,7 +7098,7 @@ x-flows:
               required information for confirmation, as per the terms of the
               order
         reference: if any
-        example: *ref_24
+        example: *ref_25
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -7099,13 +7106,13 @@ x-flows:
               Provider platform confirms the order and provides ride details on
               confirmation
         reference: if any
-        example: *ref_27
+        example: *ref_28
       - summary: Consumer platform cancels the request
         api: cancel
         details:
           - description: Consumer platform requests for cancellation of ride
         reference: if any
-        example: &ref_51
+        example: &ref_52
           summary: Cancel a ride with user provided information
           value:
             context:
@@ -7139,7 +7146,7 @@ x-flows:
               Provider platform accepts the terms of cancel request and provides
               with latest order update
         reference: if any
-        example: &ref_28
+        example: &ref_29
           summary: Return order cancelled by rider with cancellation charges
           value:
             context:
@@ -7338,7 +7345,7 @@ x-flows:
               Provider platform cancels the request and provides with latest
               order update
         reference: if any
-        example: *ref_28
+        example: *ref_29
       - summary: Provider platform returns latest order status
         api: on_status
         details:
@@ -7542,7 +7549,7 @@ x-flows:
               Users search over the network to avail a mobility service from
               Location A to Location B (GPS)
         reference: if any
-        example: *ref_18
+        example: *ref_19
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -7551,7 +7558,7 @@ x-flows:
               the catalog of all services that can be used for transit from A to
               B, along with estimated fare
         reference: if any
-        example: *ref_19
+        example: *ref_20
       - summary: Selection of a specific service
         api: select
         details:
@@ -8477,7 +8484,7 @@ x-flows:
               The consumer platform requests the provider platform to provide
               the latest order status
         reference: if any
-        example: *ref_25
+        example: *ref_26
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -8485,7 +8492,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: *ref_26
+        example: *ref_27
   - summary: On-Demand - Rental Ride
     details:
       - description: >-
@@ -8499,7 +8506,7 @@ x-flows:
               Users search over the network to avail a mobility service from
               Location A for certain duration of time.
         reference: if any
-        example: *ref_18
+        example: *ref_19
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -8508,7 +8515,7 @@ x-flows:
               the catalog of all services including the one which can be used
               for rental purpose
         reference: if any
-        example: *ref_19
+        example: *ref_20
       - summary: Selection of a specific service
         api: select
         details:
@@ -9399,7 +9406,7 @@ x-flows:
               The consumer platform requests the provider platform to provide
               the latest order status
         reference: if any
-        example: *ref_25
+        example: *ref_26
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -9616,7 +9623,7 @@ x-flows:
               Users search over the network to schedule a rental service from
               Location A for certain duration of time.
         reference: if any
-        example: *ref_18
+        example: *ref_19
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -9625,7 +9632,7 @@ x-flows:
               the catalog of all services including the one which can be used
               for rental purpose
         reference: if any
-        example: *ref_19
+        example: *ref_20
       - summary: Selection of a specific service
         api: select
         details:
@@ -10521,7 +10528,7 @@ x-flows:
               The consumer platform requests the provider platform to provide
               the latest order status
         reference: if any
-        example: *ref_25
+        example: *ref_26
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -10740,7 +10747,7 @@ x-flows:
               Users searches over the network to avail the intercity bus mode of
               transport based on gps
         reference: if any
-        example: &ref_55
+        example: &ref_56
           summary: Search for all services from given start and end location(gps)
           value:
             context:
@@ -10781,7 +10788,7 @@ x-flows:
               Provider platform sends the catalog of all the service that can be
               used for transit using bus service based on gps
         reference: if any
-        example: &ref_29
+        example: &ref_30
           summary: Return services available for provided start code or gps
           value:
             context:
@@ -10901,7 +10908,7 @@ x-flows:
               Users searches over the network to avail the intercity bus mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_56
+        example: &ref_57
           summary: Search for all services from given start and end location(gps)
           value:
             context:
@@ -10951,7 +10958,7 @@ x-flows:
               used for transit using bus service form point A(gps) to point
               B(gps)
         reference: if any
-        example: &ref_30
+        example: &ref_31
           summary: >-
             Return services available for provided start and end code or gps
             with journey date
@@ -11284,7 +11291,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the necesary details
         reference: if any
-        example: &ref_31
+        example: &ref_32
           summary: Get Quote of a selected seat
           value:
             context:
@@ -11324,7 +11331,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: &ref_32
+        example: &ref_33
           summary: Return a quote offered by a intercity bus  service provider
           value:
             context:
@@ -11447,7 +11454,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: &ref_33
+        example: &ref_34
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -11509,7 +11516,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: &ref_34
+        example: &ref_35
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -11670,7 +11677,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmation as per the terms of order
         reference: if any
-        example: &ref_35
+        example: &ref_36
           summary: Confirm ticket booking
           value:
             context:
@@ -11737,7 +11744,7 @@ x-flows:
               Provider platform confirms the order and provides details of the
               journey upon confirmation
         reference: if any
-        example: &ref_36
+        example: &ref_37
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -11903,7 +11910,7 @@ x-flows:
         details:
           - description: Consumer platform requests for cancellation of bus service
         reference: if any
-        example: &ref_37
+        example: &ref_38
           summary: Cancel a transit ticket booking before the cancellation period
           value:
             context:
@@ -11930,7 +11937,7 @@ x-flows:
               Provider platform accepts the terms of cancel request and provides
               with latest order update
         reference: if any
-        example: &ref_38
+        example: &ref_39
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -12111,7 +12118,7 @@ x-flows:
               The consumer platform updates the ride with some certain details
               he wants to be updated.
         reference: if any
-        example: &ref_39
+        example: &ref_40
           summary: Update customer details
           value:
             context:
@@ -12147,7 +12154,7 @@ x-flows:
         details:
           - description: Provider platform provides the ride details with updated context.
         reference: if any
-        example: &ref_57
+        example: &ref_58
           summary: Return updated order with customer details
           value:
             context:
@@ -12315,7 +12322,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status
         reference: if any
-        example: &ref_40
+        example: &ref_41
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -12342,7 +12349,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: &ref_41
+        example: &ref_42
           summary: Return transit ticket order with status - Journey Completed
           value:
             context:
@@ -12511,7 +12518,7 @@ x-flows:
               Users searches over the network to avail the intercity bus mode of
               transport based on station code
         reference: if any
-        example: &ref_53
+        example: &ref_54
           summary: Search for all services form the given start location(code)
           value:
             context:
@@ -12553,7 +12560,7 @@ x-flows:
               Provider platform sends the catalog of all the service that can be
               used for transit using bus service based on station code
         reference: if any
-        example: *ref_29
+        example: *ref_30
       - summary: Search for the bus by start and end station code
         api: search
         details:
@@ -12561,7 +12568,7 @@ x-flows:
               Users searches over the network to avail the intercity bus mode of
               transport from one station to another
         reference: if any
-        example: &ref_54
+        example: &ref_55
           summary: Search for all services from given start and end location(code)
           value:
             context:
@@ -12612,7 +12619,7 @@ x-flows:
               Provider platform sends the catalog of all the service that can be
               used for transit using bus from station A to station B
         reference: if any
-        example: *ref_30
+        example: *ref_31
       - summary: Selection of specific service
         api: select
         details:
@@ -12620,7 +12627,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the necesary details
         reference: if any
-        example: *ref_31
+        example: *ref_32
       - summary: Provider platform provides the quote for selected service of bus
         api: on_select
         details:
@@ -12629,7 +12636,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: *ref_32
+        example: *ref_33
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -12637,7 +12644,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: *ref_33
+        example: *ref_34
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -12645,7 +12652,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: *ref_34
+        example: *ref_35
       - summary: Consumer confirms the booking and provides details.
         api: confirm
         details:
@@ -12653,7 +12660,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmation as per the terms of order
         reference: if any
-        example: *ref_35
+        example: *ref_36
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -12661,13 +12668,13 @@ x-flows:
               Provider platform confirms the order and provides details of the
               journey upon confirmation
         reference: if any
-        example: *ref_36
+        example: *ref_37
       - summary: Consumer platform cancels the request
         api: cancel
         details:
           - description: Consumer platform requests for cancellation of bus service
         reference: if any
-        example: *ref_37
+        example: *ref_38
       - summary: Provider platform accepts/appends the terms of cancellation
         api: on_cancel
         details:
@@ -12675,7 +12682,7 @@ x-flows:
               Provider platform accepts the terms of cancel request and provides
               with latest order update
         reference: if any
-        example: *ref_38
+        example: *ref_39
       - summary: Consumer platform updates the ride details
         api: update
         details:
@@ -12683,13 +12690,13 @@ x-flows:
               The consumer platform updates the ride with some certain details
               he wants to be updated.
         reference: if any
-        example: *ref_39
+        example: *ref_40
       - summary: Provider platform provides latest update on the order
         api: on_update
         details:
           - description: Provider platform provides the ride details with updated context.
         reference: if any
-        example: &ref_58
+        example: &ref_59
           summary: Return updated order with agent details
           value:
             context:
@@ -12863,7 +12870,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status
         reference: if any
-        example: *ref_40
+        example: *ref_41
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -12871,7 +12878,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: *ref_41
+        example: *ref_42
   - summary: IntraCity - GPS Based Flow
     details:
       - description: >-
@@ -12887,7 +12894,7 @@ x-flows:
               Users searches over the network to avail the intracity bus mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_59
+        example: &ref_60
           summary: >-
             Search for intra city bus service mode of transit from a specific
             position
@@ -12936,7 +12943,7 @@ x-flows:
               used for transit using bus service from point A(gps) to point
               B(gps)
         reference: if any
-        example: &ref_42
+        example: &ref_43
           summary: Return a public transit catalog of fare products
           value:
             context:
@@ -13238,7 +13245,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the necessary details
         reference: if any
-        example: &ref_43
+        example: &ref_44
           summary: >-
             Get a quote for a fare product selected from a intra city bus
             service catalog
@@ -13278,7 +13285,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: &ref_44
+        example: &ref_45
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -13401,7 +13408,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: &ref_45
+        example: &ref_46
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -13453,7 +13460,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: &ref_46
+        example: &ref_47
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -13476,7 +13483,6 @@ x-flows:
               timestamp: '2021-03-23T10:00:40.065Z'
             message:
               order:
-                id: O1
                 items:
                   - id: I1
                     descriptor:
@@ -13612,7 +13618,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmation as per the terms of order
         reference: if any
-        example: &ref_47
+        example: &ref_48
           summary: Confirm ticket booking
           value:
             context:
@@ -13669,7 +13675,7 @@ x-flows:
               Provider platform confirms the order and provides details of the
               journey on confirmation
         reference: if any
-        example: &ref_48
+        example: &ref_49
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -13835,7 +13841,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status.
         reference: if any
-        example: &ref_60
+        example: &ref_61
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -13983,7 +13989,7 @@ x-flows:
                       percentage: '0'
                 billing:
                   name: John Doe
-                  email: john.doe@example.com
+                  email: john_doe@example.com
                   phone: +91-9897867564
                 quote:
                   price:
@@ -13995,7 +14001,7 @@ x-flows:
                         id: I1
                       price:
                         currency: INR
-                        value: '35'
+                        value: '70'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -14356,7 +14362,7 @@ x-flows:
               used for transit using bus service from point A(code) to point
               B(code)
         reference: if any
-        example: *ref_42
+        example: *ref_43
       - summary: Selection of specific service
         api: select
         details:
@@ -14364,7 +14370,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the necessary details
         reference: if any
-        example: *ref_43
+        example: *ref_44
       - summary: >-
           Provider platform provides the quote for selected service of intracity
           bus
@@ -14375,7 +14381,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: *ref_44
+        example: *ref_45
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -14383,7 +14389,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: *ref_45
+        example: *ref_46
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -14391,7 +14397,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: *ref_46
+        example: *ref_47
       - summary: Consumer confirms the booking and provides details.
         api: confirm
         details:
@@ -14399,7 +14405,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmation as per the terms of order
         reference: if any
-        example: *ref_47
+        example: *ref_48
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -14407,7 +14413,7 @@ x-flows:
               Provider platform confirms the order and provides details of the
               journey on confirmation
         reference: if any
-        example: *ref_48
+        example: *ref_49
 x-examples:
   metro:
     summary: Metro Use Case Specification
@@ -14428,16 +14434,16 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_49
+          - *ref_50
       select:
         examples:
-          - *ref_10
+          - *ref_11
       init:
         examples:
-          - *ref_12
+          - *ref_13
       confirm:
         examples:
-          - *ref_14
+          - *ref_15
       cancel:
         examples:
           - summary: Cancel a transit ticket booking before the cancellation period
@@ -14463,19 +14469,19 @@ x-examples:
                 order_id: 077b248f
       status:
         examples:
-          - *ref_16
+          - *ref_17
       on_search:
         examples:
-          - *ref_50
+          - *ref_51
       on_select:
         examples:
-          - *ref_11
+          - *ref_12
       on_init:
         examples:
-          - *ref_13
+          - *ref_14
       on_confirm:
         examples:
-          - *ref_15
+          - *ref_16
       on_cancel:
         examples:
           - summary: Return cancelled ticket order with cancellation charges
@@ -14710,14 +14716,14 @@ x-examples:
                           value: '0'
       on_status:
         examples:
-          - *ref_17
+          - *ref_18
   on-demand:
     summary: On Demand Use Case Specification
     description: On Demand Use Case Specification
     example_set:
       search:
         examples:
-          - *ref_18
+          - *ref_19
           - summary: >-
               Search for on-schedule cab services by pickup and drop location
               using timestamp
@@ -14760,16 +14766,16 @@ x-examples:
                             value: '1'
       select:
         examples:
-          - *ref_20
+          - *ref_21
       init:
         examples:
-          - *ref_22
+          - *ref_23
       confirm:
         examples:
-          - *ref_24
+          - *ref_25
       status:
         examples:
-          - *ref_25
+          - *ref_26
       track:
         examples:
           - summary: Track an active ride
@@ -14820,7 +14826,7 @@ x-examples:
               message:
                 cancellation_reason_id: '5'
                 order_id: O1
-          - *ref_51
+          - *ref_52
       support:
         examples:
           - summary: Fetch support information related to a particular order
@@ -14847,16 +14853,16 @@ x-examples:
                 ref_id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
       on_search:
         examples:
-          - *ref_19
+          - *ref_20
       on_select:
         examples:
-          - *ref_21
+          - *ref_22
       on_init:
         examples:
-          - *ref_23
+          - *ref_24
       on_confirm:
         examples:
-          - *ref_27
+          - *ref_28
       on_track:
         examples:
           - summary: Return tracking information for an order
@@ -14886,7 +14892,7 @@ x-examples:
                   status: active
       on_cancel:
         examples:
-          - *ref_28
+          - *ref_29
           - summary: Return order cancelled by driver
             value:
               context:
@@ -15070,7 +15076,7 @@ x-examples:
                               value: '1'
       on_update:
         examples:
-          - *ref_52
+          - *ref_53
           - summary: Return updated order with recomputed charges
             value:
               context:
@@ -15437,7 +15443,7 @@ x-examples:
                     phone: +91-9897867564
       on_status:
         examples:
-          - *ref_26
+          - *ref_27
           - summary: >-
               Return order with latest fulfillment status - Driver en-route to
               pickup
@@ -16084,67 +16090,67 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_53
           - *ref_54
           - *ref_55
           - *ref_56
+          - *ref_57
       select:
         examples:
-          - *ref_31
+          - *ref_32
       init:
         examples:
-          - *ref_33
+          - *ref_34
       confirm:
         examples:
-          - *ref_35
+          - *ref_36
       cancel:
         examples:
-          - *ref_37
+          - *ref_38
       status:
         examples:
-          - *ref_40
+          - *ref_41
       update:
         examples:
-          - *ref_39
+          - *ref_40
       on_search:
         examples:
-          - *ref_29
           - *ref_30
+          - *ref_31
       on_select:
         examples:
-          - *ref_32
+          - *ref_33
       on_init:
         examples:
-          - *ref_34
+          - *ref_35
       on_confirm:
         examples:
-          - *ref_36
+          - *ref_37
       on_status:
         examples:
-          - *ref_41
+          - *ref_42
       on_update:
         examples:
-          - *ref_57
           - *ref_58
+          - *ref_59
       on_cancel:
         examples:
-          - *ref_38
+          - *ref_39
   intracity-bus:
     summary: Intracity Bus Use Case Specification
     description: Intra city Bus Use Case Specification
     example_set:
       search:
         examples:
-          - *ref_59
+          - *ref_60
       select:
         examples:
-          - *ref_43
+          - *ref_44
       init:
         examples:
-          - *ref_45
+          - *ref_46
       confirm:
         examples:
-          - *ref_47
+          - *ref_48
       cancel:
         examples:
           - summary: Cancel a ticket booking before the cancellation period
@@ -16169,19 +16175,19 @@ x-examples:
                 order_id: O1
       status:
         examples:
-          - *ref_60
+          - *ref_61
       on_search:
         examples:
-          - *ref_42
+          - *ref_43
       on_select:
         examples:
-          - *ref_44
+          - *ref_45
       on_init:
         examples:
-          - *ref_46
+          - *ref_47
       on_confirm:
         examples:
-          - *ref_48
+          - *ref_49
 x-attributes:
   metro:
     attribute_set:
@@ -22974,12 +22980,6 @@ x-attributes:
                     usage: 28.666576, 77.233332
                     description: Describes a GPS coordinate
                   descriptor:
-                    name:
-                      required: false
-                      type: string
-                      owner: BAP
-                      usage: kashmere gate
-                      description: Physical description of code.
                     code:
                       required: false
                       type: string
@@ -23186,7 +23186,7 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: I1
-                description: 'Describes the unique identifier ID '
+                description: 'Human-readable ID of the order. '
               quantity:
                 selected:
                   count:
@@ -23207,12 +23207,6 @@ x-attributes:
       on_select:
         message:
           order:
-            id:
-              required: true
-              type: string
-              owner: BPP
-              usage: O1
-              description: false
             items:
               id:
                 required: true
@@ -23265,7 +23259,7 @@ x-attributes:
                   count:
                     required: true
                     type: integer
-                    owner: BPP
+                    owner: BAP
                     usage: 2
                     description: >-
                       This represents the quantity selected for purchase of the
@@ -23392,12 +23386,6 @@ x-attributes:
       init:
         message:
           order:
-            id:
-              required: true
-              type: string
-              owner: BPP
-              usage: O1
-              description: 'Describes the unique identifier ID '
             items:
               id:
                 required: true
@@ -23410,7 +23398,7 @@ x-attributes:
                   count:
                     required: true
                     type: integer
-                    owner: BPP
+                    owner: BAP
                     usage: 2
                     description: >-
                       This represents the quantity selected for purchase of the
@@ -23463,12 +23451,6 @@ x-attributes:
       on_init:
         message:
           order:
-            id:
-              required: true
-              type: string
-              owner: BPP
-              usage: O1
-              description: 'Describes the unique identifier ID '
             items:
               id:
                 required: true
@@ -23521,7 +23503,7 @@ x-attributes:
                   count:
                     required: true
                     type: integer
-                    owner: BPP
+                    owner: BAP
                     usage: 2
                     description: >-
                       This represents the quantity selected for purchase of the
@@ -23607,19 +23589,19 @@ x-attributes:
               name:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: John Doe
                 description: Name of the billable entity
               email:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: john.doe@example.com
                 description: Email address where the bill is sent to
               phone:
                 required: true
                 type: integer
-                owner: BPP
+                owner: BAP
                 usage: 9897867564
                 description: Phone number of the billable entity
             quote:
@@ -23677,19 +23659,19 @@ x-attributes:
               collected_by:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: BAP
                 description: 'This field indicates who is the collector of payment. '
               status:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: NOT-PAID
                 description: Payment Status
               type:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: PRE-ORDER
                 description: Payment type
               params:
@@ -23709,7 +23691,7 @@ x-attributes:
                   required: true
                   type: string
                   owner: BPP
-                  usage: 9988199772@okicic
+                  usage: 9988199772@okicici
                   description: Virtual payment address associated with payment activity
             cancellation_terms:
               cancel_by:
@@ -23732,22 +23714,22 @@ x-attributes:
             id:
               required: true
               type: string
-              owner: BPP
+              owner: BAP
               usage: O1
-              description: 'Describes the unique identifier ID '
+              description: 'Human-readable ID of the order. '
             items:
               id:
                 required: true
                 type: string
                 owner: BPP
                 usage: I1
-                description: 'Describes the unique identifier ID '
+                description: ID of the item.
               quantity:
                 selected:
                   count:
                     required: true
                     type: integer
-                    owner: BPP
+                    owner: BAP
                     usage: 2
                     description: >-
                       This represents the quantity selected for purchase of the
@@ -23782,7 +23764,7 @@ x-attributes:
               id:
                 required: true
                 type: string
-                owner: BAP
+                owner: BPP
                 usage: PA1
                 description: >-
                   ID of the payment term that can be referred at an item or an
@@ -23809,7 +23791,7 @@ x-attributes:
                   transaction_id:
                     required: true
                     type: string
-                    owner: BAP
+                    owner: BPP
                     usage: XXXXXXXX
                     description: >-
                       The reference transaction ID associated with a payment
@@ -23817,13 +23799,13 @@ x-attributes:
                   currency:
                     required: true
                     type: string
-                    owner: BAP
+                    owner: BPP
                     usage: xxxxxxxxxxxxxx
                     description: Describes currency value in string form
                   amount:
                     required: true
                     type: integer
-                    owner: BAP
+                    owner: BPP
                     usage: 9988199772@okicic
                     description: Describes a numerical value in decimal form
       on_confirm:
@@ -23832,9 +23814,9 @@ x-attributes:
             id:
               required: true
               type: string
-              owner: BPP
+              owner: BAP
               usage: O1
-              description: 'Describes the unique identifier ID '
+              description: 'Human-readable ID of the order. '
             items:
               id:
                 required: true
@@ -23887,7 +23869,7 @@ x-attributes:
                   count:
                     required: true
                     type: integer
-                    owner: BPP
+                    owner: BAP
                     usage: 2
                     description: >-
                       This represents the quantity selected for purchase of the
@@ -23968,20 +23950,20 @@ x-attributes:
                     type: string
                     owner: BPP
                     usage: QR
-                    description: false
+                    description: Describes type of Authorization
                   token:
                     required: true
                     type: string
                     owner: BPP
                     usage: >-
                       iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
-                    description: false
+                    description: Describes authorization token
                   valid_to:
                     required: true
                     type: string
                     owner: BPP
                     usage: '2021-03-23T23:59:59.999Z'
-                    description: false
+                    description: Describes validity for authorization token
               vehicle:
                 category:
                   required: false
@@ -23993,19 +23975,19 @@ x-attributes:
               name:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: John Doe
                 description: Name of the billable entity
               email:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: john.doe@example.com
                 description: Email address where the bill is sent to
               phone:
                 required: true
                 type: integer
-                owner: BPP
+                owner: BAP
                 usage: 9897867564
                 description: Phone number of the billable entity
             quote:
@@ -24063,19 +24045,19 @@ x-attributes:
               collected_by:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: BAP
                 description: 'This field indicates who is the collector of payment. '
               status:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: NOT-PAID
                 description: Payment Status
               type:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: PRE-ORDER
                 description: Payment type
               params:
@@ -24137,18 +24119,18 @@ x-attributes:
           order_id:
             required: true
             type: string
-            owner: BPP
-            sample usage: 077b248f
-            description: 'Describes the unique identifier ID '
+            owner: BAP
+            sample usage: O1
+            description: 'Human-readable ID of the order. '
       on_status:
         message:
           order:
             id:
               required: true
               type: string
-              owner: BPP
+              owner: BAP
               usage: O1
-              description: 'Describes the unique identifier ID '
+              description: 'Human-readable ID of the order. '
             status:
               required: true
               type: string
@@ -24207,7 +24189,7 @@ x-attributes:
                   count:
                     required: true
                     type: integer
-                    owner: BPP
+                    owner: BAP
                     usage: 2
                     description: >-
                       This represents the quantity selected for purchase of the
@@ -24288,20 +24270,20 @@ x-attributes:
                     type: string
                     owner: BPP
                     usage: QR
-                    description: false
+                    description: Describes type of Authorization
                   token:
                     required: false
                     type: string
                     owner: BPP
                     usage: >-
                       iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
-                    description: false
+                    description: Describes authorization token
                   valid_to:
                     required: false
                     type: string
                     owner: BPP
                     usage: '2021-03-23T23:59:59.999Z'
-                    description: false
+                    description: Describes validity for authorization token
               vehicle:
                 category:
                   required: false
@@ -24313,19 +24295,19 @@ x-attributes:
               name:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: John Doe
                 description: Name of the billable entity
               email:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: john_doe@example.com
                 description: Email address where the bill is sent to
               phone:
                 required: true
                 type: integer
-                owner: BPP
+                owner: BAP
                 usage: 9897867564
                 description: Phone number of the billable entity
             quote:
@@ -24383,19 +24365,19 @@ x-attributes:
               collected_by:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: BAP
                 description: 'This field indicates who is the collector of payment. '
               status:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: NOT-PAID
                 description: Payment Status
               type:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: PRE-ORDER
                 description: Payment type
               params:
@@ -24464,15 +24446,15 @@ x-attributes:
             id:
               required: true
               type: string
-              owner: BPP
+              owner: BAP
               sample usage: O1
-              description: 'Describes the unique identifier ID '
+              description: 'Human-readable ID of the order. '
             billing:
               name:
                 required: false
                 type: string
                 owner: BAP
-                sample usage: false
+                sample usage: John Doe
                 description: billing name of customer
               email:
                 required: false
@@ -24484,7 +24466,7 @@ x-attributes:
                 required: false
                 type: string
                 owner: BAP
-                sample usage: false
+                sample usage: 9897867564
                 description: billing phone number of customer
       on_update:
         message:
@@ -24492,9 +24474,9 @@ x-attributes:
             id:
               required: true
               type: string
-              owner: BPP
+              owner: BAP
               usage: O1
-              description: 'Describes the unique identifier ID '
+              description: 'Human-readable ID of the order. '
             items:
               id:
                 required: true
@@ -24547,7 +24529,7 @@ x-attributes:
                   count:
                     required: true
                     type: integer
-                    owner: BPP
+                    owner: BAP
                     usage: 2
                     description: >-
                       This represents the quantity selected for purchase of the
@@ -24628,20 +24610,20 @@ x-attributes:
                     type: string
                     owner: BPP
                     usage: QR
-                    description: false
+                    description: Describes type of Authorization
                   token:
                     required: true
                     type: string
                     owner: BPP
                     usage: >-
                       iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
-                    description: false
+                    description: Describes authorization token
                   valid_to:
                     required: true
                     type: string
                     owner: BPP
                     usage: '2021-03-23T23:59:59.999Z'
-                    description: false
+                    description: Describes validity for authorization token
               vehicle:
                 category:
                   required: false
@@ -24653,19 +24635,19 @@ x-attributes:
               name:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: John Doe
                 description: Name of the billable entity
               email:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: john_doe@example.com
                 description: Email address where the bill is sent to
               phone:
                 required: true
                 type: integer
-                owner: BPP
+                owner: BAP
                 usage: 9897867564
                 description: Phone number of the billable entity
             quote:
@@ -24723,19 +24705,19 @@ x-attributes:
               collected_by:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: BAP
                 description: 'This field indicates who is the collector of payment. '
               status:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: NOT-PAID
                 description: Payment Status
               type:
                 required: true
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: PRE-ORDER
                 description: Payment type
               params:
