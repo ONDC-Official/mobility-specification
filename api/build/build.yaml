@@ -7549,7 +7549,42 @@ x-flows:
               Users search over the network to avail a mobility service from
               Location A to Location B (GPS)
         reference: if any
-        example: *ref_19
+        example:
+          summary: >-
+            Search for on-schedule cab services by pickup and drop location
+            using timestamp
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: https://example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              intent:
+                fulfillment:
+                  stops:
+                    - type: START
+                      time:
+                        timestamp: '2023-09-15T00:32:19.000Z'
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -7558,7 +7593,70 @@ x-flows:
               the catalog of all services that can be used for transit from A to
               B, along with estimated fare
         reference: if any
-        example: *ref_20
+        example:
+          summary: Return a mobility catalog
+          value:
+            context:
+              bpp_uri: >-
+                https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:43:02Z'
+              bap_id: https://example-bap.com
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              bpp_id: https://example-bpp.com
+              message_id: 21e54d3c-9c3b-47c1-aa3b-b0e7b20818ee
+              version: 2.0.0
+              action: on_search
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              catalog:
+                descriptor:
+                  name: Mobility Servies BPP
+                providers:
+                  - id: P1
+                    locations:
+                      - id: L1
+                        gps: 12.916468,77.608998
+                      - id: L2
+                        gps: 12.916714,77.609298
+                      - id: L3
+                        gps: 12.916573,77.615216
+                      - id: L4
+                        gps: 12.906857,77.604456
+                    items:
+                      - id: I1
+                        descriptor:
+                          name: Scheudled Ride
+                          code: RIDE
+                        price:
+                          maximum_value: '236'
+                          currency: INR
+                          minimum_value: '206'
+                          value: '206'
+                        location_ids:
+                          - L2
+                          - L4
+                        fulfillment_ids:
+                          - F1
+                    fulfillments:
+                      - id: F1
+                        type: DELIVERY
+                        stops:
+                          - time:
+                              range:
+                                start: '2023-08-23T12:00:40.065Z'
+                      - id: F2
+                        type: DELIVERY
+                        stops:
+                          - time:
+                              range:
+                                start: '2023-08-23T3:50:40.065Z'
       - summary: Selection of a specific service
         api: select
         details:
@@ -7594,9 +7692,9 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I3
+                  - id: I1
                 fulfillments:
-                  - id: F3
+                  - id: F1
                     type: DELIVERY
                     stops:
                       - type: START
@@ -7640,7 +7738,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I3
+                  - id: I1
                     descriptor:
                       name: Schedule Ride
                       code: RIDE
@@ -7710,7 +7808,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: F3
+                  - id: F1
                     type: DELIVERY
                     stops:
                       - type: START
@@ -7776,11 +7874,11 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I3
+                  - id: I1
                 billing:
                   name: Joe Adams
                 fulfillments:
-                  - id: F3
+                  - id: F1
                     customer:
                       person:
                         name: Joe Adams
@@ -7843,7 +7941,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I3
+                  - id: I1
                     descriptor:
                       name: Schedule Ride
                       code: RIDE
@@ -7915,7 +8013,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: F3
+                  - id: F1
                     type: DELIVERY
                     stops:
                       - type: START
@@ -8030,11 +8128,11 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I3
+                  - id: I1
                 billing:
                   name: Joe Adams
                 fulfillments:
-                  - id: F3
+                  - id: F1
                     customer:
                       person:
                         name: Joe Adams
@@ -8101,7 +8199,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I3
+                  - id: I1
                     descriptor:
                       name: Schedule Ride
                       code: RIDE
@@ -8173,7 +8271,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: F3
+                  - id: F1
                     type: DELIVERY
                     state:
                       descriptor:
@@ -8302,7 +8400,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I3
+                  - id: I1
                     descriptor:
                       name: Schedule Ride
                       code: RIDE
@@ -8374,7 +8472,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: F3
+                  - id: F1
                     type: DELIVERY
                     state:
                       descriptor:
@@ -8506,7 +8604,42 @@ x-flows:
               Users search over the network to avail a mobility service from
               Location A for certain duration of time.
         reference: if any
-        example: *ref_19
+        example:
+          summary: Search for cab services by pickup and drop location
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: https://example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              intent:
+                fulfillment:
+                  stops:
+                    - type: START
+                      location:
+                        gps: 13.008935, 77.644408
+                      time:
+                        duration: PT2H
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -8515,7 +8648,78 @@ x-flows:
               the catalog of all services including the one which can be used
               for rental purpose
         reference: if any
-        example: *ref_20
+        example:
+          summary: Return a mobility catalog
+          value:
+            context:
+              bpp_uri: >-
+                https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:43:02Z'
+              bap_id: https://example-bap.com
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              bpp_id: https://example-bpp.com
+              message_id: 21e54d3c-9c3b-47c1-aa3b-b0e7b20818ee
+              version: 2.0.0
+              action: on_search
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              catalog:
+                descriptor:
+                  name: Mobility Servies BPP
+                providers:
+                  - id: P1
+                    locations:
+                      - id: L1
+                        gps: 12.916468,77.608998
+                      - id: L2
+                        gps: 12.916714,77.609298
+                      - id: L3
+                        gps: 12.916573,77.615216
+                      - id: L4
+                        gps: 12.906857,77.604456
+                    items:
+                      - id: I1
+                        descriptor:
+                          name: Rental Ride
+                          code: RIDE
+                        price:
+                          maximum_value: '236'
+                          currency: INR
+                          minimum_value: '206'
+                          value: '206'
+                        location_ids:
+                          - L2
+                          - L4
+                        fulfillment_ids:
+                          - F1
+                    fulfillments:
+                      - id: F1
+                        type: DELIVERY
+                        stops:
+                          - time:
+                              duration: PT2H
+                            type: START
+                            location:
+                              gps: 13.008935, 77.644408
+                        vehicle:
+                          category: CAB
+                      - id: F2
+                        type: DELIVERY
+                        stops:
+                          - time:
+                              duration: PT4H
+                            type: START
+                            location:
+                              gps: 13.008935, 77.644408
+                        vehicle:
+                          category: CAB
       - summary: Selection of a specific service
         api: select
         details:
@@ -8551,7 +8755,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I4
+                  - id: I1
       - summary: Provider platform provides the quote for selected service
         api: on_select
         details:
@@ -8584,7 +8788,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I4
+                  - id: I1
                     descriptor:
                       name: Cab Ride
                       code: RIDE
@@ -8654,7 +8858,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: F4
+                  - id: F1
                     type: DELIVERY
                     stops:
                       - type: START
@@ -8714,11 +8918,11 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I4
+                  - id: I1
                 billing:
                   name: Joe Adams
                 fulfillments:
-                  - id: F4
+                  - id: F1
                     customer:
                       person:
                         name: Joe Adams
@@ -8777,7 +8981,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I4
+                  - id: I1
                     descriptor:
                       name: CAB Ride
                       code: RIDE
@@ -8849,7 +9053,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: F4
+                  - id: F1
                     type: DELIVERY
                     stops:
                       - type: START
@@ -8960,11 +9164,11 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I4
+                  - id: I1
                 billing:
                   name: Joe Adams
                 fulfillments:
-                  - id: F4
+                  - id: F1
                     customer:
                       person:
                         name: Joe Adams
@@ -9025,7 +9229,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I4
+                  - id: I1
                     descriptor:
                       name: CAB Ride
                       code: RIDE
@@ -9097,7 +9301,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: F4
+                  - id: F1
                     type: DELIVERY
                     state:
                       descriptor:
@@ -9227,7 +9431,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I4
+                  - id: I1
                     descriptor:
                       name: CAB Ride
                       code: RIDE
@@ -9281,7 +9485,7 @@ x-flows:
                               code: ETA_TO_NEAREST_DRIVER_MIN
                             value: '3'
                     fulfillment_ids:
-                      - F4
+                      - F1
                     payment_ids:
                       - PA1
                 quote:
@@ -9299,7 +9503,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: F4
+                  - id: F1
                     type: DELIVERY
                     state:
                       descriptor:
@@ -9440,7 +9644,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I4
+                  - id: I1
                     descriptor:
                       name: Cab Ride
                       code: RIDE
@@ -9512,7 +9716,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: F4
+                  - id: F1
                     type: DELIVERY
                     state:
                       descriptor:
@@ -9623,7 +9827,43 @@ x-flows:
               Users search over the network to schedule a rental service from
               Location A for certain duration of time.
         reference: if any
-        example: *ref_19
+        example:
+          summary: >-
+            Search for on-schedule cab services by pickup and drop location
+            using timestamp
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: https://example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              intent:
+                fulfillment:
+                  stops:
+                    - type: START
+                      time:
+                        timestamp: '2023-09-15T00:32:19.000Z'
+                        duration: PT2H
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -9632,7 +9872,82 @@ x-flows:
               the catalog of all services including the one which can be used
               for rental purpose
         reference: if any
-        example: *ref_20
+        example:
+          summary: Return a mobility catalog
+          value:
+            context:
+              bpp_uri: >-
+                https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:43:02Z'
+              bap_id: https://example-bap.com
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              bpp_id: https://example-bpp.com
+              message_id: 21e54d3c-9c3b-47c1-aa3b-b0e7b20818ee
+              version: 2.0.0
+              action: on_search
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              catalog:
+                descriptor:
+                  name: Mobility Servies BPP
+                providers:
+                  - id: P1
+                    locations:
+                      - id: L1
+                        gps: 12.916468,77.608998
+                      - id: L2
+                        gps: 12.916714,77.609298
+                      - id: L3
+                        gps: 12.916573,77.615216
+                      - id: L4
+                        gps: 12.906857,77.604456
+                    items:
+                      - id: I1
+                        descriptor:
+                          name: Rental-Scheduled Ride
+                          code: RIDE
+                        price:
+                          maximum_value: '236'
+                          currency: INR
+                          minimum_value: '206'
+                          value: '206'
+                        location_ids:
+                          - L2
+                          - L4
+                        fulfillment_ids:
+                          - F1
+                    fulfillments:
+                      - id: F1
+                        type: DELIVERY
+                        stops:
+                          - time:
+                              range:
+                                start: '2023-08-23T12:00:40.065Z'
+                              duration: PT2H
+                            type: START
+                            location:
+                              gps: 13.008935, 77.644408
+                        vehicle:
+                          category: CAB
+                      - id: F2
+                        type: DELIVERY
+                        stops:
+                          - time:
+                              range:
+                                start: '2023-08-23T12:00:40.065Z'
+                              duration: PT3H
+                            type: START
+                            location:
+                              gps: 13.008935, 77.644408
+                        vehicle:
+                          category: CAB
       - summary: Selection of a specific service
         api: select
         details:
@@ -9670,7 +9985,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I5
+                  - id: I1
       - summary: Provider platform provides the quote for selected service
         api: on_select
         details:
@@ -9703,7 +10018,7 @@ x-flows:
                 provider:
                   id: 450dec0f-5c9b-4abc-8029-d6bbdcf34ac3
                 items:
-                  - id: I5
+                  - id: I1
                     descriptor:
                       name: Cab Ride
                       code: RIDE
@@ -9773,7 +10088,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: 13281ced-b712-42a4-abe8-c32a822d651c
+                  - id: F1
                     type: DELIVERY
                     stops:
                       - type: START
@@ -9834,11 +10149,11 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I4
+                  - id: I1
                 billing:
                   name: Joe Adams
                 fulfillments:
-                  - id: F5
+                  - id: F1
                     customer:
                       person:
                         name: Joe Adams
@@ -9898,7 +10213,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I4
+                  - id: I1
                     descriptor:
                       name: CAB Ride
                       code: RIDE
@@ -9970,7 +10285,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: F4
+                  - id: F1
                     type: DELIVERY
                     stops:
                       - type: START
@@ -10082,11 +10397,11 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I5
+                  - id: I1
                 billing:
                   name: Joe Adams
                 fulfillments:
-                  - id: F5
+                  - id: F1
                     customer:
                       person:
                         name: Joe Adams
@@ -10150,7 +10465,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I5
+                  - id: I1
                     descriptor:
                       name: CAB Ride
                       code: RIDE
@@ -10222,7 +10537,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: F5
+                  - id: F1
                     type: DELIVERY
                     state:
                       descriptor:
@@ -10348,7 +10663,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I5
+                  - id: I1
                     descriptor:
                       name: CAB Ride
                       code: RIDE
@@ -10402,7 +10717,7 @@ x-flows:
                               code: ETA_TO_NEAREST_DRIVER_MIN
                             value: '3'
                     fulfillment_ids:
-                      - F5
+                      - F1
                     payment_ids:
                       - PA1
                 quote:
@@ -10420,7 +10735,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: F5
+                  - id: F1
                     type: DELIVERY
                     state:
                       descriptor:
@@ -10562,7 +10877,7 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I5
+                  - id: I1
                     descriptor:
                       name: Cab Ride
                       code: RIDE
@@ -10634,7 +10949,7 @@ x-flows:
                         currency: INR
                   ttl: P200S
                 fulfillments:
-                  - id: F5
+                  - id: F1
                     type: DELIVERY
                     state:
                       descriptor:
@@ -11186,6 +11501,18 @@ x-flows:
                               - value: WIFI
                               - value: BLANKET
                               - value: CCTV
+                          - descriptor:
+                              code: FAIR_POLICY
+                            list:
+                              - descriptor:
+                                  code: SEATER
+                                value: '899'
+                              - descriptor:
+                                  code: SLEEPER
+                                value: '1099'
+                              - descriptor:
+                                  code: SEMI_SLEEPER
+                                value: '999'
                       - id: F2
                         type: TRIP
                         stops:
@@ -11284,6 +11611,18 @@ x-flows:
                               - value: WIFI
                               - value: BLANKET
                               - value: CCTV
+                          - descriptor:
+                              code: FAIR_POLICY
+                            list:
+                              - descriptor:
+                                  code: SEATER
+                                value: '899'
+                              - descriptor:
+                                  code: SLEEPER
+                                value: '1099'
+                              - descriptor:
+                                  code: SEMI_SLEEPER
+                                value: '999'
       - summary: Selection of a specific service
         api: select
         details:
@@ -13174,6 +13513,12 @@ x-flows:
                               - descriptor:
                                   code: ROUTE_DIRECTION
                                 value: UP
+                              - descriptor:
+                                  code: OPERATIONAL_START_TIME
+                                value: '2023-09-14T05:30:00.000Z'
+                              - descriptor:
+                                  code: OPERATIONAL_END_TIME
+                                value: '2023-09-14T20:30:00.000Z'
                       - id: F3
                         stops:
                           - type: START
@@ -13208,6 +13553,12 @@ x-flows:
                               - descriptor:
                                   code: ROUTE_DIRECTION
                                 value: UP
+                              - descriptor:
+                                  code: OPERATION_START_TIME
+                                value: '2023-09-14T05:30:00.000Z'
+                              - descriptor:
+                                  code: OPERATION_END_TIME
+                                value: '2023-09-14T20:30:00.000Z'
       - summary: Selection of specific service
         api: select
         details:
