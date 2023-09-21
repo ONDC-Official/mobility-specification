@@ -1182,8 +1182,6 @@ components:
       type: object
       additionalProperties: false
       properties:
-        organization:
-          $ref: '#/components/schemas/Organization'
         person:
           $ref: '#/components/schemas/Person'
         contact:
@@ -1301,9 +1299,6 @@ components:
       type: object
       additionalProperties: false
       properties:
-        id:
-          description: The form identifier.
-          type: string
         url:
           description: >-
             The URL from where the form can be fetched. The content fetched from
@@ -1329,32 +1324,9 @@ components:
           enum:
             - text/html
             - application/xml
-        resubmit:
-          type: boolean
-        multiple_sumbissions:
-          type: boolean
-    FormHead:
-      description: Provides the header information for the xinput.
-      additionalProperties: false
-      type: object
-      properties:
-        descriptor:
-          $ref: '#/components/schemas/Descriptor'
-        index:
-          additionalProperties: false
-          type: object
-          properties:
-            min:
-              type: integer
-            cur:
-              type: integer
-            max:
-              type: integer
-        headings:
-          type: array
-          items:
-            type: string
-            description: The heading names of the forms
+        submission_id:
+          type: string
+          format: uuid
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
       type: object
@@ -2039,6 +2011,8 @@ components:
             will be sent as url params. Two url param values,
             ```$transaction_id``` and ```$amount``` are mandatory.
           format: uri
+        tl_method:
+          type: string
         params:
           type: object
           properties:
@@ -2080,6 +2054,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        '@ondc/org/buyer_app_finder_fee_type':
+          type: string
+        '@ondc/org/buyer_app_finder_fee_amount':
+          type: string
+        '@ondc/org/settlement_details':
+          type: array
+          items:
+            description: Describes a settlement.
+            type: object
+            additionalProperties: false
+            properties:
+              settlement_counterparty:
+                type: string
+              settlement_phase:
+                type: string
+              settlement_type:
+                type: string
+              upi_address:
+                type: string
+              settlement_bank_account_no:
+                type: string
+              settlement_ifsc_code:
+                type: string
+              beneficiary_name:
+                type: string
+              bank_name:
+                type: string
+              branch_name:
+                type: string
+              settlement_reference:
+                type: string
+              settlement_status:
+                type: string
+              settlement_timestamp:
+                type: string
     Person:
       description: Describes a person as any individual
       type: object
@@ -2473,14 +2482,14 @@ components:
       type: object
       additionalProperties: false
       properties:
-        order_id:
-          type: string
         ref_id:
           type: string
         callback_phone:
           type: string
+          format: phone
         phone:
           type: string
+          format: phone
         email:
           type: string
           format: email
@@ -2675,28 +2684,8 @@ components:
       type: object
       additionalProperties: false
       properties:
-        head:
-          $ref: '#/components/schemas/FormHead'
         form:
           $ref: '#/components/schemas/Form'
-        form_response:
-          description: Describes the response to a form submission
-          type: object
-          additionalProperties: false
-          properties:
-            status:
-              description: Contains the status of form submission.
-              type: boolean
-              default: true
-            signature:
-              type: string
-            submission_id:
-              type: string
-              format: uuid
-            errors:
-              type: array
-              items:
-                $ref: '#/components/schemas/Error'
         required:
           description: >-
             Indicates whether the form data is mandatorily required by the BPP
@@ -3160,7 +3149,7 @@ x-flows:
               Provider plateform sends the catalog of all the service that can
               be used for transit using metro in the city
         reference: if any
-        example: &ref_50
+        example: &ref_49
           summary: >-
             Return a metro catalog of available fulfillments based on search by
             city
@@ -5078,7 +5067,7 @@ x-flows:
               Users searches over the network to avail the metro mode of
               transport from point A(gps) to point B(gps)
         reference: if any
-        example: &ref_49
+        example: &ref_48
           summary: Search for a public mode of transit from a specific position
           value:
             context:
@@ -5199,6 +5188,57 @@ x-flows:
           The illustraive flow to perform a transaction of the nature where in a
           buyer would like to book a mobility service form location
           A(gps-cordinates) to localtion B(gps-cordinates)
+        mermaid: |-
+          sequenceDiagram
+            title On-Demand Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+      - description: Ordering
+        mermaid: |-
+          sequenceDiagram
+            title Selection
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+      - description: Initializing the order
+        mermaid: |-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+      - description: Order Confirmation
+        mermaid: |-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+      - description: Fulfillment
+        mermaid: |-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK       
     steps:
       - summary: Search for ride
         api: search
@@ -5206,6 +5246,18 @@ x-flows:
           - description: >-
               Users search over the network to avail a mobility service from
               Location A to Location B (GPS)
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
         example: &ref_18
           summary: Search for cab services by pickup and drop location
@@ -5251,6 +5303,18 @@ x-flows:
               Provider Platform 1, which is a mobility provider platform, sends
               the catalog of all services that can be used for transit from A to
               B, along with estimated fare
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+                end 
         reference: if any
         example: &ref_19
           summary: Return a mobility catalog
@@ -5420,6 +5484,16 @@ x-flows:
               obtain a quotation for that service. Since the max_callbacks is
               set to 1, the consumer platform will consider only one on_select
               response for the quotation
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: &ref_20
           summary: Get quote for a specific product from a mobility catalog
@@ -5454,6 +5528,16 @@ x-flows:
           - description: >-
               The provider platform responds with detailed information and quote
               for the specific service that the consumer would like to avail
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end 
         reference: if any
         example: &ref_21
           summary: Return a quote offered by a provider
@@ -5585,6 +5669,16 @@ x-flows:
           - description: >-
               Consumer platform shares the terms of order and initializes the
               order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: &ref_22
           summary: Initialize draft order and request for terms of service
@@ -5650,6 +5744,16 @@ x-flows:
           - description: >-
               Provider platform accepts the terms of order and appends its own
               terms and responds with the final draft
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example: &ref_23
           summary: Return draft order with payment terms
@@ -5838,6 +5942,16 @@ x-flows:
               The consumer platform confirms the booking and provides all the
               required information for confirmation, as per the terms of the
               order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: &ref_24
           summary: Confirm ride booking
@@ -5904,6 +6018,16 @@ x-flows:
           - description: >-
               Provider platform confirms the order and provides ride details on
               confirmation
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example: &ref_27
           summary: Return confirmed order with latest fulfillment details
@@ -6110,6 +6234,18 @@ x-flows:
           - description: >-
               Provider platform provides the latest update on ride details to
               the consumer
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: &ref_52
           summary: Return updated order with payment status
@@ -6310,6 +6446,18 @@ x-flows:
           - description: >-
               The consumer platform requests the provider platform to provide
               the latest order status
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: &ref_25
           summary: Get latest fulfillment status of a booking
@@ -6340,6 +6488,18 @@ x-flows:
           - description: >-
               Provider platform provides the updated order status to the
               consumer
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example: &ref_26
           summary: Return order with status - Driver at pickup
@@ -6543,6 +6703,57 @@ x-flows:
           The illustraive flow to perform a transaction of the nature where in a
           buyer would like to book a mobility service form location
           A(gps-cordinates) to localtion B(gps-cordinates)
+        mermaid: |-
+          sequenceDiagram
+            title On-Demand Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+      - description: Ordering
+        mermaid: |-
+          sequenceDiagram
+            title Selection
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+      - description: Initializing the order
+        mermaid: |-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+      - description: Order Confirmation
+        mermaid: |-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+      - description: Fulfillment
+        mermaid: |-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK       
     steps:
       - summary: Search for ride
         api: search
@@ -6550,6 +6761,18 @@ x-flows:
           - description: >-
               Users search over the network to avail a mobility service from
               Location A to Location B (GPS)
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_18
       - summary: Get a list of all services from Provider Platform 1
@@ -6559,6 +6782,18 @@ x-flows:
               Provider Platform 1, which is a mobility provider platform, sends
               the catalog of all services that can be used for transit from A to
               B, along with estimated fare
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+                end
         reference: if any
         example: *ref_19
       - summary: Selection of a specific service
@@ -6569,6 +6804,16 @@ x-flows:
               obtain a quotation for that service. Since the max_callbacks is
               set to 1, the consumer platform will consider only one on_select
               response for the quotation
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_20
       - summary: Provider platform provides the quote for selected service
@@ -6577,6 +6822,16 @@ x-flows:
           - description: >-
               The provider platform responds with detailed information and quote
               for the specific service that the consumer would like to avail
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end 
         reference: if any
         example: *ref_21
       - summary: Consumer platform initializes the order
@@ -6585,6 +6840,16 @@ x-flows:
           - description: >-
               Consumer platform shares the terms of order and initializes the
               order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_22
       - summary: Provider platform accepts/appends the terms of orders
@@ -6593,6 +6858,16 @@ x-flows:
           - description: >-
               Provider platform accepts the terms of order and appends its own
               terms and responds with the final draft
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end  
         reference: if any
         example: *ref_23
       - summary: Consumer confirms the ride
@@ -6602,12 +6877,32 @@ x-flows:
               The consumer platform confirms the booking and provides all the
               required information for confirmation, as per the terms of the
               order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_24
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
           - description: Provider platform confirms the order.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example:
           summary: Return confirmed order with latest fulfillment details
@@ -6807,6 +7102,18 @@ x-flows:
         api: on_update
         details:
           - description: Provider platform provides the agent details when assigned.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
           summary: Return updated order with updated agent details
@@ -7014,6 +7321,18 @@ x-flows:
           - description: >-
               The consumer platform requests the provider platform to provide
               the latest order status
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_25
       - summary: Provider platform provides latest order status
@@ -7022,6 +7341,18 @@ x-flows:
           - description: >-
               Provider platform provides the updated order status to the
               consumer
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example: *ref_26
   - summary: On-Demand - Ride cancel
@@ -7030,6 +7361,57 @@ x-flows:
           The illustraive flow to perform a transaction of the nature where in a
           buyer would like to cancel a previously booked mobility service form
           location A(gps-cordinates) to localtion B(gps-cordinates)
+        mermaid: |-
+          sequenceDiagram
+            title On-Demand Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+      - description: Ordering
+        mermaid: |-
+          sequenceDiagram
+            title Selection
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+      - description: Initializing the order
+        mermaid: |-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+      - description: Order Confirmation
+        mermaid: |-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+      - description: Fulfillment
+        mermaid: |-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK       
     reference: if any
     steps:
       - summary: Search for ride
@@ -7038,6 +7420,18 @@ x-flows:
           - description: >-
               Users search over the network to avail a mobility service from
               Location A to Location B (GPS)
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_18
       - summary: Get a list of all services from Provider Platform 1
@@ -7047,6 +7441,18 @@ x-flows:
               Provider Platform 1, which is a mobility provider platform, sends
               the catalog of all services that can be used for transit from A to
               B, along with estimated fare
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+                end
         reference: if any
         example: *ref_19
       - summary: Selection of a specific service
@@ -7057,6 +7463,16 @@ x-flows:
               obtain a quotation for that service. Since the max_callbacks is
               set to 1, the consumer platform will consider only one on_select
               response for the quotation
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_20
       - summary: Provider platform provides the quote for selected service
@@ -7065,6 +7481,16 @@ x-flows:
           - description: >-
               The provider platform responds with detailed information and quote
               for the specific service that the consumer would like to avail
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example: *ref_21
       - summary: Consumer platform initializes the order
@@ -7073,6 +7499,16 @@ x-flows:
           - description: >-
               Consumer platform shares the terms of order and initializes the
               order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_22
       - summary: Provider platform accepts/appends the terms of orders
@@ -7081,6 +7517,16 @@ x-flows:
           - description: >-
               Provider platform accepts the terms of order and appends its own
               terms and responds with the final draft
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end  
         reference: if any
         example: *ref_23
       - summary: Consumer confirms the ride
@@ -7090,6 +7536,16 @@ x-flows:
               The consumer platform confirms the booking and provides all the
               required information for confirmation, as per the terms of the
               order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_24
       - summary: Provider platform confirms the order
@@ -7098,14 +7554,36 @@ x-flows:
           - description: >-
               Provider platform confirms the order and provides ride details on
               confirmation
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example: *ref_27
       - summary: Consumer platform cancels the request
         api: cancel
         details:
           - description: Consumer platform requests for cancellation of ride
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_51
+        example: &ref_50
           summary: Cancel a ride with user provided information
           value:
             context:
@@ -7138,8 +7616,20 @@ x-flows:
           - description: >-
               Provider platform accepts the terms of cancel request and provides
               with latest order update
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_28
+        example: &ref_51
           summary: Return order cancelled by rider with cancellation charges
           value:
             context:
@@ -7331,20 +7821,24 @@ x-flows:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
-      - summary: Provider platform cancel the ride
-        api: on_cancel
-        details:
-          - description: >-
-              Provider platform cancels the request and provides with latest
-              order update
-        reference: if any
-        example: *ref_28
       - summary: Provider platform returns latest order status
         api: on_status
         details:
           - description: >-
               Provider platform returns the updated order status to the consumer
               on cancel request
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example:
           summary: Return order with latest status - Ride Ended
@@ -7534,6 +8028,57 @@ x-flows:
           The illustraive flow to perform a transaction of the nature where in a
           buyer would like to book a schedule service form location
           A(gps-cordinates) to localtion B(gps-cordinates) with timestamp
+        mermaid: |-
+          sequenceDiagram
+            title On-Demand Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+      - description: Ordering
+        mermaid: |-
+          sequenceDiagram
+            title Selection
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+      - description: Initializing the order
+        mermaid: |-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+      - description: Order Confirmation
+        mermaid: |-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+      - description: Fulfillment
+        mermaid: |-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK       
     steps:
       - summary: Search for ride
         api: search
@@ -7541,6 +8086,18 @@ x-flows:
           - description: >-
               Users search over the network to avail a mobility service from
               Location A to Location B (GPS)
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_18
       - summary: Get a list of all services from Provider Platform 1
@@ -7550,6 +8107,18 @@ x-flows:
               Provider Platform 1, which is a mobility provider platform, sends
               the catalog of all services that can be used for transit from A to
               B, along with estimated fare
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+                end
         reference: if any
         example: *ref_19
       - summary: Selection of a specific service
@@ -7560,6 +8129,16 @@ x-flows:
               obtain a quotation for that service. Since the max_callbacks is
               set to 1, the consumer platform will consider only one on_select
               response for the quotation
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
         example:
           summary: Get quote for a specific product from a mobility catalog
@@ -7606,6 +8185,16 @@ x-flows:
           - description: >-
               The provider platform responds with detailed information and quote
               for the specific service that the consumer would like to avail
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example:
           summary: Return a quote offered by a provider(schedule-ride)
@@ -7739,6 +8328,16 @@ x-flows:
           - description: >-
               Consumer platform shares the terms of order and initializes the
               order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
           summary: >-
@@ -7808,6 +8407,16 @@ x-flows:
           - description: >-
               Provider platform accepts the terms of order and appends its own
               terms and responds with the final draft
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example:
           summary: Return draft order with payment terms(schedule-ride)
@@ -7998,6 +8607,16 @@ x-flows:
               The consumer platform confirms the booking and provides all the
               required information for confirmation, as per the terms of the
               order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
           summary: Confirm ride booking(schedule-ride)
@@ -8064,6 +8683,16 @@ x-flows:
         api: on_confirm
         details:
           - description: Provider platform confirms the order.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end 
         reference: if any
         example:
           summary: >-
@@ -8267,6 +8896,18 @@ x-flows:
         api: on_update
         details:
           - description: Provider platform provides the agent details when assigned.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
           summary: Return updated order with updated agent details(schedule-ride)
@@ -8476,6 +9117,18 @@ x-flows:
           - description: >-
               The consumer platform requests the provider platform to provide
               the latest order status
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_25
       - summary: Provider platform provides latest order status
@@ -8484,6 +9137,18 @@ x-flows:
           - description: >-
               Provider platform provides the updated order status to the
               consumer
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example: *ref_26
   - summary: On-Demand - Rental Ride
@@ -8491,6 +9156,57 @@ x-flows:
       - description: >-
           The illustraive flow to perform a transaction of the nature where in a
           buyer would like to rent a ride for a certain duration of time.
+        mermaid: |-
+          sequenceDiagram
+            title On-Demand Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+      - description: Ordering
+        mermaid: |-
+          sequenceDiagram
+            title Selection
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+      - description: Initializing the order
+        mermaid: |-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+      - description: Order Confirmation
+        mermaid: |-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+      - description: Fulfillment
+        mermaid: |-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK       
     steps:
       - summary: Search for ride
         api: search
@@ -8498,6 +9214,18 @@ x-flows:
           - description: >-
               Users search over the network to avail a mobility service from
               Location A for certain duration of time.
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_18
       - summary: Get a list of all services from Provider Platform 1
@@ -8507,6 +9235,18 @@ x-flows:
               Provider Platform 1, which is a mobility provider platform, sends
               the catalog of all services including the one which can be used
               for rental purpose
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+                end
         reference: if any
         example: *ref_19
       - summary: Selection of a specific service
@@ -8517,6 +9257,16 @@ x-flows:
               obtain a quotation for that service. Since the max_callbacks is
               set to 1, the consumer platform will consider only one on_select
               response for the quotation
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
           summary: Get quote for a specific product from a mobility catalog(rental)
@@ -8551,6 +9301,16 @@ x-flows:
           - description: >-
               The provider platform responds with detailed information and quote
               for the specific service that the consumer would like to avail
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example:
           summary: Return a quote offered by a provider
@@ -8680,6 +9440,16 @@ x-flows:
           - description: >-
               Consumer platform shares the terms of order and initializes the
               order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
           summary: Initialize draft order and request for terms of service(rental)
@@ -8743,6 +9513,16 @@ x-flows:
           - description: >-
               Provider platform accepts the terms of order and appends its own
               terms and responds with the final draft
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example:
           summary: Return draft order with payment terms(rental)
@@ -8929,6 +9709,16 @@ x-flows:
               The consumer platform confirms the booking and provides all the
               required information for confirmation, as per the terms of the
               order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
           summary: Confirm ride booking(rental)
@@ -8991,6 +9781,16 @@ x-flows:
         api: on_confirm
         details:
           - description: Provider platform confirms the order.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example:
           summary: Return confirmed order with latest fulfillment details(rental)
@@ -9193,6 +9993,18 @@ x-flows:
         api: on_update
         details:
           - description: Provider platform provides the ride details with updated context.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
           summary: Return updated order with updated agent details(RENTAL)
@@ -9398,6 +10210,18 @@ x-flows:
           - description: >-
               The consumer platform requests the provider platform to provide
               the latest order status
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_25
       - summary: Provider platform provides latest order status
@@ -9406,6 +10230,18 @@ x-flows:
           - description: >-
               Provider platform provides the updated order status to the
               consumer
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example:
           summary: Return order with status - Driver at pickup(rental)
@@ -9608,6 +10444,57 @@ x-flows:
           The illustraive flow to perform a transaction of the nature where in a
           buyer would like to schedule a rental a ride for a certain duration of
           time.
+        mermaid: |-
+          sequenceDiagram
+            title On-Demand Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+      - description: Ordering
+        mermaid: |-
+          sequenceDiagram
+            title Selection
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+      - description: Initializing the order
+        mermaid: |-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+      - description: Order Confirmation
+        mermaid: |-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+      - description: Fulfillment
+        mermaid: |-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK       
     steps:
       - summary: Search for ride
         api: search
@@ -9615,6 +10502,18 @@ x-flows:
           - description: >-
               Users search over the network to schedule a rental service from
               Location A for certain duration of time.
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_18
       - summary: Get a list of all services from Provider Platform 1
@@ -9624,6 +10523,18 @@ x-flows:
               Provider Platform 1, which is a mobility provider platform, sends
               the catalog of all services including the one which can be used
               for rental purpose
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+                end
         reference: if any
         example: *ref_19
       - summary: Selection of a specific service
@@ -9634,6 +10545,16 @@ x-flows:
               obtain a quotation for that service. Since the max_callbacks is
               set to 1, the consumer platform will consider only one on_select
               response for the quotation
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
         example:
           summary: >-
@@ -9670,6 +10591,16 @@ x-flows:
           - description: >-
               The provider platform responds with detailed information and quote
               for the specific service that the consumer would like to avail
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example:
           summary: Return a quote offered by a provider(Scheduled-rental)
@@ -9800,6 +10731,16 @@ x-flows:
           - description: >-
               Consumer platform shares the terms of order and initializes the
               order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
           summary: Initialize draft order and request for terms of service(rental)
@@ -9864,6 +10805,16 @@ x-flows:
           - description: >-
               Provider platform accepts the terms of order and appends its own
               terms and responds with the final draft
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end 
         reference: if any
         example:
           summary: Return draft order with payment terms(rental)
@@ -10051,6 +11002,16 @@ x-flows:
               The consumer platform confirms the booking and provides all the
               required information for confirmation, as per the terms of the
               order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
           summary: Confirm ride booking(Scheduled-rental)
@@ -10114,6 +11075,16 @@ x-flows:
         api: on_confirm
         details:
           - description: Provider platform confirms the order.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example:
           summary: >-
@@ -10314,6 +11285,18 @@ x-flows:
         api: on_update
         details:
           - description: Provider platform provides the agent details when assigned.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
           summary: Return updated order with updated agent details(Scheduled-rental)
@@ -10520,6 +11503,18 @@ x-flows:
           - description: >-
               The consumer platform requests the provider platform to provide
               the latest order status
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_25
       - summary: Provider platform provides latest order status
@@ -10528,6 +11523,18 @@ x-flows:
           - description: >-
               Provider platform provides the updated order status to the
               consumer
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example:
           summary: Return order with status - Driver at pickup(Scheduled-rental)
@@ -10781,7 +11788,7 @@ x-flows:
               Provider platform sends the catalog of all the service that can be
               used for transit using bus service based on gps
         reference: if any
-        example: &ref_29
+        example: &ref_28
           summary: Return services available for provided start code or gps
           value:
             context:
@@ -10951,7 +11958,7 @@ x-flows:
               used for transit using bus service form point A(gps) to point
               B(gps)
         reference: if any
-        example: &ref_30
+        example: &ref_29
           summary: >-
             Return services available for provided start and end code or gps
             with journey date
@@ -11284,7 +12291,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the necesary details
         reference: if any
-        example: &ref_31
+        example: &ref_30
           summary: Get Quote of a selected seat
           value:
             context:
@@ -11324,7 +12331,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: &ref_32
+        example: &ref_31
           summary: Return a quote offered by a intercity bus  service provider
           value:
             context:
@@ -11447,7 +12454,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: &ref_33
+        example: &ref_32
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -11509,7 +12516,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: &ref_34
+        example: &ref_33
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -11670,7 +12677,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmation as per the terms of order
         reference: if any
-        example: &ref_35
+        example: &ref_34
           summary: Confirm ticket booking
           value:
             context:
@@ -11737,7 +12744,7 @@ x-flows:
               Provider platform confirms the order and provides details of the
               journey upon confirmation
         reference: if any
-        example: &ref_36
+        example: &ref_35
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -11903,7 +12910,7 @@ x-flows:
         details:
           - description: Consumer platform requests for cancellation of bus service
         reference: if any
-        example: &ref_37
+        example: &ref_36
           summary: Cancel a transit ticket booking before the cancellation period
           value:
             context:
@@ -11930,7 +12937,7 @@ x-flows:
               Provider platform accepts the terms of cancel request and provides
               with latest order update
         reference: if any
-        example: &ref_38
+        example: &ref_37
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -12111,7 +13118,7 @@ x-flows:
               The consumer platform updates the ride with some certain details
               he wants to be updated.
         reference: if any
-        example: &ref_39
+        example: &ref_38
           summary: Update customer details
           value:
             context:
@@ -12315,7 +13322,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status
         reference: if any
-        example: &ref_40
+        example: &ref_39
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -12342,7 +13349,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: &ref_41
+        example: &ref_40
           summary: Return transit ticket order with status - Journey Completed
           value:
             context:
@@ -12553,7 +13560,7 @@ x-flows:
               Provider platform sends the catalog of all the service that can be
               used for transit using bus service based on station code
         reference: if any
-        example: *ref_29
+        example: *ref_28
       - summary: Search for the bus by start and end station code
         api: search
         details:
@@ -12612,7 +13619,7 @@ x-flows:
               Provider platform sends the catalog of all the service that can be
               used for transit using bus from station A to station B
         reference: if any
-        example: *ref_30
+        example: *ref_29
       - summary: Selection of specific service
         api: select
         details:
@@ -12620,7 +13627,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the necesary details
         reference: if any
-        example: *ref_31
+        example: *ref_30
       - summary: Provider platform provides the quote for selected service of bus
         api: on_select
         details:
@@ -12629,7 +13636,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: *ref_32
+        example: *ref_31
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -12637,7 +13644,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: *ref_33
+        example: *ref_32
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -12645,7 +13652,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: *ref_34
+        example: *ref_33
       - summary: Consumer confirms the booking and provides details.
         api: confirm
         details:
@@ -12653,7 +13660,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmation as per the terms of order
         reference: if any
-        example: *ref_35
+        example: *ref_34
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -12661,13 +13668,13 @@ x-flows:
               Provider platform confirms the order and provides details of the
               journey upon confirmation
         reference: if any
-        example: *ref_36
+        example: *ref_35
       - summary: Consumer platform cancels the request
         api: cancel
         details:
           - description: Consumer platform requests for cancellation of bus service
         reference: if any
-        example: *ref_37
+        example: *ref_36
       - summary: Provider platform accepts/appends the terms of cancellation
         api: on_cancel
         details:
@@ -12675,7 +13682,7 @@ x-flows:
               Provider platform accepts the terms of cancel request and provides
               with latest order update
         reference: if any
-        example: *ref_38
+        example: *ref_37
       - summary: Consumer platform updates the ride details
         api: update
         details:
@@ -12683,7 +13690,7 @@ x-flows:
               The consumer platform updates the ride with some certain details
               he wants to be updated.
         reference: if any
-        example: *ref_39
+        example: *ref_38
       - summary: Provider platform provides latest update on the order
         api: on_update
         details:
@@ -12863,7 +13870,7 @@ x-flows:
               Consumer platform request the provider platform to provide with
               latest order status
         reference: if any
-        example: *ref_40
+        example: *ref_39
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -12871,7 +13878,7 @@ x-flows:
               Provider platform provides the updated order status to the
               consumer
         reference: if any
-        example: *ref_41
+        example: *ref_40
   - summary: IntraCity - GPS Based Flow
     details:
       - description: >-
@@ -12936,7 +13943,7 @@ x-flows:
               used for transit using bus service from point A(gps) to point
               B(gps)
         reference: if any
-        example: &ref_42
+        example: &ref_41
           summary: Return a public transit catalog of fare products
           value:
             context:
@@ -13238,7 +14245,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the necessary details
         reference: if any
-        example: &ref_43
+        example: &ref_42
           summary: >-
             Get a quote for a fare product selected from a intra city bus
             service catalog
@@ -13278,7 +14285,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: &ref_44
+        example: &ref_43
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -13401,7 +14408,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: &ref_45
+        example: &ref_44
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -13453,7 +14460,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: &ref_46
+        example: &ref_45
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -13612,7 +14619,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmation as per the terms of order
         reference: if any
-        example: &ref_47
+        example: &ref_46
           summary: Confirm ticket booking
           value:
             context:
@@ -13669,7 +14676,7 @@ x-flows:
               Provider platform confirms the order and provides details of the
               journey on confirmation
         reference: if any
-        example: &ref_48
+        example: &ref_47
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -14356,7 +15363,7 @@ x-flows:
               used for transit using bus service from point A(code) to point
               B(code)
         reference: if any
-        example: *ref_42
+        example: *ref_41
       - summary: Selection of specific service
         api: select
         details:
@@ -14364,7 +15371,7 @@ x-flows:
               The end consumer have to select the specific service and would
               like to have the necessary details
         reference: if any
-        example: *ref_43
+        example: *ref_42
       - summary: >-
           Provider platform provides the quote for selected service of intracity
           bus
@@ -14375,7 +15382,7 @@ x-flows:
               and quotes for the specific service that consumer would like to
               avail
         reference: if any
-        example: *ref_44
+        example: *ref_43
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -14383,7 +15390,7 @@ x-flows:
               Consumer platform shares the terms of order and initializes the
               order
         reference: if any
-        example: *ref_45
+        example: *ref_44
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -14391,7 +15398,7 @@ x-flows:
               Provider platform accepts the terms of orders and appends its own
               terms and responds with the final draft
         reference: if any
-        example: *ref_46
+        example: *ref_45
       - summary: Consumer confirms the booking and provides details.
         api: confirm
         details:
@@ -14399,7 +15406,7 @@ x-flows:
               Consumer platform confirms the booking and provides all
               information required for confirmation as per the terms of order
         reference: if any
-        example: *ref_47
+        example: *ref_46
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -14407,7 +15414,7 @@ x-flows:
               Provider platform confirms the order and provides details of the
               journey on confirmation
         reference: if any
-        example: *ref_48
+        example: *ref_47
 x-examples:
   metro:
     summary: Metro Use Case Specification
@@ -14428,7 +15435,7 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_49
+          - *ref_48
       select:
         examples:
           - *ref_10
@@ -14466,7 +15473,7 @@ x-examples:
           - *ref_16
       on_search:
         examples:
-          - *ref_50
+          - *ref_49
       on_select:
         examples:
           - *ref_11
@@ -14820,7 +15827,7 @@ x-examples:
               message:
                 cancellation_reason_id: '5'
                 order_id: O1
-          - *ref_51
+          - *ref_50
       support:
         examples:
           - summary: Fetch support information related to a particular order
@@ -14886,7 +15893,7 @@ x-examples:
                   status: active
       on_cancel:
         examples:
-          - *ref_28
+          - *ref_51
           - summary: Return order cancelled by driver
             value:
               context:
@@ -16090,45 +17097,45 @@ x-examples:
           - *ref_56
       select:
         examples:
-          - *ref_31
+          - *ref_30
       init:
         examples:
-          - *ref_33
+          - *ref_32
       confirm:
         examples:
-          - *ref_35
+          - *ref_34
       cancel:
         examples:
-          - *ref_37
+          - *ref_36
       status:
         examples:
-          - *ref_40
+          - *ref_39
       update:
         examples:
-          - *ref_39
+          - *ref_38
       on_search:
         examples:
+          - *ref_28
           - *ref_29
-          - *ref_30
       on_select:
         examples:
-          - *ref_32
+          - *ref_31
       on_init:
         examples:
-          - *ref_34
+          - *ref_33
       on_confirm:
         examples:
-          - *ref_36
+          - *ref_35
       on_status:
         examples:
-          - *ref_41
+          - *ref_40
       on_update:
         examples:
           - *ref_57
           - *ref_58
       on_cancel:
         examples:
-          - *ref_38
+          - *ref_37
   intracity-bus:
     summary: Intracity Bus Use Case Specification
     description: Intra city Bus Use Case Specification
@@ -16138,13 +17145,13 @@ x-examples:
           - *ref_59
       select:
         examples:
-          - *ref_43
+          - *ref_42
       init:
         examples:
-          - *ref_45
+          - *ref_44
       confirm:
         examples:
-          - *ref_47
+          - *ref_46
       cancel:
         examples:
           - summary: Cancel a ticket booking before the cancellation period
@@ -16172,16 +17179,16 @@ x-examples:
           - *ref_60
       on_search:
         examples:
-          - *ref_42
+          - *ref_41
       on_select:
         examples:
-          - *ref_44
+          - *ref_43
       on_init:
         examples:
-          - *ref_46
+          - *ref_45
       on_confirm:
         examples:
-          - *ref_48
+          - *ref_47
 x-attributes:
   metro:
     attribute_set:
