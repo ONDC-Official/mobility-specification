@@ -23,7 +23,8 @@ paths:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - properties:
+                    - type: object
+                      properties:
                         action:
                           enum:
                             - search
@@ -1182,6 +1183,8 @@ components:
       type: object
       additionalProperties: false
       properties:
+        organization:
+          $ref: '#/components/schemas/Organization'
         person:
           $ref: '#/components/schemas/Person'
         contact:
@@ -1299,6 +1302,9 @@ components:
       type: object
       additionalProperties: false
       properties:
+        id:
+          description: The form identifier.
+          type: string
         url:
           description: >-
             The URL from where the form can be fetched. The content fetched from
@@ -1324,9 +1330,32 @@ components:
           enum:
             - text/html
             - application/xml
-        submission_id:
-          type: string
-          format: uuid
+        resubmit:
+          type: boolean
+        multiple_sumbissions:
+          type: boolean
+    FormHead:
+      description: Provides the header information for the xinput.
+      additionalProperties: false
+      type: object
+      properties:
+        descriptor:
+          $ref: '#/components/schemas/Descriptor'
+        index:
+          additionalProperties: false
+          type: object
+          properties:
+            min:
+              type: integer
+            cur:
+              type: integer
+            max:
+              type: integer
+        headings:
+          type: array
+          items:
+            type: string
+            description: The heading names of the forms
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
       type: object
@@ -2011,8 +2040,6 @@ components:
             will be sent as url params. Two url param values,
             ```$transaction_id``` and ```$amount``` are mandatory.
           format: uri
-        tl_method:
-          type: string
         params:
           type: object
           properties:
@@ -2054,41 +2081,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
-        '@ondc/org/buyer_app_finder_fee_type':
-          type: string
-        '@ondc/org/buyer_app_finder_fee_amount':
-          type: string
-        '@ondc/org/settlement_details':
-          type: array
-          items:
-            description: Describes a settlement.
-            type: object
-            additionalProperties: false
-            properties:
-              settlement_counterparty:
-                type: string
-              settlement_phase:
-                type: string
-              settlement_type:
-                type: string
-              upi_address:
-                type: string
-              settlement_bank_account_no:
-                type: string
-              settlement_ifsc_code:
-                type: string
-              beneficiary_name:
-                type: string
-              bank_name:
-                type: string
-              branch_name:
-                type: string
-              settlement_reference:
-                type: string
-              settlement_status:
-                type: string
-              settlement_timestamp:
-                type: string
     Person:
       description: Describes a person as any individual
       type: object
@@ -2482,14 +2474,14 @@ components:
       type: object
       additionalProperties: false
       properties:
+        order_id:
+          type: string
         ref_id:
           type: string
         callback_phone:
           type: string
-          format: phone
         phone:
           type: string
-          format: phone
         email:
           type: string
           format: email
@@ -2684,8 +2676,28 @@ components:
       type: object
       additionalProperties: false
       properties:
+        head:
+          $ref: '#/components/schemas/FormHead'
         form:
           $ref: '#/components/schemas/Form'
+        form_response:
+          description: Describes the response to a form submission
+          type: object
+          additionalProperties: false
+          properties:
+            status:
+              description: Contains the status of form submission.
+              type: boolean
+              default: true
+            signature:
+              type: string
+            submission_id:
+              type: string
+              format: uuid
+            errors:
+              type: array
+              items:
+                $ref: '#/components/schemas/Error'
         required:
           description: >-
             Indicates whether the form data is mandatorily required by the BPP
@@ -12757,106 +12769,6 @@ x-flows:
                       name: ABC Operator 1 Bus Services
                       images:
                         - url: https://operator1.com/logos/logo.ico
-                    categories:
-                      - descriptor:
-                          name: Seater
-                          code: SEATER
-                        id: C1
-                      - descriptor:
-                          name: Sleeper
-                          code: SLEEPER
-                        id: C2
-                      - descriptor:
-                          name: Semi Sleeper
-                          code: SEMI_SLEEPER
-                        id: C3
-                    items:
-                      - id: I1
-                        descriptor:
-                          name: Seater Ticket
-                          code: SEAT
-                        price:
-                          currency: INR
-                          value: '899'
-                        quantity:
-                          available:
-                            count: 1
-                          maximum:
-                            count: 1
-                        fulfillment_ids:
-                          - F1
-                        category_ids:
-                          - C1
-                        tags:
-                          - descriptor:
-                              code: SEAT_GRID
-                            list:
-                              - descriptor:
-                                  code: X
-                                value: '0'
-                              - descriptor:
-                                  code: 'Y'
-                                value: '0'
-                              - descriptor:
-                                  code: Z
-                                value: '0'
-                              - descriptor:
-                                  code: X_SIZE
-                                value: '1'
-                              - descriptor:
-                                  code: Y_SIZE
-                                value: '1'
-                              - descriptor:
-                                  code: NUMBER
-                                value: A1
-                              - descriptor:
-                                  code: RESTRICTED_GENDER
-                                value: MALE
-                              - descriptor:
-                                  code: SINGLE_SEAT
-                                value: 'TRUE'
-                      - id: I2
-                        descriptor:
-                          name: Sleeper Ticket
-                          code: SEAT
-                        price:
-                          currency: INR
-                          value: '1899'
-                        quantity:
-                          available:
-                            count: 1
-                        fulfillment_ids:
-                          - F1
-                        category_ids:
-                          - C1
-                        tags:
-                          - descriptor:
-                              code: SEAT_GRID
-                            list:
-                              - descriptor:
-                                  code: X
-                                value: '0'
-                              - descriptor:
-                                  code: 'Y'
-                                value: '0'
-                              - descriptor:
-                                  code: Z
-                                value: '1'
-                              - descriptor:
-                                  code: X_SIZE
-                                value: '1'
-                              - descriptor:
-                                  code: Y_SIZE
-                                value: '2'
-                              - descriptor:
-                                  code: NUMBER
-                                value: S1
-                              - descriptor:
-                                  code: RESTRICTED_GENDER
-                                value: ANY
-                              - descriptor:
-                                  code: SINGLE_SEAT
-                                value: 'TRUE'
                     fulfillments:
                       - id: F1
                         type: TRIP
@@ -14382,6 +14294,306 @@ x-flows:
                 end
         reference: if any
         example: *ref_30
+      - summary: Search for the specific bus service
+        api: search
+        details:
+          - description: >-
+              Users searches over the network to avail the intercity bus mode of
+              transport from one station to another
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: Search for all services from given start and end location(code)
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: example-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 1ba2dca2-144d-41a2-add5-2cc65014fa23
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/beckn/
+              ttl: PT30S
+            message:
+              intent:
+                fulfillment:
+                  id: F1
+                  stops:
+                    - id: S1
+                    - id: S3
+                provider:
+                  id: P1
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+      - summary: Return an intercity specific bus services
+        api: on_search
+        details:
+          - description: >-
+              Provider platform sends the catalog of all the service that can be
+              used for transit using bus from station A to station B
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+                end
+        reference: if any
+        example:
+          summary: >-
+            Return services available seat layout for provided start and end
+            code with journey date
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: example-bap.com
+              bap_uri: https://api.example-bap.com/beckn
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 1ba2dca2-144d-41a2-add5-2cc65014fa23
+              version: 2.0.0
+              action: on_search
+              ttl: PT30S
+            message:
+              catalog:
+                descriptor:
+                  name: ABC Bus Services Solutions
+                  images:
+                    - url: https://abc-bus.in/logos/logo.ico
+                providers:
+                  - id: P1
+                    descriptor:
+                      name: ABC Operator 1 Bus Services
+                      images:
+                        - url: https://operator1.com/logos/logo.ico
+                    categories:
+                      - descriptor:
+                          name: Seater
+                          code: SEATER
+                        id: C1
+                      - descriptor:
+                          name: Sleeper
+                          code: SLEEPER
+                        id: C2
+                      - descriptor:
+                          name: Semi Sleeper
+                          code: SEMI_SLEEPER
+                        id: C3
+                    items:
+                      - id: I1
+                        descriptor:
+                          name: Seater Ticket
+                          code: SEAT
+                        price:
+                          currency: INR
+                          value: '899'
+                        quantity:
+                          available:
+                            count: 1
+                          maximum:
+                            count: 1
+                        fulfillment_ids:
+                          - F1
+                        category_ids:
+                          - C1
+                        tags:
+                          - descriptor:
+                              code: SEAT_GRID
+                            list:
+                              - descriptor:
+                                  code: X
+                                value: '0'
+                              - descriptor:
+                                  code: 'Y'
+                                value: '0'
+                              - descriptor:
+                                  code: Z
+                                value: '0'
+                              - descriptor:
+                                  code: X_SIZE
+                                value: '1'
+                              - descriptor:
+                                  code: Y_SIZE
+                                value: '1'
+                              - descriptor:
+                                  code: NUMBER
+                                value: A1
+                              - descriptor:
+                                  code: RESTRICTED_GENDER
+                                value: MALE
+                              - descriptor:
+                                  code: SINGLE_SEAT
+                                value: 'TRUE'
+                      - id: I2
+                        descriptor:
+                          name: Sleeper Ticket
+                          code: SEAT
+                        price:
+                          currency: INR
+                          value: '1899'
+                        quantity:
+                          available:
+                            count: 1
+                        fulfillment_ids:
+                          - F1
+                        category_ids:
+                          - C1
+                        tags:
+                          - descriptor:
+                              code: SEAT_GRID
+                            list:
+                              - descriptor:
+                                  code: X
+                                value: '0'
+                              - descriptor:
+                                  code: 'Y'
+                                value: '0'
+                              - descriptor:
+                                  code: Z
+                                value: '1'
+                              - descriptor:
+                                  code: X_SIZE
+                                value: '1'
+                              - descriptor:
+                                  code: Y_SIZE
+                                value: '2'
+                              - descriptor:
+                                  code: NUMBER
+                                value: S1
+                              - descriptor:
+                                  code: RESTRICTED_GENDER
+                                value: ANY
+                              - descriptor:
+                                  code: SINGLE_SEAT
+                                value: 'TRUE'
+                    fulfillments:
+                      - id: F1
+                        type: TRIP
+                        stops:
+                          - type: START
+                            location:
+                              descriptor:
+                                name: Bangalore
+                                code: std:080
+                          - id: S1
+                            type: PICKUP
+                            location:
+                              descriptor:
+                                name: Agara
+                                code: std:080-pincode:560034
+                              gps: 12.924479, 77.648999
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T06:30:00.000Z'
+                          - id: S2
+                            type: PICKUP
+                            location:
+                              descriptor:
+                                name: Bellandur
+                                code: std:080-pincode:560103
+                              gps: 12.930839, 77.677941
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T06:45:00.000Z'
+                          - type: END
+                            location:
+                              descriptor:
+                                name: Hyderabad
+                                code: std:040
+                          - id: S3
+                            type: DROP
+                            location:
+                              descriptor:
+                                name: Ameerpet
+                                code: std:040-pincode:500016
+                              gps: 17.441586, 78.441581
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T15:10:00.000Z'
+                          - id: S4
+                            type: DROP
+                            location:
+                              descriptor:
+                                name: Central Bus Station
+                                code: std:040-pincode:500012
+                              gps: 17.379024, 78.482443
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-09-06T15:30:00.000Z'
+                        vehicle:
+                          category: BUS
+                        tags:
+                          - descriptor:
+                              code: VEHICLE_GRID
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: X_MAX
+                                value: '14'
+                              - descriptor:
+                                  code: Y_MAX
+                                value: '3'
+                              - descriptor:
+                                  code: Z_MAX
+                                value: '1'
+                              - descriptor:
+                                  code: X_LOBBY_START
+                                value: '0'
+                              - descriptor:
+                                  code: X_LOBBY_SIZE
+                                value: '12'
+                              - descriptor:
+                                  code: Y_LOBBY_START
+                                value: '1'
+                              - descriptor:
+                                  code: Y_LOBBY_SIZE
+                                value: '1'
+                          - descriptor:
+                              code: VEHICLE_AVAIBALITY
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: AVALIABLE_SEATS
+                                value: '20'
+                          - descriptor:
+                              code: VEHICLE_AMENITIES
+                            list:
+                              - value: WATER_BOTTLE
+                              - value: WIFI
+                              - value: BLANKET
+                              - value: CCTV
       - summary: Selection of specific service
         api: select
         details:
