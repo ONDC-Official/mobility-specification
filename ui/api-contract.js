@@ -18,16 +18,19 @@ async function readBuildFile(branchName) {
       },
     });
     const formattedResponse = await response?.json();
-    if(formattedResponse?.download_url){
-      const rawResponse = await fetch(formattedResponse.download_url, {
-        // headers: {
-        //   Authorization: "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",
-        // },
-      });
-      const formattedrawResponse = await rawResponse?.text();
-      build_spec = JSON.parse(getStringAfterEquals(formattedrawResponse));
-      onFirstLoad(build_spec);
-    }
+    // if(formattedResponse?.download_url){
+    //   const rawResponse = await fetch(formattedResponse.download_url, {
+    //     // headers: {
+    //     //   Authorization: "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",
+    //     // },
+    //   });
+    //   const formattedrawResponse = await rawResponse?.text();
+    //   build_spec = JSON.parse(getStringAfterEquals(formattedrawResponse));
+    //   onFirstLoad(build_spec);
+    // }
+    let splitedText = atob(formattedResponse?.content);
+    build_spec = JSON.parse(getStringAfterEquals(splitedText));
+    onFirstLoad(build_spec);
     
   } catch (error) {
     console.log("Error fetching contract", error?.message || error);
