@@ -3175,13 +3175,82 @@ x-tags:
   on_update: *ref_9
 x-flows:
   - summary: Airlines - Code Based Flow
+    details:
+      - description: >-
+          The illustrative flow to perform a transaction of the nature where in
+          a buyer would like to book an airlines service form airport A to
+          airport B
+        mermaid: |-
+          sequenceDiagram
+            title Airline Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+      - description: Ordering
+        mermaid: |-
+          sequenceDiagram
+            title Selection
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+      - description: Initializing the order
+        mermaid: |-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+      - description: Order Confirmation
+        mermaid: |-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+      - description: Fulfillment
+        mermaid: |-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK      
+    reference: if any
     steps:
       - summary: Search for the flight by start and end airport code
         api: search
         details:
           - description: >-
-              Users searches over the network to avail the intercity airline
-              mode of transport from one airport to another
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
         example: &ref_63
           summary: Search for airline services by standard airport codes
@@ -3233,8 +3302,20 @@ x-flows:
         api: on_search
         details:
           - description: >-
-              Users searches over the network to avail the intercity airline
-              mode of transport from one airport to another
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example: &ref_67
           summary: Return services available for provided start and end code
@@ -3741,8 +3822,18 @@ x-flows:
         api: search
         details:
           - description: >-
-              Users searches over the network to avail the intercity airline
-              mode of transport from one airport to another
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+               participant Buyer Platform (BAP)
+               participant Seller Platform (BPP)
+               rect rgb(191, 223, 255)
+               Buyer Platform (BAP)->>Seller Platform (BPP): search
+               Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+               end
+               Seller Platform (BPP)->>Buyer Platform (BAP):on_search
+               Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
           summary: Search for airline services by standard airport codes
@@ -3786,8 +3877,18 @@ x-flows:
         api: on_search
         details:
           - description: >-
-              Users searches over the network to avail the intercity airline
-              mode of transport from one airport to another
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): search
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_search
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example:
           summary: Return services available for provided start and end code
@@ -4698,23 +4799,6 @@ x-flows:
                     images:
                       - url: https://operator1.com/logos/logo.ico
                         size_type: xs
-                  categories:
-                    - id: C1
-                      descriptor:
-                        name: Economy
-                        code: ECONOMY
-                    - id: C2
-                      descriptor:
-                        name: Premium Economy
-                        code: PREMIUM_ECONOMY
-                    - id: C3
-                      descriptor:
-                        name: Business
-                        code: BUSINESS
-                    - id: C4
-                      descriptor:
-                        name: First Class
-                        code: FIRST_CLASS
                   tags:
                     - descriptor:
                         code: FARE_TYPE
@@ -5055,23 +5139,6 @@ x-flows:
                     images:
                       - url: https://operator1.com/logos/logo.ico
                         size_type: xs
-                  categories:
-                    - id: C1
-                      descriptor:
-                        name: Economy
-                        code: ECONOMY
-                    - id: C2
-                      descriptor:
-                        name: Premium Economy
-                        code: PREMIUM_ECONOMY
-                    - id: C3
-                      descriptor:
-                        name: Business
-                        code: BUSINESS
-                    - id: C4
-                      descriptor:
-                        name: First Class
-                        code: FIRST_CLASS
                   tags:
                     - descriptor:
                         code: FARE_TYPE
@@ -5375,23 +5442,6 @@ x-flows:
                     images:
                       - url: https://operator1.com/logos/logo.ico
                         size_type: xs
-                  categories:
-                    - id: C1
-                      descriptor:
-                        name: Economy
-                        code: ECONOMY
-                    - id: C2
-                      descriptor:
-                        name: Premium Economy
-                        code: PREMIUM_ECONOMY
-                    - id: C3
-                      descriptor:
-                        name: Business
-                        code: BUSINESS
-                    - id: C4
-                      descriptor:
-                        name: First Class
-                        code: FIRST_CLASS
                   tags:
                     - descriptor:
                         code: FARE_TYPE
@@ -21494,23 +21544,6 @@ x-examples:
                       images:
                         - url: https://operator1.com/logos/logo.ico
                           size_type: xs
-                    categories:
-                      - id: C1
-                        descriptor:
-                          name: Economy
-                          code: ECONOMY
-                      - id: C2
-                        descriptor:
-                          name: Premium Economy
-                          code: PREMIUM_ECONOMY
-                      - id: C3
-                        descriptor:
-                          name: Business
-                          code: BUSINESS
-                      - id: C4
-                        descriptor:
-                          name: First Class
-                          code: FIRST_CLASS
                     tags:
                       - descriptor:
                           code: FARE_TYPE

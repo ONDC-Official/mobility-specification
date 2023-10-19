@@ -1,0 +1,233 @@
+summary: Airlines - Code Based Flow
+details: 
+  - description: The illustrative flow to perform a transaction of the nature where in a buyer would like to book an airlines service form airport A to airport B
+    mermaid: >-
+      sequenceDiagram
+        title Airline Discovery
+        Buyer Platform (BAP)->>Gateway (BG): search
+        Gateway (BG) ->> Buyer Platform (BAP): ACK
+        Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+        Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+        Gateway (BG)->>Seller Platform (BPP): search
+        Seller Platform (BPP)->>Gateway (BG) : ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+        Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+  - description: Ordering
+    mermaid: >-
+      sequenceDiagram
+        title Selection
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): select
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - description: Initializing the order 
+    mermaid: >-
+      sequenceDiagram
+        title Initializing Order
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): init
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+  - description: Order Confirmation 
+    mermaid: >-
+      sequenceDiagram
+        title  Order Confirmation
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+  - description: Fulfillment  
+    mermaid: >-
+      sequenceDiagram
+        title Order Fulfillment
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK      
+reference: if any
+steps:
+  - summary: Search for the flight by start and end airport code
+    api: search
+    details: 
+      - description: Users searches over the network to avail the airline mode of transport from one airport to another
+        mermaid: &search >-
+          sequenceDiagram
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/airline/search/search_0.yaml" 
+  - summary: Return an airline catalog of all flights services from one airport to another
+    api: on_search
+    details: 
+      - description: Users searches over the network to avail the airline mode of transport from one airport to another
+        mermaid: &onSearch >-
+          sequenceDiagram
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/airline/on_search/on_search_0.yaml" 
+  - summary: Search for the flight by start and end airport code
+    api: search
+    details: 
+      - description: Users searches over the network to avail the airline mode of transport from one airport to another
+        mermaid: >-
+           sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): search
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_search
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/airline/search/search_1.yaml" 
+  - summary: Return an airline catalog of all flights services from one airport to another
+    api: on_search
+    details: 
+      - description: Users searches over the network to avail the airline mode of transport from one airport to another
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): search
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_search
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/airline/on_search/on_search_1.yaml" 
+      
+  
+  - summary: Selection of specific service
+    api: select
+    details: 
+      - description: The end consumer have to select the specific service and would like to have the necesary details
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/airline/select/select_0.yaml"
+  - summary:  Provider platform provides the quote for selected service of airline 
+    api: on_select
+    details: 
+      - description: Provider platform responds with the service detailed information and quotes for the specific service that consumer would like to avail
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/airline/on_select/on_select_0.yaml" 
+  - summary: Consumer platform initializes the order
+    api: init
+    details: 
+      - description: Consumer platform shares the terms of order and initializes the order
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/airline/init/init_0.yaml"
+  - summary: Provider platform accepts/appends the terms of orders
+    api: on_init
+    details: 
+      - description: Provider platform accepts the terms of orders and appends its own terms and responds with the final draft
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end    
+    reference: if any
+    example:
+      $ref: "../../examples/airline/on_init/on_init_0.yaml"
+  - summary: Consumer confirms the booking and provides details.
+    api: confirm
+    details: 
+      - description: Consumer platform confirms the booking and provides all information required for confirmation as per the terms of order
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+    reference: if any
+    example:
+      $ref: "../../examples/airline/confirm/confirm_0.yaml"
+  - summary: Provider platform confirms the order
+    api: on_confirm
+    details: 
+      - description: Provider platform confirms the order and provides details of the journey upon confirmation
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/airline/on_confirm/on_confirm_0.yaml"
+  
