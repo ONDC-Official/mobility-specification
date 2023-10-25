@@ -2821,6 +2821,9 @@ x-enum:
               - code: BUS
                 description: BUS Vehicle Type
                 reference: <PR/Issue/Discussion Links md format text
+              - code: AIRLINE
+                description: AIRLINE Vehicle Type
+                reference: <PR/Issue/Discussion Links md format text
           stops:
             type:
               - code: START
@@ -2882,6 +2885,18 @@ x-enum:
                 - code: PASS
                   description: Represents type of category
                   reference: <PR/Issue/Discussion Links md format text
+                - code: ECONOMY
+                  description: Represents type of seat category
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: PREMIUM_ECONOMY
+                  description: Represents type of seat category
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: BUSINESS
+                  description: Represents type of seat category
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: FIRST_CLASS
+                  description: Represents type of seat category
+                  reference: <PR/Issue/Discussion Links md format text
           items: &ref_2
             descriptor:
               code:
@@ -2904,6 +2919,12 @@ x-enum:
                   reference: <PR/Issue/Discussion Links md format text
                 - code: SEAT
                   description: Describes the kind of ticket seat
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: NON_STOP
+                  description: Describes the kind of type of journey
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: CONNECT
+                  description: Describes the kind of type of journey
                   reference: <PR/Issue/Discussion Links md format text
           fulfillments: *ref_1
           payments: &ref_3
@@ -3150,6 +3171,22 @@ x-tags:
                   - code: SINGLE_SEAT
                     description: describes if assigned ticket seat is single or not.
                     reference: <PR/Issue/Discussion Links md format text>
+                  - code: SEAT_PRICE
+                    description: describes price for particular seat.
+                    reference: <PR/Issue/Discussion Links md format text>
+              - code: GENERAL_INFO
+                description: general info about airline
+                reference: <PR/Issue/Discussion Links md format text>
+                list:
+                  - code: CABIN_BAGGAGE
+                    description: Allowed limit for cabin baggage
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: CHECK_IN_BAGGAGE
+                    description: Allowed limit for checkin baggage
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: PROHIBITED_ITEMS
+                    description: describes the list of Prohibited Items.
+                    reference: <PR/Issue/Discussion Links md format text>
           fulfillments: *ref_6
           payments: *ref_7
   select: &ref_9
@@ -3167,6 +3204,2750 @@ x-tags:
   on_cancel: *ref_9
   on_update: *ref_9
 x-flows:
+  - summary: Airlines - Code Based Flow
+    details:
+      - description: >-
+          The illustrative flow to perform a transaction of the nature where in
+          a buyer would like to book an airlines service form airport A to
+          airport B
+        mermaid: |-
+          sequenceDiagram
+            title Airline Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+      - description: Ordering
+        mermaid: |-
+          sequenceDiagram
+            title Selection
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+      - description: Initializing the order
+        mermaid: |-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+      - description: Order Confirmation
+        mermaid: |-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+      - description: Fulfillment
+        mermaid: |-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK      
+    reference: if any
+    steps:
+      - summary: Search for the flight by start and end airport code
+        api: search
+        details:
+          - description: >-
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+        reference: if any
+        example: &ref_63
+          summary: Search for airline services by standard airport codes
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 7381c78e-1eb4-47bb-96b4-ac2fce74e565
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              intent:
+                fulfillment:
+                  stops:
+                    - type: START
+                      location:
+                        descriptor:
+                          code: DEL
+                      time:
+                        label: Date Of Journey
+                        timestamp: '2023-10-15T00:32:19.000Z'
+                    - type: END
+                      location:
+                        descriptor:
+                          code: BOM
+                  vehicle:
+                    category: AIRLINE
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+      - summary: >-
+          Return an airline catalog of all flights services from one airport to
+          another
+        api: on_search
+        details:
+          - description: >-
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example: &ref_68
+          summary: Return services available for provided start and end code
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 7381c78e-1eb4-47bb-96b4-ac2fce74e565
+              version: 2.0.0
+              action: on_search
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              catalog:
+                descriptor:
+                  name: ABC Fights Services Solutions
+                  images:
+                    - url: https://abc-AIRLINE.in/logos/logo.ico
+                      size_type: xs
+                providers:
+                  - id: P1
+                    descriptor:
+                      name: ABC Operator Fights Services
+                      images:
+                        - url: https://operator1.com/logos/logo.ico
+                          size_type: xs
+                    categories:
+                      - id: C1
+                        descriptor:
+                          name: Economy
+                          code: ECONOMY
+                      - id: C2
+                        descriptor:
+                          name: Premium Economy
+                          code: PREMIUM_ECONOMY
+                      - id: C3
+                        descriptor:
+                          name: Business
+                          code: BUSINESS
+                      - id: C4
+                        descriptor:
+                          name: First Class
+                          code: FIRST_CLASS
+                    items:
+                      - id: I1
+                        descriptor:
+                          name: Non Stop
+                          code: NON_STOP
+                        price:
+                          currency: INR
+                          value: '9280'
+                        quantity:
+                          maximum:
+                            count: 9
+                          minimum:
+                            count: 1
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F1
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A5
+                            descriptor:
+                              name: Saver
+                              code: SAVER
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9280'
+                          - id: A6
+                            descriptor:
+                              name: Flexi Plus
+                              code: FLEXI_PLUS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9580'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                      - id: I2
+                        descriptor:
+                          name: Connect
+                          code: CONNECT
+                        price:
+                          currency: INR
+                          value: '7280'
+                        category_ids:
+                          - C1
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                      - id: I3
+                        descriptor:
+                          name: Connect
+                          code: CONNECT
+                        price:
+                          currency: INR
+                          value: '7280'
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F2
+                        parent_item_id: I2
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A5
+                            descriptor:
+                              name: Saver
+                              code: SAVER
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9280'
+                          - id: A6
+                            descriptor:
+                              name: Flexi Plus
+                              code: FLEXI_PLUS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9580'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                      - id: I4
+                        descriptor:
+                          name: Connect
+                          code: CONNECT
+                        price:
+                          currency: INR
+                          value: '7280'
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F3
+                          - F4
+                        parent_item_id: I3
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A5
+                            descriptor:
+                              name: Saver
+                              code: SAVER
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9280'
+                          - id: A6
+                            descriptor:
+                              name: Flexi Plus
+                              code: FLEXI_PLUS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9580'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                    fulfillments:
+                      - id: F1
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E284'
+                      - id: F2
+                        type: TRIP
+                        stops:
+                          - type: START
+                            id: S1
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - type: END
+                            id: S2
+                            location:
+                              descriptor:
+                                name: Goa - Dabolim Airport, India
+                                code: GOI
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T21:00:00.000Z'
+                          - type: LAYOVER
+                            id: S3
+                            location:
+                              descriptor:
+                                name: Goa - Dabolim Airport, India
+                                code: GOI
+                            time:
+                              duration: PT1H
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E284'
+                      - id: F3
+                        type: TRIP
+                        stops:
+                          - type: START
+                            id: S1
+                            location:
+                              descriptor:
+                                name: Goa - Dabolim Airport, India
+                                code: GOI
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T22:00:00.000Z'
+                          - type: END
+                            id: S2
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T23:00:00.000Z'
+                          - type: LAYOVER
+                            id: S3
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              duration: PT1H
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E285'
+                      - id: F4
+                        type: TRIP
+                        stops:
+                          - type: START
+                            id: S1
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T23:20:00.000Z'
+                          - type: END
+                            id: S2
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-16T01:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E285'
+      - summary: Search for the flight by start and end airport code
+        api: search
+        details:
+          - description: >-
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+               participant Buyer Platform (BAP)
+               participant Seller Platform (BPP)
+               rect rgb(191, 223, 255)
+               Buyer Platform (BAP)->>Seller Platform (BPP): search
+               Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+               end
+               Seller Platform (BPP)->>Buyer Platform (BAP):on_search
+               Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: Search for airline services by standard airport codes
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 7381c78e-1eb4-47bb-96b4-ac2fce74e565
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              intent:
+                fulfillment:
+                  id: F1
+                  stops:
+                    - id: S1
+                    - id: S2
+                  vehicle:
+                    category: AIRLINE
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+      - summary: >-
+          Return an airline catalog of all flights services from one airport to
+          another
+        api: on_search
+        details:
+          - description: >-
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): search
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_search
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example:
+          summary: Return services available for provided start and end code
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 7381c78e-1eb4-47bb-96b4-ac2fce74e565
+              version: 2.0.0
+              action: on_search
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              catalog:
+                descriptor:
+                  name: ABC Fights Services Solutions
+                  images:
+                    - url: https://abc-AIRLINE.in/logos/logo.ico
+                      size_type: xs
+                providers:
+                  - id: P1
+                    descriptor:
+                      name: ABC Operator Fights Services
+                      images:
+                        - url: https://operator1.com/logos/logo.ico
+                          size_type: xs
+                    categories:
+                      - id: C1
+                        descriptor:
+                          name: Economy
+                          code: ECONOMY
+                      - id: C2
+                        descriptor:
+                          name: Premium Economy
+                          code: PREMIUM_ECONOMY
+                      - id: C3
+                        descriptor:
+                          name: Business
+                          code: BUSINESS
+                      - id: C4
+                        descriptor:
+                          name: First Class
+                          code: FIRST_CLASS
+                    items:
+                      - id: I1
+                        descriptor:
+                          name: Non Stop
+                          code: NON_STOP
+                        price:
+                          currency: INR
+                          value: '9280'
+                        quantity:
+                          maximum:
+                            count: 9
+                          minimum:
+                            count: 1
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F1
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A5
+                            descriptor:
+                              name: Saver
+                              code: SAVER
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9280'
+                          - id: A6
+                            descriptor:
+                              name: Flexi Plus
+                              code: FLEXI_PLUS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9580'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                      - id: I2
+                        descriptor:
+                          name: Connect
+                          code: CONNECT
+                        price:
+                          currency: INR
+                          value: '7280'
+                        category_ids:
+                          - C1
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                      - id: I3
+                        descriptor:
+                          name: Connect
+                          code: CONNECT
+                        price:
+                          currency: INR
+                          value: '7280'
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F2
+                        parent_item_id: I2
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A5
+                            descriptor:
+                              name: Saver
+                              code: SAVER
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9280'
+                          - id: A6
+                            descriptor:
+                              name: Flexi Plus
+                              code: FLEXI_PLUS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9580'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                      - id: I4
+                        descriptor:
+                          name: Connect
+                          code: CONNECT
+                        price:
+                          currency: INR
+                          value: '7280'
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F3
+                          - F4
+                        parent_item_id: I3
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A5
+                            descriptor:
+                              name: Saver
+                              code: SAVER
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9280'
+                          - id: A6
+                            descriptor:
+                              name: Flexi Plus
+                              code: FLEXI_PLUS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9580'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                    fulfillments:
+                      - id: F1
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E284'
+                        tags:
+                          - descriptor:
+                              code: VEHICLE_GRID
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: X_MAX
+                                value: '14'
+                              - descriptor:
+                                  code: Y_MAX
+                                value: '3'
+                              - descriptor:
+                                  code: Z_MAX
+                                value: '1'
+                              - descriptor:
+                                  code: X_LOBBY_START
+                                value: '0'
+                              - descriptor:
+                                  code: X_LOBBY_SIZE
+                                value: '12'
+                              - descriptor:
+                                  code: Y_LOBBY_START
+                                value: '1'
+                              - descriptor:
+                                  code: Y_LOBBY_SIZE
+                                value: '1'
+                          - descriptor:
+                              code: VEHICLE_AVAIBALITY
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: AVALIABLE_SEATS
+                                value: '20'
+                          - descriptor:
+                              code: SEAT_GRID
+                            list:
+                              - descriptor:
+                                  code: X
+                                value: '0'
+                              - descriptor:
+                                  code: 'Y'
+                                value: '0'
+                              - descriptor:
+                                  code: Z
+                                value: '0'
+                              - descriptor:
+                                  code: NUMBER
+                                value: A1
+                              - descriptor:
+                                  code: AVAILABLE
+                                value: 'YES'
+                              - descriptor:
+                                  code: SEAT_PRICE
+                                value: '200'
+                          - descriptor:
+                              code: SEAT_GRID
+                            list:
+                              - descriptor:
+                                  code: X
+                                value: '0'
+                              - descriptor:
+                                  code: 'Y'
+                                value: '0'
+                              - descriptor:
+                                  code: Z
+                                value: '0'
+                              - descriptor:
+                                  code: NUMBER
+                                value: A2
+                              - descriptor:
+                                  code: AVAILABLE
+                                value: 'YES'
+                              - descriptor:
+                                  code: SEAT_PRICE
+                                value: '200'
+                      - id: F2
+                        type: TRIP
+                        stops:
+                          - type: START
+                            id: S1
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - type: END
+                            id: S2
+                            location:
+                              descriptor:
+                                name: Goa - Dabolim Airport, India
+                                code: GOI
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T21:00:00.000Z'
+                          - type: LAYOVER
+                            id: S3
+                            location:
+                              descriptor:
+                                name: Goa - Dabolim Airport, India
+                                code: GOI
+                            time:
+                              duration: PT1H
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E284'
+                        tags:
+                          - descriptor:
+                              code: VEHICLE_GRID
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: X_MAX
+                                value: '14'
+                              - descriptor:
+                                  code: Y_MAX
+                                value: '3'
+                              - descriptor:
+                                  code: Z_MAX
+                                value: '1'
+                              - descriptor:
+                                  code: X_LOBBY_START
+                                value: '0'
+                              - descriptor:
+                                  code: X_LOBBY_SIZE
+                                value: '12'
+                              - descriptor:
+                                  code: Y_LOBBY_START
+                                value: '1'
+                              - descriptor:
+                                  code: Y_LOBBY_SIZE
+                                value: '1'
+                          - descriptor:
+                              code: VEHICLE_AVAIBALITY
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: AVALIABLE_SEATS
+                                value: '20'
+                          - descriptor:
+                              code: SEAT_GRID
+                            list:
+                              - descriptor:
+                                  code: X
+                                value: '0'
+                              - descriptor:
+                                  code: 'Y'
+                                value: '0'
+                              - descriptor:
+                                  code: Z
+                                value: '0'
+                              - descriptor:
+                                  code: NUMBER
+                                value: A1
+                              - descriptor:
+                                  code: AVAILABLE
+                                value: 'YES'
+                              - descriptor:
+                                  code: SEAT_PRICE
+                                value: '200'
+                          - descriptor:
+                              code: SEAT_GRID
+                            list:
+                              - descriptor:
+                                  code: X
+                                value: '0'
+                              - descriptor:
+                                  code: 'Y'
+                                value: '0'
+                              - descriptor:
+                                  code: Z
+                                value: '0'
+                              - descriptor:
+                                  code: NUMBER
+                                value: A2
+                              - descriptor:
+                                  code: AVAILABLE
+                                value: 'YES'
+                              - descriptor:
+                                  code: SEAT_PRICE
+                                value: '200'
+                      - id: F3
+                        type: TRIP
+                        stops:
+                          - type: START
+                            id: S1
+                            location:
+                              descriptor:
+                                name: Goa - Dabolim Airport, India
+                                code: GOI
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T22:00:00.000Z'
+                          - type: END
+                            id: S2
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T23:00:00.000Z'
+                          - type: LAYOVER
+                            id: S3
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              duration: PT1H
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E285'
+                        tags:
+                          - descriptor:
+                              code: VEHICLE_GRID
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: X_MAX
+                                value: '14'
+                              - descriptor:
+                                  code: Y_MAX
+                                value: '3'
+                              - descriptor:
+                                  code: Z_MAX
+                                value: '1'
+                              - descriptor:
+                                  code: X_LOBBY_START
+                                value: '0'
+                              - descriptor:
+                                  code: X_LOBBY_SIZE
+                                value: '12'
+                              - descriptor:
+                                  code: Y_LOBBY_START
+                                value: '1'
+                              - descriptor:
+                                  code: Y_LOBBY_SIZE
+                                value: '1'
+                          - descriptor:
+                              code: VEHICLE_AVAIBALITY
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: AVALIABLE_SEATS
+                                value: '20'
+                          - descriptor:
+                              code: SEAT_GRID
+                            list:
+                              - descriptor:
+                                  code: X
+                                value: '0'
+                              - descriptor:
+                                  code: 'Y'
+                                value: '0'
+                              - descriptor:
+                                  code: Z
+                                value: '0'
+                              - descriptor:
+                                  code: NUMBER
+                                value: A1
+                              - descriptor:
+                                  code: AVAILABLE
+                                value: 'YES'
+                              - descriptor:
+                                  code: SEAT_PRICE
+                                value: '200'
+                          - descriptor:
+                              code: SEAT_GRID
+                            list:
+                              - descriptor:
+                                  code: X
+                                value: '0'
+                              - descriptor:
+                                  code: 'Y'
+                                value: '0'
+                              - descriptor:
+                                  code: Z
+                                value: '0'
+                              - descriptor:
+                                  code: NUMBER
+                                value: A2
+                              - descriptor:
+                                  code: AVAILABLE
+                                value: 'YES'
+                              - descriptor:
+                                  code: SEAT_PRICE
+                                value: '200'
+                      - id: F4
+                        type: TRIP
+                        stops:
+                          - type: START
+                            id: S1
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T23:20:00.000Z'
+                          - type: END
+                            id: S2
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-16T01:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E285'
+                        tags:
+                          - descriptor:
+                              code: VEHICLE_GRID
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: X_MAX
+                                value: '14'
+                              - descriptor:
+                                  code: Y_MAX
+                                value: '3'
+                              - descriptor:
+                                  code: Z_MAX
+                                value: '1'
+                              - descriptor:
+                                  code: X_LOBBY_START
+                                value: '0'
+                              - descriptor:
+                                  code: X_LOBBY_SIZE
+                                value: '12'
+                              - descriptor:
+                                  code: Y_LOBBY_START
+                                value: '1'
+                              - descriptor:
+                                  code: Y_LOBBY_SIZE
+                                value: '1'
+                          - descriptor:
+                              code: VEHICLE_AVAIBALITY
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: AVALIABLE_SEATS
+                                value: '20'
+                          - descriptor:
+                              code: SEAT_GRID
+                            list:
+                              - descriptor:
+                                  code: X
+                                value: '0'
+                              - descriptor:
+                                  code: 'Y'
+                                value: '0'
+                              - descriptor:
+                                  code: Z
+                                value: '0'
+                              - descriptor:
+                                  code: NUMBER
+                                value: A1
+                              - descriptor:
+                                  code: AVAILABLE
+                                value: 'YES'
+                              - descriptor:
+                                  code: SEAT_PRICE
+                                value: '200'
+                          - descriptor:
+                              code: SEAT_GRID
+                            list:
+                              - descriptor:
+                                  code: X
+                                value: '0'
+                              - descriptor:
+                                  code: 'Y'
+                                value: '0'
+                              - descriptor:
+                                  code: Z
+                                value: '0'
+                              - descriptor:
+                                  code: NUMBER
+                                value: A2
+                              - descriptor:
+                                  code: SINGLE_SEAT
+                                value: 'TRUE'
+                              - descriptor:
+                                  code: AVAILABLE
+                                value: 'YES'
+                              - descriptor:
+                                  code: SEAT_PRICE
+                                value: '200'
+      - summary: Selection of specific service
+        api: select
+        details:
+          - description: >-
+              The end consumer have to select the specific service and would
+              like to have the necesary details
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example: &ref_64
+          summary: Get Quote of a selected item
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 614730da-eacc-46b8-9799-86f75bf35f31
+              version: 2.0.0
+              action: select
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              order:
+                provider:
+                  id: P1
+                items:
+                  - id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                    add_ons:
+                      - id: A1
+                        quantity:
+                          selected:
+                            count: 1
+                fulfillments:
+                  - id: F1
+                    stops:
+                      - id: S1
+                      - id: S2
+                    vehicle:
+                      category: AIRLINE
+      - summary: Provider platform provides the quote for selected service of airline
+        api: on_select
+        details:
+          - description: >-
+              Provider platform responds with the service detailed information
+              and quotes for the specific service that consumer would like to
+              avail
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example: &ref_69
+          summary: Get Quote of a selected item
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 614730da-eacc-46b8-9799-86f75bf35f31
+              version: 2.0.0
+              action: on_select
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              order:
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator Fights Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                        size_type: xs
+                  tags:
+                    - descriptor:
+                        code: FARE_TYPE
+                        name: Fare Type
+                      display: true
+                      list:
+                        - descriptor:
+                            code: REGULAR
+                        - descriptor:
+                            code: STUDENT
+                        - descriptor:
+                            code: SENIOR_CITIZEN
+                        - descriptor:
+                            code: ARMED_FORCES
+                        - descriptor:
+                            code: DOCTORS_NURSES
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Non Stop
+                      code: NON_STOP
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          available:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PR
+                              name: Prohibited Items
+                            value: 15 KG
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - id: S1
+                        type: START
+                        location:
+                          descriptor:
+                            name: Delhi
+                            code: DEL
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-10-15T20:00:00.000Z'
+                      - id: S2
+                        type: END
+                        location:
+                          descriptor:
+                            name: Mumbai
+                            code: BOM
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-10-15T20:00:00.000Z'
+                    vehicle:
+                      category: AIRLINE
+                      code: '6E284'
+                    tags:
+                      - descriptor:
+                          code: VEHICLE_GRID
+                        display: false
+                        list:
+                          - descriptor:
+                              code: X_MAX
+                            value: '14'
+                          - descriptor:
+                              code: Y_MAX
+                            value: '3'
+                          - descriptor:
+                              code: Z_MAX
+                            value: '1'
+                          - descriptor:
+                              code: X_LOBBY_START
+                            value: '0'
+                          - descriptor:
+                              code: X_LOBBY_SIZE
+                            value: '12'
+                          - descriptor:
+                              code: Y_LOBBY_START
+                            value: '1'
+                          - descriptor:
+                              code: Y_LOBBY_SIZE
+                            value: '1'
+                      - descriptor:
+                          code: VEHICLE_AVAIBALITY
+                        display: false
+                        list:
+                          - descriptor:
+                              code: AVALIABLE_SEATS
+                            value: '20'
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: NUMBER
+                            value: A1
+                          - descriptor:
+                              code: AVAILABLE
+                            value: 'YES'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: NUMBER
+                            value: A2
+                          - descriptor:
+                              code: AVAILABLE
+                            value: 'YES'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                quote:
+                  price:
+                    value: '10527'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      price:
+                        currency: INR
+                        value: '9280'
+                    - title: CGST @ 5%
+                      price:
+                        currency: INR
+                        value: '464'
+                    - title: SGST @ 5%
+                      price:
+                        currency: INR
+                        value: '464'
+                    - title: CONVEANCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                    - title: Add On
+                      item:
+                        id: A1
+                      price:
+                        value: '300'
+      - summary: Consumer platform initializes the order
+        api: init
+        details:
+          - description: >-
+              Consumer platform shares the terms of order and initializes the
+              order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example: &ref_65
+          summary: Initialize draft order and request for terms of service
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: https://example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: c869bea6-2397-4864-91a2-4d5d8d139ddc
+              version: 2.0.0
+              action: init
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              order:
+                provider:
+                  id: P1
+                items:
+                  - id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                    add_ons:
+                      - id: A1
+                        quantity:
+                          selected:
+                            count: 1
+                fulfillments:
+                  - id: F1
+                    stops:
+                      - id: S1
+                      - id: S2
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
+                    vehicle:
+                      category: AIRLINE
+                      code: '6E284'
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: NUMBER
+                            value: A2
+                          - descriptor:
+                              code: AVAILABLE
+                            value: 'YES'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                billing:
+                  name: Joe Adams
+                  phone: +91-9988776655
+                  tax_id: GSTIN:22AAAAA0000A1Z5
+                payments:
+                  - collected_by: BAP
+                    status: NOT-PAID
+                    type: PRE-ORDER
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+      - summary: Provider platform accepts/appends the terms of orders
+        api: on_init
+        details:
+          - description: >-
+              Provider platform accepts the terms of orders and appends its own
+              terms and responds with the final draft
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end    
+        reference: if any
+        example: &ref_70
+          summary: >-
+            Return draft order for transit ticket with settlement via payment
+            link
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: https://example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: c869bea6-2397-4864-91a2-4d5d8d139ddc
+              version: 2.0.0
+              action: on_init
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
+              ttl: PT30S
+            order:
+              provider:
+                - id: P1
+                  descriptor:
+                    name: ABC Operator Fights Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                        size_type: xs
+                  tags:
+                    - descriptor:
+                        code: FARE_TYPE
+                        name: Fare Type
+                      display: true
+                      list:
+                        - descriptor:
+                            code: REGULAR
+                        - descriptor:
+                            code: STUDENT
+                        - descriptor:
+                            code: SENIOR_CITIZEN
+                        - descriptor:
+                            code: ARMED_FORCES
+                        - descriptor:
+                            code: DOCTORS_NURSES
+              items:
+                - id: I1
+                  descriptor:
+                    name: Non Stop
+                    code: NON_STOP
+                  price:
+                    currency: INR
+                    value: '9280'
+                  quantity:
+                    selected:
+                      count: 1
+                  category_ids:
+                    - C1
+                  fulfillment_ids:
+                    - F1
+                  add_ons:
+                    - id: A1
+                      descriptor:
+                        name: meals
+                        code: MEALS
+                      quantity:
+                        available:
+                          count: 1
+                      price:
+                        currency: INR
+                        value: 300
+                  tags:
+                    - descriptor:
+                        code: GENERAL_INFO
+                        name: General Info
+                      display: true
+                      list:
+                        - descriptor:
+                            code: CABIN_BAGGAGE
+                            name: Cabin Baggage
+                            short_desc: Allowed limit for cabin baggage
+                          value: 7 KG
+                        - descriptor:
+                            code: CHECK_IN_BAGGAGE
+                            name: Check-in Baggage
+                            short_desc: Allowed limit for checkin baggage
+                          value: 15 KG
+                        - descriptor:
+                            code: PR
+                            name: Prohibited Items
+                          value: 15 KG
+              fulfillments:
+                - id: F1
+                  type: TRIP
+                  stops:
+                    - id: S1
+                      type: START
+                      location:
+                        descriptor:
+                          name: Delhi
+                          code: DEL
+                      time:
+                        label: DATE_TIME
+                        timestamp: '2023-10-15T20:00:00.000Z'
+                    - id: S2
+                      type: END
+                      location:
+                        descriptor:
+                          name: Mumbai
+                          code: BOM
+                      time:
+                        label: DATE_TIME
+                        timestamp: '2023-10-15T20:00:00.000Z'
+                  customer:
+                    person:
+                      name: Joe Adams
+                      age: '30'
+                      gender: MALE
+                    contact:
+                      phone: +91-9988776655
+                      email: joeadams@yahoo.com
+                  vehicle:
+                    category: AIRLINE
+                    code: '6E284'
+                  tags:
+                    - descriptor:
+                        code: SEAT_GRID
+                      list:
+                        - descriptor:
+                            code: X
+                          value: '0'
+                        - descriptor:
+                            code: 'Y'
+                          value: '0'
+                        - descriptor:
+                            code: Z
+                          value: '0'
+                        - descriptor:
+                            code: NUMBER
+                          value: A2
+                        - descriptor:
+                            code: SELECTED
+                          value: true
+                        - descriptor:
+                            code: SEAT_PRICE
+                          value: '200'
+              quote:
+                price:
+                  value: '10727'
+                  currency: INR
+                breakup:
+                  - title: BASE_FARE
+                    price:
+                      currency: INR
+                      value: '9280'
+                  - title: CGST @ 5%
+                    price:
+                      currency: INR
+                      value: '464'
+                  - title: SGST @ 5%
+                    price:
+                      currency: INR
+                      value: '464'
+                  - title: CONVEANCE_FEE
+                    price:
+                      currency: INR
+                      value: '19'
+                  - title: Add On
+                    item:
+                      id: A1
+                    price:
+                      value: '300'
+                  - title: Seat Fare
+                    price:
+                      value: '200'
+                      currency: INR
+              payments:
+                - id: PA1
+                  collected_by: BAP
+                  status: NOT-PAID
+                  type: PRE-ORDER
+                  params:
+                    bank_code: XXXXXXXX
+                    bank_account_number: xxxxxxxxxxxxxx
+                    virtual_payment_address: 9988199772@okicic
+                  tags:
+                    - descriptor:
+                        code: SETTLEMENT_DETAILS
+                      display: false
+                      list:
+                        - descriptor:
+                            code: SETTLEMENT_TYPE
+                          value: UPI
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+              cancellation_terms:
+                - cancel_by:
+                    duration: PT60M
+                  cancellation_fee:
+                    percentage: '0'
+      - summary: Consumer confirms the booking and provides details.
+        api: confirm
+        details:
+          - description: >-
+              Consumer platform confirms the booking and provides all
+              information required for confirmation as per the terms of order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+        reference: if any
+        example: &ref_66
+          summary: Confirm ticket booking
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: https://example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 2859bc8b-8f40-41ba-bb20-30645596bf7a
+              version: 2.0.0
+              action: confirm
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                provider:
+                  id: P1
+                items:
+                  - id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                    add_ons:
+                      - id: A1
+                        quantity:
+                          selected:
+                            count: 1
+                fulfillments:
+                  - id: F1
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
+                    vehicle:
+                      category: AIRLINE
+                      code: '6E284'
+                billing:
+                  name: Joe Adams
+                  phone: +91-9988776655
+                  tax_id: GSTIN:22AAAAA0000A1Z5
+                payments:
+                  - collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                      currency: INR
+                      amount: '10727'
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+      - summary: Provider platform confirms the order
+        api: on_confirm
+        details:
+          - description: >-
+              Provider platform confirms the order and provides details of the
+              journey upon confirmation
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example: &ref_71
+          summary: Confirm ticket booking
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: https://example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 2859bc8b-8f40-41ba-bb20-30645596bf7a
+              version: 2.0.0
+              action: on_confirm
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator Fights Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                        size_type: xs
+                  tags:
+                    - descriptor:
+                        code: FARE_TYPE
+                        name: Fare Type
+                      display: true
+                      list:
+                        - descriptor:
+                            code: REGULAR
+                        - descriptor:
+                            code: STUDENT
+                        - descriptor:
+                            code: SENIOR_CITIZEN
+                        - descriptor:
+                            code: ARMED_FORCES
+                        - descriptor:
+                            code: DOCTORS_NURSES
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Non Stop
+                      code: NON_STOP
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          available:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PR
+                              name: Prohibited Items
+                            value: 15 KG
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - type: START
+                        location:
+                          descriptor:
+                            name: Delhi
+                            code: DEL
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-10-15T20:00:00.000Z'
+                        authorization:
+                          type: QR
+                          token: >-
+                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                      - type: END
+                        location:
+                          descriptor:
+                            name: Mumbai
+                            code: BOM
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-10-15T20:00:00.000Z'
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
+                    vehicle:
+                      category: AIRLINE
+                      code: '6E284'
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: NUMBER
+                            value: A2
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                quote:
+                  price:
+                    value: '10727'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      price:
+                        currency: INR
+                        value: '9280'
+                    - title: CGST @ 5%
+                      price:
+                        currency: INR
+                        value: '464'
+                    - title: SGST @ 5%
+                      price:
+                        currency: INR
+                        value: '464'
+                    - title: CONVEANCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                    - title: Add On
+                      item:
+                        id: A1
+                      price:
+                        value: '300'
+                    - title: Seat Fare
+                      price:
+                        value: '200'
+                        currency: INR
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                      currency: INR
+                      amount: '10727'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: SETTLEMENT_DETAILS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                status: ACTIVE
+                documents:
+                  - descriptor:
+                      code: AIRLINE-DOC
+                      name: PNR Document
+                      short_desc: Download your ticket here
+                      long_desc: Download your ticket here
+                    mime_type: application/pdf
+                    url: https://abcoperator.com/manage-booking/pnr/O1.pdf
+                cancellation_terms:
+                  - cancel_by:
+                      duration: PT60M
+                    cancellation_fee:
+                      percentage: '0'
+      - summary: Consumer platform cancels the request
+        api: cancel
+        details:
+          - description: >-
+              Consumer platform request the provider platform to provide with
+              latest order status
+            mermaid: |-
+              sequenceDiagram
+                title Order Fulfillment
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+        reference: if any
+        example: &ref_67
+          summary: Cancel a transit ticket booking before the cancellation period
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV13
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: example-bap.com
+              bap_uri: https://api.example-bap.com/beckn
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: cancel
+              ttl: PT30S
+            message:
+              order_id: O1
+      - summary: Provider platform accepts/appends the terms of cancellation
+        api: on_cancel
+        details:
+          - description: >-
+              Provider platform provides the updated order status to the
+              consumer
+            mermaid: |-
+              sequenceDiagram
+                title Order Fulfillment
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end 
+        reference: if any
+        example: &ref_72
+          summary: Return cancelled ticket order with cancellation charges
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV10
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: https://example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 2859bc8b-8f40-41ba-bb20-30645596bf7a
+              version: 2.0.0
+              action: on_cancel
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator Fights Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                        size_type: xs
+                  tags:
+                    - descriptor:
+                        code: FARE_TYPE
+                        name: Fare Type
+                      display: true
+                      list:
+                        - descriptor:
+                            code: REGULAR
+                        - descriptor:
+                            code: STUDENT
+                        - descriptor:
+                            code: SENIOR_CITIZEN
+                        - descriptor:
+                            code: ARMED_FORCES
+                        - descriptor:
+                            code: DOCTORS_NURSES
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Non Stop
+                      code: NON_STOP
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          available:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PR
+                              name: Prohibited Items
+                            value: 15 KG
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - type: START
+                        location:
+                          descriptor:
+                            name: Delhi
+                            code: DEL
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-10-15T20:00:00.000Z'
+                        authorization:
+                          type: QR
+                          token: >-
+                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                      - type: END
+                        location:
+                          descriptor:
+                            name: Mumbai
+                            code: BOM
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-10-15T20:00:00.000Z'
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
+                    vehicle:
+                      category: AIRLINE
+                      code: '6E284'
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: NUMBER
+                            value: A2
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                quote:
+                  price:
+                    value: '10727'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      price:
+                        currency: INR
+                        value: '9280'
+                    - title: CGST @ 5%
+                      price:
+                        currency: INR
+                        value: '464'
+                    - title: SGST @ 5%
+                      price:
+                        currency: INR
+                        value: '464'
+                    - title: CONVEANCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                    - title: Add On
+                      item:
+                        id: A1
+                      price:
+                        value: '300'
+                    - title: Seat Fare
+                      price:
+                        value: '200'
+                        currency: INR
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                      currency: INR
+                      amount: '10727'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: SETTLEMENT_DETAILS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                status: CANCELLED
+                cancellation:
+                  cancelled_by: CONSUMER
+                  time: '2023-10-03T02:00:08.143Z'
+                cancellation_terms:
+                  - cancel_by:
+                      duration: PT60M
+                    cancellation_fee:
+                      percentage: '0'
+                refund_terms:
+                  - fulfillment_state:
+                      name: Flight Cancelled
+                      code: FLIGHT_CANCELLED
+                    refund_eligible: true
+                    refund_within:
+                      duration: PT1440M
+                    refund_amount:
+                      currency: INR
+                      value: '10727'
   - summary: Metro - Station Code Based Flow
     details:
       - description: >-
@@ -20492,6 +23273,262 @@ x-examples:
       on_confirm:
         examples:
           - *ref_44
+  airline:
+    summary: Airline Use Case Specification
+    description: Airline Use Case Specification
+    example_set:
+      search:
+        examples:
+          - *ref_63
+      select:
+        examples:
+          - *ref_64
+      init:
+        examples:
+          - *ref_65
+      confirm:
+        examples:
+          - *ref_66
+      update:
+        examples:
+          - summary: Update customer details
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:41:16Z'
+                bap_id: https://example-test-bap.com
+                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                message_id: b92784e8-3600-499d-8b64-d1cc2efee7b5
+                version: 2.0.0
+                action: update
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                bpp_id: example-bpp.com
+                bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
+                ttl: PT30S
+              message:
+                update_target: order.fulfillments.customer.name
+                order:
+                  id: O1
+                  provider:
+                    id: P1
+                    fulfillments:
+                      - id: F1
+                        customer:
+                          person:
+                            name: Joe Lopez
+                            age: '30'
+                            gender: MALE
+                          contact:
+                            phone: +91-9988776655
+                            email: joeadams@yahoo.com
+      cancel:
+        examples:
+          - *ref_67
+      on_search:
+        examples:
+          - *ref_68
+      on_select:
+        examples:
+          - *ref_69
+      on_init:
+        examples:
+          - *ref_70
+      on_confirm:
+        examples:
+          - *ref_71
+      on_update:
+        examples:
+          - summary: Return updated order with customer details
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+                domain: ONDC:TRV10
+                timestamp: '2023-03-23T04:41:16Z'
+                bap_id: https://example-test-bap.com
+                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                message_id: b92784e8-3600-499d-8b64-d1cc2efee7b5
+                version: 2.0.0
+                action: on_update
+                bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+                bpp_id: example-bpp.com
+                bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
+                ttl: PT30S
+              message:
+                order:
+                  id: O1
+                  provider:
+                    id: P1
+                    descriptor:
+                      name: ABC Operator Fights Services
+                      images:
+                        - url: https://operator1.com/logos/logo.ico
+                          size_type: xs
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                  items:
+                    - id: I1
+                      descriptor:
+                        name: Non Stop
+                        code: NON_STOP
+                      price:
+                        currency: INR
+                        value: '9280'
+                      quantity:
+                        selected:
+                          count: 1
+                      category_ids:
+                        - C1
+                      fulfillment_ids:
+                        - F1
+                      add_ons:
+                        - id: A1
+                          descriptor:
+                            name: meals
+                            code: MEALS
+                          quantity:
+                            available:
+                              count: 1
+                          price:
+                            currency: INR
+                            value: '300'
+                      tags:
+                        - descriptor:
+                            code: GENERAL_INFO
+                            name: General Info
+                          display: true
+                          list:
+                            - descriptor:
+                                code: CABIN_BAGGAGE
+                                name: Cabin Baggage
+                                short_desc: Allowed limit for cabin baggage
+                              value: 7 KG
+                            - descriptor:
+                                code: CHECK_IN_BAGGAGE
+                                name: Check-in Baggage
+                                short_desc: Allowed limit for checkin baggage
+                              value: 15 KG
+                            - descriptor:
+                                code: PR
+                                name: Prohibited Items
+                              value: 15 KG
+                  fulfillments:
+                    - id: F1
+                      type: TRIP
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: Chandigarh
+                              code: IXC
+                          time:
+                            label: DATE_TIME
+                            timestamp: '2023-10-15T20:00:00.000Z'
+                        - type: END
+                          location:
+                            descriptor:
+                              name: PUNE
+                              code: PNQ
+                          time:
+                            label: DATE_TIME
+                            timestamp: '2023-10-15T20:00:00.000Z'
+                      customer:
+                        person:
+                          name: Joe Lopez
+                          age: '30'
+                          gender: MALE
+                        contact:
+                          phone: +91-9988776655
+                          email: joeadams@yahoo.com
+                      vehicle:
+                        category: AIRLINE
+                  quote:
+                    price:
+                      value: '10527'
+                      currency: INR
+                    breakup:
+                      - title: BASE_FARE
+                        price:
+                          currency: INR
+                          value: '9280'
+                      - title: CGST @ 5%
+                        price:
+                          currency: INR
+                          value: '464'
+                      - title: SGST @ 5%
+                        price:
+                          currency: INR
+                          value: '464'
+                      - title: CONVEANCE_FEE
+                        price:
+                          currency: INR
+                          value: '19'
+                      - title: Add On
+                        item:
+                          id: A1
+                        price:
+                          value: '300'
+                  payments:
+                    - id: PA1
+                      collected_by: BAP
+                      status: PAID
+                      type: PRE-ORDER
+                      params:
+                        transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                        currency: INR
+                        amount: '10527'
+                        bank_code: XXXXXXXX
+                        bank_account_number: xxxxxxxxxxxxxx
+                        virtual_payment_address: 9988199772@okicic
+                      tags:
+                        - descriptor:
+                            code: SETTLEMENT_DETAILS
+                          display: false
+                          list:
+                            - descriptor:
+                                code: SETTLEMENT_TYPE
+                              value: UPI
+                        - descriptor:
+                            code: BUYER_FINDER_FEES
+                          display: false
+                          list:
+                            - descriptor:
+                                code: BUYER_FINDER_FEES_PERCENTAGE
+                              value: '1'
+                  status: ACTIVE
+                  documents:
+                    - descriptor:
+                        code: AIRLINE-doc
+                        name: PNR Document
+                        short_desc: Download your ticket here
+                        long_desc: ''
+                      mime_type: application/pdf
+                      url: https://abcoperator.com/booking/O1.pdf
+      on_cancel:
+        examples:
+          - *ref_72
 x-attributes:
   metro:
     attribute_set:
@@ -31458,3 +34495,1286 @@ x-attributes:
                   owner: BPP
                   usage: false
                   description: Fee Percentage for cancellation
+  airline:
+    attribute_set:
+      search:
+        message:
+          intent:
+            fulfillment:
+              stops:
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: START
+                  description: >-
+                    A logical point in space and time during the fulfillment of
+                    an order.
+                location:
+                  descriptor:
+                    code:
+                      required: mandatory
+                      type: string
+                      owner: BAP
+                      usage: DEL
+                      description: Physical description of code.
+                time:
+                  label:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: Date Of Journey
+                    description: Label for denoting stop time or date
+                  timestamp:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: '2023-10-15T00:32:19.000Z'
+                    description: Timestamp for denoting time at stop
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: AIRLINE
+                  description: Describes category of a vehicle
+      on_search:
+        message:
+          catalog:
+            descriptor:
+              name:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: ABC Fights Services Solutions
+                description: Physical description of something.
+              images:
+                url:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: ' https://abc-AIRLINE.in/logos/logo.ico'
+                  description: URL to the image. This can be a data url or an remote url
+            providers:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 13ba8018
+                description: Id of the provider
+              descriptor:
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: ABC Operator Fights Services
+                  description: Physical description of something.
+                images:
+                  url:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: https://operator1.com/logos/logo.ico
+                    description: URL to the image. This can be a data url or an remote url
+              categories:
+                descriptor:
+                  name:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: Economy
+                    description: Physical description of something.
+                  code:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: ECONOMY
+                    description: Physical description of something.
+                id:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: C1
+                  description: Unique reference ID
+              items:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 6743e9e2
+                  description: ID of the item.
+                descriptor:
+                  name:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: Non Stop
+                    description: Physical description of something.
+                  code:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: NON_STOP
+                    description: Physical description of something.
+                price:
+                  currency:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  value:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 8999
+                    description: Describes the currency of a product or service
+                quantity:
+                  available:
+                    count:
+                      required: mandatory
+                      type: integer
+                      owner: BPP
+                      usage: 1
+                      description: >-
+                        This represents the available quantity present for
+                        purchase of the item
+                  maximum:
+                    count:
+                      required: mandatory
+                      type: integer
+                      owner: BPP
+                      usage: 1
+                      description: >-
+                        This represents the maximum quantity allowed for
+                        purchase of the item
+                fulfillment_ids:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: e74e565
+                  description: Id of Modes through which this item can be fulfilled
+                category_ids:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: C1
+                  description: Id of Categories this item can be listed under
+              fulfillments:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: e74e565
+                  description: Unique reference ID to the fulfillment of an order
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: TRIP
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                stops:
+                  type:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: START
+                    description: Instructions name that need to be followed at the stop
+                  location:
+                    descriptor:
+                      name:
+                        required: mandatory
+                        type: string
+                        owner: BPP
+                        usage: Mumbai
+                        description: Physical description of something.
+                      code:
+                        required: mandatory
+                        type: string
+                        owner: BPP
+                        usage: BOM
+                        description: Physical description of something.
+                  id:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: S1
+                    description: Uniques id to refer stop.
+                  time:
+                    label:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: DATE_TIME
+                      description: Label for denoting stop time or date
+                    timestamp:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: '2023-09-06T06:45:00.000Z'
+                      description: Timestamp for denoting time at stop
+                vehicle:
+                  category:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: AIRLINE
+                    description: Describes category of a vehicle
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 6e+284
+                  description: Describes vehicle code
+      select:
+        message:
+          order:
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 46b8979
+                description: 'Unique ID of the item. '
+              quantity:
+                selected:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BAP
+                    usage: 1
+                    description: >-
+                      This represents the quantity selected for purchase of the
+                      item
+              add_ons:
+                id:
+                  required: optional
+                  type: string
+                  owner: BAP
+                  usage: 13ba8090
+                  description: Id of the add on
+                quantity:
+                  selected:
+                    count:
+                      required: optional
+                      type: string
+                      owner: BAP
+                      usage: 1
+                      description: Selected quantity of the the add on.
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              stops:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: S1
+                  description: Uniques id to refer stop.
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 13ba8018
+                description: Id of the provider
+      on_select:
+        message:
+          order:
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 46b8979
+                description: ID of the item.
+              descriptor:
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Non Stop
+                  description: Physical description of something.
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: NON_STOP
+                  description: Physical description of something.
+              price:
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Price of the selected item.
+                value:
+                  required: mandatory
+                  type: integer
+                  owner: BPP
+                  usage: 8999
+                  description: Describes a numerical value in decimal form
+              quantity:
+                selected:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BPP
+                    usage: 1
+                    description: >-
+                      This represents the quantity selected for purchase of the
+                      item
+              fulfillment_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: e74e565
+                description: Unique reference ID to the fulfillment of an order
+              category_ids:
+                required: optional
+                type: string
+                owner: BPP
+                usage: C1
+                description: Unique reference ID
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 13ba8018
+                description: Id of the provider
+              descriptor:
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: ABC Operator Fights Services
+                  description: Physical description of something.
+                images:
+                  url:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: https://operator1.com/logos/logo.ico
+                    description: URL to the image. This can be a data url or an remote url
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: e74e565
+                description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: TRIP
+                description: >-
+                  The type of stop. Allowed values of this property can be
+                  defined by the network policy.
+              stops:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: S1
+                  description: Uniques id to refer stop.
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: e74e565
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  descriptor:
+                    name:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: Mumbai
+                      description: Physical description of something.
+                    code:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: BOM
+                      description: Physical description of something.
+                time:
+                  label:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: DATE_TIME
+                    description: Label for denoting stop time or date
+                  timestamp:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: '2023-09-06T06:30:00.000Z'
+                    description: Timestamp for denoting time at stop
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: AIRLINE
+                  description: Describes vehicle category
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 6A284
+                  description: Describes vehicle code
+            quote:
+              price:
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 8999
+                  description: Describes the price of a product or service
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: BASE_FARE
+                  description: Title of total quoted price
+                price:
+                  value:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 800
+                    description: Value of total quoted price
+                  ' currency':
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Currency for total quoted price
+      init:
+        message:
+          order:
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 46b8979
+                description: 'Unique ID of the item. '
+              quantity:
+                selected:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BAP
+                    usage: 1
+                    description: >-
+                      This represents the quantity selected for purchase of the
+                      item
+              add_ons:
+                id:
+                  required: optional
+                  type: string
+                  owner: BAP
+                  usage: 13ba8090
+                  description: Id of the add on
+                quantity:
+                  selected:
+                    count:
+                      required: optional
+                      type: string
+                      owner: BAP
+                      usage: 1
+                      description: Selected quantity of the the add on.
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              stops:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: S1
+                  description: Uniques id to refer stop.
+              customer:
+                person:
+                  name:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: Joe Adams
+                    description: Name of the customer
+                  age:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: 30
+                    description: Age of the customer
+                  gender:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: MALE
+                    description: Gender of the customer
+                contact:
+                  phone:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: 9988776655
+                    description: Phone number of customer
+                  email:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: joeadams@yahoo.com
+                    description: Email of the  customer
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: AIRLINE
+                  description: Describes vehicle category
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 6A284
+                  description: Describes vehicle code
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 13ba8018
+                description: Id of the provider
+            payments:
+              collected_by:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: NOT-PAID
+                description: Describe the payment status
+              type:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: PRE-ORDER
+                description: Describes the payment type
+            billing:
+              name:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: Joe Adams
+                description: Describes the name for billing
+              phone:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: 9988776655
+                description: Describes the phone number for billing name
+              tax_id:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: GSTIN:22AAAAA0000A1Z5
+                description: Describes the tax id for billing name
+      on_init:
+        message:
+          order:
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 46b8979
+                description: ID of the item.
+              descriptor:
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Non Stop
+                  description: Physical description of something.
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: NON_STOP
+                  description: Physical description of something.
+              price:
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Price of the selected item.
+                value:
+                  required: mandatory
+                  type: integer
+                  owner: BPP
+                  usage: 8999
+                  description: Describes a numerical value in decimal form
+              quantity:
+                selected:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BPP
+                    usage: 1
+                    description: >-
+                      This represents the quantity selected for purchase of the
+                      item
+              fulfillment_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: e74e565
+                description: Unique reference ID to the fulfillment of an order
+              category_ids:
+                required: optional
+                type: string
+                owner: BPP
+                usage: C1
+                description: Unique reference ID
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 13ba8018
+                description: Id of the provider
+              descriptor:
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: ABC Operator Fights Services
+                  description: Physical description of something.
+                images:
+                  url:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: https://operator1.com/logos/logo.ico
+                    description: URL to the image. This can be a data url or an remote url
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: e74e565
+                description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: TRIP
+                description: >-
+                  The type of stop. Allowed values of this property can be
+                  defined by the network policy.
+              stops:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: S1
+                  description: Uniques id to refer stop.
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: e74e565
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  descriptor:
+                    name:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: Mumbai
+                      description: Physical description of something.
+                    code:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: BOM
+                      description: Physical description of something.
+                time:
+                  label:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: DATE_TIME
+                    description: Label for denoting stop time or date
+                  timestamp:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: '2023-09-06T06:30:00.000Z'
+                    description: Timestamp for denoting time at stop
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: AIRLINE
+                  description: Describes vehicle category
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 6A284
+                  description: Describes vehicle code
+            quote:
+              price:
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 8999
+                  description: Describes the price of a product or service
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: BASE_FARE
+                  description: Title of total quoted price
+                price:
+                  value:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 800
+                    description: Value of total quoted price
+                  ' currency':
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Currency for total quoted price
+            payments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: PA1
+                description: >-
+                  ID of the payment term that can be referred at an item or an
+                  order level in a catalog
+              collected_by:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: NOT-PAID
+                description: Payment Status
+              type:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: PRE-ORDER
+                description: Payment type
+              params:
+                bank_code:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                virtual_payment_address:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: 9988199772@okicic
+                  description: Virtual payment address associated with payment activity
+      confirm:
+        message:
+          order:
+            id:
+              required: mandatory
+              type: string
+              owner: BPP
+              usage: 36v8979
+              description: 'Unique ID of the order. '
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 46b8979
+                description: 'Unique ID of the item. '
+              quantity:
+                selected:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BAP
+                    usage: 1
+                    description: >-
+                      This represents the quantity selected for purchase of the
+                      item
+              add_ons:
+                id:
+                  required: optional
+                  type: string
+                  owner: BAP
+                  usage: 13ba8090
+                  description: Id of the add on
+                quantity:
+                  selected:
+                    count:
+                      required: optional
+                      type: string
+                      owner: BAP
+                      usage: 1
+                      description: Selected quantity of the the add on.
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: F1
+                description: Unique reference ID to the fulfillment of an order
+              stops:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: S1
+                  description: Uniques id to refer stop.
+              customer:
+                person:
+                  name:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: Joe Adams
+                    description: Name of the customer
+                  age:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: 30
+                    description: Age of the customer
+                  gender:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: MALE
+                    description: Gender of the customer
+                contact:
+                  phone:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: 9988776655
+                    description: Phone number of customer
+                  email:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: joeadams@yahoo.com
+                    description: Email of the  customer
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: AIRLINE
+                  description: Describes vehicle category
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 6A284
+                  description: Describes vehicle code
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 13ba8018
+                description: Id of the provider
+            payments:
+              collected_by:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: NOT-PAID
+                description: Describes the payment Status
+              type:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: PRE-ORDER
+                description: Describes the payment type
+              params:
+                transaction_id:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: a1644304
+                  description: Describes the transaction id of the payment
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: INR
+                  description: Describes the type of currency
+                amount:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: 10727
+                  description: Describes the payment amount.
+            billing:
+              name:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: Joe Adams
+                description: Describes the name for billing
+              phone:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: 9988776655
+                description: Describes the phone number for billing name
+              tax_id:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: GSTIN:22AAAAA0000A1Z5
+                description: Describes the tax id for billing name
+      on_confirm:
+        message:
+          order:
+            id:
+              required: mandatory
+              type: string
+              owner: BPP
+              usage: 36v8979
+              description: 'Unique ID of the order. '
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 46b8979
+                description: ID of the item.
+              descriptor:
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Non Stop
+                  description: Physical description of something.
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: NON_STOP
+                  description: Physical description of something.
+              price:
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Price of the selected item.
+                value:
+                  required: mandatory
+                  type: integer
+                  owner: BPP
+                  usage: 8999
+                  description: Describes a numerical value in decimal form
+              quantity:
+                selected:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BPP
+                    usage: 1
+                    description: >-
+                      This represents the quantity selected for purchase of the
+                      item
+              fulfillment_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: e74e565
+                description: Unique reference ID to the fulfillment of an order
+              category_ids:
+                required: optional
+                type: string
+                owner: BPP
+                usage: C1
+                description: Unique reference ID
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 13ba8018
+                description: Id of the provider
+              descriptor:
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: ABC Operator Fights Services
+                  description: Physical description of something.
+                images:
+                  url:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: https://operator1.com/logos/logo.ico
+                    description: URL to the image. This can be a data url or an remote url
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: e74e565
+                description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: TRIP
+                description: >-
+                  The type of stop. Allowed values of this property can be
+                  defined by the network policy.
+              stops:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: S1
+                  description: Uniques id to refer stop.
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: e74e565
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  descriptor:
+                    name:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: Mumbai
+                      description: Physical description of something.
+                    code:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: BOM
+                      description: Physical description of something.
+                time:
+                  label:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: DATE_TIME
+                    description: Label for denoting stop time or date
+                  timestamp:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: '2023-09-06T06:30:00.000Z'
+                    description: Timestamp for denoting time at stop
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: AIRLINE
+                  description: Describes vehicle category
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 6A284
+                  description: Describes vehicle code
+            quote:
+              price:
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 8999
+                  description: Describes the price of a product or service
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: BASE_FARE
+                  description: Title of total quoted price
+                price:
+                  value:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 800
+                    description: Value of total quoted price
+                  ' currency':
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Currency for total quoted price
+            payments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: PA1
+                description: >-
+                  ID of the payment term that can be referred at an item or an
+                  order level in a catalog
+              collected_by:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: NOT-PAID
+                description: Payment Status
+              type:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: PRE-ORDER
+                description: Payment type
+              params:
+                bank_code:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                virtual_payment_address:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: 9988199772@okicic
+                  description: Virtual payment address associated with payment activity
+            documents:
+              descriptor:
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: AIRLINE-DOC
+                  description: Describe the code for documnents associated to the order
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: PNR Document
+                  description: Describe the name for documnents associated to the order
+                short_desc:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: Download your ticket here
+                  description: >-
+                    Describe the short desc for documnents associated to the
+                    order
+                long_desc:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: Download your ticket here
+                  description: >-
+                    Describe the long desc for documnents associated to the
+                    order
+              mime_type:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: application/pdf
+                description: Describe the mime type for documnents associated to the order
+              url:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: https://abcoperator.com/manage-booking/pnr/O1.pdf
+                description: Describe the url for documnents associated to the order
