@@ -2722,8 +2722,12 @@ components:
           type: boolean
 x-enum:
   search:
-    context: &ref_0
-      location:
+    context:
+      action:
+        - code: search
+          description: Buyer app indicates the search intent
+          reference: <PR/Issue/Discussion Links md format text>
+      location: &ref_0
         country:
           code:
             - code: IND
@@ -2734,136 +2738,106 @@ x-enum:
             - code: std:080
               description: Bangalore
               reference: <PR/Issue/Discussion Links md format text>
-      domain:
+      domain: &ref_1
         - code: ONDC:TRV10
           description: mobility domain Ride
           reference: <PR/Issue/Discussion Links md format text>
         - code: ONDC:TRV11
           description: mobility domain Public Transit
           reference: <PR/Issue/Discussion Links md format text>
-      action:
-        - code: search
-          description: buyer app specifies the search intent
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: on_search
-          description: seller app responds with the catalog based on the search intent
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: select
-          description: buyer app specifies the items & quantity selected by a buyer
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: on_select
-          description: >-
-            seller app responds with the serviceability info, quote & O2D TAT
-            for selected items;
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: init
-          description: >-
-            buyer & seller app specify & agree to the terms & conditions prior
-            to placing the order;
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: on_init
-          description: >-
-            buyer & seller app specify & agree to the terms & conditions prior
-            to placing the order;
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: confirm
-          description: buyer app places the order on behalf of the buyer;
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: on_confirm
-          description: >-
-            seller app responds to the order placed either through
-            auto-acceptance or deferred acceptance or rejection of the order
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: update
-          description: updates in the serviceable loc happens here
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: on_update
-          description: seller app responds with serviceable
-          reference: <PR/Issue/Discussion Links md format text
-        - code: cancel
-          description: Cancellation of ride
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: on_cancel
-          description: Specifiy the cancellation of the state
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: track
-          description: Track the order
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: on_track
-          description: Return tracking infomation of the order
-          reference: <PR/Issue/Discussion Links md format text
-        - code: status
-          description: Request for status of the vehicle
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: on_status
-          description: Return order with status , Driver pickup - driver drop
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: support
-          description: Fetch support information related to a particular order
-          reference: <PR/Issue/Discussion Links md format text>
-        - code: on_support
-          description: Return support information related to order
-          reference: <PR/Issue/Discussion Links md format text
     message:
       intent:
-        fulfillment: &ref_1
+        fulfillment: &ref_2
           vehicle:
             category:
               - code: METRO
-                description: AUTO_RICKSHAW Vehicle Type
+                description: Describes the vehicle category as Metro
                 reference: <PR/Issue/Discussion Links md format text
               - code: AUTO_RICKSHAW
-                description: AUTO_RICKSHAW Vehicle Type
+                description: Describes the vehicle category as Auto Rickshaw
                 reference: <PR/Issue/Discussion Links md format text
               - code: CAB
-                description: CAB Vehicle Type
+                description: Describes the vehicle category as cab
                 reference: <PR/Issue/Discussion Links md format text
               - code: BUS
-                description: BUS Vehicle Type
+                description: Describes the vehicle category as Bus
                 reference: <PR/Issue/Discussion Links md format text
               - code: AIRLINE
-                description: AIRLINE Vehicle Type
+                description: Describes the vehicle category as Airline
                 reference: <PR/Issue/Discussion Links md format text
+          type:
+            - code: DELIVERY
+              description: Describes the type of fulfillment.
+              reference: <PR/Issue/Discussion Links md format text
           stops:
             type:
               - code: START
-                description: Describes the start location of fulfillment
+                description: Describes the initial fulfillment location.
                 reference: <PR/Issue/Discussion Links md format text
               - code: END
-                description: Describes the end location of fulfillment
+                description: Describes the final fulfillment location.
                 reference: <PR/Issue/Discussion Links md format text
               - code: INTERMEDIATE_STOP
-                description: Describes the intermediate stops of fulfillment
+                description: Describes the intermediate stops during fulfillment.
                 reference: <PR/Issue/Discussion Links md format text
               - code: TRANSIT_STOP
-                description: Describes the transit stops of fulfillment
+                description: Describes the transit stops during fulfillment.
                 reference: <PR/Issue/Discussion Links md format text
-          state: &ref_5
+            authorization:
+              type:
+                - code: OTP
+                  description: >-
+                    Describes OTP as an authorization mechanism used to start or
+                    end the fulfillment of an order.
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: QR
+                  description: >-
+                    Describes QR as an authorization mechanism used to start or
+                    end the fulfillment of an order.
+                  reference: <PR/Issue/Discussion Links md format text
+          state: &ref_6
             descriptor:
               code:
-                - code: DRIVER_EN_ROUTE
-                  description: Rider is on the way
+                - code: DRIVER_EN_ROUTE_TO_PICKUP
+                  description: The rider is en route
                   reference: <PR/Issue/Discussion Links md format text
                 - code: RIDE_CANCELLED
-                  description: Rider cancelled the ride
+                  description: The rider has canceled the ride.
                   reference: <PR/Issue/Discussion Links md format text
                 - code: PAYMENT_COLLECTED
-                  description: payment is collected by rider
+                  description: Payment is collected by the rider.
                   reference: <PR/Issue/Discussion Links md format text
                 - code: RIDE_ENDED
-                  description: When rider ends the journey
+                  description: Describes when the rider concludes the journey.
                   reference: <PR/Issue/Discussion Links md format text
                 - code: DRIVER_AT_PICKUP
-                  description: when rider is at pickup location
+                  description: Describes when the rider is at the pickup location.
                   reference: <PR/Issue/Discussion Links md format text
                 - code: RIDE_STARTED
-                  description: When rider started the journey
+                  description: Describes when the rider initiates the journey.
                   reference: <PR/Issue/Discussion Links md format text
                 - code: RIDE_UPDATED
-                  description: When rider started the journey
+                  description: Describes the updated state of the ride
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: RIDE_ASSIGNED
+                  description: Describes the state when the ride is assigned.
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: RIDE_ENROUTE_PICKUP
+                  description: Rider en route to pickup location."
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: RIDE_ARRIVED_PICKUP
+                  description: >-
+                    Describes the state when the rider has arrived at the pickup
+                    location.
                   reference: <PR/Issue/Discussion Links md format text
   on_search:
-    context: *ref_0
+    context:
+      action:
+        - code: on_search
+          description: Seller app provides catalog based on search intent.
+          reference: <PR/Issue/Discussion Links md format text>
+      location: *ref_0
+      domain: *ref_1
     message:
       catalog:
         providers:
@@ -2897,11 +2871,11 @@ x-enum:
                 - code: FIRST_CLASS
                   description: Represents type of seat category
                   reference: <PR/Issue/Discussion Links md format text
-          items: &ref_2
+          items: &ref_3
             descriptor:
               code:
                 - code: RIDE
-                  description: Describes the kind of ride
+                  description: Describes the type of ride.
                   reference: <PR/Issue/Discussion Links md format text
                 - code: SJT
                   description: Describes the kind of ticket Single Journey Ticket
@@ -2926,83 +2900,153 @@ x-enum:
                 - code: CONNECT
                   description: Describes the kind of type of journey
                   reference: <PR/Issue/Discussion Links md format text
-          fulfillments: *ref_1
-          payments: &ref_3
+          fulfillments: *ref_2
+          payments: &ref_4
             status:
               - code: NOT-PAID
                 description: >-
-                  NOT-PAID is a kind of payment, when the payment is not
-                  completed
+                  NOT-PAID indicates a payment status where the payment process
+                  has not been completed.
                 reference: <PR/Issue/Discussion Links md format text
               - code: PAID
-                description: PAID is a kind of payment, when the payment is completed
+                description: >-
+                  PAID indicates a payment status where the payment process has
+                  been successfully completed.
                 reference: <PR/Issue/Discussion Links md format text
             collected_by:
               - code: BPP
-                description: when seller app is collecting the payment
+                description: Describes when the seller app is collecting the payment.
                 reference: <PR/Issue/Discussion Links md format text
               - code: BAP
-                description: when buyer app is collecting the payment
+                description: Describes when the buyer app is collecting the payment.
                 reference: <PR/Issue/Discussion Links md format text
             type:
               - code: PRE-ORDER
-                description: Payment happens before order placement
+                description: Payment occurs prior to order placement.
                 reference: <PR/Issue/Discussion Links md format text
               - code: ON-FULFILLMENT
-                description: Payment happens on completion of the journey
+                description: Payment occurs upon completion of the journey.
                 reference: <PR/Issue/Discussion Links md format text
               - code: POST-FULFILLMENT
-                description: Payment happens post completion of the journey
+                description: Payment occurs after the completion of the journey.
                 reference: <PR/Issue/Discussion Links md format text
   select:
-    context: *ref_0
+    context:
+      action:
+        - code: select
+          description: Buyer app communicates selected items and quantities.
+          reference: <PR/Issue/Discussion Links md format text>
+      location: *ref_0
+      domain: *ref_1
     message:
-      order: &ref_4
-        items: *ref_2
-        fulfillments: *ref_1
-        payments: *ref_3
+      order: &ref_5
+        items: *ref_3
+        fulfillments: *ref_2
+        payments: *ref_4
   on_select:
-    context: *ref_0
+    context:
+      action:
+        - code: on_select
+          description: >-
+            Seller app provides serviceability info, quotes, and O2D TAT for
+            selected items.
+          reference: <PR/Issue/Discussion Links md format text>
+      location: *ref_0
+      domain: *ref_1
     message:
-      order: *ref_4
+      order: *ref_5
   init:
-    context: *ref_0
+    context:
+      action:
+        - code: init
+          description: >-
+            Buyer and seller apps confirm terms & conditions before placing
+            orders.
+          reference: <PR/Issue/Discussion Links md format text>
+      location: *ref_0
+      domain: *ref_1
     message:
-      order: *ref_4
+      order: *ref_5
   on_init:
-    context: *ref_0
+    context:
+      action:
+        - code: on_init
+          description: >-
+            Buyer and seller apps agree to terms & conditions before placing
+            orders.
+          reference: <PR/Issue/Discussion Links md format text>
+      location: *ref_0
+      domain: *ref_1
     message:
       order:
-        items: *ref_2
-        fulfillments: *ref_1
-        payments: *ref_3
+        items: *ref_3
+        fulfillments: *ref_2
+        payments: *ref_4
         cancellation_terms:
-          fulfillment_state: *ref_5
+          fulfillment_state: *ref_6
   confirm:
-    context: *ref_0
+    context:
+      action:
+        - code: confirm
+          description: Buyer app submits orders on behalf of the buyer.
+          reference: <PR/Issue/Discussion Links md format text>
+      location: *ref_0
+      domain: *ref_1
     message:
-      order: *ref_4
+      order: *ref_5
   on_confirm:
-    context: *ref_0
+    context:
+      action:
+        - code: on_confirm
+          description: >-
+            Seller app responds to the order with auto-acceptance, deferred
+            acceptance, or rejection.
+          reference: <PR/Issue/Discussion Links md format text>
+      location: *ref_0
+      domain: *ref_1
     message:
-      order: *ref_4
+      order: *ref_5
   status:
-    context: *ref_0
+    context:
+      action:
+        - code: status
+          description: Buyer app request for status of the order
+          reference: <PR/Issue/Discussion Links md format text>
+      location: *ref_0
+      domain: *ref_1
   on_status:
-    context: *ref_0
+    context:
+      action:
+        - code: on_status
+          description: Seller app return order with status , Driver pickup - driver drop
+          reference: <PR/Issue/Discussion Links md format text>
+      location: *ref_0
+      domain: *ref_1
     message:
-      order: *ref_4
+      order: *ref_5
   cancel:
-    context: *ref_0
+    context:
+      action:
+        - code: cancel
+          description: Buyer app requests order cancellation."
+          reference: <PR/Issue/Discussion Links md format text>
+      location: *ref_0
+      domain: *ref_1
   on_cancel:
-    context: *ref_0
+    context:
+      action:
+        - code: on_cancel
+          description: Seller app specifies the cancellation status.
+          reference: <PR/Issue/Discussion Links md format text>
+      location: *ref_0
+      domain: *ref_1
     message:
-      order: *ref_4
+      order: *ref_5
 x-tags:
   search:
     message:
       intent:
-        fulfillment: &ref_6
+        fulfillment: &ref_7
           tags:
             - code: TRIP_DETAILS
               description: Details of trips not covered as part of the fulfillment object
@@ -3057,7 +3101,7 @@ x-tags:
                 - code: ROUTE_DIRECTION
                   description: describes the direction of a particular route.
                   reference: <PR/Issue/Discussion Links md format text>
-        payment: &ref_7
+        payment: &ref_8
           tags:
             - code: SETTLEMENT_DETAILS
               description: Settlement details to identify specifics of settlement
@@ -3110,7 +3154,7 @@ x-tags:
     message:
       catalog:
         providers:
-          items: &ref_8
+          items: &ref_9
             tags:
               - code: FARE_POLICY
                 description: Settlement details to identify specifics of settlement
@@ -3187,22 +3231,22 @@ x-tags:
                   - code: PROHIBITED_ITEMS
                     description: describes the list of Prohibited Items.
                     reference: <PR/Issue/Discussion Links md format text>
-          fulfillments: *ref_6
-          payments: *ref_7
-  select: &ref_9
+          fulfillments: *ref_7
+          payments: *ref_8
+  select: &ref_10
     message:
       order:
-        fulfillments: *ref_6
-        payments: *ref_7
-        items: *ref_8
-  on_select: *ref_9
-  init: *ref_9
-  on_init: *ref_9
-  confirm: *ref_9
-  on_confirm: *ref_9
-  on_status: *ref_9
-  on_cancel: *ref_9
-  on_update: *ref_9
+        fulfillments: *ref_7
+        payments: *ref_8
+        items: *ref_9
+  on_select: *ref_10
+  init: *ref_10
+  on_init: *ref_10
+  confirm: *ref_10
+  on_confirm: *ref_10
+  on_status: *ref_10
+  on_cancel: *ref_10
+  on_update: *ref_10
 x-flows:
   - summary: Airlines - Code Based Flow
     details:
@@ -3282,7 +3326,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_63
+        example: &ref_64
           summary: Search for airline services by standard airport codes
           value:
             context:
@@ -3347,7 +3391,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_68
+        example: &ref_69
           summary: Return services available for provided start and end code
           value:
             context:
@@ -4741,7 +4785,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_64
+        example: &ref_65
           summary: Get Quote of a selected item
           value:
             context:
@@ -4800,7 +4844,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_69
+        example: &ref_70
           summary: Get Quote of a selected item
           value:
             context:
@@ -5034,7 +5078,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_65
+        example: &ref_66
           summary: Initialize draft order and request for terms of service
           value:
             context:
@@ -5139,7 +5183,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: &ref_70
+        example: &ref_71
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -5362,7 +5406,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_66
+        example: &ref_67
           summary: Confirm ticket booking
           value:
             context:
@@ -5447,7 +5491,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_71
+        example: &ref_72
           summary: Confirm ticket booking
           value:
             context:
@@ -5685,7 +5729,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_67
+        example: &ref_68
           summary: Cancel a transit ticket booking before the cancellation period
           value:
             context:
@@ -5723,7 +5767,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_72
+        example: &ref_73
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -6076,7 +6120,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_46
+        example: &ref_47
           summary: >-
             Return a metro catalog of available fulfillments based on search by
             city
@@ -6531,7 +6575,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_10
+        example: &ref_11
           summary: >-
             Return a metro catalog of fare products based on station code or gps
             based search
@@ -6839,7 +6883,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_11
+        example: &ref_12
           summary: >-
             Get a quote for a fare product selected from a public transit
             catalog
@@ -6888,7 +6932,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_12
+        example: &ref_13
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -7123,7 +7167,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_13
+        example: &ref_14
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -7222,7 +7266,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end   
         reference: if any
-        example: &ref_14
+        example: &ref_15
           summary: Return draft order for transit ticket with settlement details
           value:
             context:
@@ -7519,7 +7563,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_15
+        example: &ref_16
           summary: Confirm ticket booking
           value:
             context:
@@ -7617,7 +7661,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_16
+        example: &ref_17
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -7924,7 +7968,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_17
+        example: &ref_18
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -7964,7 +8008,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_18
+        example: &ref_19
           summary: Return transit ticket order with status - Journey Completed
           value:
             context:
@@ -8319,7 +8363,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_45
+        example: &ref_46
           summary: Search for a public mode of transit from a specific position
           value:
             context:
@@ -8381,7 +8425,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_10
+        example: *ref_11
       - summary: Selection of specific service(Optional)
         api: select
         details:
@@ -8399,7 +8443,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: *ref_11
+        example: *ref_12
       - summary: Provider platform provides the quote for selected service of metro
         api: on_select
         details:
@@ -8418,7 +8462,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: *ref_12
+        example: *ref_13
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -8436,7 +8480,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: *ref_13
+        example: *ref_14
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -8454,7 +8498,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_14
+        example: *ref_15
       - summary: Consumer confirms the
         api: confirm
         details:
@@ -8472,7 +8516,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: *ref_15
+        example: *ref_16
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -8490,7 +8534,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_16
+        example: *ref_17
       - summary: Consumer platform requests for latest status
         api: status
         details:
@@ -8508,7 +8552,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK    
         reference: if any
-        example: *ref_17
+        example: *ref_18
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -8526,7 +8570,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_18
+        example: *ref_19
   - summary: On-Demand - Assign driver on on-confrim
     details:
       - description: >-
@@ -8604,7 +8648,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_19
+        example: &ref_20
           summary: Search for cab services by pickup and drop location
           value:
             context:
@@ -8661,7 +8705,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: &ref_20
+        example: &ref_21
           summary: Return a mobility catalog
           value:
             context:
@@ -8840,7 +8884,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_21
+        example: &ref_22
           summary: Get quote for a specific product from a mobility catalog
           value:
             context:
@@ -8884,7 +8928,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_22
+        example: &ref_23
           summary: Return a quote offered by a provider
           value:
             context:
@@ -9025,7 +9069,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_23
+        example: &ref_24
           summary: Initialize draft order and request for terms of service
           value:
             context:
@@ -9129,7 +9173,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_24
+        example: &ref_25
           summary: Return draft order with payment terms
           value:
             context:
@@ -9356,7 +9400,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_25
+        example: &ref_26
           summary: Confirm ride booking
           value:
             context:
@@ -9461,7 +9505,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_28
+        example: &ref_29
           summary: Return confirmed order with latest fulfillment details
           value:
             context:
@@ -9708,7 +9752,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_49
+        example: &ref_50
           summary: Return updated order with payment status
           value:
             context:
@@ -9949,7 +9993,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_26
+        example: &ref_27
           summary: Get latest fulfillment status of a booking
           value:
             context:
@@ -9991,7 +10035,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_27
+        example: &ref_28
           summary: Return order with status - Driver at pickup
           value:
             context:
@@ -10293,7 +10337,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_19
+        example: *ref_20
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -10314,7 +10358,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_20
+        example: *ref_21
       - summary: Selection of a specific service
         api: select
         details:
@@ -10334,7 +10378,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_21
+        example: *ref_22
       - summary: Provider platform provides the quote for selected service
         api: on_select
         details:
@@ -10352,7 +10396,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_22
+        example: *ref_23
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -10370,7 +10414,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_23
+        example: *ref_24
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -10388,7 +10432,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end  
         reference: if any
-        example: *ref_24
+        example: *ref_25
       - summary: Consumer confirms the ride
         api: confirm
         details:
@@ -10407,7 +10451,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_25
+        example: *ref_26
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -10911,7 +10955,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_26
+        example: *ref_27
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -10931,7 +10975,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_27
+        example: *ref_28
   - summary: On-Demand - Ride cancel
     details:
       - description: >-
@@ -11010,7 +11054,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_19
+        example: *ref_20
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -11031,7 +11075,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_20
+        example: *ref_21
       - summary: Selection of a specific service
         api: select
         details:
@@ -11051,7 +11095,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_21
+        example: *ref_22
       - summary: Provider platform provides the quote for selected service
         api: on_select
         details:
@@ -11069,7 +11113,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_22
+        example: *ref_23
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -11087,7 +11131,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_23
+        example: *ref_24
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -11105,7 +11149,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end  
         reference: if any
-        example: *ref_24
+        example: *ref_25
       - summary: Consumer confirms the ride
         api: confirm
         details:
@@ -11124,7 +11168,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_25
+        example: *ref_26
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -11142,7 +11186,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_28
+        example: *ref_29
       - summary: Consumer platform cancels the request
         api: cancel
         details:
@@ -11160,7 +11204,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_47
+        example: &ref_48
           summary: Cancel a ride with user provided information
           value:
             context:
@@ -11206,7 +11250,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_48
+        example: &ref_49
           summary: Return order cancelled by rider with cancellation charges
           value:
             context:
@@ -13008,7 +13052,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_26
+        example: *ref_27
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -13028,7 +13072,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_27
+        example: *ref_28
   - summary: On-Demand - Rental Ride
     details:
       - description: >-
@@ -14352,7 +14396,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_26
+        example: *ref_27
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -15930,7 +15974,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_26
+        example: *ref_27
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -16253,7 +16297,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK   
         reference: if any
-        example: &ref_52
+        example: &ref_53
           summary: Search for all services from given start and end location(gps)
           value:
             context:
@@ -16306,7 +16350,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: &ref_29
+        example: &ref_30
           summary: Return services available for provided start code or gps
           value:
             context:
@@ -16438,7 +16482,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK   
         reference: if any
-        example: &ref_53
+        example: &ref_54
           summary: Search for all services from given start and end location(gps)
           value:
             context:
@@ -16500,7 +16544,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: &ref_30
+        example: &ref_31
           summary: >-
             Return services available for provided start and end code or gps
             with journey date
@@ -16843,7 +16887,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_31
+        example: &ref_32
           summary: Get Quote of a selected seat
           value:
             context:
@@ -16893,7 +16937,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_32
+        example: &ref_33
           summary: Return a quote offered by a intercity bus  service provider
           value:
             context:
@@ -17026,7 +17070,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_33
+        example: &ref_34
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -17127,7 +17171,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end   
         reference: if any
-        example: &ref_34
+        example: &ref_35
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -17327,7 +17371,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_35
+        example: &ref_36
           summary: Confirm ticket booking
           value:
             context:
@@ -17404,7 +17448,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_36
+        example: &ref_37
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -17611,7 +17655,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_update
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_37
+        example: &ref_38
           summary: Update customer details
           value:
             context:
@@ -17657,7 +17701,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_57
+        example: &ref_58
           summary: Return updated order with customer details
           value:
             context:
@@ -17865,7 +17909,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_55
+        example: &ref_56
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -17903,7 +17947,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_56
+        example: &ref_57
           summary: Return transit ticket order with status - Journey Completed
           value:
             context:
@@ -18164,7 +18208,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_50
+        example: &ref_51
           summary: Search for all services form the given start location(code)
           value:
             context:
@@ -18218,7 +18262,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_29
+        example: *ref_30
       - summary: Search for the bus by start and end station code
         api: search
         details:
@@ -18238,7 +18282,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_51
+        example: &ref_52
           summary: Search for all services from given start and end location(code)
           value:
             context:
@@ -18301,7 +18345,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_30
+        example: *ref_31
       - summary: Selection of specific service
         api: select
         details:
@@ -18319,7 +18363,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_31
+        example: *ref_32
       - summary: Provider platform provides the quote for selected service of bus
         api: on_select
         details:
@@ -18338,7 +18382,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_32
+        example: *ref_33
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -18356,7 +18400,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_33
+        example: *ref_34
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -18374,7 +18418,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: *ref_34
+        example: *ref_35
       - summary: Consumer confirms the booking and provides details.
         api: confirm
         details:
@@ -18392,7 +18436,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: *ref_35
+        example: *ref_36
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -18410,7 +18454,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_36
+        example: *ref_37
       - summary: Consumer platform updates the ride details
         api: update
         details:
@@ -18428,7 +18472,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_update
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: *ref_37
+        example: *ref_38
       - summary: Provider platform provides latest update on the order
         api: on_update
         details:
@@ -18444,7 +18488,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_58
+        example: &ref_59
           summary: Return updated order with agent details
           value:
             context:
@@ -18658,7 +18702,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_54
+        example: &ref_55
           summary: Cancel a transit ticket booking before the cancellation period
           value:
             context:
@@ -18696,7 +18740,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_59
+        example: &ref_60
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -18977,7 +19021,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_60
+        example: &ref_61
           summary: >-
             Search for intra city bus service mode of transit from a specific
             position
@@ -19038,7 +19082,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: &ref_38
+        example: &ref_39
           summary: Return a public transit catalog of fare products
           value:
             context:
@@ -19362,7 +19406,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_39
+        example: &ref_40
           summary: >-
             Get a quote for a fare product selected from a intra city bus
             service catalog
@@ -19412,7 +19456,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_40
+        example: &ref_41
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -19545,7 +19589,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_41
+        example: &ref_42
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -19643,7 +19687,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: &ref_42
+        example: &ref_43
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -19840,7 +19884,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_43
+        example: &ref_44
           summary: Confirm ticket booking
           value:
             context:
@@ -19943,7 +19987,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_44
+        example: &ref_45
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -20149,7 +20193,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_62
+        example: &ref_63
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -20382,7 +20426,7 @@ x-flows:
         details:
           - description: Consumer platform requests for cancellation of order
         reference: if any
-        example: &ref_61
+        example: &ref_62
           summary: Cancel a ticket booking before the cancellation period
           value:
             context:
@@ -21034,7 +21078,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: *ref_38
+        example: *ref_39
       - summary: Selection of specific service
         api: select
         details:
@@ -21052,7 +21096,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_39
+        example: *ref_40
       - summary: >-
           Provider platform provides the quote for selected service of intracity
           bus
@@ -21073,7 +21117,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_40
+        example: *ref_41
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -21091,7 +21135,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_41
+        example: *ref_42
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -21109,7 +21153,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_42
+        example: *ref_43
       - summary: Consumer confirms the booking and provides details.
         api: confirm
         details:
@@ -21127,7 +21171,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_43
+        example: *ref_44
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -21145,7 +21189,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_44
+        example: *ref_45
       - summary: Consumer platform updates the ride details
         api: update
         details:
@@ -21393,16 +21437,16 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_45
+          - *ref_46
       select:
         examples:
-          - *ref_11
+          - *ref_12
       init:
         examples:
-          - *ref_13
+          - *ref_14
       confirm:
         examples:
-          - *ref_15
+          - *ref_16
       cancel:
         examples:
           - summary: Cancel a transit ticket booking before the cancellation period
@@ -21428,19 +21472,19 @@ x-examples:
                 order_id: 077b248f
       status:
         examples:
-          - *ref_17
+          - *ref_18
       on_search:
         examples:
-          - *ref_46
+          - *ref_47
       on_select:
         examples:
-          - *ref_12
+          - *ref_13
       on_init:
         examples:
-          - *ref_14
+          - *ref_15
       on_confirm:
         examples:
-          - *ref_16
+          - *ref_17
       on_cancel:
         examples:
           - summary: Return cancelled ticket order with cancellation charges
@@ -21675,14 +21719,14 @@ x-examples:
                           value: '0'
       on_status:
         examples:
-          - *ref_18
+          - *ref_19
   on-demand:
     summary: On Demand Use Case Specification
     description: On Demand Use Case Specification
     example_set:
       search:
         examples:
-          - *ref_19
+          - *ref_20
           - summary: >-
               Search for on-schedule cab services by pickup and drop location
               using timestamp
@@ -21725,16 +21769,16 @@ x-examples:
                             value: '1'
       select:
         examples:
-          - *ref_21
+          - *ref_22
       init:
         examples:
-          - *ref_23
+          - *ref_24
       confirm:
         examples:
-          - *ref_25
+          - *ref_26
       status:
         examples:
-          - *ref_26
+          - *ref_27
       track:
         examples:
           - summary: Track an active ride
@@ -21785,7 +21829,7 @@ x-examples:
               message:
                 cancellation_reason_id: '5'
                 order_id: O1
-          - *ref_47
+          - *ref_48
       support:
         examples:
           - summary: Fetch support information related to a particular order
@@ -21812,16 +21856,16 @@ x-examples:
                 ref_id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
       on_search:
         examples:
-          - *ref_20
+          - *ref_21
       on_select:
         examples:
-          - *ref_22
+          - *ref_23
       on_init:
         examples:
-          - *ref_24
+          - *ref_25
       on_confirm:
         examples:
-          - *ref_28
+          - *ref_29
       on_track:
         examples:
           - summary: Return tracking information for an order
@@ -21851,7 +21895,7 @@ x-examples:
                   status: active
       on_cancel:
         examples:
-          - *ref_48
+          - *ref_49
           - summary: Return order cancelled by driver
             value:
               context:
@@ -22064,7 +22108,7 @@ x-examples:
                               value: '12505'
       on_update:
         examples:
-          - *ref_49
+          - *ref_50
           - summary: Return updated order with recomputed charges
             value:
               context:
@@ -22460,7 +22504,7 @@ x-examples:
                     phone: +91-9897867564
       on_status:
         examples:
-          - *ref_27
+          - *ref_28
           - summary: >-
               Return order with latest fulfillment status - Driver en-route to
               pickup
@@ -23194,101 +23238,101 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_50
           - *ref_51
           - *ref_52
           - *ref_53
+          - *ref_54
       select:
         examples:
-          - *ref_31
+          - *ref_32
       init:
         examples:
-          - *ref_33
+          - *ref_34
       confirm:
         examples:
-          - *ref_35
+          - *ref_36
       cancel:
         examples:
-          - *ref_54
+          - *ref_55
       status:
         examples:
-          - *ref_55
+          - *ref_56
       update:
         examples:
-          - *ref_37
+          - *ref_38
       on_search:
         examples:
-          - *ref_29
           - *ref_30
+          - *ref_31
       on_select:
         examples:
-          - *ref_32
+          - *ref_33
       on_init:
         examples:
-          - *ref_34
+          - *ref_35
       on_confirm:
         examples:
-          - *ref_36
+          - *ref_37
       on_status:
         examples:
-          - *ref_56
+          - *ref_57
       on_update:
         examples:
-          - *ref_57
           - *ref_58
+          - *ref_59
       on_cancel:
         examples:
-          - *ref_59
+          - *ref_60
   intracity-bus:
     summary: Intracity Bus Use Case Specification
     description: Intra city Bus Use Case Specification
     example_set:
       search:
         examples:
-          - *ref_60
+          - *ref_61
       select:
         examples:
-          - *ref_39
+          - *ref_40
       init:
         examples:
-          - *ref_41
+          - *ref_42
       confirm:
         examples:
-          - *ref_43
+          - *ref_44
       cancel:
         examples:
-          - *ref_61
+          - *ref_62
       status:
         examples:
-          - *ref_62
+          - *ref_63
       on_search:
         examples:
-          - *ref_38
+          - *ref_39
       on_select:
         examples:
-          - *ref_40
+          - *ref_41
       on_init:
         examples:
-          - *ref_42
+          - *ref_43
       on_confirm:
         examples:
-          - *ref_44
+          - *ref_45
   airline:
     summary: Airline Use Case Specification
     description: Airline Use Case Specification
     example_set:
       search:
         examples:
-          - *ref_63
+          - *ref_64
       select:
         examples:
-          - *ref_64
+          - *ref_65
       init:
         examples:
-          - *ref_65
+          - *ref_66
       confirm:
         examples:
-          - *ref_66
+          - *ref_67
       update:
         examples:
           - summary: Update customer details
@@ -23328,19 +23372,19 @@ x-examples:
                             email: joeadams@yahoo.com
       cancel:
         examples:
-          - *ref_67
+          - *ref_68
       on_search:
         examples:
-          - *ref_68
+          - *ref_69
       on_select:
         examples:
-          - *ref_69
+          - *ref_70
       on_init:
         examples:
-          - *ref_70
+          - *ref_71
       on_confirm:
         examples:
-          - *ref_71
+          - *ref_72
       on_update:
         examples:
           - summary: Return updated order with customer details
@@ -23528,7 +23572,7 @@ x-examples:
                       url: https://abcoperator.com/booking/O1.pdf
       on_cancel:
         examples:
-          - *ref_72
+          - *ref_73
 x-attributes:
   metro:
     attribute_set:
@@ -25248,51 +25292,22 @@ x-attributes:
                   owner: BAP
                   usage: START
                   description: >-
-                    A logical point in space and time during the fulfillment of
-                    an order.
+                    Describes the type of the stops during the fulfillment of
+                    order
                 location:
                   gps:
                     required: mandatory
                     type: string
                     owner: BAP
                     usage: 12.923608, 77.614629
-                    description: Describes a GPS coordinate
+                    description: Describes the GPS co-ordinates of this location.
               vehicle:
                 category:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BAP
                   usage: CAB
-                  description: Describes category of a vehicle
-            payment:
-              tags:
-                descriptor:
-                  code:
-                    required: optional
-                    type: string
-                    owner: BAP
-                    usage: BUYER_FINDER_FEES
-                    description: Physical description of something.
-                display:
-                  required: optional
-                  type: boolean
-                  owner: BAP
-                  usage: false
-                  description: Display tag Items
-                list:
-                  descriptor:
-                    code:
-                      required: optional
-                      type: string
-                      owner: BAP
-                      usage: BUYER_FINDER_FEES_PERCENTAGE
-                      description: Physical description of something.
-                  value:
-                    required: optional
-                    type: string
-                    owner: BAP
-                    usage: 1
-                    description: Descriptor value
+                  description: Describes the vehicle category.
       on_search:
         message:
           catalog:
@@ -25302,39 +25317,41 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: Mobility Servies BPP
-                description: Physical description of something.
+                description: Describes the catalog name.
             providers:
               id:
                 required: mandatory
                 type: string
                 owner: BPP
                 usage: 450dec0f
-                description: Id of the provider
+                description: Describes the uique Id of the provider.
               locations:
                 id:
                   required: optional
                   type: string
                   owner: BPP
                   usage: d3ebf05b
-                  description: Provider Locations this item is available in
+                  description: Indicates provider locations where this item is available.
                 gps:
                   required: optional
                   type: string
                   owner: BPP
                   usage: 28.707358, 77.180910
-                  description: The GPS co-ordinates of this location.
+                  description: Describes the GPS co-ordinates of this location.
               fulfillments:
                 id:
                   required: mandatory
                   type: string
                   owner: BPP
                   usage: b68bb35b
-                  description: Unique reference ID to the fulfillment of an order
+                  description: >-
+                    Describes the unique reference ID to the fulfillment of an
+                    order
                 type:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: ROUTE
+                  usage: DELIVERY
                   description: >-
                     A code that describes the mode of fulfillment. This is
                     typically set when there are multiple ways an order can be
@@ -25344,81 +25361,83 @@ x-attributes:
                     required: mandatory
                     type: string
                     owner: BPP
-                    usage: INTERMEDIATE_STOP
+                    usage: START
                     description: >-
-                      The type of stop. Allowed values of this property can be
-                      defined by the network policy.
+                      Describes the type of the stops during the fulfillment of
+                      order
                   location:
                     gps:
                       required: mandatory
                       type: string
                       owner: BPP
                       usage: 28.707358, 77.180910
-                      description: The GPS co-ordinates of this location.
+                      description: Describes the GPS co-ordinates of this location.
                 vehicle:
                   category:
                     required: mandatory
                     type: string
                     owner: BPP
                     usage: CAB
-                    description: Describes category of a vehicle
+                    description: Describes the vehicle category.
               items:
                 id:
                   required: mandatory
                   type: string
                   owner: BPP
                   usage: ecf4d145
-                  description: ID of the item.
+                  description: Describes the uique Id of the item.
                 descriptor:
                   code:
                     required: mandatory
                     type: string
                     owner: BPP
-                    usage: Single Journey Ticket
-                    description: Physical description of something.
+                    usage: CAB Economy Ride
+                    description: Describes the unique code value of the item
                   name:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
-                    usage: SJT
-                    description: Physical description of something.
+                    usage: RIDE
+                    description: Describes the name value of the item
                 price:
                   currency:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: INR
-                    description: Describes the price of a product or service
+                    description: Describes the currency type of a product or service
                   value:
-                    required: optional
+                    required: mandatory
                     type: integer
                     owner: BPP
                     usage: 60
-                    description: Describes the currency of a product or service
+                    description: Describes the price of a product or service
                   maximum_value:
                     required: optional
                     type: string
                     owner: BPP
                     usage: 176
-                    description: Describes a maximum value in decimal form
+                    description: Describes a maximum value of price in decimal form
                   minimum_value:
                     required: optional
                     type: string
                     owner: BPP
                     usage: 50
-                    description: Describes a minimum value in decimal form
+                    description: Describes a minimum value price in decimal form
                 location_ids:
                   required: mandatory
                   type: string
                   owner: BPP
                   usage: d3ebf05b
-                  description: Provider Locations this item is available in
+                  description: >-
+                    Indicates the locations where this item is available from
+                    providers.
                 fulfillment_ids:
                   required: mandatory
                   type: string
                   owner: BPP
                   usage: b68bb35b
-                  description: Unique reference ID to the fulfillment of an order
+                  description: Describes the Unique reference ID for order fulfillment.
       select:
         message:
           order:
@@ -25428,14 +25447,14 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: ecf4d145
-                description: 'Human-readable ID of the order. '
+                description: Describes the uique Id of the item.
             provider:
               id:
                 required: mandatory
                 type: string
                 owner: BPP
                 usage: 450dec0f
-                description: Id of the provider
+                description: Describes the uique Id of the provider.
       on_select:
         message:
           order:
@@ -25445,45 +25464,45 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: ecf4d145
-                description: ID of the item.
+                description: Describes the uique Id of the item.
               descriptor:
                 name:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: Single Journey Ticket
-                  description: Physical description of something.
+                  usage: Auto Ride
+                  description: Describes the item name.
                 code:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: SJT
-                  description: Physical description of something.
+                  usage: RIDE
+                  description: Describes the unique code value of the item
               price:
                 currency:
                   required: mandatory
                   type: string
                   owner: BPP
                   usage: INR
-                  description: Price of the selected item.
+                  description: Describes the currency type of a product or service
                 value:
                   required: mandatory
-                  type: integer
+                  type: string
                   owner: BPP
                   usage: 60
-                  description: Describes a numerical value in decimal form
+                  description: Describes the price of a product or service
                 maximum_value:
                   required: optional
                   type: string
                   owner: BPP
                   usage: 176
-                  description: Describes a maximum value in decimal form
+                  description: Describes a maximum value of price in decimal form
                 minimum_value:
                   required: optional
                   type: string
                   owner: BPP
                   usage: 50
-                  description: Describes a minimum value in decimal form
+                  description: Describes a minimum value of price in decimal form
               location_ids:
                 required: mandatory
                 type: string
@@ -25502,7 +25521,7 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: 450dec0f
-                description: Id of the provider
+                description: Describes the uique Id of the provider.
             fulfillments:
               id:
                 required: mandatory
@@ -25514,10 +25533,11 @@ x-attributes:
                 required: optional
                 type: string
                 owner: BPP
-                usage: START
+                usage: DELIVERY
                 description: >-
-                  The type of stop. Allowed values of this property can be
-                  defined by the network policy.
+                  A code that describes the mode of fulfillment. This is
+                  typically set when there are multiple ways an order can be
+                  fulfilled. 
               stops:
                 type:
                   required: mandatory
@@ -25525,22 +25545,22 @@ x-attributes:
                   owner: BPP
                   usage: START
                   description: >-
-                    The type of stop. Allowed values of this property can be
-                    defined by the network policy.
+                    Describes the type of the stops during the fulfillment of
+                    order
                 location:
                   gps:
                     required: mandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
-                    description: Describes a GPS coordinate
+                    description: Describes the GPS co-ordinates of this location.
               vehicle:
                 category:
                   required: optional
                   type: string
                   owner: BPP
-                  usage: AUTO_RICKSHAW
-                  description: Describes vehicle category
+                  usage: CAB
+                  description: Describes the vehicle category.
             quote:
               price:
                 value:
@@ -25571,7 +25591,7 @@ x-attributes:
                     description: Describes the price of a product or service
                   currency:
                     required: mandatory
-                    type: integer
+                    type: string
                     owner: BPP
                     usage: 120
                     description: >-
@@ -25579,7 +25599,7 @@ x-attributes:
                       service
               ttl:
                 required: mandatory
-                type: integer
+                type: string
                 owner: BPP
                 usage: P200s
                 description: Time to live in seconds for an instance of this schema
@@ -25628,7 +25648,7 @@ x-attributes:
                 description: Payment Type
             fulfillments:
               id:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BAP
                 usage: b68bb35b
@@ -25653,7 +25673,7 @@ x-attributes:
                   required: mandatory
                   type: string
                   owner: BAP
-                  usage: INTERMEDIATE_STOP
+                  usage: START
                   description: >-
                     The type of stop. Allowed values of this property can be
                     defined by the network policy.
@@ -25666,7 +25686,7 @@ x-attributes:
                     description: The GPS co-ordinates of this location.
               vehicle:
                 category:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BAP
                   usage: AUTO_RICKSHAW
@@ -25680,45 +25700,47 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: ecf4d145-4ea3-45fe-ab3d-7bcf6b9f456b
-                description: ID of the item.
+                description: Describes the uique Id of the item.
               descriptor:
                 name:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: Single Journey Ticket
-                  description: Physical description of something.
+                  usage: Auto Ride
+                  description: Describes the item name.
                 code:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: SJT
-                  description: Physical description of something.
+                  usage: RIDE
+                  description: Describes the unique code value of the item
               price:
                 currency:
                   required: mandatory
                   type: string
                   owner: BPP
                   usage: INR
-                  description: Price of the selected item.
+                  description: Describes the price of selected item.
                 value:
                   required: mandatory
                   type: integer
                   owner: BPP
                   usage: 60
-                  description: Describes a numerical value in decimal form
+                  description: Describes the price of a product or service
                 maximum_value:
                   required: optional
                   type: string
                   owner: BPP
                   usage: 176
-                  description: Describes a maximum value in decimal form
+                  description: Describes a maximum value of price in decimal form
               location_ids:
                 required: mandatory
                 type: string
                 owner: BPP
                 usage: d3ebf05b
-                description: Provider Locations this item is available in
+                description: >-
+                  Indicates the locations where this item is available from
+                  providers.
               fulfillment_ids:
                 required: mandatory
                 type: string
@@ -25737,7 +25759,7 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: 450dec0f
-                description: Id of the provider
+                description: Describes the unqiue Id of the provider
             fulfillments:
               id:
                 required: optional
@@ -25745,6 +25767,12 @@ x-attributes:
                 owner: BPP
                 usage: b68bb35b
                 description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: DELIVERY
+                description: A code that describes the mode of fulfillment.
               stops:
                 type:
                   required: optional
@@ -25760,21 +25788,14 @@ x-attributes:
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
-                    description: Describes a GPS coordinate
-                time:
-                  duration:
-                    required: optional
-                    type: false
-                    owner: false
-                    usage: false
-                    description: false
+                    description: Describes the GPS co-ordinates of this location.
               vehicle:
                 category:
                   required: optional
                   type: string
                   owner: BPP
                   usage: CAB
-                  description: Describes vehicle category
+                  description: Describes the vehicle category.
             quote:
               price:
                 value:
@@ -25802,15 +25823,15 @@ x-attributes:
                     type: string
                     owner: BPP
                     usage: INR
-                    description: Describes the price of a product or service
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
                   value:
                     required: mandatory
                     type: integer
                     owner: BPP
                     usage: 120
-                    description: >-
-                      Describes the currency to be paid in of a product or
-                      service
+                    description: Describes the price of a product or service
             payments:
               id:
                 required: mandatory
@@ -25818,8 +25839,8 @@ x-attributes:
                 owner: BPP
                 usage: bc08edb1
                 description: >-
-                  ID of the payment term that can be referred at an item or an
-                  order level in a catalog
+                  Describes the ID of the payment term that can be referred at
+                  an item or an order level in a catalog
               collected_by:
                 required: mandatory
                 type: string
@@ -25831,13 +25852,13 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: NOT-PAID
-                description: Payment Status
+                description: Describe the payment Status for particular order
               type:
                 required: mandatory
                 type: string
                 owner: BPP
                 usage: PRE-ORDER
-                description: Payment type
+                description: Describe the payment type for particular order
               params:
                 bank_code:
                   required: mandatory
@@ -25857,67 +25878,28 @@ x-attributes:
                   owner: BPP
                   usage: 9988199772@okicic
                   description: Virtual payment address associated with payment activity
-              tags:
-                descriptor:
-                  code:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: SETTLEMENT_DETAILS
-                    description: Physical description of something.
-                display:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: false
-                  description: >-
-                    Indicates the display properties of the tag group. If
-                    display is set to false, then the group will not be
-                    displayed. If it is set to true, it should be displayed.
-                    However, group-level display properties can be overriden by
-                    individual tag-level display property. As this schema is
-                    purely for catalog display purposes, it is not recommended
-                    to send this value during search.
-                list:
-                  descriptor:
-                    code:
-                      required: mandatory
-                      type: string
-                      owner: BPP
-                      usage: SETTLEMENT_TYPE
-                      description: >-
-                        Description of the Tag, can be used to store detailed
-                        information.
-                  value:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: UPI
-                    description: >-
-                      The value of the tag. This set by the BPP and rendered
-                      as-is by the BAP.
             cancellation_terms:
               fulfillment_state:
                 descriptor:
                   code:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 2
-                    description: Physical description of something.
+                    description: Describes the unique code for the cancellation terms
                 reason_required:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BPP
                   usage: RIDE_ENROUTE_PICKUP
                   description: Indicates whether a reason is required to cancel the order
               cancellation_fee:
                 percentage:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BPP
                   usage: 2
-                  description: Percentage of a value
+                  description: Describes the percentage value for cancellation fee
       confirm:
         message:
           order:
@@ -25926,28 +25908,28 @@ x-attributes:
               type: string
               owner: BPP
               usage: 077b248f
-              description: 'Human-readable ID of the order. '
+              description: Describes the uique Id of the order.
             items:
               id:
                 required: mandatory
                 type: string
                 owner: BPP
                 usage: ecf4d145
-                description: 'Human-readable ID of the order. '
+                description: Describes the uique Id of the item.
             provider:
               id:
                 required: mandatory
                 type: string
                 owner: BPP
                 usage: 450dec0f
-                description: Id of the provider
+                description: Describes the uique Id of the provider.
             billing:
               name:
                 required: mandatory
                 type: string
                 owner: BAP
                 usage: John Doe
-                description: Name of the billable entity
+                description: Describes the Name of the billable entity
             payments:
               id:
                 required: mandatory
@@ -25968,16 +25950,16 @@ x-attributes:
                 type: string
                 owner: BAP
                 usage: NOT-PAID
-                description: Payment status
+                description: Describe the payment Status for particular order
               type:
                 required: mandatory
                 type: string
                 owner: BAP
                 usage: PRE-ORDER
-                description: Payment Type
+                description: Describe the payment type for particular order
             fulfillments:
               id:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: b68bb35b
@@ -25989,30 +25971,30 @@ x-attributes:
                     type: string
                     owner: BPP
                     usage: Jason Roy
-                    description: Name of the customer
+                    description: Describe the name of the customer
                 contact:
                   phone:
                     required: mandatory
                     type: string
                     owner: BPP
                     usage: 9898657512
-                    description: Contact number of the customer
+                    description: Describe the contact number of the customer
               stops:
                 type:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BPP
                   usage: START
                   description: >-
-                    The type of stop. Allowed values of this property can be
-                    defined by the network policy.
+                    Describes the type of the stops during the fulfillment of
+                    order
                 location:
                   gps:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
-                    description: Describes a GPS coordinate
+                    description: The GPS co-ordinates of this location.
                 authorization:
                   type:
                     required: mandatory
@@ -26035,10 +26017,10 @@ x-attributes:
                       SMS, Email, Push notification, or in-app rendering.
               vehicle:
                 category:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BPP
-                  usage: AUTO_RICKSHAW
+                  usage: CAB
                   description: Describes vehicle category
       on_confirm:
         message:
@@ -26049,33 +26031,35 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: ecf4d145
-                description: ID of the item.
+                description: Describes the uique Id of the item.
               descriptor:
                 name:
                   required: mandatory
                   type: string
                   owner: BPP
                   usage: Single Journey Ticket
-                  description: Physical description of something.
+                  description: Describes the item name.
                 code:
                   required: mandatory
                   type: string
                   owner: BPP
                   usage: SJT
-                  description: Physical description of something.
+                  description: Describes the unique code value of the item
               price:
                 currency:
                   required: mandatory
                   type: string
                   owner: BPP
                   usage: INR
-                  description: Price of the selected item.
+                  description: >-
+                    Describes the currency type to be paid in of a product or
+                    service
                 value:
                   required: mandatory
                   type: string
                   owner: BPP
                   usage: 60
-                  description: Describes a numerical value in decimal form
+                  description: Describes the price of a product or service
                 maximum_value:
                   required: optional
                   type: string
@@ -26093,7 +26077,9 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: d3ebf05b
-                description: Provider Locations this item is available in
+                description: >-
+                  Indicates the locations where this item is available from
+                  providers.
               fulfillment_ids:
                 required: mandatory
                 type: string
@@ -26112,10 +26098,10 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: 450dec0f
-                description: Id of the provider
+                description: Unique reference ID to the payment of an order
             fulfillments:
               id:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: b68bb35b
@@ -26133,14 +26119,14 @@ x-attributes:
                     type: string
                     owner: BPP
                     usage: Jason Roy
-                    description: Name of the customer
+                    description: Describes the name of the customer
                 contact:
                   phone:
                     required: mandatory
                     type: string
                     owner: BPP
                     usage: 9898657512
-                    description: Contact number of the customer
+                    description: Describes the contact number of the customer
               agent:
                 person:
                   name:
@@ -26148,14 +26134,14 @@ x-attributes:
                     type: string
                     owner: BPP
                     usage: John Doe
-                    description: Name of the agent
+                    description: Describes the name of the agent
                 contact:
                   phone:
                     required: mandatory
                     type: string
                     owner: BPP
                     usage: 7845981268
-                    description: Contact number of the agent
+                    description: Describes the contact number of the agent
               stops:
                 type:
                   required: mandatory
@@ -26194,7 +26180,7 @@ x-attributes:
                       SMS, Email, Push notification, or in-app rendering.
               vehicle:
                 category:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BPP
                   usage: AUTO_RICKSHAW
@@ -26216,7 +26202,7 @@ x-attributes:
                   type: string
                   owner: BPP
                   usage: HR-20AS-4578
-                  description: Describes vehicle RC
+                  description: Describes vehicle registration details
             quote:
               price:
                 value:
@@ -26265,7 +26251,9 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: bc08edb1
-                description: Physical description of something.
+                description: >-
+                  Describes the ID of the payment term that can be referred at
+                  an item or an order level in a catalog
               collected_by:
                 required: mandatory
                 type: string
@@ -26277,13 +26265,13 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: NOT-PAID
-                description: Payment Status
+                description: Describe the Payment Status
               type:
                 required: mandatory
                 type: string
                 owner: BPP
                 usage: PRE-ORDER
-                description: Payment type
+                description: Describe the Payment type
               params:
                 bank_code:
                   required: mandatory
@@ -26339,33 +26327,33 @@ x-attributes:
               fulfillment_state:
                 descriptor:
                   code:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 2
                     description: Physical description of something.
                 reason_required:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BPP
                   usage: RIDE_ENROUTE_PICKUP
                   description: Indicates whether a reason is required to cancel the order
               cancellation_fee:
                 percentage:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BPP
                   usage: 2
-                  description: Percentage of a value
+                  description: Describes the percentage value for cancellation fee
                 amount:
                   currency:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: INR
                     description: Describes the currency of a product or service
                   value:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 30
@@ -26377,20 +26365,20 @@ x-attributes:
             type: string
             owner: BPP
             usage: 60253df1
-            description: 'Human-readable ID of the order. '
+            description: 'Describes the unique ID of the order. '
           cancellation_reason_id:
             required: mandatory
             type: string
             owner: BPP
             usage: 45dd6fd3
-            description: Reason Id for cancellation
+            description: Describes the reason Id for cancellation
           descriptor:
             short_desc:
               required: optional
               type: string
               owner: BPP
               usage: Accidantaly book the ride
-              description: Short description for cancellaion
+              description: Describes the Short description for cancellaion
       on_cancel:
         message:
           order:
@@ -26400,56 +26388,51 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: ecf4d145
-                description: ID of the item.
+                description: 'Describes the unique ID of the order. '
               descriptor:
                 name:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: Single Journey Ticket
-                  description: Physical description of something.
+                  usage: Auto Ride
+                  description: Describes the item name.
                 code:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: SJT
-                  description: Physical description of something.
+                  usage: RIDE
+                  description: Describes the unique code value of the item
               fulfillment_ids:
                 required: mandatory
                 type: string
                 owner: BPP
                 usage: b68bb35b
-                description: Unique reference ID to the fulfillment of an order
+                description: >-
+                  Describes the unique reference ID to the fulfillment of an
+                  order
               payment_ids:
                 required: mandatory
                 type: string
                 owner: BPP
                 usage: bc08edb1
-                description: Unique reference ID to the payment of an order
+                description: Describes the unique reference ID to the payment of an order
             provider:
               id:
                 required: mandatory
                 type: string
                 owner: BPP
                 usage: 450dec0f
-                description: Id of the provider
-              descriptor:
-                name:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: Delhi Metro Rail Limited
-                  description: Physical description of something.
+                description: 'Describes the unique ID of the provider. '
             fulfillments:
               id:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: b68bb35b
                 description: Unique reference ID to the fulfillment of an order
               stops:
                 type:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BPP
                   usage: START
@@ -26458,7 +26441,7 @@ x-attributes:
                     defined by the network policy.
                 location:
                   gps:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
@@ -26495,7 +26478,7 @@ x-attributes:
                     description: Contact number of the agent
               vehicle:
                 category:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BPP
                   usage: AUTO_RICKSHAW
@@ -26505,17 +26488,17 @@ x-attributes:
                   type: string
                   owner: BPP
                   usage: HR-20AS-4578
-                  description: Describes vehicle RC
+                  description: Describes vehicle registration details
               state:
                 descriptor:
                   code:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: DRIVER_ENROUTE
                     description: Physical description of something.
                   name:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: Driver is on the way
@@ -26533,14 +26516,14 @@ x-attributes:
                   type: string
                   owner: BPP
                   usage: INR
-                  description: Describes the currency of a product or service
+                  description: Describes the currency type of a product or service
               breakup:
                 title:
                   required: mandatory
                   type: string
                   owner: BPP
                   usage: Base Fare
-                  description: Breakup title of the total quoted price
+                  description: Describes the Breakup title of the total quoted price
                 price:
                   currency:
                     required: mandatory
@@ -26553,9 +26536,7 @@ x-attributes:
                     type: integer
                     owner: BPP
                     usage: 120
-                    description: >-
-                      Describes the currency to be paid in of a product or
-                      service
+                    description: Describes the currency type of a product or service
             payments:
               id:
                 required: mandatory
@@ -26570,7 +26551,7 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: PRE-ORDER
-                description: Payment type
+                description: Describe the Payment type
               params:
                 transaction_status:
                   required: mandatory
@@ -26607,7 +26588,7 @@ x-attributes:
                   type: string
                   owner: BPP
                   usage: Raghvinder J
-                  description: Bank account holder name
+                  description: Describes the Bank account holder name
               time:
                 duration:
                   required: optional
@@ -26622,7 +26603,7 @@ x-attributes:
             type: string
             owner: BPP
             usage: 60253df1
-            description: 'Human-readable ID of the order. '
+            description: 'Describes the unique ID of the order. '
       on_status:
         message:
           order:
@@ -26632,19 +26613,19 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: ecf4d145
-                description: ID of the item.
+                description: 'Describes the unique ID of the item. '
               descriptor:
                 name:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: Single Journey Ticket
+                  usage: Auto Ride
                   description: Physical description of something.
                 code:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: SJT
+                  usage: RIDE
                   description: Physical description of something.
               price:
                 currency:
@@ -26652,7 +26633,7 @@ x-attributes:
                   type: string
                   owner: BPP
                   usage: INR
-                  description: Price of the selected item.
+                  description: Describes the currency type of a product or service
                 value:
                   required: mandatory
                   type: integer
@@ -26692,14 +26673,14 @@ x-attributes:
                 description: Id of the provider
             fulfillments:
               id:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: b68bb35b
                 description: Unique reference ID to the fulfillment of an order
               stops:
                 type:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BPP
                   usage: START
@@ -26708,26 +26689,26 @@ x-attributes:
                     defined by the network policy.
                 location:
                   gps:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
                     description: Describes a GPS coordinate
               vehicle:
                 category:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BPP
                   usage: CAB
                   description: Describes vehicle category
                 make:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: Bajaj
                   description: Describes vehicle manufacturer
                 model:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: compact-re
@@ -26737,7 +26718,7 @@ x-attributes:
                   type: string
                   owner: BPP
                   usage: HR-20AS-4578
-                  description: Describes vehicle RC
+                  description: Describes vehicle registration details
               customer:
                 person:
                   name:
@@ -26769,7 +26750,7 @@ x-attributes:
                     usage: 7845981268
                     description: Contact number of the agent
               type:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: Delivery
@@ -26777,13 +26758,13 @@ x-attributes:
               state:
                 descriptor:
                   "code\n\n":
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: DRIVER_ENROUTE
                     description: Physical description of something.
                   name:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: Driver is on the way
