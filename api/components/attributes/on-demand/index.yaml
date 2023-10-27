@@ -8,52 +8,21 @@ search:
             type: string
             owner: BAP
             usage: START
-            description: >-
-              A logical point in space and time during the fulfillment of an
-              order.
+            description: Describes the type of the stops during the fulfillment of order
           location:
             gps:
               required: mandatory
               type: string
               owner: BAP
               usage: 12.923608, 77.614629
-              description: Describes a GPS coordinate
+              description: Describes the GPS co-ordinates of this location.
         vehicle:
           category:
-            required: mandatory
+            required: optional
             type: string
             owner: BAP
             usage: CAB
-            description: Describes category of a vehicle
-      payment:
-        tags:
-          descriptor:
-            code:
-              required: optional
-              type: string
-              owner: BAP
-              usage: BUYER_FINDER_FEES
-              description: Physical description of something.
-          display:
-            required: optional
-            type: boolean
-            owner: BAP
-            usage: false
-            description: Display tag Items
-          list:
-            descriptor:
-              code:
-                required: optional
-                type: string
-                owner: BAP
-                usage: BUYER_FINDER_FEES_PERCENTAGE
-                description: Physical description of something.
-            value:
-              required: optional
-              type: string
-              owner: BAP
-              usage: 1
-              description: Descriptor value
+            description: Describes the vehicle category.
 on_search:
   message:
     catalog:
@@ -63,39 +32,39 @@ on_search:
           type: string
           owner: BPP
           usage: Mobility Servies BPP
-          description: Physical description of something.
+          description: Describes the catalog name.
       providers:
         id:
           required: mandatory
           type: string
           owner: BPP
           usage: 450dec0f
-          description: Id of the provider
+          description: Describes the uique Id of the provider.
         locations:
           id:
             required: optional
             type: string
             owner: BPP
             usage: d3ebf05b
-            description: Provider Locations this item is available in
+            description: Indicates provider locations where this item is available.
           gps:
             required: optional
             type: string
             owner: BPP
             usage: 28.707358, 77.180910
-            description: The GPS co-ordinates of this location.
+            description: Describes the GPS co-ordinates of this location.
         fulfillments:
           id:
             required: mandatory
             type: string
             owner: BPP
             usage: b68bb35b
-            description: Unique reference ID to the fulfillment of an order
+            description: Describes the unique reference ID to the fulfillment of an order
           type:
             required: mandatory
             type: string
             owner: BPP
-            usage: ROUTE
+            usage: DELIVERY
             description: >-
               A code that describes the mode of fulfillment. This is typically
               set when there are multiple ways an order can be fulfilled. 
@@ -104,81 +73,81 @@ on_search:
               required: mandatory
               type: string
               owner: BPP
-              usage: INTERMEDIATE_STOP
-              description: >-
-                The type of stop. Allowed values of this property can be defined
-                by the network policy.
+              usage: START
+              description: Describes the type of the stops during the fulfillment of order
             location:
               gps:
                 required: mandatory
                 type: string
                 owner: BPP
                 usage: 28.707358, 77.180910
-                description: The GPS co-ordinates of this location.
+                description: Describes the GPS co-ordinates of this location.
           vehicle:
             category:
               required: mandatory
               type: string
               owner: BPP
               usage: CAB
-              description: Describes category of a vehicle
+              description: Describes the vehicle category.
         items:
           id:
             required: mandatory
             type: string
             owner: BPP
             usage: ecf4d145
-            description: ID of the item.
+            description: Describes the uique Id of the item.
           descriptor:
             code:
               required: mandatory
               type: string
               owner: BPP
-              usage: Single Journey Ticket
-              description: Physical description of something.
+              usage: CAB Economy Ride
+              description: Describes the unique code value of the item
             name:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
-              usage: SJT
-              description: Physical description of something.
+              usage: RIDE
+              description: Describes the name value of the item
           price:
             currency:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: INR
-              description: Describes the price of a product or service
+              description: Describes the currency type of a product or service
             value:
-              required: optional
+              required: mandatory
               type: integer
               owner: BPP
               usage: 60
-              description: Describes the currency of a product or service
+              description: Describes the price of a product or service
             maximum_value:
               required: optional
               type: string
               owner: BPP
               usage: 176
-              description: Describes a maximum value in decimal form
+              description: Describes a maximum value of price in decimal form
             minimum_value:
               required: optional
               type: string
               owner: BPP
               usage: 50
-              description: Describes a minimum value in decimal form
+              description: Describes a minimum value price in decimal form
           location_ids:
             required: mandatory
             type: string
             owner: BPP
             usage: d3ebf05b
-            description: Provider Locations this item is available in
+            description: >-
+              Indicates the locations where this item is available from
+              providers.
           fulfillment_ids:
             required: mandatory
             type: string
             owner: BPP
             usage: b68bb35b
-            description: Unique reference ID to the fulfillment of an order
+            description: Describes the Unique reference ID for order fulfillment.
 select:
   message:
     order:
@@ -188,14 +157,14 @@ select:
           type: string
           owner: BPP
           usage: ecf4d145
-          description: 'Human-readable ID of the order. '
+          description: Describes the uique Id of the item.
       provider:
         id:
           required: mandatory
           type: string
           owner: BPP
           usage: 450dec0f
-          description: Id of the provider
+          description: Describes the uique Id of the provider.
 on_select:
   message:
     order:
@@ -205,45 +174,45 @@ on_select:
           type: string
           owner: BPP
           usage: ecf4d145
-          description: ID of the item.
+          description: Describes the uique Id of the item.
         descriptor:
           name:
             required: mandatory
             type: string
             owner: BPP
-            usage: Single Journey Ticket
-            description: Physical description of something.
+            usage: Auto Ride
+            description: Describes the item name.
           code:
             required: mandatory
             type: string
             owner: BPP
-            usage: SJT
-            description: Physical description of something.
+            usage: RIDE
+            description: Describes the unique code value of the item
         price:
           currency:
             required: mandatory
             type: string
             owner: BPP
             usage: INR
-            description: Price of the selected item.
+            description: Describes the currency type of a product or service
           value:
             required: mandatory
-            type: integer
+            type: string
             owner: BPP
             usage: 60
-            description: Describes a numerical value in decimal form
+            description: Describes the price of a product or service
           maximum_value:
             required: optional
             type: string
             owner: BPP
             usage: 176
-            description: Describes a maximum value in decimal form
+            description: Describes a maximum value of price in decimal form
           minimum_value:
             required: optional
             type: string
             owner: BPP
             usage: 50
-            description: Describes a minimum value in decimal form
+            description: Describes a minimum value of price in decimal form
         location_ids:
           required: mandatory
           type: string
@@ -262,7 +231,7 @@ on_select:
           type: string
           owner: BPP
           usage: 450dec0f
-          description: Id of the provider
+          description: Describes the uique Id of the provider.
       fulfillments:
         id:
           required: mandatory
@@ -274,33 +243,31 @@ on_select:
           required: optional
           type: string
           owner: BPP
-          usage: START
+          usage: DELIVERY
           description: >-
-            The type of stop. Allowed values of this property can be defined by
-            the network policy.
+            A code that describes the mode of fulfillment. This is typically set
+            when there are multiple ways an order can be fulfilled. 
         stops:
           type:
             required: mandatory
             type: string
             owner: BPP
             usage: START
-            description: >-
-              The type of stop. Allowed values of this property can be defined
-              by the network policy.
+            description: Describes the type of the stops during the fulfillment of order
           location:
             gps:
               required: mandatory
               type: string
               owner: BPP
               usage: 28.686576, 77.441632
-              description: Describes a GPS coordinate
+              description: Describes the GPS co-ordinates of this location.
         vehicle:
           category:
             required: optional
             type: string
             owner: BPP
-            usage: AUTO_RICKSHAW
-            description: Describes vehicle category
+            usage: CAB
+            description: Describes the vehicle category.
       quote:
         price:
           value:
@@ -331,13 +298,13 @@ on_select:
               description: Describes the price of a product or service
             currency:
               required: mandatory
-              type: integer
+              type: string
               owner: BPP
               usage: 120
               description: Describes the currency to be paid in of a product or service
         ttl:
           required: mandatory
-          type: integer
+          type: string
           owner: BPP
           usage: P200s
           description: Time to live in seconds for an instance of this schema
@@ -386,7 +353,7 @@ init:
           description: Payment Type
       fulfillments:
         id:
-          required: optional
+          required: mandatory
           type: string
           owner: BAP
           usage: b68bb35b
@@ -411,7 +378,7 @@ init:
             required: mandatory
             type: string
             owner: BAP
-            usage: INTERMEDIATE_STOP
+            usage: START
             description: >-
               The type of stop. Allowed values of this property can be defined
               by the network policy.
@@ -424,7 +391,7 @@ init:
               description: The GPS co-ordinates of this location.
         vehicle:
           category:
-            required: optional
+            required: mandatory
             type: string
             owner: BAP
             usage: AUTO_RICKSHAW
@@ -438,45 +405,45 @@ on_init:
           type: string
           owner: BPP
           usage: ecf4d145-4ea3-45fe-ab3d-7bcf6b9f456b
-          description: ID of the item.
+          description: Describes the uique Id of the item.
         descriptor:
           name:
             required: mandatory
             type: string
             owner: BPP
-            usage: Single Journey Ticket
-            description: Physical description of something.
+            usage: Auto Ride
+            description: Describes the item name.
           code:
             required: mandatory
             type: string
             owner: BPP
-            usage: SJT
-            description: Physical description of something.
+            usage: RIDE
+            description: Describes the unique code value of the item
         price:
           currency:
             required: mandatory
             type: string
             owner: BPP
             usage: INR
-            description: Price of the selected item.
+            description: Describes the price of selected item.
           value:
             required: mandatory
             type: integer
             owner: BPP
             usage: 60
-            description: Describes a numerical value in decimal form
+            description: Describes the price of a product or service
           maximum_value:
             required: optional
             type: string
             owner: BPP
             usage: 176
-            description: Describes a maximum value in decimal form
+            description: Describes a maximum value of price in decimal form
         location_ids:
           required: mandatory
           type: string
           owner: BPP
           usage: d3ebf05b
-          description: Provider Locations this item is available in
+          description: Indicates the locations where this item is available from providers.
         fulfillment_ids:
           required: mandatory
           type: string
@@ -495,7 +462,7 @@ on_init:
           type: string
           owner: BPP
           usage: 450dec0f
-          description: Id of the provider
+          description: Describes the unqiue Id of the provider
       fulfillments:
         id:
           required: optional
@@ -503,6 +470,12 @@ on_init:
           owner: BPP
           usage: b68bb35b
           description: Unique reference ID to the fulfillment of an order
+        type:
+          required: mandatory
+          type: string
+          owner: BPP
+          usage: DELIVERY
+          description: A code that describes the mode of fulfillment.
         stops:
           type:
             required: optional
@@ -518,21 +491,14 @@ on_init:
               type: string
               owner: BPP
               usage: 28.686576, 77.441632
-              description: Describes a GPS coordinate
-          time:
-            duration:
-              required: optional
-              type: false
-              owner: false
-              usage: false
-              description: false
+              description: Describes the GPS co-ordinates of this location.
         vehicle:
           category:
             required: optional
             type: string
             owner: BPP
             usage: CAB
-            description: Describes vehicle category
+            description: Describes the vehicle category.
       quote:
         price:
           value:
@@ -560,13 +526,13 @@ on_init:
               type: string
               owner: BPP
               usage: INR
-              description: Describes the price of a product or service
+              description: Describes the currency to be paid in of a product or service
             value:
               required: mandatory
               type: integer
               owner: BPP
               usage: 120
-              description: Describes the currency to be paid in of a product or service
+              description: Describes the price of a product or service
       payments:
         id:
           required: mandatory
@@ -574,8 +540,8 @@ on_init:
           owner: BPP
           usage: bc08edb1
           description: >-
-            ID of the payment term that can be referred at an item or an order
-            level in a catalog
+            Describes the ID of the payment term that can be referred at an item
+            or an order level in a catalog
         collected_by:
           required: mandatory
           type: string
@@ -587,13 +553,13 @@ on_init:
           type: string
           owner: BPP
           usage: NOT-PAID
-          description: Payment Status
+          description: Describe the payment Status for particular order
         type:
           required: mandatory
           type: string
           owner: BPP
           usage: PRE-ORDER
-          description: Payment type
+          description: Describe the payment type for particular order
         params:
           bank_code:
             required: mandatory
@@ -613,66 +579,28 @@ on_init:
             owner: BPP
             usage: 9988199772@okicic
             description: Virtual payment address associated with payment activity
-        tags:
-          descriptor:
-            code:
-              required: mandatory
-              type: string
-              owner: BPP
-              usage: SETTLEMENT_DETAILS
-              description: Physical description of something.
-          display:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: false
-            description: >-
-              Indicates the display properties of the tag group. If display is
-              set to false, then the group will not be displayed. If it is set
-              to true, it should be displayed. However, group-level display
-              properties can be overriden by individual tag-level display
-              property. As this schema is purely for catalog display purposes,
-              it is not recommended to send this value during search.
-          list:
-            descriptor:
-              code:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: SETTLEMENT_TYPE
-                description: >-
-                  Description of the Tag, can be used to store detailed
-                  information.
-            value:
-              required: mandatory
-              type: string
-              owner: BPP
-              usage: UPI
-              description: >-
-                The value of the tag. This set by the BPP and rendered as-is by
-                the BAP.
       cancellation_terms:
         fulfillment_state:
           descriptor:
             code:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: 2
-              description: Physical description of something.
+              description: Describes the unique code for the cancellation terms
           reason_required:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: RIDE_ENROUTE_PICKUP
             description: Indicates whether a reason is required to cancel the order
         cancellation_fee:
           percentage:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: 2
-            description: Percentage of a value
+            description: Describes the percentage value for cancellation fee
 confirm:
   message:
     order:
@@ -681,28 +609,28 @@ confirm:
         type: string
         owner: BPP
         usage: 077b248f
-        description: 'Human-readable ID of the order. '
+        description: Describes the uique Id of the order.
       items:
         id:
           required: mandatory
           type: string
           owner: BPP
           usage: ecf4d145
-          description: 'Human-readable ID of the order. '
+          description: Describes the uique Id of the item.
       provider:
         id:
           required: mandatory
           type: string
           owner: BPP
           usage: 450dec0f
-          description: Id of the provider
+          description: Describes the uique Id of the provider.
       billing:
         name:
           required: mandatory
           type: string
           owner: BAP
           usage: John Doe
-          description: Name of the billable entity
+          description: Describes the Name of the billable entity
       payments:
         id:
           required: mandatory
@@ -723,16 +651,16 @@ confirm:
           type: string
           owner: BAP
           usage: NOT-PAID
-          description: Payment status
+          description: Describe the payment Status for particular order
         type:
           required: mandatory
           type: string
           owner: BAP
           usage: PRE-ORDER
-          description: Payment Type
+          description: Describe the payment type for particular order
       fulfillments:
         id:
-          required: optional
+          required: mandatory
           type: string
           owner: BPP
           usage: b68bb35b
@@ -744,30 +672,28 @@ confirm:
               type: string
               owner: BPP
               usage: Jason Roy
-              description: Name of the customer
+              description: Describe the name of the customer
           contact:
             phone:
               required: mandatory
               type: string
               owner: BPP
               usage: 9898657512
-              description: Contact number of the customer
+              description: Describe the contact number of the customer
         stops:
           type:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: START
-            description: >-
-              The type of stop. Allowed values of this property can be defined
-              by the network policy.
+            description: Describes the type of the stops during the fulfillment of order
           location:
             gps:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: 28.686576, 77.441632
-              description: Describes a GPS coordinate
+              description: The GPS co-ordinates of this location.
           authorization:
             type:
               required: mandatory
@@ -789,10 +715,10 @@ confirm:
                 notification, or in-app rendering.
         vehicle:
           category:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
-            usage: AUTO_RICKSHAW
+            usage: CAB
             description: Describes vehicle category
 on_confirm:
   message:
@@ -803,33 +729,33 @@ on_confirm:
           type: string
           owner: BPP
           usage: ecf4d145
-          description: ID of the item.
+          description: Describes the uique Id of the item.
         descriptor:
           name:
             required: mandatory
             type: string
             owner: BPP
             usage: Single Journey Ticket
-            description: Physical description of something.
+            description: Describes the item name.
           code:
             required: mandatory
             type: string
             owner: BPP
             usage: SJT
-            description: Physical description of something.
+            description: Describes the unique code value of the item
         price:
           currency:
             required: mandatory
             type: string
             owner: BPP
             usage: INR
-            description: Price of the selected item.
+            description: Describes the currency type to be paid in of a product or service
           value:
             required: mandatory
             type: string
             owner: BPP
             usage: 60
-            description: Describes a numerical value in decimal form
+            description: Describes the price of a product or service
           maximum_value:
             required: optional
             type: string
@@ -847,7 +773,7 @@ on_confirm:
           type: string
           owner: BPP
           usage: d3ebf05b
-          description: Provider Locations this item is available in
+          description: Indicates the locations where this item is available from providers.
         fulfillment_ids:
           required: mandatory
           type: string
@@ -866,10 +792,10 @@ on_confirm:
           type: string
           owner: BPP
           usage: 450dec0f
-          description: Id of the provider
+          description: Unique reference ID to the payment of an order
       fulfillments:
         id:
-          required: optional
+          required: mandatory
           type: string
           owner: BPP
           usage: b68bb35b
@@ -887,14 +813,14 @@ on_confirm:
               type: string
               owner: BPP
               usage: Jason Roy
-              description: Name of the customer
+              description: Describes the name of the customer
           contact:
             phone:
               required: mandatory
               type: string
               owner: BPP
               usage: 9898657512
-              description: Contact number of the customer
+              description: Describes the contact number of the customer
         agent:
           person:
             name:
@@ -902,14 +828,14 @@ on_confirm:
               type: string
               owner: BPP
               usage: John Doe
-              description: Name of the agent
+              description: Describes the name of the agent
           contact:
             phone:
               required: mandatory
               type: string
               owner: BPP
               usage: 7845981268
-              description: Contact number of the agent
+              description: Describes the contact number of the agent
         stops:
           type:
             required: mandatory
@@ -947,7 +873,7 @@ on_confirm:
                 notification, or in-app rendering.
         vehicle:
           category:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: AUTO_RICKSHAW
@@ -969,7 +895,7 @@ on_confirm:
             type: string
             owner: BPP
             usage: HR-20AS-4578
-            description: Describes vehicle RC
+            description: Describes vehicle registration details
       quote:
         price:
           value:
@@ -1016,7 +942,9 @@ on_confirm:
           type: string
           owner: BPP
           usage: bc08edb1
-          description: Physical description of something.
+          description: >-
+            Describes the ID of the payment term that can be referred at an item
+            or an order level in a catalog
         collected_by:
           required: mandatory
           type: string
@@ -1028,13 +956,13 @@ on_confirm:
           type: string
           owner: BPP
           usage: NOT-PAID
-          description: Payment Status
+          description: Describe the Payment Status
         type:
           required: mandatory
           type: string
           owner: BPP
           usage: PRE-ORDER
-          description: Payment type
+          description: Describe the Payment type
         params:
           bank_code:
             required: mandatory
@@ -1090,33 +1018,33 @@ on_confirm:
         fulfillment_state:
           descriptor:
             code:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: 2
               description: Physical description of something.
           reason_required:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: RIDE_ENROUTE_PICKUP
             description: Indicates whether a reason is required to cancel the order
         cancellation_fee:
           percentage:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: 2
-            description: Percentage of a value
+            description: Describes the percentage value for cancellation fee
           amount:
             currency:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: INR
               description: Describes the currency of a product or service
             value:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: 30
@@ -1128,20 +1056,20 @@ cancel:
       type: string
       owner: BPP
       usage: 60253df1
-      description: 'Human-readable ID of the order. '
+      description: 'Describes the unique ID of the order. '
     cancellation_reason_id:
       required: mandatory
       type: string
       owner: BPP
       usage: 45dd6fd3
-      description: Reason Id for cancellation
+      description: Describes the reason Id for cancellation
     descriptor:
       short_desc:
         required: optional
         type: string
         owner: BPP
         usage: Accidantaly book the ride
-        description: Short description for cancellaion
+        description: Describes the Short description for cancellaion
 on_cancel:
   message:
     order:
@@ -1151,56 +1079,49 @@ on_cancel:
           type: string
           owner: BPP
           usage: ecf4d145
-          description: ID of the item.
+          description: 'Describes the unique ID of the order. '
         descriptor:
           name:
             required: mandatory
             type: string
             owner: BPP
-            usage: Single Journey Ticket
-            description: Physical description of something.
+            usage: Auto Ride
+            description: Describes the item name.
           code:
             required: mandatory
             type: string
             owner: BPP
-            usage: SJT
-            description: Physical description of something.
+            usage: RIDE
+            description: Describes the unique code value of the item
         fulfillment_ids:
           required: mandatory
           type: string
           owner: BPP
           usage: b68bb35b
-          description: Unique reference ID to the fulfillment of an order
+          description: Describes the unique reference ID to the fulfillment of an order
         payment_ids:
           required: mandatory
           type: string
           owner: BPP
           usage: bc08edb1
-          description: Unique reference ID to the payment of an order
+          description: Describes the unique reference ID to the payment of an order
       provider:
         id:
           required: mandatory
           type: string
           owner: BPP
           usage: 450dec0f
-          description: Id of the provider
-        descriptor:
-          name:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: Delhi Metro Rail Limited
-            description: Physical description of something.
+          description: 'Describes the unique ID of the provider. '
       fulfillments:
         id:
-          required: optional
+          required: mandatory
           type: string
           owner: BPP
           usage: b68bb35b
           description: Unique reference ID to the fulfillment of an order
         stops:
           type:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: START
@@ -1209,7 +1130,7 @@ on_cancel:
               by the network policy.
           location:
             gps:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: 28.686576, 77.441632
@@ -1246,7 +1167,7 @@ on_cancel:
               description: Contact number of the agent
         vehicle:
           category:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: AUTO_RICKSHAW
@@ -1256,17 +1177,17 @@ on_cancel:
             type: string
             owner: BPP
             usage: HR-20AS-4578
-            description: Describes vehicle RC
+            description: Describes vehicle registration details
         state:
           descriptor:
             code:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: DRIVER_ENROUTE
               description: Physical description of something.
             name:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: Driver is on the way
@@ -1284,14 +1205,14 @@ on_cancel:
             type: string
             owner: BPP
             usage: INR
-            description: Describes the currency of a product or service
+            description: Describes the currency type of a product or service
         breakup:
           title:
             required: mandatory
             type: string
             owner: BPP
             usage: Base Fare
-            description: Breakup title of the total quoted price
+            description: Describes the Breakup title of the total quoted price
           price:
             currency:
               required: mandatory
@@ -1304,7 +1225,7 @@ on_cancel:
               type: integer
               owner: BPP
               usage: 120
-              description: Describes the currency to be paid in of a product or service
+              description: Describes the currency type of a product or service
       payments:
         id:
           required: mandatory
@@ -1319,7 +1240,7 @@ on_cancel:
           type: string
           owner: BPP
           usage: PRE-ORDER
-          description: Payment type
+          description: Describe the Payment type
         params:
           transaction_status:
             required: mandatory
@@ -1356,7 +1277,7 @@ on_cancel:
             type: string
             owner: BPP
             usage: Raghvinder J
-            description: Bank account holder name
+            description: Describes the Bank account holder name
         time:
           duration:
             required: optional
@@ -1371,7 +1292,7 @@ status:
       type: string
       owner: BPP
       usage: 60253df1
-      description: 'Human-readable ID of the order. '
+      description: 'Describes the unique ID of the order. '
 on_status:
   message:
     order:
@@ -1381,19 +1302,19 @@ on_status:
           type: string
           owner: BPP
           usage: ecf4d145
-          description: ID of the item.
+          description: 'Describes the unique ID of the item. '
         descriptor:
           name:
             required: mandatory
             type: string
             owner: BPP
-            usage: Single Journey Ticket
+            usage: Auto Ride
             description: Physical description of something.
           code:
             required: mandatory
             type: string
             owner: BPP
-            usage: SJT
+            usage: RIDE
             description: Physical description of something.
         price:
           currency:
@@ -1401,7 +1322,7 @@ on_status:
             type: string
             owner: BPP
             usage: INR
-            description: Price of the selected item.
+            description: Describes the currency type of a product or service
           value:
             required: mandatory
             type: integer
@@ -1441,14 +1362,14 @@ on_status:
           description: Id of the provider
       fulfillments:
         id:
-          required: optional
+          required: mandatory
           type: string
           owner: BPP
           usage: b68bb35b
           description: Unique reference ID to the fulfillment of an order
         stops:
           type:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: START
@@ -1457,26 +1378,26 @@ on_status:
               by the network policy.
           location:
             gps:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: 28.686576, 77.441632
               description: Describes a GPS coordinate
         vehicle:
           category:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: CAB
             description: Describes vehicle category
           make:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: Bajaj
             description: Describes vehicle manufacturer
           model:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: compact-re
@@ -1486,7 +1407,7 @@ on_status:
             type: string
             owner: BPP
             usage: HR-20AS-4578
-            description: Describes vehicle RC
+            description: Describes vehicle registration details
         customer:
           person:
             name:
@@ -1518,7 +1439,7 @@ on_status:
               usage: 7845981268
               description: Contact number of the agent
         type:
-          required: optional
+          required: mandatory
           type: string
           owner: BPP
           usage: Delivery
@@ -1526,13 +1447,13 @@ on_status:
         state:
           descriptor:
             "code\n\n":
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: DRIVER_ENROUTE
               description: Physical description of something.
             name:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: Driver is on the way
