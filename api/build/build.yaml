@@ -3046,7 +3046,56 @@ x-tags:
   search:
     message:
       intent:
-        fulfillment: &ref_7
+        payment: &ref_7
+          tags:
+            - code: SETTLEMENT_DETAILS
+              description: Settlement details to identify specifics of settlement
+              reference: <PR/Issue/Discussion Links md format text>
+              list:
+                - code: SETTLEMENT_TYPE
+                  description: Medium or mode used for settlement
+                  reference: <PR/Issue/Discussion Links md format text>
+            - code: BUYER_FINDER_FEES
+              description: Settlement details to identify specifics of settlement
+              reference: <PR/Issue/Discussion Links md format text>
+              list:
+                - code: BUYER_FINDER_FEES_PERCENTAGE
+                  description: Buyer finder fee in percentage
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: BUYER_FINDER_FEES_AMOUNT
+                  description: Buyer finder fee in amount
+                  reference: <PR/Issue/Discussion Links md format text>
+            - code: SETTLEMENT_TERMS
+              description: describes the general Information of the loan
+              reference: <PR/Issue/Discussion Links md format text>
+              list:
+                - code: SETTLEMENT_WINDOW
+                  description: Describes Time window to complete settlement
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: SETTLEMENT_BASIS
+                  description: Describes required basis to complete settlement
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: SETTLEMENT_TYPE
+                  description: Describes payment method to complete settlement
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: MANDATORY_ARBITRATION
+                  description: >-
+                    flag to denote if dispute can be resolved through
+                    arbitration
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: COURT_JURISDICTION
+                  description: denotes court that will have jurisdiction for the case
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: DELAY_INTEREST
+                  description: denotes interest to be paid as a delay charge
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: STATIC_TERMS
+                  description: terms for settlement
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: SETTLEMENT_AMOUNT
+                  description: denotes settlement amount
+                  reference: <PR/Issue/Discussion Links md format text>
+        fulfillment: &ref_8
           tags:
             - code: TRIP_DETAILS
               description: Details of trips not covered as part of the fulfillment object
@@ -3101,58 +3150,10 @@ x-tags:
                 - code: ROUTE_DIRECTION
                   description: describes the direction of a particular route.
                   reference: <PR/Issue/Discussion Links md format text>
-        payment: &ref_8
-          tags:
-            - code: SETTLEMENT_DETAILS
-              description: Settlement details to identify specifics of settlement
-              reference: <PR/Issue/Discussion Links md format text>
-              list:
-                - code: SETTLEMENT_TYPE
-                  description: Medium or mode used for settlement
-                  reference: <PR/Issue/Discussion Links md format text>
-            - code: BUYER_FINDER_FEES
-              description: Settlement details to identify specifics of settlement
-              reference: <PR/Issue/Discussion Links md format text>
-              list:
-                - code: BUYER_FINDER_FEES_PERCENTAGE
-                  description: Buyer finder fee in percentage
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: BUYER_FINDER_FEES_AMOUNT
-                  description: Buyer finder fee in amount
-                  reference: <PR/Issue/Discussion Links md format text>
-            - code: SETTLEMENT_TERMS
-              description: describes the general Information of the loan
-              reference: <PR/Issue/Discussion Links md format text>
-              list:
-                - code: SETTLEMENT_WINDOW
-                  description: Time window to complete settlement
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: SETTLEMENT_BASIS
-                  description: basis required to complete settlement
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: SETTLEMENT_TYPE
-                  description: payment method to complete settlement
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: MANDATORY_ARBITRATION
-                  description: >-
-                    flag to denote if dispute can be resolved through
-                    arbitration
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: COURT_JURISDICTION
-                  description: denotes court that will have jurisdiction for the case
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: DELAY_INTEREST
-                  description: denotes interest to be paid as a delay charge
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: STATIC_TERMS
-                  description: terms for settlement
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: SETTLEMENT_AMOUNT
-                  description: denotes settlement amount
-                  reference: <PR/Issue/Discussion Links md format text>
   on_search:
     message:
       catalog:
+        payments: *ref_7
         providers:
           items: &ref_9
             tags:
@@ -3231,22 +3232,25 @@ x-tags:
                   - code: PROHIBITED_ITEMS
                     description: describes the list of Prohibited Items.
                     reference: <PR/Issue/Discussion Links md format text>
-          fulfillments: *ref_7
-          payments: *ref_8
+          fulfillments: *ref_8
   select: &ref_10
     message:
       order:
-        fulfillments: *ref_7
-        payments: *ref_8
+        fulfillments: *ref_8
         items: *ref_9
   on_select: *ref_10
-  init: *ref_10
-  on_init: *ref_10
-  confirm: *ref_10
-  on_confirm: *ref_10
-  on_status: *ref_10
-  on_cancel: *ref_10
-  on_update: *ref_10
+  init: &ref_11
+    message:
+      order:
+        fulfillments: *ref_8
+        items: *ref_9
+        payments: *ref_7
+  on_init: *ref_11
+  confirm: *ref_11
+  on_confirm: *ref_11
+  on_status: *ref_11
+  on_cancel: *ref_11
+  on_update: *ref_11
 x-flows:
   - summary: Airlines - Code Based Flow
     details:
@@ -3326,7 +3330,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_64
+        example: &ref_65
           summary: Search for airline services by standard airport codes
           value:
             context:
@@ -3391,7 +3395,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_69
+        example: &ref_70
           summary: Return services available for provided start and end code
           value:
             context:
@@ -4785,7 +4789,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_65
+        example: &ref_66
           summary: Get Quote of a selected item
           value:
             context:
@@ -4844,7 +4848,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_70
+        example: &ref_71
           summary: Get Quote of a selected item
           value:
             context:
@@ -5078,7 +5082,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_66
+        example: &ref_67
           summary: Initialize draft order and request for terms of service
           value:
             context:
@@ -5183,7 +5187,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: &ref_71
+        example: &ref_72
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -5406,7 +5410,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_67
+        example: &ref_68
           summary: Confirm ticket booking
           value:
             context:
@@ -5491,7 +5495,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_72
+        example: &ref_73
           summary: Confirm ticket booking
           value:
             context:
@@ -5729,7 +5733,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_68
+        example: &ref_69
           summary: Cancel a transit ticket booking before the cancellation period
           value:
             context:
@@ -5767,7 +5771,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_73
+        example: &ref_74
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -6120,7 +6124,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_47
+        example: &ref_48
           summary: >-
             Return a metro catalog of available fulfillments based on search by
             city
@@ -6575,7 +6579,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_11
+        example: &ref_12
           summary: >-
             Return a metro catalog of fare products based on station code or gps
             based search
@@ -6883,7 +6887,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_12
+        example: &ref_13
           summary: >-
             Get a quote for a fare product selected from a public transit
             catalog
@@ -6932,7 +6936,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_13
+        example: &ref_14
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -7167,7 +7171,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_14
+        example: &ref_15
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -7243,8 +7247,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -7266,7 +7269,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end   
         reference: if any
-        example: &ref_15
+        example: &ref_16
           summary: Return draft order for transit ticket with settlement details
           value:
             context:
@@ -7540,8 +7543,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -7563,7 +7565,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_16
+        example: &ref_17
           summary: Confirm ticket booking
           value:
             context:
@@ -7638,8 +7640,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -7661,7 +7662,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_17
+        example: &ref_18
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -7945,8 +7946,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -7968,7 +7968,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_18
+        example: &ref_19
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -8008,7 +8008,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_19
+        example: &ref_20
           summary: Return transit ticket order with status - Journey Completed
           value:
             context:
@@ -8280,8 +8280,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -8363,7 +8362,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_46
+        example: &ref_47
           summary: Search for a public mode of transit from a specific position
           value:
             context:
@@ -8425,7 +8424,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_11
+        example: *ref_12
       - summary: Selection of specific service(Optional)
         api: select
         details:
@@ -8443,7 +8442,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: *ref_12
+        example: *ref_13
       - summary: Provider platform provides the quote for selected service of metro
         api: on_select
         details:
@@ -8462,7 +8461,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: *ref_13
+        example: *ref_14
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -8480,7 +8479,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: *ref_14
+        example: *ref_15
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -8498,7 +8497,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_15
+        example: *ref_16
       - summary: Consumer confirms the
         api: confirm
         details:
@@ -8516,7 +8515,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: *ref_16
+        example: *ref_17
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -8534,7 +8533,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_17
+        example: *ref_18
       - summary: Consumer platform requests for latest status
         api: status
         details:
@@ -8552,7 +8551,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK    
         reference: if any
-        example: *ref_18
+        example: *ref_19
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -8570,7 +8569,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_19
+        example: *ref_20
   - summary: On-Demand - Assign driver on on-confrim
     details:
       - description: >-
@@ -8648,7 +8647,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_20
+        example: &ref_21
           summary: Search for cab services by pickup and drop location
           value:
             context:
@@ -8685,6 +8684,22 @@ x-flows:
                         - descriptor:
                             code: BUYER_FINDER_FEES_PERCENTAGE
                           value: '1'
+                    - descriptor:
+                        code: SETTLEMENT_TERMS
+                      display: false
+                      list:
+                        - descriptor:
+                            code: SETTLEMENT_WINDOW
+                          value: PT60M
+                        - descriptor:
+                            code: SETTLEMENT_BASIS
+                          value: Delivery
+                        - descriptor:
+                            code: SETTLEMENT_TYPE
+                          value: upi
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://www.abc.com/settlement-terms/
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -8705,7 +8720,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: &ref_21
+        example: &ref_22
           summary: Return a mobility catalog
           value:
             context:
@@ -8865,6 +8880,40 @@ x-flows:
                               gps: 13.008935, 77.644408
                         vehicle:
                           category: CAB
+                    payments:
+                      - tags:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: BUYER_FINDER_FEES_PERCENTAGE
+                                value: '1'
+                          - descriptor:
+                              code: SETTLEMENT_TERMS
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: SETTLEMENT_WINDOW
+                                value: PT60M
+                              - descriptor:
+                                  code: SETTLEMENT_BASIS
+                                value: Delivery
+                              - descriptor:
+                                  code: SETTLEMENT_TYPE
+                                value: upi
+                              - descriptor:
+                                  code: MANDATORY_ARBITRATION
+                                value: 'true'
+                              - descriptor:
+                                  code: COURT_JURISDICTION
+                                value: New Delhi
+                              - descriptor:
+                                  code: DELAY_INTEREST
+                                value: '2.5'
+                              - descriptor:
+                                  code: STATIC_TERMS
+                                value: https://www.abc.com/settlement-terms/
       - summary: Selection of a specific service
         api: select
         details:
@@ -8884,7 +8933,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_22
+        example: &ref_23
           summary: Get quote for a specific product from a mobility catalog
           value:
             context:
@@ -8928,7 +8977,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_23
+        example: &ref_24
           summary: Return a quote offered by a provider
           value:
             context:
@@ -9069,7 +9118,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_24
+        example: &ref_25
           summary: Initialize draft order and request for terms of service
           value:
             context:
@@ -9151,11 +9200,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -9173,7 +9221,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_25
+        example: &ref_26
           summary: Return draft order with payment terms
           value:
             context:
@@ -9377,11 +9425,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Consumer confirms the ride
         api: confirm
         details:
@@ -9400,7 +9447,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_26
+        example: &ref_27
           summary: Confirm ride booking
           value:
             context:
@@ -9436,9 +9483,6 @@ x-flows:
                         phone: '9876556789'
                     stops:
                       - type: START
-                        authorization:
-                          type: OTP
-                          token: '234234'
                         location:
                           gps: 13.008935, 77.644408
                       - type: END
@@ -9483,11 +9527,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -9505,7 +9548,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_29
+        example: &ref_30
           summary: Return confirmed order with latest fulfillment details
           value:
             context:
@@ -9728,11 +9771,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform provides latest update on the order
         api: on_update
         details:
@@ -9752,7 +9794,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_50
+        example: &ref_51
           summary: Return updated order with payment status
           value:
             context:
@@ -9969,11 +10011,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Consumer platform requests for latest status
         api: status
         details:
@@ -9993,7 +10034,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_27
+        example: &ref_28
           summary: Get latest fulfillment status of a booking
           value:
             context:
@@ -10035,7 +10076,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_28
+        example: &ref_29
           summary: Return order with status - Driver at pickup
           value:
             context:
@@ -10255,11 +10296,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
   - summary: On-Demand - Assign driver post on-confrim
     details:
       - description: >-
@@ -10337,7 +10377,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_20
+        example: *ref_21
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -10358,7 +10398,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_21
+        example: *ref_22
       - summary: Selection of a specific service
         api: select
         details:
@@ -10378,7 +10418,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_22
+        example: *ref_23
       - summary: Provider platform provides the quote for selected service
         api: on_select
         details:
@@ -10396,7 +10436,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_23
+        example: *ref_24
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -10414,7 +10454,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_24
+        example: *ref_25
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -10432,7 +10472,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end  
         reference: if any
-        example: *ref_25
+        example: *ref_26
       - summary: Consumer confirms the ride
         api: confirm
         details:
@@ -10451,7 +10491,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_26
+        example: *ref_27
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -10578,9 +10618,6 @@ x-flows:
                         phone: '9876556789'
                     stops:
                       - type: START
-                        authorization:
-                          type: OTP
-                          token: '234234'
                         location:
                           gps: 13.008935, 77.644408
                       - type: END
@@ -10685,11 +10722,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform provides latest update on the order
         api: on_update
         details:
@@ -10823,6 +10859,9 @@ x-flows:
                         phone: '9856798567'
                     stops:
                       - type: START
+                        authorization:
+                          type: OTP
+                          token: '234234'
                         location:
                           gps: 13.008935, 77.644408
                       - type: END
@@ -10927,11 +10966,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
                 billing:
                   name: Jane Doe
                   email: jane.doe@example.com
@@ -10955,7 +10993,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_27
+        example: *ref_28
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -10975,7 +11013,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_28
+        example: *ref_29
   - summary: On-Demand - Ride cancel
     details:
       - description: >-
@@ -11054,7 +11092,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_20
+        example: *ref_21
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -11075,7 +11113,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_21
+        example: *ref_22
       - summary: Selection of a specific service
         api: select
         details:
@@ -11095,7 +11133,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_22
+        example: *ref_23
       - summary: Provider platform provides the quote for selected service
         api: on_select
         details:
@@ -11113,7 +11151,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_23
+        example: *ref_24
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -11131,7 +11169,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_24
+        example: *ref_25
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -11149,7 +11187,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end  
         reference: if any
-        example: *ref_25
+        example: *ref_26
       - summary: Consumer confirms the ride
         api: confirm
         details:
@@ -11168,7 +11206,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_26
+        example: *ref_27
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -11186,7 +11224,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_29
+        example: *ref_30
       - summary: Consumer platform cancels the request
         api: cancel
         details:
@@ -11204,7 +11242,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_48
+        example: &ref_49
           summary: Cancel a ride with user provided information
           value:
             context:
@@ -11250,7 +11288,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_49
+        example: &ref_50
           summary: Return order cancelled by rider with cancellation charges
           value:
             context:
@@ -11466,11 +11504,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform returns latest order status
         api: on_status
         details:
@@ -11696,11 +11733,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
   - summary: On-Demand - Schedule Ride
     details:
       - description: >-
@@ -11814,6 +11850,22 @@ x-flows:
                         - descriptor:
                             code: BUYER_FINDER_FEES_PERCENTAGE
                           value: '1'
+                    - descriptor:
+                        code: SETTLEMENT_TERMS
+                      display: false
+                      list:
+                        - descriptor:
+                            code: SETTLEMENT_WINDOW
+                          value: PT60M
+                        - descriptor:
+                            code: SETTLEMENT_BASIS
+                          value: Delivery
+                        - descriptor:
+                            code: SETTLEMENT_TYPE
+                          value: upi
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://www.abc.com/settlement-terms/
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -12202,11 +12254,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -12430,11 +12481,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Consumer confirms the ride
         api: confirm
         details:
@@ -12489,9 +12539,6 @@ x-flows:
                         phone: '9876556789'
                     stops:
                       - type: START
-                        authorization:
-                          type: OTP
-                          token: '234234'
                         location:
                           gps: 13.008935, 77.644408
                         time:
@@ -12538,11 +12585,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -12780,11 +12826,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform provides latest update on the order
         api: on_update
         details:
@@ -13024,11 +13069,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
                 billing:
                   name: Jane Doe
                   email: jane.doe@example.com
@@ -13052,7 +13096,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_27
+        example: *ref_28
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -13072,7 +13116,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_28
+        example: *ref_29
   - summary: On-Demand - Rental Ride
     details:
       - description: >-
@@ -13185,6 +13229,22 @@ x-flows:
                         - descriptor:
                             code: BUYER_FINDER_FEES_PERCENTAGE
                           value: '1'
+                    - descriptor:
+                        code: SETTLEMENT_TERMS
+                      display: false
+                      list:
+                        - descriptor:
+                            code: SETTLEMENT_WINDOW
+                          value: PT60M
+                        - descriptor:
+                            code: SETTLEMENT_BASIS
+                          value: Delivery
+                        - descriptor:
+                            code: SETTLEMENT_TYPE
+                          value: upi
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://www.abc.com/settlement-terms/
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -13559,11 +13619,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -13783,11 +13842,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Consumer confirms the ride
         api: confirm
         details:
@@ -13841,9 +13899,6 @@ x-flows:
                         phone: '9876556789'
                     stops:
                       - type: START
-                        authorization:
-                          type: OTP
-                          token: '234234'
                         location:
                           gps: 13.008935, 77.644408
                         time:
@@ -13887,11 +13942,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -14128,11 +14182,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform provides latest update on the order
         api: on_update
         details:
@@ -14368,11 +14421,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
                 billing:
                   name: Jane Doe
                   email: jane.doe@example.com
@@ -14396,7 +14448,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_27
+        example: *ref_28
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -14635,11 +14687,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
   - summary: On-Demand - Schedule Rental Ride
     details:
       - description: >-
@@ -14754,6 +14805,22 @@ x-flows:
                         - descriptor:
                             code: BUYER_FINDER_FEES_PERCENTAGE
                           value: '1'
+                    - descriptor:
+                        code: SETTLEMENT_TERMS
+                      display: false
+                      list:
+                        - descriptor:
+                            code: SETTLEMENT_WINDOW
+                          value: PT60M
+                        - descriptor:
+                            code: SETTLEMENT_BASIS
+                          value: Delivery
+                        - descriptor:
+                            code: SETTLEMENT_TYPE
+                          value: upi
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://www.abc.com/settlement-terms/
       - summary: Get a list of all services from Provider Platform 1
         api: on_search
         details:
@@ -15136,11 +15203,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -15361,11 +15427,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Consumer confirms the ride
         api: confirm
         details:
@@ -15419,9 +15484,6 @@ x-flows:
                         phone: '9876556789'
                     stops:
                       - type: START
-                        authorization:
-                          type: OTP
-                          token: '234234'
                         location:
                           gps: 13.008935, 77.644408
                         time:
@@ -15466,11 +15528,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -15705,11 +15766,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
       - summary: Provider platform provides latest update on the order
         api: on_update
         details:
@@ -15946,11 +16006,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
                 billing:
                   name: Jane Doe
                   email: jane.doe@example.com
@@ -15974,7 +16033,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_27
+        example: *ref_28
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -16214,11 +16273,10 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
-                            value: '12505'
+                            value: '174'
   - summary: InterCity(Bus) - GPS Based Flow
     details:
       - description: >-
@@ -16297,7 +16355,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK   
         reference: if any
-        example: &ref_53
+        example: &ref_54
           summary: Search for all services from given start and end location(gps)
           value:
             context:
@@ -16350,7 +16408,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: &ref_30
+        example: &ref_31
           summary: Return services available for provided start code or gps
           value:
             context:
@@ -16482,7 +16540,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK   
         reference: if any
-        example: &ref_54
+        example: &ref_55
           summary: Search for all services from given start and end location(gps)
           value:
             context:
@@ -16544,7 +16602,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: &ref_31
+        example: &ref_32
           summary: >-
             Return services available for provided start and end code or gps
             with journey date
@@ -16787,7 +16845,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_32
+        example: &ref_33
           summary: Get Quote of a selected seat
           value:
             context:
@@ -16871,7 +16929,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_33
+        example: &ref_34
           summary: Return a quote offered by a intercity bus  service provider
           value:
             context:
@@ -17014,7 +17072,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_34
+        example: &ref_35
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -17127,8 +17185,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -17149,7 +17206,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end   
         reference: if any
-        example: &ref_35
+        example: &ref_36
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -17337,8 +17394,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -17359,7 +17415,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_36
+        example: &ref_37
           summary: Confirm ticket booking
           value:
             context:
@@ -17470,7 +17526,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_37
+        example: &ref_38
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -17668,8 +17724,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -17690,7 +17745,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_update
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_38
+        example: &ref_39
           summary: Update customer details
           value:
             context:
@@ -17736,7 +17791,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_58
+        example: &ref_59
           summary: Return updated order with customer details
           value:
             context:
@@ -17934,8 +17989,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -17957,7 +18011,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_56
+        example: &ref_57
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -17995,7 +18049,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_57
+        example: &ref_58
           summary: Return transit ticket order with status - Journey Completed
           value:
             context:
@@ -18186,8 +18240,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -18269,7 +18322,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_51
+        example: &ref_52
           summary: Search for all services form the given start location(code)
           value:
             context:
@@ -18323,7 +18376,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_30
+        example: *ref_31
       - summary: Search for the bus by start and end station code
         api: search
         details:
@@ -18343,7 +18396,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_52
+        example: &ref_53
           summary: Search for all services from given start and end location(code)
           value:
             context:
@@ -18406,7 +18459,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_31
+        example: *ref_32
       - summary: Search for the specific bus service
         api: search
         details:
@@ -18728,7 +18781,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_32
+        example: *ref_33
       - summary: Provider platform provides the quote for selected service of bus
         api: on_select
         details:
@@ -18747,7 +18800,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_33
+        example: *ref_34
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -18765,7 +18818,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_34
+        example: *ref_35
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -18783,7 +18836,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: *ref_35
+        example: *ref_36
       - summary: Consumer confirms the booking and provides details.
         api: confirm
         details:
@@ -18801,7 +18854,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: *ref_36
+        example: *ref_37
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -18819,7 +18872,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_37
+        example: *ref_38
       - summary: Consumer platform updates the ride details
         api: update
         details:
@@ -18837,7 +18890,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_update
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: *ref_38
+        example: *ref_39
       - summary: Provider platform provides latest update on the order
         api: on_update
         details:
@@ -18853,7 +18906,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_59
+        example: &ref_60
           summary: Return updated order with agent details
           value:
             context:
@@ -19057,8 +19110,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -19080,7 +19132,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_55
+        example: &ref_56
           summary: Cancel a transit ticket booking before the cancellation period
           value:
             context:
@@ -19118,7 +19170,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_60
+        example: &ref_61
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -19326,8 +19378,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -19409,7 +19460,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_61
+        example: &ref_62
           summary: >-
             Search for intra city bus service mode of transit from a specific
             position
@@ -19470,7 +19521,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: &ref_39
+        example: &ref_40
           summary: Return a public transit catalog of fare products
           value:
             context:
@@ -19794,7 +19845,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_40
+        example: &ref_41
           summary: >-
             Get a quote for a fare product selected from a intra city bus
             service catalog
@@ -19844,7 +19895,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_41
+        example: &ref_42
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -19977,7 +20028,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_42
+        example: &ref_43
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -20053,8 +20104,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -20075,7 +20125,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: &ref_43
+        example: &ref_44
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -20250,8 +20300,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -20272,7 +20321,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_44
+        example: &ref_45
           summary: Confirm ticket booking
           value:
             context:
@@ -20353,8 +20402,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -20375,7 +20423,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_45
+        example: &ref_46
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -20558,8 +20606,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -20581,7 +20628,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_63
+        example: &ref_64
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -20804,8 +20851,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -20814,7 +20860,7 @@ x-flows:
         details:
           - description: Consumer platform requests for cancellation of order
         reference: if any
-        example: &ref_62
+        example: &ref_63
           summary: Cancel a ticket booking before the cancellation period
           value:
             context:
@@ -21029,8 +21075,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -21466,7 +21511,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: *ref_39
+        example: *ref_40
       - summary: Selection of specific service
         api: select
         details:
@@ -21484,7 +21529,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_40
+        example: *ref_41
       - summary: >-
           Provider platform provides the quote for selected service of intracity
           bus
@@ -21505,7 +21550,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_41
+        example: *ref_42
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -21523,7 +21568,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_42
+        example: *ref_43
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -21541,7 +21586,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_43
+        example: *ref_44
       - summary: Consumer confirms the booking and provides details.
         api: confirm
         details:
@@ -21559,7 +21604,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_44
+        example: *ref_45
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -21577,7 +21622,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_45
+        example: *ref_46
       - summary: Consumer platform updates the ride details
         api: update
         details:
@@ -21800,8 +21845,7 @@ x-flows:
                             value: '2.5'
                           - descriptor:
                               code: STATIC_TERMS
-                            value: >-
-                              https://www.icicibank.com/personal-banking/loans/personal-loan
+                            value: https://www.abc.com/settlement-terms/
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
@@ -21825,16 +21869,16 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_46
+          - *ref_47
       select:
         examples:
-          - *ref_12
+          - *ref_13
       init:
         examples:
-          - *ref_14
+          - *ref_15
       confirm:
         examples:
-          - *ref_16
+          - *ref_17
       cancel:
         examples:
           - summary: Cancel a transit ticket booking before the cancellation period
@@ -21860,19 +21904,19 @@ x-examples:
                 order_id: 077b248f
       status:
         examples:
-          - *ref_18
+          - *ref_19
       on_search:
         examples:
-          - *ref_47
+          - *ref_48
       on_select:
         examples:
-          - *ref_13
+          - *ref_14
       on_init:
         examples:
-          - *ref_15
+          - *ref_16
       on_confirm:
         examples:
-          - *ref_17
+          - *ref_18
       on_cancel:
         examples:
           - summary: Return cancelled ticket order with cancellation charges
@@ -22107,14 +22151,14 @@ x-examples:
                           value: '0'
       on_status:
         examples:
-          - *ref_19
+          - *ref_20
   on-demand:
     summary: On Demand Use Case Specification
     description: On Demand Use Case Specification
     example_set:
       search:
         examples:
-          - *ref_20
+          - *ref_21
           - summary: >-
               Search for on-schedule cab services by pickup and drop location
               using timestamp
@@ -22155,18 +22199,34 @@ x-examples:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT60M
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: Delivery
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: upi
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://www.abc.com/settlement-terms/
       select:
         examples:
-          - *ref_22
+          - *ref_23
       init:
         examples:
-          - *ref_24
+          - *ref_25
       confirm:
         examples:
-          - *ref_26
+          - *ref_27
       status:
         examples:
-          - *ref_27
+          - *ref_28
       track:
         examples:
           - summary: Track an active ride
@@ -22217,7 +22277,7 @@ x-examples:
               message:
                 cancellation_reason_id: '5'
                 order_id: O1
-          - *ref_48
+          - *ref_49
       support:
         examples:
           - summary: Fetch support information related to a particular order
@@ -22244,16 +22304,16 @@ x-examples:
                 ref_id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
       on_search:
         examples:
-          - *ref_21
+          - *ref_22
       on_select:
         examples:
-          - *ref_23
+          - *ref_24
       on_init:
         examples:
-          - *ref_25
+          - *ref_26
       on_confirm:
         examples:
-          - *ref_29
+          - *ref_30
       on_track:
         examples:
           - summary: Return tracking information for an order
@@ -22283,7 +22343,7 @@ x-examples:
                   status: active
       on_cancel:
         examples:
-          - *ref_49
+          - *ref_50
           - summary: Return order cancelled by driver
             value:
               context:
@@ -22489,14 +22549,13 @@ x-examples:
                               value: '2.5'
                             - descriptor:
                                 code: STATIC_TERMS
-                              value: >-
-                                https://www.icicibank.com/personal-banking/loans/personal-loan
+                              value: https://www.abc.com/settlement-terms/
                             - descriptor:
                                 code: SETTLEMENT_AMOUNT
-                              value: '12505'
+                              value: '174'
       on_update:
         examples:
-          - *ref_50
+          - *ref_51
           - summary: Return updated order with recomputed charges
             value:
               context:
@@ -22881,18 +22940,17 @@ x-examples:
                               value: '2.5'
                             - descriptor:
                                 code: STATIC_TERMS
-                              value: >-
-                                https://www.icicibank.com/personal-banking/loans/personal-loan
+                              value: https://www.abc.com/settlement-terms/
                             - descriptor:
                                 code: SETTLEMENT_AMOUNT
-                              value: '12505'
+                              value: '174'
                   billing:
                     name: Jane Doe
                     email: jane.doe@example.com
                     phone: +91-9897867564
       on_status:
         examples:
-          - *ref_28
+          - *ref_29
           - summary: >-
               Return order with latest fulfillment status - Driver en-route to
               pickup
@@ -23114,11 +23172,10 @@ x-examples:
                               value: '2.5'
                             - descriptor:
                                 code: STATIC_TERMS
-                              value: >-
-                                https://www.icicibank.com/personal-banking/loans/personal-loan
+                              value: https://www.abc.com/settlement-terms/
                             - descriptor:
                                 code: SETTLEMENT_AMOUNT
-                              value: '12505'
+                              value: '174'
           - summary: Return order with latest status - Ride started
             value:
               context:
@@ -23338,11 +23395,10 @@ x-examples:
                               value: '2.5'
                             - descriptor:
                                 code: STATIC_TERMS
-                              value: >-
-                                https://www.icicibank.com/personal-banking/loans/personal-loan
+                              value: https://www.abc.com/settlement-terms/
                             - descriptor:
                                 code: SETTLEMENT_AMOUNT
-                              value: '12505'
+                              value: '174'
           - summary: Return order with latest status - Ride Ended
             value:
               context:
@@ -23562,11 +23618,10 @@ x-examples:
                               value: '2.5'
                             - descriptor:
                                 code: STATIC_TERMS
-                              value: >-
-                                https://www.icicibank.com/personal-banking/loans/personal-loan
+                              value: https://www.abc.com/settlement-terms/
                             - descriptor:
                                 code: SETTLEMENT_AMOUNT
-                              value: '12505'
+                              value: '174'
       on_rating:
         examples:
           - summary: Return acknowledgement of rating and feedback
@@ -23626,101 +23681,101 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_51
           - *ref_52
           - *ref_53
           - *ref_54
+          - *ref_55
       select:
         examples:
-          - *ref_32
+          - *ref_33
       init:
         examples:
-          - *ref_34
+          - *ref_35
       confirm:
         examples:
-          - *ref_36
+          - *ref_37
       cancel:
         examples:
-          - *ref_55
+          - *ref_56
       status:
         examples:
-          - *ref_56
+          - *ref_57
       update:
         examples:
-          - *ref_38
+          - *ref_39
       on_search:
         examples:
-          - *ref_30
           - *ref_31
+          - *ref_32
       on_select:
         examples:
-          - *ref_33
+          - *ref_34
       on_init:
         examples:
-          - *ref_35
+          - *ref_36
       on_confirm:
         examples:
-          - *ref_37
+          - *ref_38
       on_status:
         examples:
-          - *ref_57
+          - *ref_58
       on_update:
         examples:
-          - *ref_58
           - *ref_59
+          - *ref_60
       on_cancel:
         examples:
-          - *ref_60
+          - *ref_61
   intracity-bus:
     summary: Intracity Bus Use Case Specification
     description: Intra city Bus Use Case Specification
     example_set:
       search:
         examples:
-          - *ref_61
+          - *ref_62
       select:
         examples:
-          - *ref_40
+          - *ref_41
       init:
         examples:
-          - *ref_42
+          - *ref_43
       confirm:
         examples:
-          - *ref_44
+          - *ref_45
       cancel:
         examples:
-          - *ref_62
+          - *ref_63
       status:
         examples:
-          - *ref_63
+          - *ref_64
       on_search:
         examples:
-          - *ref_39
+          - *ref_40
       on_select:
         examples:
-          - *ref_41
+          - *ref_42
       on_init:
         examples:
-          - *ref_43
+          - *ref_44
       on_confirm:
         examples:
-          - *ref_45
+          - *ref_46
   airline:
     summary: Airline Use Case Specification
     description: Airline Use Case Specification
     example_set:
       search:
         examples:
-          - *ref_64
+          - *ref_65
       select:
         examples:
-          - *ref_65
+          - *ref_66
       init:
         examples:
-          - *ref_66
+          - *ref_67
       confirm:
         examples:
-          - *ref_67
+          - *ref_68
       update:
         examples:
           - summary: Update customer details
@@ -23760,19 +23815,19 @@ x-examples:
                             email: joeadams@yahoo.com
       cancel:
         examples:
-          - *ref_68
+          - *ref_69
       on_search:
         examples:
-          - *ref_69
+          - *ref_70
       on_select:
         examples:
-          - *ref_70
+          - *ref_71
       on_init:
         examples:
-          - *ref_71
+          - *ref_72
       on_confirm:
         examples:
-          - *ref_72
+          - *ref_73
       on_update:
         examples:
           - summary: Return updated order with customer details
@@ -23960,7 +24015,7 @@ x-examples:
                       url: https://abcoperator.com/booking/O1.pdf
       on_cancel:
         examples:
-          - *ref_73
+          - *ref_74
 x-attributes:
   metro:
     attribute_set:
@@ -26880,6 +26935,99 @@ x-attributes:
                   usage: CAB
                   description: Describes the vehicle category.
       on_search:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: on_search
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+          bpp_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: api.example-bpp.com
+            description: Describes subscriber ID of the BPP
+          bpp_uri:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: >-
+              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
         message:
           catalog:
             descriptor:
@@ -26979,7 +27127,7 @@ x-attributes:
                     description: Describes the currency type of a product or service
                   value:
                     required: mandatory
-                    type: integer
+                    type: string
                     owner: BPP
                     usage: 60
                     description: Describes the price of a product or service
@@ -26996,7 +27144,7 @@ x-attributes:
                     usage: 50
                     description: Describes a minimum value price in decimal form
                 location_ids:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: d3ebf05b
@@ -27009,116 +27157,7 @@ x-attributes:
                   owner: BPP
                   usage: b68bb35b
                   description: Describes the Unique reference ID for order fulfillment.
-        context:
-          location:
-            country:
-              code:
-                required: mandatory
-                type: string
-                owner: BAP
-                usage: IND
-                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-            city:
-              code:
-                required: mandatory
-                type: string
-                owner: BAP
-                usage: std:080
-                description: Describes the city code this location is, or is located within
-          domain:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: ONDC:TRV10
-            description: Describes domain code that is relevant to this transaction context
-          timestamp:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: '2023-03-23T04:41:16Z'
-            description: Describes tme of request generation in RFC3339 format
-          bap_id:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: api.example-bap.com
-            description: Describes subscriber ID of the BAP
-          transaction_id:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: 6743e9e2
-            description: Describes  a unique value which persists across all API calls
-          message_id:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: 13ba8018f176
-            description: >-
-              Describes a unique value which persists during a request /
-              callback cycle.
-          version:
-            required: mandatory
-            type: integer
-            owner: BAP
-            usage: 2.0.0
-            description: >-
-              Describes the version of transaction protocol being used by the
-              sender.
-          action:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: on_search
-            description: >-
-              Describes the Beckn protocol method being called by the sender and
-              executed at the receiver.
-          bap_uri:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: https://api.example-bap.com/pilot/bap/cab/v1
-            description: >-
-              Describes subscriber URL of the BAP for accepting callbacks from
-              BPPs.
-          ttl:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: PT30S
-            description: >-
-              Describes the duration in ISO8601 format after timestamp for which
-              this message holds valid
-          bpp_id:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: api.example-bpp.com
-            description: Describes subscriber ID of the BPP
-          bpp_uri:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: >-
-              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
-            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
       select:
-        message:
-          order:
-            items:
-              id:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: ecf4d145
-                description: Describes the unique Id of the item.
-            provider:
-              id:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: 450dec0f
-                description: Describes the unique Id of the provider.
         context:
           location:
             country:
@@ -27212,7 +27251,6 @@ x-attributes:
             usage: >-
               https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
             description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-      on_select:
         message:
           order:
             items:
@@ -27222,56 +27260,6 @@ x-attributes:
                 owner: BPP
                 usage: ecf4d145
                 description: Describes the unique Id of the item.
-              descriptor:
-                name:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: Auto Ride
-                  description: Describes the item name.
-                code:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: RIDE
-                  description: Describes the unique code value of the item
-              price:
-                currency:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: INR
-                  description: Describes the currency type of a product or service
-                value:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: 60
-                  description: Describes the price of a product or service
-                maximum_value:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: 176
-                  description: Describes a maximum value of price in decimal form
-                minimum_value:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: 50
-                  description: Describes a minimum value of price in decimal form
-              location_ids:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: d3ebf05b
-                description: Provider Locations this item is available in
-              fulfillment_ids:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: b68bb35b
-                description: Unique reference ID to the fulfillment of an order
             provider:
               id:
                 required: mandatory
@@ -27279,87 +27267,7 @@ x-attributes:
                 owner: BPP
                 usage: 450dec0f
                 description: Describes the unique Id of the provider.
-            fulfillments:
-              id:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: b68bb35b
-                description: Unique reference ID to the fulfillment of an order
-              type:
-                required: optional
-                type: string
-                owner: BPP
-                usage: DELIVERY
-                description: >-
-                  A code that describes the mode of fulfillment. This is
-                  typically set when there are multiple ways an order can be
-                  fulfilled. 
-              stops:
-                type:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: START
-                  description: >-
-                    Describes the type of the stops during the fulfillment of
-                    order
-                location:
-                  gps:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: 28.686576, 77.441632
-                    description: Describes the GPS co-ordinates of this location.
-              vehicle:
-                category:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: CAB
-                  description: Describes the vehicle category.
-            quote:
-              price:
-                value:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: 60
-                  description: Describes the price of a product or service
-                currency:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: INR
-                  description: Describes the currency of a product or service
-              breakup:
-                title:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: Base Fare
-                  description: Breakup title of the total quoted price
-                price:
-                  value:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: INR
-                    description: Describes the price of a product or service
-                  currency:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: 120
-                    description: >-
-                      Describes the currency to be paid in of a product or
-                      service
-              ttl:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: P200s
-                description: Time to live in seconds for an instance of this schema
+      on_select:
         context:
           location:
             country:
@@ -27453,7 +27361,6 @@ x-attributes:
             usage: >-
               https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
             description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-      init:
         message:
           order:
             items:
@@ -27462,85 +27369,146 @@ x-attributes:
                 type: string
                 owner: BPP
                 usage: ecf4d145
-                description: 'Human-readable ID of the order. '
+                description: Describes the unique Id of the item.
+              descriptor:
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Auto Ride
+                  description: Describes the item name.
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: RIDE
+                  description: Describes the unique code value of the item
+              price:
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency type of a product or service
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                maximum_value:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: 176
+                  description: Describes a maximum value of price in decimal form
+                minimum_value:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: 50
+                  description: Describes a minimum value of price in decimal form
+              location_ids:
+                required: optional
+                type: string
+                owner: BPP
+                usage: d3ebf05b
+                description: Provider Locations this item is available in
+              fulfillment_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
             provider:
               id:
                 required: mandatory
                 type: string
                 owner: BPP
                 usage: 450dec0f
-                description: Id of the provider
-            billing:
-              name:
-                required: mandatory
-                type: string
-                owner: BAP
-                usage: John Doe
-                description: Name of the billable entity
-            payments:
-              collected_by:
-                required: mandatory
-                type: string
-                owner: BAP
-                usage: BAP
-                description: 'This field indicates who is the collector of payment. '
-              status:
-                required: mandatory
-                type: string
-                owner: BAP
-                usage: NOT-PAID
-                description: Payment status
-              type:
-                required: mandatory
-                type: string
-                owner: BAP
-                usage: PRE-ORDER
-                description: Payment Type
+                description: Describes the unique Id of the provider.
             fulfillments:
               id:
                 required: mandatory
                 type: string
-                owner: BAP
+                owner: BPP
                 usage: b68bb35b
                 description: Unique reference ID to the fulfillment of an order
-              customer:
-                person:
-                  name:
-                    required: mandatory
-                    type: string
-                    owner: BAP
-                    usage: Jason Roy
-                    description: Name of the customer
-                contact:
-                  phone:
-                    required: mandatory
-                    type: string
-                    owner: BAP
-                    usage: 9898657512
-                    description: Contact number of the customer
+              type:
+                required: optional
+                type: string
+                owner: BPP
+                usage: DELIVERY
+                description: >-
+                  A code that describes the mode of fulfillment. This is
+                  typically set when there are multiple ways an order can be
+                  fulfilled. 
               stops:
                 type:
                   required: mandatory
                   type: string
-                  owner: BAP
+                  owner: BPP
                   usage: START
                   description: >-
-                    The type of stop. Allowed values of this property can be
-                    defined by the network policy.
+                    Describes the type of the stops during the fulfillment of
+                    order
                 location:
                   gps:
                     required: mandatory
                     type: string
-                    owner: BAP
-                    usage: 28.707358, 77.180910
-                    description: The GPS co-ordinates of this location.
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes the GPS co-ordinates of this location.
               vehicle:
                 category:
                   required: mandatory
                   type: string
-                  owner: BAP
-                  usage: AUTO_RICKSHAW
-                  description: Describes vehicle category
+                  owner: BPP
+                  usage: CAB
+                  description: Describes the vehicle category.
+            quote:
+              price:
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  value:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  currency:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+              ttl:
+                required: optional
+                type: string
+                owner: BPP
+                usage: P200s
+                description: Time to live in seconds for an instance of this schema
+      init:
         context:
           location:
             country:
@@ -27634,7 +27602,6 @@ x-attributes:
             usage: >-
               https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
             description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-      on_init:
         message:
           order:
             items:
@@ -27642,207 +27609,87 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BPP
-                usage: ecf4d145-4ea3-45fe-ab3d-7bcf6b9f456b
-                description: Describes the unique Id of the item.
-              descriptor:
-                name:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: Auto Ride
-                  description: Describes the item name.
-                code:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: RIDE
-                  description: Describes the unique code value of the item
-              price:
-                currency:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: INR
-                  description: Describes the price of selected item.
-                value:
-                  required: mandatory
-                  type: integer
-                  owner: BPP
-                  usage: 60
-                  description: Describes the price of a product or service
-                maximum_value:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: 176
-                  description: Describes a maximum value of price in decimal form
-              location_ids:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: d3ebf05b
-                description: >-
-                  Indicates the locations where this item is available from
-                  providers.
-              fulfillment_ids:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: b68bb35b
-                description: Unique reference ID to the fulfillment of an order
-              payment_ids:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: bc08edb1
-                description: Unique reference ID to the payment of an order
+                usage: ecf4d145
+                description: 'Human-readable ID of the order. '
             provider:
               id:
                 required: mandatory
                 type: string
                 owner: BPP
                 usage: 450dec0f
-                description: Describes the unqiue Id of the provider
-            fulfillments:
-              id:
-                required: optional
+                description: Id of the provider
+            billing:
+              name:
+                required: mandatory
                 type: string
-                owner: BPP
-                usage: b68bb35b
-                description: Unique reference ID to the fulfillment of an order
+                owner: BAP
+                usage: John Doe
+                description: Name of the billable entity
+            payments:
+              collected_by:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: NOT-PAID
+                description: Payment status
               type:
                 required: mandatory
                 type: string
-                owner: BPP
-                usage: DELIVERY
-                description: A code that describes the mode of fulfillment.
+                owner: BAP
+                usage: PRE-ORDER
+                description: Payment Type
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
+              customer:
+                person:
+                  name:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: Jason Roy
+                    description: Name of the customer
+                contact:
+                  phone:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: 9898657512
+                    description: Contact number of the customer
               stops:
                 type:
-                  required: optional
+                  required: mandatory
                   type: string
-                  owner: BPP
+                  owner: BAP
                   usage: START
                   description: >-
                     The type of stop. Allowed values of this property can be
                     defined by the network policy.
                 location:
                   gps:
-                    required: optional
+                    required: mandatory
                     type: string
-                    owner: BPP
-                    usage: 28.686576, 77.441632
-                    description: Describes the GPS co-ordinates of this location.
+                    owner: BAP
+                    usage: 28.707358, 77.180910
+                    description: The GPS co-ordinates of this location.
               vehicle:
                 category:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: CAB
-                  description: Describes the vehicle category.
-            quote:
-              price:
-                value:
-                  required: mandatory
-                  type: integer
-                  owner: BPP
-                  usage: 60
-                  description: Describes the price of a product or service
-                currency:
                   required: mandatory
                   type: string
-                  owner: BPP
-                  usage: INR
-                  description: Describes the currency of a product or service
-              breakup:
-                title:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: Base Fare
-                  description: Breakup title of the total quoted price
-                price:
-                  currency:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: INR
-                    description: >-
-                      Describes the currency to be paid in of a product or
-                      service
-                  value:
-                    required: mandatory
-                    type: integer
-                    owner: BPP
-                    usage: 120
-                    description: Describes the price of a product or service
-            payments:
-              id:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: bc08edb1
-                description: >-
-                  Describes the ID of the payment term that can be referred at
-                  an item or an order level in a catalog
-              collected_by:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: BAP
-                description: 'This field indicates who is the collector of payment. '
-              status:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: NOT-PAID
-                description: Describe the payment Status for particular order
-              type:
-                required: mandatory
-                type: string
-                owner: BPP
-                usage: PRE-ORDER
-                description: Describe the payment type for particular order
-              params:
-                bank_code:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: XXXXXXXX
-                  description: Bank code associated with payment activity
-                bank_account_number:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: xxxxxxxxxxxxxx
-                  description: Bank account number associated with payment activity
-                virtual_payment_address:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: 9988199772@okicic
-                  description: Virtual payment address associated with payment activity
-            cancellation_terms:
-              fulfillment_state:
-                descriptor:
-                  code:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: 2
-                    description: Describes the unique code for the cancellation terms
-                reason_required:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: RIDE_ENROUTE_PICKUP
-                  description: Indicates whether a reason is required to cancel the order
-              cancellation_fee:
-                percentage:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: 2
-                  description: Describes the percentage value for cancellation fee
+                  owner: BAP
+                  usage: AUTO_RICKSHAW
+                  description: Describes vehicle category
+      on_init:
         context:
           location:
             country:
@@ -27936,7 +27783,314 @@ x-attributes:
             usage: >-
               https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
             description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+        message:
+          order:
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: ecf4d145-4ea3-45fe-ab3d-7bcf6b9f456b
+                description: Describes the unique Id of the item.
+              descriptor:
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Auto Ride
+                  description: Describes the item name.
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: RIDE
+                  description: Describes the unique code value of the item
+              price:
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the price of selected item.
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                maximum_value:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: 176
+                  description: Describes a maximum value of price in decimal form
+                minimum:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: 50
+                  description: Describes a minimum value of price in decimal form
+              location_ids:
+                required: optional
+                type: string
+                owner: BPP
+                usage: d3ebf05b
+                description: >-
+                  Indicates the locations where this item is available from
+                  providers.
+              fulfillment_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
+              payment_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: bc08edb1
+                description: Unique reference ID to the payment of an order
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 450dec0f
+                description: Describes the unqiue Id of the provider
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: DELIVERY
+                description: A code that describes the mode of fulfillment.
+              stops:
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes the GPS co-ordinates of this location.
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes the vehicle category.
+            quote:
+              price:
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  currency:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+                  value:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 120
+                    description: Describes the price of a product or service
+            payments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: bc08edb1
+                description: >-
+                  Describes the ID of the payment term that can be referred at
+                  an item or an order level in a catalog
+              collected_by:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: BAP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: NOT-PAID
+                description: Describe the payment Status for particular order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: PRE-ORDER
+                description: Describe the payment type for particular order
+              params:
+                bank_code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                virtual_payment_address:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 9988199772@okicic
+                  description: Virtual payment address associated with payment activity
+            cancellation_terms:
+              fulfillment_state:
+                descriptor:
+                  code:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 2
+                    description: Describes the unique code for the cancellation terms
+                reason_required:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: RIDE_ENROUTE_PICKUP
+                  description: Indicates whether a reason is required to cancel the order
+              cancellation_fee:
+                percentage:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 2
+                  description: Describes the percentage value for cancellation fee
       confirm:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: confirm
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+          bpp_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: api.example-bpp.com
+            description: Describes subscriber ID of the BPP
+          bpp_uri:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: >-
+              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
         message:
           order:
             id:
@@ -28058,6 +28212,7 @@ x-attributes:
                   owner: BPP
                   usage: CAB
                   description: Describes vehicle category
+      on_confirm:
         context:
           location:
             country:
@@ -28118,7 +28273,7 @@ x-attributes:
             required: mandatory
             type: string
             owner: BAP
-            usage: confirm
+            usage: on_confirm
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
@@ -28151,7 +28306,6 @@ x-attributes:
             usage: >-
               https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
             description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-      on_confirm:
         message:
           order:
             items:
@@ -28202,7 +28356,7 @@ x-attributes:
                   usage: 50
                   description: Describes a minimum value in decimal form
               location_ids:
-                required: mandatory
+                required: optional
                 type: string
                 owner: BPP
                 usage: d3ebf05b
@@ -28336,7 +28490,7 @@ x-attributes:
               price:
                 value:
                   required: mandatory
-                  type: integer
+                  type: string
                   owner: BPP
                   usage: 60
                   description: Describes the price of a product or service
@@ -28362,7 +28516,7 @@ x-attributes:
                     description: Describes the price of a product or service
                   value:
                     required: mandatory
-                    type: integer
+                    type: string
                     owner: BPP
                     usage: 120
                     description: >-
@@ -28370,7 +28524,7 @@ x-attributes:
                       service
               ttl:
                 required: mandatory
-                type: integer
+                type: string
                 owner: BPP
                 usage: P200s
                 description: Time to live in seconds for an instance of this schema
@@ -28487,120 +28641,7 @@ x-attributes:
                     owner: BPP
                     usage: 30
                     description: Describes the price of a product or service
-        context:
-          location:
-            country:
-              code:
-                required: mandatory
-                type: string
-                owner: BAP
-                usage: IND
-                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-            city:
-              code:
-                required: mandatory
-                type: string
-                owner: BAP
-                usage: std:080
-                description: Describes the city code this location is, or is located within
-          domain:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: ONDC:TRV10
-            description: Describes domain code that is relevant to this transaction context
-          timestamp:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: '2023-03-23T04:41:16Z'
-            description: Describes tme of request generation in RFC3339 format
-          bap_id:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: api.example-bap.com
-            description: Describes subscriber ID of the BAP
-          transaction_id:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: 6743e9e2
-            description: Describes  a unique value which persists across all API calls
-          message_id:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: 13ba8018f176
-            description: >-
-              Describes a unique value which persists during a request /
-              callback cycle.
-          version:
-            required: mandatory
-            type: integer
-            owner: BAP
-            usage: 2.0.0
-            description: >-
-              Describes the version of transaction protocol being used by the
-              sender.
-          action:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: on_confirm
-            description: >-
-              Describes the Beckn protocol method being called by the sender and
-              executed at the receiver.
-          bap_uri:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: https://api.example-bap.com/pilot/bap/cab/v1
-            description: >-
-              Describes subscriber URL of the BAP for accepting callbacks from
-              BPPs.
-          ttl:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: PT30S
-            description: >-
-              Describes the duration in ISO8601 format after timestamp for which
-              this message holds valid
-          bpp_id:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: api.example-bpp.com
-            description: Describes subscriber ID of the BPP
-          bpp_uri:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: >-
-              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
-            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
       cancel:
-        message:
-          order_id:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: 60253df1
-            description: 'Describes the unique ID of the order. '
-          cancellation_reason_id:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: 45dd6fd3
-            description: Describes the reason Id for cancellation
-          descriptor:
-            short_desc:
-              required: optional
-              type: string
-              owner: BPP
-              usage: Accidantaly book the ride
-              description: Describes the Short description for cancellaion
         context:
           location:
             country:
@@ -28694,7 +28735,120 @@ x-attributes:
             usage: >-
               https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
             description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+        message:
+          order_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: 60253df1
+            description: 'Describes the unique ID of the order. '
+          cancellation_reason_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: 45dd6fd3
+            description: Describes the reason Id for cancellation
+          descriptor:
+            short_desc:
+              required: optional
+              type: string
+              owner: BPP
+              usage: Accidantaly book the ride
+              description: Describes the Short description for cancellaion
       on_cancel:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: on_cancel
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+          bpp_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: api.example-bpp.com
+            description: Describes subscriber ID of the BPP
+          bpp_uri:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: >-
+              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
         message:
           order:
             items:
@@ -28799,7 +28953,7 @@ x-attributes:
                   usage: AUTO_RICKSHAW
                   description: Describes vehicle category
                 registration:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BPP
                   usage: HR-20AS-4578
@@ -28822,7 +28976,7 @@ x-attributes:
               price:
                 value:
                   required: mandatory
-                  type: integer
+                  type: string
                   owner: BPP
                   usage: 60
                   description: Describes the price of a product or service
@@ -28848,7 +29002,7 @@ x-attributes:
                     description: Describes the price of a product or service
                   value:
                     required: mandatory
-                    type: integer
+                    type: string
                     owner: BPP
                     usage: 120
                     description: Describes the currency type of a product or service
@@ -28911,107 +29065,7 @@ x-attributes:
                   owner: BPP
                   usage: P1D
                   description: Describes time transaction duration
-        context:
-          location:
-            country:
-              code:
-                required: mandatory
-                type: string
-                owner: BAP
-                usage: IND
-                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-            city:
-              code:
-                required: mandatory
-                type: string
-                owner: BAP
-                usage: std:080
-                description: Describes the city code this location is, or is located within
-          domain:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: ONDC:TRV10
-            description: Describes domain code that is relevant to this transaction context
-          timestamp:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: '2023-03-23T04:41:16Z'
-            description: Describes tme of request generation in RFC3339 format
-          bap_id:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: api.example-bap.com
-            description: Describes subscriber ID of the BAP
-          transaction_id:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: 6743e9e2
-            description: Describes  a unique value which persists across all API calls
-          message_id:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: 13ba8018f176
-            description: >-
-              Describes a unique value which persists during a request /
-              callback cycle.
-          version:
-            required: mandatory
-            type: integer
-            owner: BAP
-            usage: 2.0.0
-            description: >-
-              Describes the version of transaction protocol being used by the
-              sender.
-          action:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: on_cancel
-            description: >-
-              Describes the Beckn protocol method being called by the sender and
-              executed at the receiver.
-          bap_uri:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: https://api.example-bap.com/pilot/bap/cab/v1
-            description: >-
-              Describes subscriber URL of the BAP for accepting callbacks from
-              BPPs.
-          ttl:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: PT30S
-            description: >-
-              Describes the duration in ISO8601 format after timestamp for which
-              this message holds valid
-          bpp_id:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: api.example-bpp.com
-            description: Describes subscriber ID of the BPP
-          bpp_uri:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: >-
-              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
-            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
       status:
-        message:
-          order_id:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: 60253df1
-            description: 'Describes the unique ID of the order. '
         context:
           location:
             country:
@@ -29105,7 +29159,107 @@ x-attributes:
             usage: >-
               https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
             description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+        message:
+          order_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: 60253df1
+            description: 'Describes the unique ID of the order. '
       on_status:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: on_status
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+          bpp_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: api.example-bpp.com
+            description: Describes subscriber ID of the BPP
+          bpp_uri:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: >-
+              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
         message:
           order:
             items:
@@ -29137,7 +29291,7 @@ x-attributes:
                   description: Describes the currency type of a product or service
                 value:
                   required: mandatory
-                  type: integer
+                  type: string
                   owner: BPP
                   usage: 60
                   description: Describes a numerical value in decimal form
@@ -29148,7 +29302,7 @@ x-attributes:
                   usage: 176
                   description: Describes a maximum value in decimal form
               location_ids:
-                required: mandatory
+                required: optional
                 type: string
                 owner: BPP
                 usage: d3ebf05b
@@ -29274,7 +29428,7 @@ x-attributes:
               price:
                 value:
                   required: mandatory
-                  type: integer
+                  type: string
                   owner: BPP
                   usage: 60
                   description: Describes the price of a product or service
@@ -29300,7 +29454,7 @@ x-attributes:
                     description: Describes the price of a product or service
                   value:
                     required: mandatory
-                    type: integer
+                    type: string
                     owner: BPP
                     usage: 120
                     description: >-
@@ -29384,99 +29538,6 @@ x-attributes:
                     description: >-
                       The value of the tag. This set by the BPP and rendered
                       as-is by the BAP.
-        context:
-          location:
-            country:
-              code:
-                required: mandatory
-                type: string
-                owner: BAP
-                usage: IND
-                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-            city:
-              code:
-                required: mandatory
-                type: string
-                owner: BAP
-                usage: std:080
-                description: Describes the city code this location is, or is located within
-          domain:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: ONDC:TRV10
-            description: Describes domain code that is relevant to this transaction context
-          timestamp:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: '2023-03-23T04:41:16Z'
-            description: Describes tme of request generation in RFC3339 format
-          bap_id:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: api.example-bap.com
-            description: Describes subscriber ID of the BAP
-          transaction_id:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: 6743e9e2
-            description: Describes  a unique value which persists across all API calls
-          message_id:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: 13ba8018f176
-            description: >-
-              Describes a unique value which persists during a request /
-              callback cycle.
-          version:
-            required: mandatory
-            type: integer
-            owner: BAP
-            usage: 2.0.0
-            description: >-
-              Describes the version of transaction protocol being used by the
-              sender.
-          action:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: on_status
-            description: >-
-              Describes the Beckn protocol method being called by the sender and
-              executed at the receiver.
-          bap_uri:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: https://api.example-bap.com/pilot/bap/cab/v1
-            description: >-
-              Describes subscriber URL of the BAP for accepting callbacks from
-              BPPs.
-          ttl:
-            required: mandatory
-            type: string
-            owner: BAP
-            usage: PT30S
-            description: >-
-              Describes the duration in ISO8601 format after timestamp for which
-              this message holds valid
-          bpp_id:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: api.example-bpp.com
-            description: Describes subscriber ID of the BPP
-          bpp_uri:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: >-
-              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
-            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
   rental:
     attribute_set:
       search:
