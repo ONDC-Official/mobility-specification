@@ -3,12 +3,14 @@
 
 function onFirstLoad(build_spec){
       let data = build_spec
-      initSchema(data["x-enum"])
-      initTag(data["x-tags"])
-      loadExample(data["x-examples"])
+      data["x-enum"] && initSchema(data["x-enum"])
+      data["x-tags"] && initTag(data["x-tags"])
+      data["x-examples"] && loadExample(data["x-examples"])
       //addExample("on-demand")
-      loadFlows(data["x-flows"])
-      loadAttributes(data["x-attributes"])
+      data["x-flows"] && loadFlows(data["x-flows"])
+      data["x-attributes"] && loadAttributes(data["x-attributes"])
+      data["x-errorcodes"] && loadErrors(data["x-errorcodes"]);
+      data["x-tlc"] && loadTlc(data["x-tlc"]);
 }
 
 // window.onload = function(){
