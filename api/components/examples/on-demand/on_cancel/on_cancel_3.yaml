@@ -1,11 +1,6 @@
-summary: Return order with status - Driver at pickup
+summary: Return confirmed order with latest fulfillment details(rental)
 value:
   context:
-    location:
-      country:
-        code: IND
-      city:
-        code: std:080
     bpp_uri: https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
     domain: ONDC:TRV10
     timestamp: "2023-03-23T04:48:53Z"
@@ -14,17 +9,22 @@ value:
     transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
     message_id: 8926b747-0362-4fcc-b795-0994a6287700
     version: 2.0.0
-    action: on_status
+    action: on_cancel
     bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
-    ttl: PT30S
+    location:
+      city:
+        code: std:080
+      country: 
+        code: IND
   message:
     order:
+      id: O1
       provider:
         id: P1
       items:
         - id: I1
           descriptor:
-            name: Auto Ride
+            name: CAB Ride
             code: RIDE
           price:
             maximum_value: "176"
@@ -81,7 +81,7 @@ value:
             - PA1
       quote:
         price:
-          value: "176"
+          value: "86"
           currency: INR
         breakup:
           - title: BASE_FARE
@@ -92,15 +92,17 @@ value:
             price:
               value: "146"
               currency: INR
+          - title: CURRENT_FARE_CHARGE
+            price:
+              value: "100"
+              currency: INR    
         ttl: P200S
       fulfillments:
         - id: F1
           type: DELIVERY
           state:
             descriptor:
-              code: DRIVER_AT_PICKUP
-              name: Driver Arrived at Pickup Location
-            
+              code: CONFIRM_CANCEL
           customer:
             person:
               name: Joe Adams
@@ -113,11 +115,13 @@ value:
               phone: '9856798567'
           stops:
             - type: START
+              authorization:
+                type: OTP
+                token: "234234"
               location:
                 gps: 13.008935, 77.644408
-            - type: END
-              location:
-                gps: 12.971186, 77.586812
+              time:
+                duration: "PT2H" 
           vehicle:
             category: AUTO_RICKSHAW
             make: Bajaj
@@ -149,9 +153,9 @@ value:
               code: RIDE_ENROUTE_PICKUP
           reason_required: true
           cancellation_fee:
-           amount: 
+            amount: 
               currency: INR
-              value: "50"
+              value: "30"
         - fulfillment_state:
             descriptor:
               code: RIDE_ARRIVED_PICKUP
@@ -219,4 +223,4 @@ value:
                     code: SETTLEMENT_AMOUNT
                   value: '12505'      
        
-           
+          
