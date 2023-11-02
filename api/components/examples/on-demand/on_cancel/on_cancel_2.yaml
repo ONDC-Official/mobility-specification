@@ -1,22 +1,21 @@
-summary: Return order cancelled by rider with cancellation charges
+summary: Return current order status after soft-cancel
 value:
   context:
-    action: on_cancel
-    bap_id: https://example-bap.com
-    bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
-    bpp_id: https://example-bpp.com
     bpp_uri: https://api.example-bpp.com/dobpp/beckn/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
-    version: 2.0.0
     domain: ONDC:TRV10
-    message_id: 8926b747-0362-4fcc-b795-0994a6287700
     timestamp: "2023-03-23T04:48:53Z"
+    bap_id: https://example-bap.com
+    bpp_id: https://example-bpp.com
     transaction_id: b580c989-f84d-4abe-af28-2c818aafce3b
+    message_id: 8926b747-0362-4fcc-b795-0994a6287700
+    version: 2.0.0
+    action: on_cancel
+    bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
     location:
-      country:
-        code: IND
       city:
         code: std:080
-    ttl: PT30S    
+      country: 
+        code: IND
   message:
     order:
       id: O1
@@ -25,7 +24,7 @@ value:
       items:
         - id: I1
           descriptor:
-            name: Auto Ride
+            name: CAB Ride
             code: RIDE
           price:
             maximum_value: "176"
@@ -82,20 +81,32 @@ value:
             - PA1
       quote:
         price:
-          value: "176"
+          value: "86"
           currency: INR
         breakup:
-          - title: CANCELLATION_CHARGES
+          - title: BASE_FARE
             price:
               value: "30"
               currency: INR
+          - title: DISTANCE_FARE
+            price:
+              value: "146"
+              currency: INR
+          - title: CURRENT_FARE_CHARGE
+            price:
+              value: "100"
+              currency: INR  
+          - title: CANCELLATION_CHARGES
+            price:
+              value: "10"
+              currency: INR      
         ttl: P200S
       fulfillments:
         - id: F1
           type: DELIVERY
           state:
             descriptor:
-              code: RIDE_CANCELLED
+              code: RIDE_CONFIRMED
           customer:
             person:
               name: Joe Adams
@@ -108,11 +119,13 @@ value:
               phone: '9856798567'
           stops:
             - type: START
+              authorization:
+                type: OTP
+                token: "234234"
               location:
                 gps: 13.008935, 77.644408
-            - type: END
-              location:
-                gps: 12.971186, 77.586812
+              time:
+                duration: "PT2H" 
           vehicle:
             category: AUTO_RICKSHAW
             make: Bajaj
@@ -209,9 +222,9 @@ value:
                   value: '2.5'
                 - descriptor: 
                     code: STATIC_TERMS
-                  value: 'https://www.abc.com/settlement-terms/'
+                  value: 'https://www.icicibank.com/personal-banking/loans/personal-loan'
                 - descriptor: 
                     code: SETTLEMENT_AMOUNT
-                  value: '174'      
-       
+                  value: '85'      
+      status: SOFT_CANCEL 
           

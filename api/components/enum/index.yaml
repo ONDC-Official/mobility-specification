@@ -39,6 +39,8 @@ select:
       items: *item
       fulfillments: *fulfillment
       payments: *payment
+      status: &status
+        $ref: "./status.yaml"
 on_select:
   context: 
     <<: *context
@@ -122,3 +124,21 @@ on_cancel:
         reference: <PR/Issue/Discussion Links md format text>
   message:
     order: *order
+update:
+  context: 
+    <<: *context
+    action:
+      - code: update
+        description: Buyer app requests order update."
+        reference: <PR/Issue/Discussion Links md format text>
+  message:
+    order: *order      
+on_update:
+  context: 
+    <<: *context
+    action: 
+      - code: on_cancel
+        description: Seller app specifies the update status.
+        reference: <PR/Issue/Discussion Links md format text>
+  message:
+    order: *order    
