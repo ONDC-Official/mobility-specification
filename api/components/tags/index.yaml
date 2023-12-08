@@ -1,47 +1,45 @@
 search:
   message:
     intent:
-      $ref: "./tag-group.yaml#/intent"
-      payment: &payment
-        tags: &tags
-          - &settlementDetails
-            code: SETTLEMENT_DETAILS
-            description : Settlement details to identify specifics of settlement
-            reference: <PR/Issue/Discussion Links md format text>
-            list:
-              $ref: "./tag.yaml#/settlement_details"
-          - &BuyerFinderFees    
-            code:  BUYER_FINDER_FEES
-            description : Settlement details to identify specifics of settlement
-            reference: <PR/Issue/Discussion Links md format text>
-            list:
-              $ref: "./tag.yaml#/buyer_finder_fees"
-          - &settlementTerms    
-            code: SETTLEMENT_TERMS
-            description : describes the general Information of the loan 
-            reference: <PR/Issue/Discussion Links md format text>
-            list:
-              $ref: "./tag.yaml#/settlement-terms" 
-
-        
+      payment:
+        $ref: "./tag-group.yaml#/payment"     
 on_search:
   message:
     catalog:
-      $ref: "./tag-group.yaml#/catalog"
-      payments: *payment
-select: &ref0
+      providers:
+        items: &items
+          $ref: "./tag-group.yaml#/items"
+        fulfillments: &fulfillments
+          $ref: "./tag-group.yaml#/fulfillment"
+        payment: &payment
+          $ref: "./tag-group.yaml#/payment/tags/settlement_terms"
+select: 
   message:
     order:
-      $ref: "./tag-group.yaml#/order"
-on_select: *ref0
-init: &ref1
+      fulfillments: *fulfillments
+on_select: &ref0
   message:
     order:
-      $ref: "./tag-group.yaml#/order"
+      fulfillments: *fulfillments
+      items: *items
+      provider: &provider
+        $ref: "./tag-group.yaml#/provider"
+init:
+  message:
+    order:
       payments: *payment
-on_init: *ref1
-confirm: *ref1
-on_confirm: *ref1
-on_status: *ref1
-on_cancel: *ref1
-on_update: *ref1
+on_init:
+  message:
+    order:
+      fulfillments: *fulfillments
+      items: *items
+      provider: *provider
+      payments: *payment
+on_confirm: *ref0
+on_status:
+  message:
+    order:
+      fulfillments: *fulfillments
+      items: *items
+on_cancel: *ref0
+on_update: *ref0
