@@ -1,45 +1,33 @@
 search:
   message:
     intent:
-      payment:
-        $ref: "./tag-group.yaml#/payment"     
+      payment: &payments
+        $ref: "./tag-group.yaml#/payments"     
 on_search:
   message:
     catalog:
       providers:
         items: &items
           $ref: "./tag-group.yaml#/items"
-        fulfillments: &fulfillments
-          $ref: "./tag-group.yaml#/fulfillment"
-        payment: &payment
-          $ref: "./tag-group.yaml#/payment/tags/settlement_terms"
-select: 
+        payments: *payments
+# select: 
+#   message:
+#     order:
+#       fulfillments: *fulfillments
+on_select: 
   message:
     order:
-      fulfillments: *fulfillments
-on_select: &ref0
-  message:
-    order:
-      fulfillments: *fulfillments
       items: *items
-      provider: &provider
-        $ref: "./tag-group.yaml#/provider"
 init:
   message:
     order:
-      payments: *payment
-on_init:
+      payments: *payments
+on_init: &ref0
   message:
     order:
-      fulfillments: *fulfillments
       items: *items
-      provider: *provider
-      payments: *payment
+      payments: *payments
 on_confirm: *ref0
-on_status:
-  message:
-    order:
-      fulfillments: *fulfillments
-      items: *items
+on_status: *ref0
 on_cancel: *ref0
 on_update: *ref0
