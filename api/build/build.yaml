@@ -2832,16 +2832,6 @@ x-enum:
               Describes a confirm-cancel request initiated by the buyer app,
               confirming the order cancellation
             reference: <PR/Issue/Discussion Links md format text
-          - code: SOFT-UPDATE
-            description: >-
-              Describes a soft-update request initiated by the buyer app,
-              occurring before the actual order update.
-            reference: <PR/Issue/Discussion Links md format text
-          - code: CONFIRM-UPDATE
-            description: >-
-              Describes a confirm-update request initiated by the buyer app,
-              confirming the order update.
-            reference: <PR/Issue/Discussion Links md format text
           - code: ACTIVE
             description: Describes the status of the order.
             reference: <PR/Issue/Discussion Links md format text
@@ -5388,7 +5378,7 @@ x-flows:
                 end
         reference: if any
         example: *ref_19
-  - summary: On-Demand - Ride cancel
+  - summary: On-Demand - Ride cancellation by rider
     details:
       - description: Detailed process of cancelling a ride with soft & confirm status.
         mermaid: |-
@@ -5397,12 +5387,6 @@ x-flows:
             participant Seller Platform (BPP)
             Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
-            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
             Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK         
     reference: if any
@@ -5444,7 +5428,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_21
+        example: &ref_22
           summary: Initiates cancelling a ride with soft cancel status
           value:
             context:
@@ -5490,7 +5474,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_23
+        example: &ref_24
           summary: Return current order status after soft-cancel
           value:
             context:
@@ -5739,7 +5723,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_22
+        example: &ref_23
           summary: Initiates cancelling a ride with confirm cancel status
           value:
             context:
@@ -5783,7 +5767,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_24
+        example: &ref_21
           summary: Return current order status after confirm-cancel
           value:
             context:
@@ -6013,6 +5997,55 @@ x-flows:
                     value: '86'
                   ttl: P200S
                 status: CANCELLED
+  - summary: On-Demand - Ride cancellation by driver
+    details:
+      - description: Detailed process of cancelling a ride with soft & confirm status.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel (unsolicited)
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK         
+    reference: if any
+    steps:
+      - summary: Ride provider confirms the ride request
+        api: on_confirm
+        details:
+          - description: >-
+              Ride provider confirms the ride request and provides the ride
+              details on confirmation.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel (unsolicited)
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example: *ref_20
+      - summary: Ride provider accepts the terms of cancellation
+        api: on_cancel
+        details:
+          - description: >-
+              Ride provider accepts the terms of order and provides with latest
+              order update.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel (unsolicited)
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end 
+        reference: if any
+        example: *ref_21
 x-examples:
   on-demand:
     summary: On Demand Use Case Specification
@@ -6032,8 +6065,8 @@ x-examples:
     example_set:
       cancel:
         examples:
-          - *ref_21
           - *ref_22
+          - *ref_23
       confirm:
         examples:
           - *ref_17
@@ -6042,8 +6075,8 @@ x-examples:
           - *ref_15
       on_cancel:
         examples:
-          - *ref_23
           - *ref_24
+          - *ref_21
       on_confirm:
         examples:
           - *ref_20
