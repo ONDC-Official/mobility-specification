@@ -114,7 +114,9 @@ cancel:
         description: Buyer app requests order cancellation."
         reference: <PR/Issue/Discussion Links md format text>
   message:
-    descriptor: 
+    cancellation_reason_id:
+      $ref: "./cancel.yaml#/buyer"
+    descriptor:
       code: *status
 on_cancel:
   context: 
@@ -124,7 +126,15 @@ on_cancel:
         description: Seller app specifies the cancellation status.
         reference: <PR/Issue/Discussion Links md format text>
   message:
-    order: *order
+    order:
+      items: *item
+      fulfillments: *fulfillment
+      payments: *payment
+      cancellation:
+        reason:
+          descriptor:
+            code:
+              $ref: "./cancel.yaml#/seller"
 update:
   context: 
     <<: *context

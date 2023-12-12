@@ -11,7 +11,7 @@ async function buildErrorCodes() {
     code
   }))
   const yamlString = yaml.dump({ code: outputObject });
-  fs.writeFileSync(`./error_codes/index.yaml`, yamlString);
+    fs.writeFileSync(`./error_codes/index.yaml`, yamlString);
 }
 
 
