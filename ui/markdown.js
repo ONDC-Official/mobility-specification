@@ -1,32 +1,15 @@
-async function fetchMarkdown(branchName) {
-  try {
-    console.log('branchName', branchName)
-    const container = document.getElementById("markdown-container").innerHTML;
-    const response = await fetch(
-      `https://api.github.com/repos/ondc-official/mobility-specification/contents/api/components/docs?ref=${branchName}`
-    );
-    const data = await response.json();
-    if (data?.length == 0) container.innerHTML = "No files present";
-    else {
-      const filteredData = data?.filter((item) => item?.name.endsWith(".md"));
-      if (filteredData.length == 0)
-        container.innerHTML = "Markdown files not found";
-      else {
-    var setsDropDown = document.getElementById("feature-sets-dropdown");
-        setsDropDown.innerHTML = "";
-        filteredData?.forEach(function (item) {
-          var option = document.createElement("option");
-          const fileName = item?.name?.split('.md')[0];
-          option.text = fileName;
-          setsDropDown.add(option);
-        });
-        renderMarkdown(branchName,filteredData[0]?.name?.split('.md')[0]);
-      }
-    }
-  } catch (error) {
-    console.log("Error fetching contract", error?.message || error);
-    document.getElementById("markdown-container").innerHTML = `Error while fetching files for branch ${branchName}`;
-  }
+
+function renderDropdownMarkdown(branchname,filteredData){
+
+  var setsDropDown = document.getElementById("feature-sets-dropdown");
+    setsDropDown.innerHTML = "";
+    filteredData?.forEach(function (item) {
+      var option = document.createElement("option");
+      const fileName = item?.split('.md')[0];
+      option.text = fileName;
+      setsDropDown.add(option);
+    });
+    renderMarkdown(branchname,filteredData[0]?.split('.md')[0]);
 }
 //
 function renderMarkdown(branchName,file) {
