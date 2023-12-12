@@ -2931,6 +2931,19 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
+      cancellation_reason_id:
+        - code: '001'
+          description: Driver not moving
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '002'
+          description: Customer is unable to unable to contact driver
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '003'
+          description: Driver asked to cancel the ride
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '004'
+          description: My pickup location is incorrect
+          reference: <PR/Issue/Discussion Links md format text
       descriptor:
         code: *ref_7
   on_cancel:
@@ -2942,7 +2955,25 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_5
+      order:
+        items: *ref_3
+        fulfillments: *ref_2
+        payments: *ref_4
+        cancellation:
+          reason:
+            descriptor:
+              code:
+                - code: '011'
+                  description: >-
+                    Seller app cannot confirm the ride as no drivers are
+                    available
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: '012'
+                  description: Driver does not find passenger at the location
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: '013'
+                  description: Driver accepted the ride mistakenly
+                  reference: <PR/Issue/Discussion Links md format text
   update:
     context:
       action:
@@ -10831,3 +10862,13 @@ x-attributes:
               owner: BPP
               usage: order.fulfillment.agent
               description: Describes the target for update
+x-errorcodes:
+  code:
+    - Event: Route Serviceability error
+      Description: To & from location not serviceable by Seller application
+      From: BPP
+      code: 90201
+    - Event: Tracking not enabled
+      Description: Tracking not enabled for any fulfillment in the order
+      From: BPP
+      code: 90202
