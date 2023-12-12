@@ -7,11 +7,11 @@ on_search:
   message:
     catalog:
       providers:
-        items: &items
-          $ref: "./tag-group.yaml#/items"
         fulfillments: &fulfillments
           $ref: "./tag-group.yaml#/fulfillment"
         payments: *payment
+        tags: 
+         $ref:  "./tag-group.yaml#/scheduled-info"
 select: 
   message:
     order:
@@ -20,9 +20,8 @@ on_select: &ref0
   message:
     order:
       fulfillments: *fulfillments
-      items: *items
-      provider: &provider
-        $ref: "./tag-group.yaml#/provider"
+      # provider: &provider
+      #   $ref: "./tag-group.yaml#/provider"
 init:
   message:
     order:
@@ -31,14 +30,12 @@ on_init:
   message:
     order:
       fulfillments: *fulfillments
-      items: *items
-      provider: *provider
+      # provider: *provider
       payments: *payment
 on_confirm: *ref0
 on_status:
   message:
     order:
       fulfillments: *fulfillments
-      items: *items
 on_cancel: *ref0
 on_update: *ref0
