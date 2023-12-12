@@ -26,11 +26,14 @@ function loadExample(data) {
 }
 function addExample(example_set) {
     // let base = jsyaml.load(openApiYaml)
+    const matchText = 'form/' 
     let base = build_spec;
     base["info"]["title"] = examples[example_set]["summary"]
     base["info"]["description"] = examples[example_set]["description"]
     let examplesList = examples[example_set]["example_set"]
     for (var key in examplesList) {
+        //for forms
+        if(key.match(matchText)) continue;
         var list = examplesList[key]["examples"];
         base["paths"]["/" + key]["post"]["requestBody"]["content"]["application/json"]["examples"] = {};
         for (var key2 in list) {

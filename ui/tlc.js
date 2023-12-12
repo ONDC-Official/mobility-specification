@@ -2,7 +2,7 @@ var tlc;
 
 function loadTlc(data) {
   var elements = document.getElementsByClassName("tlc-test");
-  while (elements.length > 0) {
+  while (elements?.length > 0) {
     elements[0].parentNode.removeChild(elements[0]);
   }
   tlc = data;
@@ -13,9 +13,9 @@ function loadTlc(data) {
 function addTlcSets(option) {
 
   const elements= document.getElementById("tlcset").querySelectorAll('.tlc-row')
-  while (elements.length > 0) {
-    elements[0].parentNode.removeChild(elements[0]);
-  }
+  for (const element of elements) {
+    element.parentNode.removeChild(element);
+  }  
   const object = tlc[option];
   let previousValues = {};
   const keys = ['Term', 'Api', 'Attribute', 'Owner', 'Value', 'Description'];
