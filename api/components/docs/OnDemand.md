@@ -1,7 +1,7 @@
-# Testcase Scenarios for On-Demand Ride Hailing
+## Testcase Scenarios for On-Demand Ride Hailing
 
-## Log submission
-### Instructions
+### Log submission
+#### Instructions
 - Create a fork of the verification-logs repository. 
 - Create a folder with the name of your entity under your domain folder "TRV10" for ride hailing
 - Commit your logs in the folder (logs should include request & response payloads for all enabled APIs)
@@ -10,7 +10,7 @@
 - Once the reviews are done, the PR will be merged and the logs shall be considered as approved
 
 
-## Scenarios
+### Scenarios
 - Flow 1 - successful ride
     1. Passenger searches for on demand services available between a start location and an end location. Providers provide their services details
     2. Passenger selects a provider and a service. Provider responds with detailed information and quote for the specific service
