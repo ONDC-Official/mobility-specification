@@ -1,13 +1,12 @@
-## Testcase Scenarios for On-Demand Ride Hailing
+## Log submission Scenarios for On-Demand Ride Hailing
 
-### Log submission
 #### Instructions
-- Create a fork of the verification-logs repository. 
+- Create a fork of the [verification-logs](https://log-validation.ondc.org) repository. 
 - Create a folder with the name of your entity under your domain folder "TRV10" for ride hailing
-- Commit your logs in the folder (logs should include request & response payloads for all enabled APIs)
+- Commit your logs in the folder (logs should include request & response payloads for all enabled APIs as per the scenarios below)
 - Create PR and label it with your domain name
 - Once submitted, please refer to the comments on logs submitted and update the PR based on the comments provided
-- Once the reviews are done, the PR will be merged and the logs shall be considered as approved
+- Once the reviews are done, the PR will be merged and the logs shall be considered as approved on pr merge
 
 
 ### Scenarios
