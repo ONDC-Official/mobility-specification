@@ -1,7 +1,7 @@
 ## Log submission Scenarios for On-Demand Ride Hailing
 
 #### Instructions
-- Create a fork of the [verification-logs](https://log-validation.ondc.org) repository. 
+- Create a fork of the [verification-logs](https://github.com/ONDC-Official/verification-logs) repository. 
 - Create a folder with the name of your entity under your domain folder "TRV10" for ride hailing
 - Commit your logs in the folder (logs should include request & response payloads for all enabled APIs as per the scenarios below)
 - Create PR and label it with your domain name
@@ -16,6 +16,7 @@
     3. Passenger proceeds with the details provided and the consumer platform sends the request with respective billing details. Provider platform responds with the updated quote and settlement details
     4. Payment is collected and a confirmation call is made with an order id. The provider provides confirmation of the ride and the driver assigned
     5. The ride is completed and status update is made on the order object
+
 - Flow 2 - passenger initiated cancellation
     1. Passenger searches for on demand services available between a start location and an end location. Providers provide their services details
     2. Passenger selects a provider and a service. Provider responds with detailed information and quote for the specific service
@@ -29,6 +30,7 @@
     3. Passenger proceeds with the details provided and the consumer platform sends the request with respective billing details. Provider platform responds with the updated quote and settlement details
     4. Payment is collected and a confirmation call is made with an order id. The provider provides confirmation of the ride and the driver assigned
     5. After the service is initiated, the driver initiates a cancellation request and the provider platform notifies the consumer platform of the cancellation
+
 - Flow 4 - quote change after ride
     1. Passenger searches for on demand services available between a start location and an end location. Providers provide their services details
     2. Passenger selects a provider and a service. Provider responds with detailed information and quote for the specific service
