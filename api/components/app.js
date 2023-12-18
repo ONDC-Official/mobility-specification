@@ -39,7 +39,7 @@ const SKIP_VALIDATION = {
   examples: "skip2",
   enums: "skip3",
   tags: "skip4",
-};
+  };
 
 const BUILD = {
   attributes: "attributes",
@@ -272,9 +272,9 @@ async function validateAttributes(attribute, schemaMap) {
   }
 async function getSwaggerYaml(example_set, outputPath) {
   try {
-    const schema = await baseYMLFile(example_yaml);
+        const schema = await baseYMLFile(example_yaml);
     const baseYAML = await baseYMLFile(base_yaml);
-    const { flows, examples: exampleSets, enum: enums, tags,attributes } = schema || [];
+        const { flows, examples: exampleSets, enum: enums, tags,attributes } = schema || [];
     const { paths } = baseYAML;
     let hasTrueResult = false; // Flag variable
     let schemaMap = {};
@@ -298,7 +298,7 @@ async function getSwaggerYaml(example_set, outputPath) {
     }
     
     if (!process.argv.includes(SKIP_VALIDATION.flows)) {
-      hasTrueResult = await validateFlows(flows, schemaMap);
+            hasTrueResult = await validateFlows(flows, schemaMap);
     }
     if (!process.argv.includes(SKIP_VALIDATION.examples) && !hasTrueResult) {
       hasTrueResult = await validateExamples(exampleSets, schemaMap);
@@ -374,6 +374,7 @@ function addEnumTag(base, layer) {
   base["x-tlc"] = layer["tlc"];
   base["x-featureui"] = layer["feature-ui"]
   base["x-sandboxui"] = layer["sandbox-ui"]
+  base["x-testcasesui"] = layer["testcases-ui"]
 
 }
 
