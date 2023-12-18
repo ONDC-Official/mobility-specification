@@ -90,9 +90,17 @@ function flattenObject(obj, prefix = "", result = {},requiredAttr) {
 
     table.appendChild(newRow);
     }
-    return;
+    
+    if(Object.keys(obj).length===5){ // return if only 5 keys are present (5 metadata keys)
+      return;
+    }
   }
+  
   for (const key in obj) {
+    if ((typeof (obj[key]) === 'string') ){ // pass for attribute metadata keys
+      continue
+    }
+
     if (obj.hasOwnProperty(key) && key!=='required_attributes') {
       const newKey = prefix ? prefix + "." + key : key;
       if (Array.isArray(obj[key])) {
