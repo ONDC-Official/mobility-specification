@@ -1,8 +1,8 @@
 
-summary: Return order with status - Driver at pickup
+summary: Return draft order with payment terms[Buyer Collecting]
 value:
   context:
-    action: on_status
+    action: on_init
     bap_id: example-bap.com
     bap_uri: https://example-bap.com/prod/trv10
     bpp_id: example-bpp.com
@@ -14,7 +14,7 @@ value:
       country:
         code: IND
     message_id: 8926b747-0362-4fcc-b795-0994a6287700
-    timestamp: '2023-03-23T04:48:53Z'
+    timestamp: '2023-12-09T14:11:32.859Z'
     transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
     ttl: PT30S
     version: 2.0.0
@@ -30,7 +30,7 @@ value:
         - cancellation_fee:
             amount:
               currency: INR
-              value: '50'
+              value: '30'
           fulfillment_state:
             descriptor:
               code: RIDE_ENROUTE_PICKUP
@@ -50,21 +50,7 @@ value:
               code: RIDE_STARTED
           reason_required: true
       fulfillments:
-        - agent:
-            contact:
-              phone: '9856798567'
-            person:
-              name: Jason Roy
-          customer:
-            contact:
-              phone: '9876556789'
-            person:
-              name: Joe Adams
-          id: F1
-          state:
-            descriptor:
-              code: RIDE_ARRIVED_PICKUP
-              name: Driver Arrived at Pickup Location
+        - id: F1
           stops:
             - location:
                 gps: 13.008935, 77.644408
@@ -89,9 +75,6 @@ value:
           type: DELIVERY
           vehicle:
             category: AUTO_RICKSHAW
-            make: Bajaj
-            model: Compact RE
-            registration: KA-01-AD-9876
       items:
         - descriptor:
             code: RIDE
@@ -107,7 +90,7 @@ value:
           price:
             currency: INR
             maximum_value: '176'
-            minimum_value: '156'
+            minimum_value: '136'
             value: '146'
           tags:
             - descriptor:
@@ -153,19 +136,13 @@ value:
       payments:
         - collected_by: BPP
           id: PA1
+          url: https://www.example-bpp.com/pg-gateway/payment?amount=146&txn_id=c04a04ee-d892-400f-bbe6-479a43b4448a
           params:
             bank_account_number: xxxxxxxxxxxxxx
             bank_code: XXXXXXXX
             virtual_payment_address: 9988199772@okicic
           status: NOT-PAID
           tags:
-            - descriptor:
-                code: SETTLEMENT_DETAILS
-              display: false
-              list:
-                - descriptor:
-                    code: SETTLEMENT_TYPE
-                  value: UPI
             - descriptor:
                 code: BUYER_FINDER_FEES
               display: false
@@ -178,14 +155,17 @@ value:
               display: false
               list:
                 - descriptor:
-                    code: SETTLEMENT_WINDOW
-                  value: PT60M
-                - descriptor:
-                    code: SETTLEMENT_BASIS
-                  value: Delivery
+                    code: DELAY_INTEREST
+                  value: '5'
                 - descriptor:
                     code: SETTLEMENT_TYPE
-                  value: upi
+                  value: RSF
+                - descriptor:
+                    code: SETTLEMENT_WINDOW
+                  value: PT2D
+                - descriptor:
+                    code: SETTLEMENT_BASIS
+                  value: DELIVERY
                 - descriptor:
                     code: MANDATORY_ARBITRATION
                   value: 'true'
@@ -193,14 +173,11 @@ value:
                     code: COURT_JURISDICTION
                   value: New Delhi
                 - descriptor:
-                    code: DELAY_INTEREST
-                  value: '2.5'
-                - descriptor:
                     code: STATIC_TERMS
                   value: https://example-test-bpp.com/static-terms.txt
                 - descriptor:
                     code: SETTLEMENT_AMOUNT
-                  value: '174'
+                  value: '144.54'
           type: PRE-ORDER
       provider:
         id: P1
@@ -212,9 +189,8 @@ value:
             title: BASE_FARE
           - price:
               currency: INR
-              value: '146'
+              value: '116'
             title: DISTANCE_FARE
         price:
           currency: INR
-          value: '176'
-        ttl: P200S
+          value: '146'

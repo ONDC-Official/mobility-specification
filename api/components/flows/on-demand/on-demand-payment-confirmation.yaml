@@ -1,0 +1,182 @@
+summary: On-Demand - Payment Confirmation
+details: 
+  - description: The illustraive flow to perform a transaction of the nature where in a buyer would like to book a mobility service form location A(gps-cordinates) to localtion B(gps-cordinates)
+    mermaid: >-
+      sequenceDiagram
+        title On-Demand Discovery
+        Buyer Platform (BAP)->>Gateway (BG): search
+        Gateway (BG) ->> Buyer Platform (BAP): ACK
+        Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+        Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+        Gateway (BG)->>Seller Platform (BPP): search
+        Seller Platform (BPP)->>Gateway (BG) : ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+        Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+  - description: Ordering
+    mermaid: >-
+      sequenceDiagram
+        title Selection
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): select
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - description: Initializing the order 
+    mermaid: >-
+      sequenceDiagram
+        title Initializing Order
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): init
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+  - description: Order Confirmation 
+    mermaid: >-
+      sequenceDiagram
+        title  Order Confirmation
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+  - description: Fulfillment  
+    mermaid: >-
+      sequenceDiagram
+        title Order Fulfillment
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK       
+steps:
+  - summary: Buyer app initializes the ride request
+    api: init
+    details: 
+      - description: Buyer app platform shares the terms of order and initializes the request.
+        mermaid: >-
+            sequenceDiagram
+              participant Buyer Platform (BAP)
+              participant Seller Platform (BPP)
+              rect rgb(191, 223, 255)
+              Buyer Platform (BAP)->>Seller Platform (BPP): init
+              Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+              end
+              Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+              Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+              Seller Platform (BPP) ->>  Buyer Platform (BAP) : form
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/init/init_1.yaml"
+  - summary: Ride provider accepts/appends the terms of orders
+    api: on_init
+    details: 
+      - description: Ride provider accepts the terms of order and appends its own terms and responds with the final draft.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+            Seller Platform (BPP) ->>  Buyer Platform (BAP) : form
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_init/on_init_0.yaml"
+  - summary: Buyer app redirects to payment gateway page.
+    api: form
+    details:
+      - description: Buyer app fetches the SIP setup form from the provider using the link provided in the previous step.
+        mermaid: &selectForm >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP) ->>  Buyer Platform (BAP) : form
+            end
+    reference: if any
+    example:
+      value: 
+        $ref: ../../examples/on-demand/forms/payment-gateway.html
+
+  - summary: Buyer app seeks the most recent status update
+    api: status
+    details: 
+      - description: Buyer app requests the ride provider to provide the latest order status
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/status/status_1.yaml"                          
+  - summary: Ride provider provides latest order status 
+    api: on_status
+    details: 
+      - description: Ride provider provides the updated order status to the buyer app
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_status/on_status_4.yaml"     
+    
+
+
+  - summary: Buyer app confirms the ride
+    api: confirm
+    details: 
+      - description: Buyer app confirms the booking and provides all the required information for confirmation as per the terms of the order.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/confirm/confirm_2.yaml"
+  - summary: Ride provider confirms the ride request
+    api: on_confirm
+    details: 
+      - description: Ride provider confirms the ride request and provides the ride details on confirmation.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_confirm/on_confirm_3.yaml"
+  

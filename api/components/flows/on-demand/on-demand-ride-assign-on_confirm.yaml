@@ -249,5 +249,44 @@ steps:
             end
     reference: if any
     example:
-      $ref: "../../examples/on-demand/on_status/on_status_0.yaml"     
+      $ref: "../../examples/on-demand/on_status/on_status_0.yaml"
+  - summary: Buyer app seeks the most recent status update
+    api: status
+    details: 
+      - description: Buyer app requests the ride provider to provide the latest order status
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/status/status_0.yaml"                          
+  - summary: Ride provider provides latest order status 
+    api: on_status
+    details: 
+      - description: Ride provider provides the updated order status to the buyer app
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            Buyer Platform (BAP)->>Seller Platform (BPP): status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_status/on_status_4.yaml"     
+           
   
