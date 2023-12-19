@@ -1,8 +1,8 @@
 
-summary: Return order with status - Driver at pickup
+summary: Return confirmed order with latest fulfillment details
 value:
   context:
-    action: on_status
+    action: on_confirm
     bap_id: example-bap.com
     bap_uri: https://example-bap.com/prod/trv10
     bpp_id: example-bpp.com
@@ -13,8 +13,8 @@ value:
         code: std:080
       country:
         code: IND
-    message_id: 8926b747-0362-4fcc-b795-0994a6287700
-    timestamp: '2023-03-23T04:48:53Z'
+    message_id: 9a7be37d-f228-432b-9aa9-65144d48da38
+    timestamp: '2023-12-10T04:34:52.031Z'
     transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
     ttl: PT30S
     version: 2.0.0
@@ -30,7 +30,7 @@ value:
         - cancellation_fee:
             amount:
               currency: INR
-              value: '50'
+              value: '30'
           fulfillment_state:
             descriptor:
               code: RIDE_ENROUTE_PICKUP
@@ -63,10 +63,12 @@ value:
           id: F1
           state:
             descriptor:
-              code: RIDE_ARRIVED_PICKUP
-              name: Driver Arrived at Pickup Location
+              code: RIDE_ASSIGNED
           stops:
-            - location:
+            - authorization:
+                token: '234234'
+                type: OTP
+              location:
                 gps: 13.008935, 77.644408
               type: START
             - location:
@@ -92,6 +94,7 @@ value:
             make: Bajaj
             model: Compact RE
             registration: KA-01-AD-9876
+      id: O1
       items:
         - descriptor:
             code: RIDE
@@ -107,7 +110,7 @@ value:
           price:
             currency: INR
             maximum_value: '176'
-            minimum_value: '156'
+            minimum_value: '136'
             value: '146'
           tags:
             - descriptor:
@@ -157,15 +160,10 @@ value:
             bank_account_number: xxxxxxxxxxxxxx
             bank_code: XXXXXXXX
             virtual_payment_address: 9988199772@okicic
-          status: NOT-PAID
+            transaction_id: f08966dc-4c7d-4152-9a15-1046798cc39c
+            amount: '146'
+          status: PAID
           tags:
-            - descriptor:
-                code: SETTLEMENT_DETAILS
-              display: false
-              list:
-                - descriptor:
-                    code: SETTLEMENT_TYPE
-                  value: UPI
             - descriptor:
                 code: BUYER_FINDER_FEES
               display: false
@@ -178,14 +176,17 @@ value:
               display: false
               list:
                 - descriptor:
-                    code: SETTLEMENT_WINDOW
-                  value: PT60M
-                - descriptor:
-                    code: SETTLEMENT_BASIS
-                  value: Delivery
+                    code: DELAY_INTEREST
+                  value: '5'
                 - descriptor:
                     code: SETTLEMENT_TYPE
-                  value: upi
+                  value: RSF
+                - descriptor:
+                    code: SETTLEMENT_WINDOW
+                  value: PT2D
+                - descriptor:
+                    code: SETTLEMENT_BASIS
+                  value: DELIVERY
                 - descriptor:
                     code: MANDATORY_ARBITRATION
                   value: 'true'
@@ -193,14 +194,11 @@ value:
                     code: COURT_JURISDICTION
                   value: New Delhi
                 - descriptor:
-                    code: DELAY_INTEREST
-                  value: '2.5'
-                - descriptor:
                     code: STATIC_TERMS
                   value: https://example-test-bpp.com/static-terms.txt
                 - descriptor:
                     code: SETTLEMENT_AMOUNT
-                  value: '174'
+                  value: '144.54'
           type: PRE-ORDER
       provider:
         id: P1
@@ -212,9 +210,9 @@ value:
             title: BASE_FARE
           - price:
               currency: INR
-              value: '146'
+              value: '116'
             title: DISTANCE_FARE
         price:
           currency: INR
-          value: '176'
-        ttl: P200S
+          value: '146'
+      status: ACTIVE
