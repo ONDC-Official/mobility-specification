@@ -1,0 +1,82 @@
+
+summary: Initialize draft order and request for terms of service
+value:
+  context:
+    action: init
+    bap_id: example-bap.com
+    bap_uri: https://example-bap.com/prod/trv10
+    bpp_id: example-bpp.com
+    bpp_uri: https://example-bpp.com/prod/seller
+    domain: ONDC:TRV10
+    location:
+      city:
+        code: std:080
+      country:
+        code: IND
+    message_id: 0984b639-1253-4def-a3ee-16724d347a84
+    timestamp: '2023-12-09T13:50:01.460Z'
+    transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+    ttl: P120S
+    version: 2.0.0
+  message:
+    order:
+      billing:
+        name: Joe Adams
+      fulfillments:
+        - id: F2
+          type: SELF_PICKUP
+          stops:
+            - type: START
+              location:
+                gps: 13.007835, 77.645408
+              time:
+                label: "DATE_TIME"
+                timestamp: "2023-12-23T04:41:16Z"
+            - type: END
+              location:
+                gps: 13.007835, 77.645408
+              time:
+                label: "DATE_TIME"
+                timestamp: "2023-12-23T13:41:16Z"
+          customer:
+            contact:
+              phone: '9876556789'
+            person:
+              name: Joe Adams
+      items:
+        - id: I2
+      provider:
+        id: P1
+      payments:
+        - collected_by: BPP
+          params:
+            bank_account_number: xxxxxxxxxxxxxx
+            bank_code: XXXXXXXX
+            virtual_payment_address: 9988199772@okicic
+          status: NOT-PAID
+          tags:
+            - descriptor:
+                code: BUYER_FINDER_FEES
+              display: false
+              list:
+                - descriptor:
+                    code: BUYER_FINDER_FEES_PERCENTAGE
+                  value: '1'
+            - descriptor:
+                code: SETTLEMENT_TERMS
+              display: false
+              list:
+                - descriptor:
+                    code: DELAY_INTEREST
+                  value: '5'
+                - descriptor:
+                    code: SETTLEMENT_TYPE
+                  value: RSF
+                - descriptor:
+                    code: STATIC_TERMS
+                  value: https://example-test-bap.com/static-terms.txt
+                - descriptor:
+                    code: SETTLEMENT_AMOUNT
+                  value: '1.46'
+          type: ON-FULFILLMENT
+        

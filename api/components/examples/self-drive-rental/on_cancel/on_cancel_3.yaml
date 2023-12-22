@@ -1,8 +1,8 @@
 
-summary: Return draft order with payment terms[Buyer Collecting]
+summary: Return current order status after confirm-cancel
 value:
   context:
-    action: on_init
+    action: on_cancel
     bap_id: example-bap.com
     bap_uri: https://example-bap.com/prod/trv10
     bpp_id: example-bpp.com
@@ -14,9 +14,8 @@ value:
       country:
         code: IND
     message_id: 8926b747-0362-4fcc-b795-0994a6287700
-    timestamp: '2023-12-09T14:11:32.859Z'
+    timestamp: '2023-03-23T04:48:53Z'
     transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-    ttl: PT30S
     version: 2.0.0
   message:
     order:
@@ -50,14 +49,29 @@ value:
               code: RIDE_STARTED
           reason_required: true
       fulfillments:
-        - id: F1
+        - agent:
+            contact:
+              phone: '9856798567'
+            person:
+              name: Jason Roy
+          customer:
+            contact:
+              phone: '9876556789'
+            person:
+              name: Joe Adams
+          id: F1
+          state:
+            descriptor:
+              code: RIDE_CANCELLED
           stops:
-            - location:
+            - authorization:
+                token: '234234'
+                type: OTP
+              location:
                 gps: 13.008935, 77.644408
+              time:
+                duration: PT2H
               type: START
-            - location:
-                gps: 12.971186, 77.586812
-              type: END
           tags:
             - descriptor:
                 code: ROUTE_INFO
@@ -75,10 +89,14 @@ value:
           type: DELIVERY
           vehicle:
             category: AUTO_RICKSHAW
+            make: Bajaj
+            model: Compact RE
+            registration: KA-01-AD-9876
+      id: O1
       items:
         - descriptor:
             code: RIDE
-            name: Auto Ride
+            name: CAB Ride
           fulfillment_ids:
             - F1
           id: I1
@@ -90,25 +108,8 @@ value:
           price:
             currency: INR
             maximum_value: '176'
-            minimum_value: '136'
+            minimum_value: '156'
             value: '146'
-          xinput:
-            head:
-              descriptor:
-                name: Payment
-              index:
-                min: 0
-                cur: 0
-                max: 0
-              headings:
-                - Payment
-            form:
-              id: FO1
-              mime_type: application/html
-              url: https://example-bpp.com/xinput/formid/FO1
-              resubmit: false
-              multiple_sumbissions: false
-            required: true  
           tags:
             - descriptor:
                 code: FARE_POLICY
@@ -151,15 +152,21 @@ value:
                     code: ETA_TO_NEAREST_DRIVER_MIN
                   value: '3'
       payments:
-        - collected_by: BPP
+        - collected_by: BAP
           id: PA1
-          url: https://www.example-bpp.com/pg-gateway/payment?amount=146&txn_id=c04a04ee-d892-400f-bbe6-479a43b4448a
           params:
             bank_account_number: xxxxxxxxxxxxxx
             bank_code: XXXXXXXX
             virtual_payment_address: 9988199772@okicic
           status: NOT-PAID
           tags:
+            - descriptor:
+                code: SETTLEMENT_DETAILS
+              display: false
+              list:
+                - descriptor:
+                    code: SETTLEMENT_TYPE
+                  value: UPI
             - descriptor:
                 code: BUYER_FINDER_FEES
               display: false
@@ -172,17 +179,14 @@ value:
               display: false
               list:
                 - descriptor:
-                    code: DELAY_INTEREST
-                  value: '5'
-                - descriptor:
-                    code: SETTLEMENT_TYPE
-                  value: RSF
-                - descriptor:
                     code: SETTLEMENT_WINDOW
-                  value: PT2D
+                  value: PT60M
                 - descriptor:
                     code: SETTLEMENT_BASIS
-                  value: DELIVERY
+                  value: Delivery
+                - descriptor:
+                    code: SETTLEMENT_TYPE
+                  value: upi
                 - descriptor:
                     code: MANDATORY_ARBITRATION
                   value: 'true'
@@ -190,11 +194,14 @@ value:
                     code: COURT_JURISDICTION
                   value: New Delhi
                 - descriptor:
+                    code: DELAY_INTEREST
+                  value: '2.5'
+                - descriptor:
                     code: STATIC_TERMS
-                  value: https://example-test-bpp.com/static-terms.txt
+                  value: https://www.icicibank.com/personal-banking/loans/personal-loan
                 - descriptor:
                     code: SETTLEMENT_AMOUNT
-                  value: '144.54'
+                  value: '85'
           type: PRE-ORDER
       provider:
         id: P1
@@ -206,8 +213,14 @@ value:
             title: BASE_FARE
           - price:
               currency: INR
-              value: '116'
+              value: '146'
             title: DISTANCE_FARE
+          - price:
+              currency: INR
+              value: '100'
+            title: CURRENT_FARE_CHARGE
         price:
           currency: INR
-          value: '146'
+          value: '86'
+        ttl: P200S
+      status: CANCELLED

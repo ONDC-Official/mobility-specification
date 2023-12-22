@@ -1,0 +1,136 @@
+
+summary: Return a quote offered by a provider
+value:
+  context:
+    action: on_select
+    bap_id: example-bap.com
+    bap_uri: https://example-bap.com/prod/trv10
+    bpp_id: example-bpp.com
+    bpp_uri: https://example-bpp.com/prod/seller
+    domain: ONDC:TRV10
+    location:
+      city:
+        code: std:080
+      country:
+        code: IND
+    message_id: 9f3fc261-4df9-4677-b1d9-3e211bcc2fdd
+    timestamp: '2023-12-09T13:49:26.132Z'
+    transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+    ttl: PT30S
+    version: 2.0.0
+  message:
+    order:
+      provider:
+        id: P1
+      fulfillments:
+        - id: F2
+          type: SELF_PICKUP
+          stops:
+            - type: START
+              location:
+                gps: 13.007835, 77.645408
+              time:
+                label: "DATE_TIME"
+                timestamp: "2023-12-23T04:41:16Z"
+            - type: END
+              location:
+                gps: 13.007835, 77.645408
+              time:
+                label: "DATE_TIME"
+                timestamp: "2023-12-23T13:41:16Z" 
+            # - type: DROP
+            #   location:
+            #     label: "DATE_TIME"
+            #     gps: 13.006835, 77.545408
+            #   time:
+            #     timestamp: "2023-12-23T13:41:16Z"       
+          vehicle:
+            category: CAB
+            variant: HATCHBACK
+            wheels_count: "4"
+            capacity: 5
+      items:
+        - id: I2
+          descriptor:
+            name: Self Drive Rental(Hyundai I20)
+            code: VEHICLE
+          category_ids: 
+            - C2
+          price:
+            value: "3690"
+            currency: INR
+          quantity:
+            minimum: 
+              count: 1
+            maximum:
+              count: 1
+          fulfillment_ids: 
+            - F2    
+          tags:
+            - descriptor:
+                code: FARE_POLICY
+              display: true  
+              list:
+                - descriptor:
+                    code: LATE_RETURN
+                    name: "2x of the hourly rental fee per hour"
+                  value: "2x"
+                - descriptor:
+                    code: EARLY_RETURN
+                    name: "NO Refund will be considered for the remaining time from the booking period."
+                  value: "0" 
+                - descriptor:
+                    code: EXTRA_KM
+                    name: "Charges for extra kms"
+                  value: "7/km"  
+            - descriptor:
+                code: INFO
+                name: General Information
+              display: true  
+              list:   
+                - descriptor:
+                    code: MIN_HOURS
+                    name: "Minimum hours for wchich car can be rented out."
+                  value: "8"
+                - descriptor:
+                    code: KM
+                    name: "Included kms"
+                  value: "100"
+                - descriptor:
+                    code: TRANSMISSION
+                    name: "Transmission"
+                  value: MANUAL  
+                - descriptor:
+                    code: ALLOWED_BAGGAGE
+                    name: "Allowed baggage limit"
+                  value: "2"    
+                - descriptor:
+                    code: FASTAG
+                    name: "Fastag Included"
+                  value: "YES"
+                - descriptor:
+                    code: FUEL_TYPE
+                    name: "Fuel Type"
+                  value: "PETROL"    
+                
+      quote:
+        price:
+          currency: INR
+          value: '3789'
+        breakup:
+          - title: BASE_FARE
+            item:
+              id: I2
+              price:
+                currency: INR
+                value: '3690' 
+              # quantity: 
+              #   unitized:
+              #     measure:
+              #       value: 9
+              #       unit: 'hours'
+          - title: CONVENIENCE_FEE
+            price:
+              currency: INR
+              value: '99'
+        ttl: 'P200s'

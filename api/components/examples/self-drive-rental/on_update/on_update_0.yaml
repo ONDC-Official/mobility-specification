@@ -1,0 +1,196 @@
+
+summary: Return updated order with updated details
+value:
+  context:
+    action: on_update
+    bap_id: example-bap.com
+    bap_uri: https://example-bap.com/prod/trv10
+    bpp_id: example-bpp.com
+    bpp_uri: https://example-bpp.com/prod/seller
+    domain: ONDC:TRV10
+    location:
+      city:
+        code: std:080
+      country:
+        code: IND
+    message_id: 9626963a-57a3-4518-9c84-190ce3578691
+    timestamp: '2023-12-09T13:52:01.460Z'
+    transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+    ttl: PT30S
+    version: 2.0.0
+  message:
+    order:
+      id: O1
+      provider:
+        id: P1
+      fulfillments:
+        - id: F2
+          type: SELF_PICKUP
+          state:
+            descriptor:
+              code: VEHICLE_ASSIGNED
+          stops:
+            - type: START
+              # authorization:
+              #   token: '987689'
+              #   type: OTP
+              location:
+                gps: 13.007835, 77.645408
+              time:
+                label: "DATE_TIME"
+                timestamp: "2023-12-23T04:41:16Z"
+            - type: END
+              location:
+                gps: 13.007835, 77.645408
+              time:
+                label: "DATE_TIME"
+                timestamp: "2023-12-23T13:41:16Z"       
+          vehicle:
+            category: CAB
+            variant: HATCHBACK
+            wheels_count: "4"
+            capacity: 5
+            registration: 'DL-09C-3401'
+            color: 'white'
+            make: 'Maruti'
+            model: '2022'
+      items:
+        - id: I2
+          descriptor:
+            name: Self Drive Rental(Hyundai I20)
+            code: VEHICLE
+          category_ids: 
+            - C2
+          price:
+            value: "3690"
+            currency: INR
+          quantity:
+            minimum: 
+              count: 1
+            maximum:
+              count: 1
+          fulfillment_ids: 
+            - F2 
+          payment_ids:
+            - PA1 
+          xinput:
+            form_response:
+              status: APPROVED
+              submission_id: FO1_SUBMISSION_ID      
+          tags:
+            - descriptor:
+                code: FARE_POLICY
+              display: true  
+              list:
+                - descriptor:
+                    code: LATE_RETURN
+                    name: "2x of the hourly rental fee per hour"
+                  value: "2x"
+                - descriptor:
+                    code: EARLY_RETURN
+                    name: "NO Refund will be considered for the remaining time from the booking period."
+                  value: "0" 
+                - descriptor:
+                    code: EXTRA_KM
+                    name: "Charges for extra kms"
+                  value: "7/km"  
+            - descriptor:
+                code: INFO
+                name: General Information
+              display: true  
+              list:   
+                - descriptor:
+                    code: MIN_HOURS
+                    name: "Minimum hours for wchich car can be rented out."
+                  value: "8"
+                - descriptor:
+                    code: KM
+                    name: "Included kms"
+                  value: "100"
+                - descriptor:
+                    code: TRANSMISSION
+                    name: "Transmission"
+                  value: MANUAL  
+                - descriptor:
+                    code: ALLOWED_BAGGAGE
+                    name: "Allowed baggage limit"
+                  value: "2"    
+                - descriptor:
+                    code: FASTAG
+                    name: "Fastag Included"
+                  value: "YES"
+                - descriptor:
+                    code: FUEL_TYPE
+                    name: "Fuel Type"
+                  value: "PETROL"    
+      payments:
+        - collected_by: BPP
+          id: PA1
+          url: https://www.example-bpp.com/pg-gateway/payment?amount=3789&txn_id=c04a04ee-d892-400f-bbe6-479a43b4448a
+          params:
+            bank_account_number: xxxxxxxxxxxxxx
+            bank_code: XXXXXXXX
+            virtual_payment_address: 9988199772@okicic
+          status: NOT-PAID
+          tags:
+            - descriptor:
+                code: BUYER_FINDER_FEES
+              display: false
+              list:
+                - descriptor:
+                    code: BUYER_FINDER_FEES_PERCENTAGE
+                  value: '1'
+            - descriptor:
+                code: SETTLEMENT_TERMS
+              display: false
+              list:
+                - descriptor:
+                    code: DELAY_INTEREST
+                  value: '5'
+                - descriptor:
+                    code: SETTLEMENT_TYPE
+                  value: RSF
+                - descriptor:
+                    code: SETTLEMENT_WINDOW
+                  value: PT2D
+                - descriptor:
+                    code: SETTLEMENT_BASIS
+                  value: DELIVERY
+                - descriptor:
+                    code: MANDATORY_ARBITRATION
+                  value: 'true'
+                - descriptor:
+                    code: COURT_JURISDICTION
+                  value: New Delhi
+                - descriptor:
+                    code: STATIC_TERMS
+                  value: https://example-test-bpp.com/static-terms.txt
+                - descriptor:
+                    code: SETTLEMENT_AMOUNT
+                  value: '1.46'
+          
+         
+          type: ON-FULFILLMENT         
+      quote:
+        price:
+          currency: INR
+          value: '3789'
+        breakup:
+          - title: BASE_FARE
+            item:
+              id: I2
+              price:
+                currency: INR
+                value: '3690'
+          - title: CONVENIENCE_FEE
+            price:
+              currency: INR
+              value: '99'
+        ttl: 'P200s'
+      cancellation_terms: 
+        - external_ref:
+            mimetype: "application/html"
+            url: "https://example-bpp.com/prod/cancellation-terms"
+      status: ACTIVE
+      created_at: '2023-12-09T13:51:10.460Z'
+      updated_at: '2023-12-09T13:52:01.460Z'
