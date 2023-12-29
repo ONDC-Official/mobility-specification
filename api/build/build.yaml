@@ -2748,6 +2748,17 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
     message:
       intent:
+        category:
+          descriptor:
+            code:
+              - code: RIDE
+                description: Describes the type RIDE of on-demand use case.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: VEHICLE
+                description: >-
+                  Describes the type VEHICLE of on-demand use case for self
+                  drive rentals.
+                reference: <PR/Issue/Discussion Links md format text
         fulfillment: &ref_2
           vehicle:
             category:
@@ -2757,8 +2768,24 @@ x-enum:
               - code: CAB
                 description: Describes the vehicle category as cab
                 reference: <PR/Issue/Discussion Links md format text
+            variant:
+              - code: HATCHBACK
+                description: Describes the vehicle variant
+                reference: <PR/Issue/Discussion Links md format text
+              - code: SEDAN
+                description: Describes the vehicle variant
+                reference: <PR/Issue/Discussion Links md format text
+              - code: SUV
+                description: Describes the vehicle variant
+                reference: <PR/Issue/Discussion Links md format text
+              - code: LUXURY
+                description: Describes the vehicle variant
+                reference: <PR/Issue/Discussion Links md format text
           type:
             - code: DELIVERY
+              description: Describes the type of fulfillment.
+              reference: <PR/Issue/Discussion Links md format text
+            - code: SELF_PICKUP
               description: Describes the type of fulfillment.
               reference: <PR/Issue/Discussion Links md format text
           stops:
@@ -2804,6 +2831,12 @@ x-enum:
                     Describes the state when the rider has arrived at the pickup
                     location.
                   reference: <PR/Issue/Discussion Links md format text
+                - code: VEHICLE_ASSIGNED
+                  description: Describes the state when the vehicle is assigned.
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: VEHICLE_UNLOCKED
+                  description: Describes the state when the vehicle is unlocked.
+                  reference: <PR/Issue/Discussion Links md format text
         payment: &ref_3
           status:
             - code: NOT-PAID
@@ -2848,7 +2881,12 @@ x-enum:
             descriptor:
               code:
                 - code: RIDE
-                  description: Describes the type of ride.
+                  description: Describes the type RIDE of on-demand use case.
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: VEHICLE
+                  description: >-
+                    Describes the type VEHICLE of on-demand use case for self
+                    drive rentals.
                   reference: <PR/Issue/Discussion Links md format text
           fulfillments: *ref_2
           payments: *ref_3
@@ -3141,6 +3179,15 @@ x-tags:
                   - code: RESTRICTION_PROOF
                     description: Describes the proof needed for restriction
                     reference: <PR/Issue/Discussion Links md format text>
+                  - code: LATE_RETURN_CHARGE
+                    description: Describes the late return charge
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: EARLY_RETURN_CHARGE
+                    description: Describes the early return amount
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: EXTRA_KM_CHARGE
+                    description: Describes the extra km charge
+                    reference: <PR/Issue/Discussion Links md format text>
               - code: INFO
                 description: Describes the general info about the ride
                 reference: <PR/Issue/Discussion Links md format text>
@@ -3150,6 +3197,21 @@ x-tags:
                     reference: <PR/Issue/Discussion Links md format text>
                   - code: ETA_TO_NEAREST_DRIVER_MIN
                     description: Describes the ETA to nearest driver.
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: MIN_HOURS
+                    description: Describes the for which car can be rented out.
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: TRANSMISSION
+                    description: Describes the vehciles transmission
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: ALLOWED_BAGGAGE
+                    description: Describes the allowed baggage limit
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: FASTAG
+                    description: Describes the fastag is availability
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: FUEL_TYPE
+                    description: Describes the fuel type
                     reference: <PR/Issue/Discussion Links md format text>
           payments: *ref_9
   on_select:
@@ -6760,7 +6822,7 @@ x-flows:
         api: form
         details:
           - description: >-
-              Buyer app fetches the SIP setup form from the provider using the
+              Buyer app fetches the payment form from the provider using the
               link provided in the previous step.
             mermaid: |-
               sequenceDiagram
@@ -7181,7 +7243,7 @@ x-flows:
       - description: >-
           The illustraive flow to perform a transaction of the nature where in a
           buyer would like to book a mobility service form location
-          A(gps-cordinates) to localtion B(gps-cordinates)
+          A(gps-cordinates) with timestamp.
         mermaid: |-
           sequenceDiagram
             title self-drive-rental Discovery
@@ -7234,12 +7296,12 @@ x-flows:
             Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK       
     steps:
-      - summary: Buyer app search for available ride providers
+      - summary: Buyer app search for available self drive vehicle providers.
         api: search
         details:
           - description: >-
-              Buyer app explore ride providers to avail a mobility service from
-              Location A to Location B (GPS) over the network.
+              Buyer app explore ride providers to avail a mobility service over
+              the network.
             mermaid: |-
               sequenceDiagram
                 rect rgb(191, 223, 255)
@@ -7309,11 +7371,11 @@ x-flows:
                         - descriptor:
                             code: STATIC_TERMS
                           value: https://example-test-bap.com/static-terms.txt
-      - summary: Get a list of all services from ride providers
+      - summary: Get a list of all services from vehicle providers
         api: on_search
         details:
           - description: >-
-              Ride providers which is a mobility provider platform sends the
+              Vehicle providers which is a mobility provider platform sends the
               catalog of all services that can be used for transit from A to B
               along with estimated fare.
             mermaid: |-
@@ -7383,17 +7445,17 @@ x-flows:
                             display: true
                             list:
                               - descriptor:
-                                  code: LATE_RETURN
+                                  code: LATE_RETURN_CHARGE
                                   name: 2x of the hourly rental fee per hour
                                 value: 2x
                               - descriptor:
-                                  code: EARLY_RETURN
+                                  code: EARLY_RETURN_CHARGE
                                   name: >-
                                     NO Refund will be considered for the
                                     remaining time from the booking period.
                                 value: '0'
                               - descriptor:
-                                  code: EXTRA_KM
+                                  code: EXTRA_KM_CHARGE
                                   name: Charges for extra kms
                                 value: 7/km
                           - descriptor:
@@ -7404,7 +7466,7 @@ x-flows:
                               - descriptor:
                                   code: MIN_HOURS
                                   name: >-
-                                    Minimum hours for wchich car can be rented
+                                    Minimum hours for which car can be rented
                                     out.
                                 value: '8'
                               - descriptor:
@@ -7449,17 +7511,17 @@ x-flows:
                             display: true
                             list:
                               - descriptor:
-                                  code: LATE_RETURN
+                                  code: LATE_RETURN_CHARGE
                                   name: 2x of the hourly rental fee per hour
                                 value: 2x
                               - descriptor:
-                                  code: EARLY_RETURN
+                                  code: EARLY_RETURN_CHARGE
                                   name: >-
                                     NO Refund will be considered for the
                                     remaining time from the booking period.
                                 value: '0'
                               - descriptor:
-                                  code: EXTRA_KM
+                                  code: EXTRA_KM_CHARGE
                                   name: Charges for extra kms
                                 value: 7/km
                           - descriptor:
@@ -7470,7 +7532,7 @@ x-flows:
                               - descriptor:
                                   code: MIN_HOURS
                                   name: >-
-                                    Minimum hours for wchich car can be rented
+                                    Minimum hours for which car can be rented
                                     out.
                                 value: '8'
                               - descriptor:
@@ -7598,12 +7660,12 @@ x-flows:
                   - id: I2
                 provider:
                   id: P1
-      - summary: Ride provider provides the quote for selected service
+      - summary: Vehicle provider provides the quote for selected service
         api: on_select
         details:
           - description: >-
-              Ride provider responds with detailed information and quote for the
-              specific service that the buyer app would like to avail.
+              Vehicle provider responds with detailed information and quote for
+              the specific service that the buyer app would like to avail.
             mermaid: |-
               sequenceDiagram
                 participant Buyer Platform (BAP)
@@ -7683,17 +7745,17 @@ x-flows:
                         display: true
                         list:
                           - descriptor:
-                              code: LATE_RETURN
+                              code: LATE_RETURN_CHARGE
                               name: 2x of the hourly rental fee per hour
                             value: 2x
                           - descriptor:
-                              code: EARLY_RETURN
+                              code: EARLY_RETURN_CHARGE
                               name: >-
                                 NO Refund will be considered for the remaining
                                 time from the booking period.
                             value: '0'
                           - descriptor:
-                              code: EXTRA_KM
+                              code: EXTRA_KM_CHARGE
                               name: Charges for extra kms
                             value: 7/km
                       - descriptor:
@@ -7703,7 +7765,7 @@ x-flows:
                         list:
                           - descriptor:
                               code: MIN_HOURS
-                              name: Minimum hours for wchich car can be rented out.
+                              name: Minimum hours for which car can be rented out.
                             value: '8'
                           - descriptor:
                               code: KM
@@ -7741,7 +7803,7 @@ x-flows:
                         currency: INR
                         value: '99'
                   ttl: P200s
-      - summary: Buyer app initializes the ride request
+      - summary: Buyer app initializes the request
         api: init
         details:
           - description: >-
@@ -7839,12 +7901,12 @@ x-flows:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
                     type: ON-FULFILLMENT
-      - summary: Ride provider accepts/appends the terms of orders
+      - summary: Vehicle provider accepts/appends the terms of orders
         api: on_init
         details:
           - description: >-
-              Ride provider accepts the terms of order and appends its own terms
-              and responds with the final draft.
+              Vehicle provider accepts the terms of order and appends its own
+              terms and responds with the final draft.
             mermaid: |-
               sequenceDiagram
                 participant Buyer Platform (BAP)
@@ -7926,17 +7988,17 @@ x-flows:
                         display: true
                         list:
                           - descriptor:
-                              code: LATE_RETURN
+                              code: LATE_RETURN_CHARGE
                               name: 2x of the hourly rental fee per hour
                             value: 2x
                           - descriptor:
-                              code: EARLY_RETURN
+                              code: EARLY_RETURN_CHARGE
                               name: >-
                                 NO Refund will be considered for the remaining
                                 time from the booking period.
                             value: '0'
                           - descriptor:
-                              code: EXTRA_KM
+                              code: EXTRA_KM_CHARGE
                               name: Charges for extra kms
                             value: 7/km
                       - descriptor:
@@ -7946,7 +8008,7 @@ x-flows:
                         list:
                           - descriptor:
                               code: MIN_HOURS
-                              name: Minimum hours for wchich car can be rented out.
+                              name: Minimum hours for which car can be rented out.
                             value: '8'
                           - descriptor:
                               code: KM
@@ -8035,7 +8097,7 @@ x-flows:
                   - external_ref:
                       mimetype: application/html
                       url: https://example-bpp.com/prod/cancellation-terms
-      - summary: Buyer app confirms the ride
+      - summary: Buyer app confirms the vehicle
         api: confirm
         details:
           - description: >-
@@ -8051,6 +8113,7 @@ x-flows:
                 end
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):form
         reference: if any
         example: &ref_31
           summary: Confirm order
@@ -8145,11 +8208,11 @@ x-flows:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
                     type: ON-FULFILLMENT
-      - summary: Ride provider confirms the ride request
+      - summary: Vehicle provider confirms the ride request
         api: on_confirm
         details:
           - description: >-
-              Ride provider confirms the ride request and provides the ride
+              Vehicle provider confirms the ride request and provides the ride
               details on confirmation.
             mermaid: |-
               sequenceDiagram
@@ -8161,6 +8224,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
+                Seller Platform (BPP)->>Buyer Platform (BAP):form
         reference: if any
         example: &ref_33
           summary: Order confirmed with latest fulfillment details
@@ -8260,17 +8324,17 @@ x-flows:
                         display: true
                         list:
                           - descriptor:
-                              code: LATE_RETURN
+                              code: LATE_RETURN_CHARGE
                               name: 2x of the hourly rental fee per hour
                             value: 2x
                           - descriptor:
-                              code: EARLY_RETURN
+                              code: EARLY_RETURN_CHARGE
                               name: >-
                                 NO Refund will be considered for the remaining
                                 time from the booking period.
                             value: '0'
                           - descriptor:
-                              code: EXTRA_KM
+                              code: EXTRA_KM_CHARGE
                               name: Charges for extra kms
                             value: 7/km
                       - descriptor:
@@ -8280,7 +8344,7 @@ x-flows:
                         list:
                           - descriptor:
                               code: MIN_HOURS
-                              name: Minimum hours for wchich car can be rented out.
+                              name: Minimum hours for which car can be rented out.
                             value: '8'
                           - descriptor:
                               code: KM
@@ -8372,11 +8436,31 @@ x-flows:
                 status: ACTIVE
                 created_at: '2023-12-09T13:51:10.460Z'
                 updated_at: '2023-12-09T13:51:10.460Z'
-      - summary: Ride provider provides latest update on the ride (unsolicited call)
+      - summary: Buyer app redirects to vehcile checklist page.
+        api: form
+        details:
+          - description: >-
+              Buyer app fetches the checklist form from the provider using the
+              link provided in the previous step.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):form
+                end
+        reference: if any
+        example:
+          value: This will redirected to different html page
+      - summary: Vehicle provider provides latest update on the ride (unsolicited call)
         api: on_update
         details:
           - description: >-
-              Ride provider provides the latest update on ride details to the
+              Vehicle provider provides the latest update on ride details to the
               buyer app.
             mermaid: |-
               sequenceDiagram
@@ -8473,17 +8557,17 @@ x-flows:
                         display: true
                         list:
                           - descriptor:
-                              code: LATE_RETURN
+                              code: LATE_RETURN_CHARGE
                               name: 2x of the hourly rental fee per hour
                             value: 2x
                           - descriptor:
-                              code: EARLY_RETURN
+                              code: EARLY_RETURN_CHARGE
                               name: >-
                                 NO Refund will be considered for the remaining
                                 time from the booking period.
                             value: '0'
                           - descriptor:
-                              code: EXTRA_KM
+                              code: EXTRA_KM_CHARGE
                               name: Charges for extra kms
                             value: 7/km
                       - descriptor:
@@ -8493,7 +8577,7 @@ x-flows:
                         list:
                           - descriptor:
                               code: MIN_HOURS
-                              name: Minimum hours for wchich car can be rented out.
+                              name: Minimum hours for which car can be rented out.
                             value: '8'
                           - descriptor:
                               code: KM
@@ -8588,9 +8672,7 @@ x-flows:
       - summary: Buyer app seeks the most recent status update
         api: status
         details:
-          - description: >-
-              Buyer app requests the ride provider to provide the latest order
-              status
+          - description: Buyer app requests the provider to provide the latest order status
             mermaid: |-
               sequenceDiagram
                 participant Buyer Platform (BAP)
@@ -8626,10 +8708,12 @@ x-flows:
               version: 2.0.0
             message:
               order_id: O1
-      - summary: Ride provider provides latest order status
+      - summary: Vehicle provider provides latest order status
         api: on_status
         details:
-          - description: Ride provider provides the updated order status to the buyer app
+          - description: >-
+              Vehicle provider provides the updated order status to the buyer
+              app
             mermaid: |-
               sequenceDiagram
                 participant Buyer Platform (BAP)
@@ -8721,17 +8805,17 @@ x-flows:
                         display: true
                         list:
                           - descriptor:
-                              code: LATE_RETURN
+                              code: LATE_RETURN_CHARGE
                               name: 2x of the hourly rental fee per hour
                             value: 2x
                           - descriptor:
-                              code: EARLY_RETURN
+                              code: EARLY_RETURN_CHARGE
                               name: >-
                                 NO Refund will be considered for the remaining
                                 time from the booking period.
                             value: '0'
                           - descriptor:
-                              code: EXTRA_KM
+                              code: EXTRA_KM_CHARGE
                               name: Charges for extra kms
                             value: 7/km
                       - descriptor:
@@ -8741,7 +8825,7 @@ x-flows:
                         list:
                           - descriptor:
                               code: MIN_HOURS
-                              name: Minimum hours for wchich car can be rented out.
+                              name: Minimum hours for which car can be rented out.
                             value: '8'
                           - descriptor:
                               code: KM
@@ -13733,6 +13817,2325 @@ x-attributes:
               owner: BPP
               usage: order.fulfillment.agent
               description: Describes the target for update
+  self-drive-rental:
+    attribute_set:
+      search:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: search
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+        message:
+          intent:
+            fulfillment:
+              stops:
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: START
+                  description: >-
+                    Describes the type of the stops during the fulfillment of
+                    order
+                location:
+                  gps:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: 12.923608, 77.614629
+                    description: Describes the GPS co-ordinates of this location.
+                time:
+                  timestamp:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: '2023-12-23T04:41:16Z'
+                    description: Describes the fulfillment timestamp.
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: VEHICLE
+                  description: Describes the vehicle category.
+      on_search:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: on_search
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+          bpp_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: api.example-bpp.com
+            description: Describes subscriber ID of the BPP
+          bpp_uri:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: >-
+              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+        message:
+          catalog:
+            descriptor:
+              name:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: Mobility Servies BPP
+                description: Describes the catalog name.
+            providers:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 450dec0f
+                description: Describes the unique Id of the provider.
+              fulfillments:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: b68bb35b
+                  description: >-
+                    Describes the unique reference ID to the fulfillment of an
+                    order
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: DELIVERY
+                  description: >-
+                    A code that describes the mode of fulfillment. This is
+                    typically set when there are multiple ways an order can be
+                    fulfilled. 
+                stops:
+                  type:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: START
+                    description: >-
+                      Describes the type of the stops during the fulfillment of
+                      order
+                  location:
+                    gps:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: 28.707358, 77.180910
+                      description: Describes the GPS co-ordinates of this location.
+                  time:
+                    timestamp:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: '2023-12-23T04:41:16Z'
+                      description: Describes the GPS co-ordinates of this location.
+                vehicle:
+                  category:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: CAB
+                    description: Describes the vehicle category.
+                  variant:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: HATCHBACK
+                    description: Describes the vehicle variant.
+              items:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: ecf4d145
+                  description: Describes the unique Id of the item.
+                descriptor:
+                  code:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: Self Drive Rental(Hyundai I20)
+                    description: Describes the unique code value of the item
+                  name:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: VEHICLE
+                    description: Describes the name value of the item
+                category_ids:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: C2
+                  description: Describes the category id of the item.
+                price:
+                  currency:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the currency type of a product or service
+                  value:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 3890
+                    description: Describes the price of a product or service
+                quantity:
+                  minimum:
+                    count:
+                      required: mandatory
+                      type: integer
+                      owner: BPP
+                      usage: 1
+                      description: Describes the minimum count of a product or service
+                  maximum:
+                    count:
+                      required: mandatory
+                      type: integer
+                      owner: BPP
+                      usage: 1
+                      description: Describes the maximum count of a product or service
+                fulfillment_ids:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: b68bb35b
+                  description: Describes the Unique reference ID for order fulfillment.
+      select:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: select
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+          bpp_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: api.example-bpp.com
+            description: Describes subscriber ID of the BPP
+          bpp_uri:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: >-
+              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+        message:
+          order:
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: ecf4d145
+                description: Describes the unique Id of the item.
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 450dec0f
+                description: Describes the unique Id of the provider.
+      on_select:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: on_select
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+          bpp_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: api.example-bpp.com
+            description: Describes subscriber ID of the BPP
+          bpp_uri:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: >-
+              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+        message:
+          order:
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: ecf4d145
+                description: Describes the unique Id of the item.
+              descriptor:
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Self Drive Rental(Hyundai I20)
+                  description: Describes the item name.
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: VEHICLE
+                  description: Describes the unique code value of the item
+              category_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: C2
+                description: Describes the category id of the item.
+              price:
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency type of a product or service
+              quantity:
+                minimum:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BPP
+                    usage: 1
+                    description: Describes the minimum count of a product or service
+                maximum:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BPP
+                    usage: 1
+                    description: Describes the maximum count of a product or service
+              fulfillment_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 450dec0f
+                description: Describes the unique Id of the provider.
+              fulfillments:
+                vehicle:
+                  variant:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: HATCHBACK
+                    description: Describes the vehicle variant.
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: SELF_PICKUP
+                description: A code that describes the mode of fulfillment.
+              stops:
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    Describes the type of the stops during the fulfillment of
+                    order
+                location:
+                  gps:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes the GPS co-ordinates of this location.
+                time:
+                  timestamp:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: '2023-12-23T04:41:16Z'
+                    description: Describes the GPS co-ordinates of this location.
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes the vehicle category.
+            quote:
+              price:
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: BASE_FARE
+                  description: Breakup title of the total quoted price
+                price:
+                  value:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  currency:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+              ttl:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: P200s
+                description: Time to live in seconds for an instance of this schema
+      init:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: init
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+          bpp_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: api.example-bpp.com
+            description: Describes subscriber ID of the BPP
+          bpp_uri:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: >-
+              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+        message:
+          order:
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: ecf4d145
+                description: Describes the unique Id of the item.
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 450dec0f
+                description: Id of the provider
+            billing:
+              name:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: John Doe
+                description: Name of the billable entity
+            payments:
+              collected_by:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: BPP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: NOT-PAID
+                description: Payment status
+              type:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: ON-FULFILLMENT
+                description: Payment Type
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
+              customer:
+                person:
+                  name:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: Jason Roy
+                    description: Name of the customer
+                contact:
+                  phone:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: 9898657512
+                    description: Contact number of the customer
+              stops:
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: START
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: 28.707358, 77.180910
+                    description: The GPS co-ordinates of this location.
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: AUTO_RICKSHAW
+                  description: Describes vehicle category
+      on_init:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: on_init
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+          bpp_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: api.example-bpp.com
+            description: Describes subscriber ID of the BPP
+          bpp_uri:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: >-
+              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+        message:
+          order:
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: ecf4d145-4ea3-45fe-ab3d-7bcf6b9f456b
+                description: Describes the unique Id of the item.
+              descriptor:
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Self Drive Rental(Hyundai I20)
+                  description: Describes the item name.
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: VEHICLE
+                  description: Describes the unique code value of the item
+              category_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: C2
+                description: Describes the category id of the item.
+              price:
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the price of selected item.
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+              quantity:
+                minimum:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BPP
+                    usage: 1
+                    description: Describes the minimum count of a product or service
+                maximum:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BPP
+                    usage: 1
+                    description: Describes the maximum count of a product or service
+              location_ids:
+                required: optional
+                type: string
+                owner: BPP
+                usage: d3ebf05b
+                description: >-
+                  Indicates the locations where this item is available from
+                  providers.
+              fulfillment_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
+              payment_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: bc08edb1
+                description: Unique reference ID to the payment of an order
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 450dec0f
+                description: Describes the unqiue Id of the provider
+              fulfillments:
+                vehicle:
+                  variant:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: HATCHBACK
+                    description: Describes the vehicle variant.
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: DELIVERY
+                description: A code that describes the mode of fulfillment.
+              stops:
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: Describes the GPS co-ordinates of this location.
+                time:
+                  timestamp:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: '2023-12-23T04:41:16Z'
+                    description: Describes the GPS co-ordinates of this location.
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes the vehicle category.
+            quote:
+              price:
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  currency:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+                  value:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 120
+                    description: Describes the price of a product or service
+              ttl:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: P200s
+                description: Time to live in seconds for an instance of this schema
+            payments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: bc08edb1
+                description: >-
+                  Describes the ID of the payment term that can be referred at
+                  an item or an order level in a catalog
+              collected_by:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: BPP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: NOT-PAID
+                description: Describe the payment Status for particular order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: ON-FULFILLMENT
+                description: Describe the payment type for particular order
+              params:
+                bank_code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                virtual_payment_address:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 9988199772@okicic
+                  description: Virtual payment address associated with payment activity
+            cancellation_terms:
+              external_ref:
+                mimetype:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: application/html
+                  description: Describes the mime type for the cancellation terms
+                url:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: https://example-bpp.com/prod/cancellation-terms
+                  description: Describes the url for the cancellation terms
+      confirm:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: confirm
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+          bpp_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: api.example-bpp.com
+            description: Describes subscriber ID of the BPP
+          bpp_uri:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: >-
+              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+        message:
+          order:
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: ecf4d145
+                description: Describes the unique Id of the item.
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 450dec0f
+                description: Describes the uique Id of the provider.
+              fulfillments:
+                vehicle:
+                  variant:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: HATCHBACK
+                    description: Describes the vehicle variant.
+            billing:
+              name:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: John Doe
+                description: Describes the Name of the billable entity
+            payments:
+              id:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: bc08edb1
+                description: >-
+                  ID of the payment term that can be referred at an item or an
+                  order level in a catalog
+              collected_by:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: BPP
+                description: 'This field indicates who is the collector of payment. '
+              status:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: NOT-PAID
+                description: Describe the payment Status for particular order
+              type:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: ON-FULFILLMENT
+                description: Describe the payment type for particular order
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
+              customer:
+                person:
+                  name:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: Jason Roy
+                    description: Describe the name of the customer
+                contact:
+                  phone:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 9898657512
+                    description: Describe the contact number of the customer
+              stops:
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: START
+                  description: >-
+                    Describes the type of the stops during the fulfillment of
+                    order
+                location:
+                  gps:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 28.686576, 77.441632
+                    description: The GPS co-ordinates of this location.
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+      on_confirm:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: on_confirm
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+          bpp_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: api.example-bpp.com
+            description: Describes subscriber ID of the BPP
+          bpp_uri:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: >-
+              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+        message:
+          order:
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: ecf4d145
+                description: Describes the unique Id of the item.
+              descriptor:
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Self Drive Rental(Hyundai I20)
+                  description: Describes the item name.
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: VEHICLE
+                  description: Describes the unique code value of the item
+              price:
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: >-
+                    Describes the currency type to be paid in of a product or
+                    service
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+              quantity:
+                minimum:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BPP
+                    usage: 1
+                    description: Describes the minimum count of a product or service
+                maximum:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BPP
+                    usage: 1
+                    description: Describes the maximum count of a product or service
+              fulfillment_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
+              payment_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+              xinput:
+                head:
+                  index:
+                    min:
+                      required: true
+                      type: number
+                      owner: BPP
+                      usage: false
+                      description: Describes the min indexvalue
+                    max:
+                      required: true
+                      type: integer
+                      owner: BPP
+                      usage: false
+                      description: Describes the max index value
+                    cur:
+                      required: true
+                      type: integer
+                      owner: BPP
+                      usage: false
+                      description: Describes the current index value
+                  descriptor:
+                    name:
+                      required: true
+                      type: string
+                      owner: BPP
+                      usage: Checklist
+                      description: Physical description name of something.
+                form:
+                  mime_type:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: application/html
+                    description: ' Describes the mime of the document'
+                  url:
+                    required: true
+                    type: string
+                    owner: BPP
+                    usage: >-
+                      https://6vs8xnx5i7.abcmf.co.in/mf-kyc/xinput/formid/a23f2fdfbbb8ac402bfd54f
+                    description: ' Describes the url of the document'
+                  resubmit:
+                    required: true
+                    type: boolean
+                    owner: BPP
+                    usage: true
+                    description: Describes a form can be re-submited again or not.
+                  'multiple_sumbissions                                                                                                                                                                                       ':
+                    required: true
+                    type: boolean
+                    owner: BPP
+                    usage: false
+                    description: Describes a form supports multiple sumbissions or not.
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 450dec0f
+                description: Unique reference ID to the payment of an order
+              fulfillments:
+                vehicle:
+                  variant:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: HATCHBACK
+                    description: Describes the vehicle variant.
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+              customer:
+                person:
+                  name:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: Jason Roy
+                    description: Describes the name of the customer
+                contact:
+                  phone:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 9898657512
+                    description: Describes the contact number of the customer
+              agent:
+                person:
+                  name:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: John Doe
+                    description: Describes the name of the agent
+                contact:
+                  phone:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 7845981268
+                    description: Describes the contact number of the agent
+              state:
+                descriptor:
+                  code:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: VEHICLE_ASSIGNED
+                    description: Describes the state's code for fulfillment.
+              stops:
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INTERMEDIATE_STOP
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 28.707358, 77.180910
+                    description: The GPS co-ordinates of this location.
+                time:
+                  timestamp:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: '2023-12-23T04:41:16Z'
+                    description: Describes the GPS co-ordinates of this location.
+                authorization:
+                  type:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: OTP
+                    description: >-
+                      Type of authorization mechanism used. The allowed values
+                      for this field can be published as part of the network
+                      policy.
+                  token:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 232312
+                    description: >-
+                      Token used for authorization. This is typically generated
+                      at the BPP. The BAP can send this value to the user via
+                      any channel that it uses to authenticate the user like
+                      SMS, Email, Push notification, or in-app rendering.
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+                make:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: Maruti
+                  description: Describes vehicle manufacturer
+                model:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: 2022
+                  description: Describes vehicle model
+                registration:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: HR-20AS-4578
+                  description: Describes vehicle registration details
+            quote:
+              price:
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  currency:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  value:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+              ttl:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: P200s
+                description: Time to live in seconds for an instance of this schema
+            payments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: bc08edb1
+                description: >-
+                  Describes the ID of the payment term that can be referred at
+                  an item or an order level in a catalog
+              status:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: NOT-PAID
+                description: Describe the Payment Status
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: ON-FULFILLMENT
+                description: Describe the Payment type
+              params:
+                bank_code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                virtual_payment_address:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 9988199772@okicic
+                  description: Virtual payment address associated with payment activity
+            cancellation_terms:
+              external_ref:
+                mimetype:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: application/html
+                  description: Describes the mime type for the cancellation terms
+                url:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: https://example-bpp.com/prod/cancellation-terms
+                  description: Describes the url for the cancellation terms
+      status:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: status
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+          bpp_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: api.example-bpp.com
+            description: Describes subscriber ID of the BPP
+          bpp_uri:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: >-
+              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+        message:
+          order_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: 60253df1
+            description: 'Describes the unique ID of the order. '
+      on_status:
+        context:
+          location:
+            country:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+            city:
+              code:
+                required: mandatory
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code this location is, or is located within
+          domain:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: ONDC:TRV10
+            description: Describes domain code that is relevant to this transaction context
+          timestamp:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: '2023-03-23T04:41:16Z'
+            description: Describes tme of request generation in RFC3339 format
+          bap_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: api.example-bap.com
+            description: Describes subscriber ID of the BAP
+          transaction_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 6743e9e2
+            description: Describes  a unique value which persists across all API calls
+          message_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 13ba8018f176
+            description: >-
+              Describes a unique value which persists during a request /
+              callback cycle.
+          version:
+            required: mandatory
+            type: integer
+            owner: BAP
+            usage: 2.0.0
+            description: >-
+              Describes the version of transaction protocol being used by the
+              sender.
+          action:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: on_status
+            description: >-
+              Describes the Beckn protocol method being called by the sender and
+              executed at the receiver.
+          bap_uri:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: https://api.example-bap.com/pilot/bap/cab/v1
+            description: >-
+              Describes subscriber URL of the BAP for accepting callbacks from
+              BPPs.
+          ttl:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: PT30S
+            description: >-
+              Describes the duration in ISO8601 format after timestamp for which
+              this message holds valid
+          bpp_id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: api.example-bpp.com
+            description: Describes subscriber ID of the BPP
+          bpp_uri:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: >-
+              https://api.example-bpp.com/dobpp/7f7896dd-787e-4a0b-8675-e9e6fe93bb8f
+            description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+        message:
+          order:
+            items:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: ecf4d145
+                description: Describes the unique Id of the item.
+              descriptor:
+                name:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Self Drive Rental(Hyundai I20)
+                  description: Describes the item name.
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: VEHICLE
+                  description: Describes the unique code value of the item
+              price:
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: >-
+                    Describes the currency type to be paid in of a product or
+                    service
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+              quantity:
+                minimum:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BPP
+                    usage: 1
+                    description: Describes the minimum count of a product or service
+                maximum:
+                  count:
+                    required: mandatory
+                    type: integer
+                    owner: BPP
+                    usage: 1
+                    description: Describes the maximum count of a product or service
+              fulfillment_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
+              payment_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+            provider:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: 450dec0f
+                description: Unique reference ID to the payment of an order
+              fulfillments:
+                vehicle:
+                  variant:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: HATCHBACK
+                    description: Describes the vehicle variant.
+            fulfillments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: b68bb35b
+                description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: P1
+                description: Unique reference ID to the payment of an order
+              customer:
+                person:
+                  name:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: Jason Roy
+                    description: Describes the name of the customer
+                contact:
+                  phone:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 9898657512
+                    description: Describes the contact number of the customer
+              agent:
+                person:
+                  name:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: John Doe
+                    description: Describes the name of the agent
+                contact:
+                  phone:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 7845981268
+                    description: Describes the contact number of the agent
+              state:
+                descriptor:
+                  code:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: VEHICLE_UNLOCKED
+                    description: Describes the state's code for fulfillment.
+              stops:
+                type:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INTERMEDIATE_STOP
+                  description: >-
+                    The type of stop. Allowed values of this property can be
+                    defined by the network policy.
+                location:
+                  gps:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 28.707358, 77.180910
+                    description: The GPS co-ordinates of this location.
+                time:
+                  timestamp:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: '2023-12-23T04:41:16Z'
+                    description: Describes the GPS co-ordinates of this location.
+              vehicle:
+                category:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: CAB
+                  description: Describes vehicle category
+                make:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: Maruti
+                  description: Describes vehicle manufacturer
+                model:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: 2022
+                  description: Describes vehicle model
+                registration:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: HR-20AS-4578
+                  description: Describes vehicle registration details
+            quote:
+              price:
+                value:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 60
+                  description: Describes the price of a product or service
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: INR
+                  description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Base Fare
+                  description: Breakup title of the total quoted price
+                price:
+                  currency:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: INR
+                    description: Describes the price of a product or service
+                  value:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 120
+                    description: >-
+                      Describes the currency to be paid in of a product or
+                      service
+              ttl:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: P200s
+                description: Time to live in seconds for an instance of this schema
+            payments:
+              id:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: bc08edb1
+                description: >-
+                  Describes the ID of the payment term that can be referred at
+                  an item or an order level in a catalog
+              status:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: NOT-PAID
+                description: Describe the Payment Status
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: ON-FULFILLMENT
+                description: Describe the Payment type
+              params:
+                bank_code:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                virtual_payment_address:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 9988199772@okicic
+                  description: Virtual payment address associated with payment activity
+            cancellation_terms:
+              external_ref:
+                mimetype:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: application/html
+                  description: Describes the mime type for the cancellation terms
+                url:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: https://example-bpp.com/prod/cancellation-terms
+                  description: Describes the url for the cancellation terms
 x-errorcodes:
   code:
     - Event: Route Serviceability error

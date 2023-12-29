@@ -1,6 +1,6 @@
 summary: On-Demand - Self Drive Rentals
 details: 
-  - description: The illustraive flow to perform a transaction of the nature where in a buyer would like to book a mobility service form location A(gps-cordinates) to localtion B(gps-cordinates)
+  - description: The illustraive flow to perform a transaction of the nature where in a buyer would like to book a mobility service form location A(gps-cordinates) with timestamp.
     mermaid: >-
       sequenceDiagram
         title self-drive-rental Discovery
@@ -53,10 +53,10 @@ details:
         Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
         Buyer Platform (BAP)-->>Seller Platform (BPP): ACK       
 steps:
-  - summary: Buyer app search for available ride providers
+  - summary: Buyer app search for available self drive vehicle providers.
     api: search
     details: 
-      - description: Buyer app explore ride providers to avail a mobility service from Location A to Location B (GPS) over the network.
+      - description: Buyer app explore ride providers to avail a mobility service over the network.
         mermaid: >- 
           sequenceDiagram
             rect rgb(191, 223, 255)
@@ -72,10 +72,10 @@ steps:
     reference: if any
     example:
       $ref: "../../examples/self-drive-rental/search/search_0.yaml"
-  - summary: Get a list of all services from ride providers
+  - summary: Get a list of all services from vehicle providers
     api: on_search
     details: 
-      - description: Ride providers which is a mobility provider platform sends the catalog of all services that can be used for transit from A to B along with estimated fare.
+      - description: Vehicle providers which is a mobility provider platform sends the catalog of all services that can be used for transit from A to B along with estimated fare.
         mermaid: >- 
           sequenceDiagram
             Buyer Platform (BAP)->>Gateway (BG): search
@@ -108,10 +108,10 @@ steps:
     reference: if any
     example:
       $ref: "../../examples/self-drive-rental/select/select_0.yaml"
-  - summary: Ride provider provides the quote for selected service
+  - summary: Vehicle provider provides the quote for selected service
     api: on_select
     details: 
-      - description: Ride provider responds with detailed information and quote for the specific service that the buyer app would like to avail.
+      - description: Vehicle provider responds with detailed information and quote for the specific service that the buyer app would like to avail.
         mermaid: >-
             sequenceDiagram
               participant Buyer Platform (BAP)
@@ -125,7 +125,7 @@ steps:
     reference: if any
     example:
       $ref: "../../examples/self-drive-rental/on_select/on_select_0.yaml" 
-  - summary: Buyer app initializes the ride request
+  - summary: Buyer app initializes the request
     api: init
     details: 
       - description: Buyer app platform shares the terms of order and initializes the request.
@@ -142,10 +142,10 @@ steps:
     reference: if any
     example:
       $ref: "../../examples/self-drive-rental/init/init_0.yaml"
-  - summary: Ride provider accepts/appends the terms of orders
+  - summary: Vehicle provider accepts/appends the terms of orders
     api: on_init
     details: 
-      - description: Ride provider accepts the terms of order and appends its own terms and responds with the final draft.
+      - description: Vehicle provider accepts the terms of order and appends its own terms and responds with the final draft.
         mermaid: >-
           sequenceDiagram
             participant Buyer Platform (BAP)
@@ -159,7 +159,7 @@ steps:
     reference: if any
     example:
       $ref: "../../examples/self-drive-rental/on_init/on_init_0.yaml"
-  - summary: Buyer app confirms the ride
+  - summary: Buyer app confirms the vehicle
     api: confirm
     details: 
       - description: Buyer app confirms the booking and provides all the required information for confirmation as per the terms of the order.
@@ -173,13 +173,14 @@ steps:
             end
             Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):form
     reference: if any
     example:
       $ref: "../../examples/self-drive-rental/confirm/confirm_0.yaml"
-  - summary: Ride provider confirms the ride request
+  - summary: Vehicle provider confirms the ride request
     api: on_confirm
     details: 
-      - description: Ride provider confirms the ride request and provides the ride details on confirmation.
+      - description: Vehicle provider confirms the ride request and provides the ride details on confirmation.
         mermaid: >-
           sequenceDiagram
             participant Buyer Platform (BAP)
@@ -190,13 +191,34 @@ steps:
             Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
             end
+            Seller Platform (BPP)->>Buyer Platform (BAP):form
     reference: if any
     example:
       $ref: "../../examples/self-drive-rental/on_confirm/on_confirm_0.yaml"
-  - summary: Ride provider provides latest update on the ride (unsolicited call)
+  - summary: Buyer app redirects to vehcile checklist page.
+    api: form
+    details:
+      - description: Buyer app fetches the checklist form from the provider using the link provided in the previous step.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):form
+            end
+    reference: if any
+    example:
+      value: 
+        $ref: ../../examples/self-drive-rental/forms/vehicel-checklist.html
+
+  - summary: Vehicle provider provides latest update on the ride (unsolicited call)
     api: on_update
     details: 
-      - description: Ride provider provides the latest update on ride details to the buyer app.
+      - description: Vehicle provider provides the latest update on ride details to the buyer app.
         mermaid: >-
           sequenceDiagram
             participant Buyer Platform (BAP)
@@ -215,7 +237,7 @@ steps:
   - summary: Buyer app seeks the most recent status update
     api: status
     details: 
-      - description: Buyer app requests the ride provider to provide the latest order status
+      - description: Buyer app requests the provider to provide the latest order status
         mermaid: >-
           sequenceDiagram
             participant Buyer Platform (BAP)
@@ -231,10 +253,10 @@ steps:
     reference: if any
     example:
       $ref: "../../examples/self-drive-rental/status/status_0.yaml"                          
-  - summary: Ride provider provides latest order status 
+  - summary: Vehicle provider provides latest order status 
     api: on_status
     details: 
-      - description: Ride provider provides the updated order status to the buyer app
+      - description: Vehicle provider provides the updated order status to the buyer app
         mermaid: >-
           sequenceDiagram
             participant Buyer Platform (BAP)
