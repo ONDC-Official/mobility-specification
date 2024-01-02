@@ -35,9 +35,16 @@ function loadAttributes(data) {
   addAttributeSets(indexKey[0]);
 }
 
+function emptyAttributeTreeDiv() {
+  var cmp = document.getElementById("tree-container")
+  cmp.innerHTML = ""
+}
+
 function updateSets(value, option) {
   const object = attributes[value]?.attribute_set;
-  console.log('object[option]',object[option]["required_attributes"]);
+  emptyAttributeTreeDiv()
+  localStorage.setItem("attributes", JSON.stringify(object[option]))
+  displayAttributeTree(JSON.parse(JSON.stringify(object[option])))
   flattenObject(object[option],null,null,object[option]?.required_attributes);
 }
 
@@ -57,12 +64,22 @@ function addAttributeSets(option) {
   console.log('object',object,keyDetail,keyDetail?.required_attributes  );
   const requiredAttr = 'required_attributes' in keyDetail
   console.log('requiredAttr', requiredAttr)
+  emptyAttributeTreeDiv()
+  localStorage.setItem("attributes", JSON.stringify(keyDetail))
+  displayAttributeTree(JSON.parse(JSON.stringify(keyDetail)))
   flattenObject(keyDetail,null,null,keyDetail?.required_attributes);
 }
 
 function flattenObject(obj, prefix = "", result = {},requiredAttr) {
   if ("required" in obj) {
-    if(requiredAttr===undefined || requiredAttr.includes(prefix)){
+    var input = document.getElementById("attribute-search").value;
+     var isSearchMatched = input
+     ? prefix?.includes(input)
+     ? true
+     : false
+     : true;
+
+    if(isSearchMatched && (requiredAttr===undefined || requiredAttr.includes(prefix))){
     var table = document.getElementById("tableset");
     const newRow = document.createElement("tr");
     newRow.classList.add("test");
@@ -114,4 +131,18 @@ function flattenObject(obj, prefix = "", result = {},requiredAttr) {
   }
 
   return result;
+}
+
+function searchAttribute() {
+  var table = document.getElementById("tableset");
+  table.innerHTML = `<tr>
+  <th>Attribute Path</th>
+  <th>Required</th>
+  <th>Sample Usage</th>
+  <th>Owner</th>
+  <th>Type</th>
+  <th>Description</th>
+  </tr>`;
+  var attributeData = JSON.parse(localStorage.getItem("attributes"));
+  flattenObject(attributeData);
 }
