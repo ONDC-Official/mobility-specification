@@ -191,10 +191,10 @@ paths:
                 message:
                   type: object
                   properties:
+                    ref_id:
+                      $ref: '#/components/schemas/Order/properties/id'
                     order_id:
                       $ref: '#/components/schemas/Order/properties/id'
-                  required:
-                    - order_id
               required:
                 - context
                 - message
@@ -1207,6 +1207,7 @@ components:
           type: string
         additional_desc:
           type: object
+          additionalProperties: false
           properties:
             url:
               type: string
@@ -1301,6 +1302,9 @@ components:
       type: object
       additionalProperties: false
       properties:
+        id:
+          description: The form identifier.
+          type: string
         url:
           description: >-
             The URL from where the form can be fetched. The content fetched from
@@ -1325,10 +1329,12 @@ components:
           type: string
           enum:
             - text/html
+            - application/html
             - application/xml
-        submission_id:
-          type: string
-          format: uuid
+        resubmit:
+          type: boolean
+        multiple_sumbissions:
+          type: boolean
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
       type: object
@@ -1528,6 +1534,7 @@ components:
             This represents the exact quantity allocated for purchase of the
             item.
           type: object
+          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1539,6 +1546,7 @@ components:
             This represents the exact quantity available for purchase of the
             item. The buyer can only purchase multiples of this
           type: object
+          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1550,6 +1558,7 @@ components:
             This represents the maximum quantity allowed for purchase of the
             item
           type: object
+          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1561,6 +1570,7 @@ components:
             This represents the minimum quantity allowed for purchase of the
             item
           type: object
+          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1570,6 +1580,7 @@ components:
         selected:
           description: This represents the quantity selected for purchase of the item
           type: object
+          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1579,6 +1590,7 @@ components:
         unitized:
           description: This represents the quantity available in a single unit of the item
           type: object
+          additionalProperties: false
           properties:
             count:
               type: integer
@@ -2040,6 +2052,7 @@ components:
           type: string
         params:
           type: object
+          additionalProperties: false
           properties:
             transaction_id:
               type: string
@@ -2166,6 +2179,7 @@ components:
     Provider:
       description: Describes the catalog of a business.
       type: object
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -2240,6 +2254,7 @@ components:
           type: array
           items:
             type: object
+            additionalProperties: false
             properties:
               item:
                 $ref: '#/components/schemas/Item'
@@ -2388,6 +2403,7 @@ components:
           $ref: '#/components/schemas/DecimalValue'
         range:
           type: object
+          additionalProperties: false
           properties:
             min:
               $ref: '#/components/schemas/DecimalValue'
@@ -2567,6 +2583,7 @@ components:
           $ref: '#/components/schemas/Duration'
         range:
           type: object
+          additionalProperties: false
           properties:
             start:
               type: string
@@ -2674,8 +2691,46 @@ components:
       type: object
       additionalProperties: false
       properties:
+        head:
+          description: Provides the header information for the xinput.
+          additionalProperties: false
+          type: object
+          properties:
+            descriptor:
+              $ref: '#/components/schemas/Descriptor'
+            index:
+              additionalProperties: false
+              type: object
+              properties:
+                min:
+                  type: integer
+                cur:
+                  type: integer
+                max:
+                  type: integer
+            headings:
+              type: array
+              items:
+                type: string
+                description: The heading names of the forms
         form:
           $ref: '#/components/schemas/Form'
+        form_response:
+          description: Describes the response to a form submission
+          type: object
+          additionalProperties: false
+          properties:
+            status:
+              description: Contains the status of form submission.
+              type: string
+            signature:
+              type: string
+            submission_id:
+              type: string
+            errors:
+              type: array
+              items:
+                $ref: '#/components/schemas/Error'
         required:
           description: >-
             Indicates whether the form data is mandatorily required by the BPP
@@ -3599,6 +3654,8 @@ x-flows:
                               gps: 28.459276, 77.072532
                             id: '37'
                             parent_stop_id: '36'
+                        vehicle:
+                          category: METRO
                       - id: F2
                         type: ROUTE
                         stops:
@@ -3696,10 +3753,6 @@ x-flows:
                               - descriptor:
                                   code: STATIC_TERMS
                                 value: https://api.example-bpp.com/booking/terms
-                    cancellation_terms:
-                      - external_ref:
-                          mimetype: text/html
-                          url: https://transitsolutions.com/mf/tnc.html
                     tags:
                       - descriptor:
                           code: SCHEDULED_INFO
@@ -4175,10 +4228,6 @@ x-flows:
                               - descriptor:
                                   code: STATIC_TERMS
                                 value: https://api.example-bpp.com/booking/terms
-                    cancellation_terms:
-                      - external_ref:
-                          mimetype: text/html
-                          url: https://transitsolutions.com/mf/tnc.html
                     tags:
                       - descriptor:
                           code: SCHEDULED_INFO
@@ -4717,16 +4766,15 @@ x-flows:
                     - title: BASE_FARE
                       item:
                         id: I1
+                        price:
+                          currency: INR
+                          value: '60'
+                        quantity:
+                          selected:
+                            count: 2
                       price:
                         currency: INR
-                        value: '60'
-                      quantity:
-                        selected:
-                          count: '2'
-                cancellation_terms:
-                  - external_ref:
-                      mimetype: text/html
-                      url: https://transitsolutions.com/mf/tnc.html
+                        value: '120'
                 tags:
                   - descriptor:
                       code: SCHEDULED_INFO
@@ -5311,12 +5359,15 @@ x-flows:
                     - title: BASE_FARE
                       item:
                         id: I1
+                        price:
+                          currency: INR
+                          value: '60'
+                        quantity:
+                          selected:
+                            count: 2
                       price:
                         currency: INR
-                        value: '60'
-                      quantity:
-                        selected:
-                          count: '2'
+                        value: '120'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -5971,12 +6022,15 @@ x-flows:
                     - title: BASE_FARE
                       item:
                         id: I1
+                        price:
+                          currency: INR
+                          value: '60'
+                        quantity:
+                          selected:
+                            count: 2
                       price:
                         currency: INR
-                        value: '60'
-                      quantity:
-                        selected:
-                          count: '2'
+                        value: '120'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -6578,12 +6632,15 @@ x-flows:
                     - title: BASE_FARE
                       item:
                         id: I1
+                        price:
+                          currency: INR
+                          value: '60'
+                        quantity:
+                          selected:
+                            count: 2
                       price:
                         currency: INR
-                        value: '60'
-                      quantity:
-                        selected:
-                          count: '2'
+                        value: '120'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -7507,12 +7564,12 @@ x-flows:
                     - title: BASE_FARE
                       item:
                         id: I1
-                      price:
-                        currency: INR
-                        value: '60'
-                      quantity:
-                        selected:
-                          count: '2'
+                        price:
+                          currency: INR
+                          value: '60'
+                        quantity:
+                          selected:
+                            count: 2
                     - title: CANCELLATION_CHARGES
                       price:
                         currency: INR
@@ -8154,12 +8211,12 @@ x-flows:
                     - title: BASE_FARE
                       item:
                         id: I1
-                      price:
-                        currency: INR
-                        value: '60'
-                      quantity:
-                        selected:
-                          count: '2'
+                        price:
+                          currency: INR
+                          value: '60'
+                        quantity:
+                          selected:
+                            count: 2
                     - title: CANCELLATION_CHARGES
                       price:
                         currency: INR
@@ -8742,16 +8799,68 @@ x-examples:
                       - title: BASE_FARE
                         item:
                           id: I1
+                          price:
+                            currency: INR
+                            value: '60'
+                          quantity:
+                            selected:
+                              count: 2
                         price:
                           currency: INR
-                          value: '60'
-                        quantity:
-                          selected:
-                            count: '2'
+                          value: '120'
                       - title: CANCELLATION_CHARGES
                         price:
                           currency: INR
                           value: '10'
+                  payments:
+                    - id: PA1
+                      collected_by: BAP
+                      status: PAID
+                      type: PRE-ORDER
+                      params:
+                        transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
+                        currency: INR
+                        amount: '120'
+                        bank_code: XXXXXXXX
+                        bank_account_number: xxxxxxxxxxxxxx
+                        virtual_payment_address: 9988199772@okicic
+                      tags:
+                        - descriptor:
+                            code: SETTLEMENT_DETAILS
+                          display: false
+                          list:
+                            - descriptor:
+                                code: SETTLEMENT_TYPE
+                              value: UPI
+                        - descriptor:
+                            code: BUYER_FINDER_FEES
+                          display: false
+                          list:
+                            - descriptor:
+                                code: BUYER_FINDER_FEES_PERCENTAGE
+                              value: '1'
+                        - descriptor:
+                            code: SETTLEMENT_TERMS
+                          display: false
+                          list:
+                            - descriptor:
+                                code: SETTLEMENT_WINDOW
+                              value: PT30D
+                            - descriptor:
+                                code: SETTLEMENT_BASIS
+                              value: INVOICE_RECEIPT
+                            - descriptor:
+                                code: MANDATORY_ARBITRATION
+                              value: 'true'
+                            - descriptor:
+                                code: COURT_JURISDICTION
+                              value: New Delhi
+                            - descriptor:
+                                code: STATIC_TERMS
+                              value: https://api.example-bpp.com/booking/terms
+                            - descriptor:
+                                code: SETTLEMENT_AMOUNT
+                              value: '59'
       on_status:
         examples:
           - *ref_17
@@ -8870,7 +8979,7 @@ x-attributes:
             fulfillment:
               stops:
                 type:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BAP
                   usage: START
@@ -8886,7 +8995,7 @@ x-attributes:
                     description: Describes a GPS coordinate
                   descriptor:
                     code:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BAP
                       usage: SHAHEED_STHAL
@@ -8974,7 +9083,7 @@ x-attributes:
           ttl:
             required: mandatory
             type: string
-            owner: BPP
+            owner: BAP
             usage: PT30S
             description: >-
               Describes the duration in ISO8601 format after timestamp for which
@@ -9072,7 +9181,7 @@ x-attributes:
                   location:
                     descriptor:
                       code:
-                        required: mandatory
+                        required: optional
                         type: string
                         owner: BPP
                         usage: KASHMERE_GATE
@@ -9084,7 +9193,7 @@ x-attributes:
                         usage: Kashmere Gate
                         description: Describes the name for a particular location.
                     gps:
-                      required: optional
+                      required: mandatory
                       type: string
                       owner: BPP
                       usage: 28.707358, 77.180910
@@ -9098,14 +9207,14 @@ x-attributes:
                     description: Describes category of a vehicle
               items:
                 id:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: b2400168
                   description: ID of the item.
                 descriptor:
                   code:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: Single Journey Ticket
@@ -9118,13 +9227,13 @@ x-attributes:
                     description: Describes the name for a particular item.
                 price:
                   currency:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: INR
                     description: Describes the price of a product or service
                   value:
-                    required: mandatory
+                    required: optional
                     type: integer
                     owner: BPP
                     usage: 60
@@ -9149,7 +9258,7 @@ x-attributes:
                         This represents the minimum quantity allowed for
                         purchase of the item
                 fulfillment_ids:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: 3bd4ea25
@@ -9350,7 +9459,7 @@ x-attributes:
           ttl:
             required: mandatory
             type: string
-            owner: BPP
+            owner: BAP
             usage: PT30S
             description: >-
               Describes the duration in ISO8601 format after timestamp for which
@@ -9473,13 +9582,13 @@ x-attributes:
                       usage: Shaheed Sthal(New Bus Adda)
                       description: Describes the name for a particular location.
                     code:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       usage: SHAHEED_STHAL
                       description: Describes the code for a particular location.
                   gps:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
@@ -9861,13 +9970,13 @@ x-attributes:
                       usage: Shaheed Sthal(New Bus Adda)
                       description: Describes the name for a particular location.
                     code:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       usage: SHAHEED_STHAL
                       description: Describes the code for a particular location.
                   gps:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
@@ -10192,27 +10301,27 @@ x-attributes:
                 owner: BAP
                 usage: PRE-ORDER
                 description: Payment Type
-                params:
-                  transaction_id:
-                    required: mandatory
-                    type: string
-                    owner: BAP
-                    usage: 34cc9b0b
-                    description: >-
-                      The reference transaction ID associated with a payment
-                      activity
-                  currency:
-                    required: mandatory
-                    type: string
-                    owner: BAP
-                    usage: INR
-                    description: Describes currency value in string form
-                  amount:
-                    required: mandatory
-                    type: integer
-                    owner: BAP
-                    usage: 60
-                    description: Describes a numerical value in decimal form
+              params:
+                transaction_id:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: 34cc9b0b
+                  description: >-
+                    The reference transaction ID associated with a payment
+                    activity
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: INR
+                  description: Describes currency value in string form
+                amount:
+                  required: mandatory
+                  type: integer
+                  owner: BAP
+                  usage: 60
+                  description: Describes a numerical value in decimal form
       on_confirm:
         context:
           location:
@@ -10419,19 +10528,19 @@ x-attributes:
                 location:
                   descriptor:
                     name:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       usage: Shaheed Sthal(New Bus Adda)
                       description: Describes the name for a particular location.
                     code:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       usage: SHAHEED_STHAL
                       description: Describes the code for a particular location.
                   gps:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
@@ -10910,19 +11019,19 @@ x-attributes:
                 location:
                   descriptor:
                     name:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       usage: Shaheed Sthal(New Bus Adda)
                       description: Describes the name for a particular location.
                     code:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       usage: SHAHEED_STHAL
                       description: Describes the code for a particular location.
                   gps:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
@@ -10976,7 +11085,7 @@ x-attributes:
                   description: Breakup title of the total quoted price
                 item:
                   id:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: b2400168
@@ -11271,7 +11380,7 @@ x-attributes:
           ttl:
             required: mandatory
             type: string
-            owner: BAP
+            owner: BPP
             usage: PT30S
             description: >-
               Describes the duration in ISO8601 format after timestamp for which
@@ -11401,19 +11510,19 @@ x-attributes:
                 location:
                   descriptor:
                     name:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       usage: Shaheed Sthal(New Bus Adda)
                       description: Describes the name for a particular location.
                     code:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       usage: SHAHEED_STHAL
                       description: Describes the code for a particular location.
                   gps:
-                    required: optional
+                    required: optionalmandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
