@@ -39,7 +39,9 @@ const SKIP_VALIDATION = {
   examples: "skip2",
   enums: "skip3",
   tags: "skip4",
-  };
+  attributes: "skip5",
+  exampleAttributes: "skip6"
+};
 
 const BUILD = {
   attributes: "attributes",
@@ -270,11 +272,12 @@ async function validateAttributes(attribute, schemaMap) {
       validateTags(attribute[example].attribute_set,schemaMap,example);
   }
   }
+
 async function getSwaggerYaml(example_set, outputPath) {
   try {
-        const schema = await baseYMLFile(example_yaml);
+    const schema = await baseYMLFile(example_yaml);
     const baseYAML = await baseYMLFile(base_yaml);
-        const { flows, examples: exampleSets, enum: enums, tags,attributes } = schema || [];
+    const { flows, examples: exampleSets, enum: enums, tags,attributes } = schema || [];
     const { paths } = baseYAML;
     let hasTrueResult = false; // Flag variable
     let schemaMap = {};
@@ -296,9 +299,9 @@ async function getSwaggerYaml(example_set, outputPath) {
         paths[path]?.post?.requestBody?.content?.["application/json"]?.schema;
       schemaMap[path.substring(1)] = pathSchema;
     }
-    
+
     if (!process.argv.includes(SKIP_VALIDATION.flows)) {
-            hasTrueResult = await validateFlows(flows, schemaMap);
+      hasTrueResult = await validateFlows(flows, schemaMap);
     }
     if (!process.argv.includes(SKIP_VALIDATION.examples) && !hasTrueResult) {
       hasTrueResult = await validateExamples(exampleSets, schemaMap);
@@ -316,6 +319,10 @@ async function getSwaggerYaml(example_set, outputPath) {
       hasTrueResult = await validateAttributes(attributes, schemaMap);
     }
 
+    if (!process.argv.includes(SKIP_VALIDATION.exampleAttributes) && !hasTrueResult) {
+      await validateExamplesAttributes(exampleSets, attributes)
+    }
+   
     if (hasTrueResult) return;
 
     if (!hasTrueResult) {
@@ -334,6 +341,126 @@ async function getSwaggerYaml(example_set, outputPath) {
   }
 }
 
+async function validateObject(example, attribute, endPoint) {
+  let mandatoryRequiredKeys = [];
+
+  findMandatoryRequiredKeys(attribute, mandatoryRequiredKeys);
+
+  checkKeysExistence(example, mandatoryRequiredKeys, endPoint);
+
+  return true;
+}
+
+function handleError(keys, endPoint) {
+  throw new Error(
+    `Key path ${keys.join(
+      "."
+    )} does not exist in the example object at ${endPoint}`
+  );
+}
+
+const checkKeysExistence = (example, mandatoryRequiredKeys, endPoint) => {
+  if (example === null || typeof example !== "object") {
+    handleError(`Invalid example object at ${endPoint}`);
+  }
+
+  for (let keys of mandatoryRequiredKeys) {
+    let currentObj = example;
+    let isArray = false;
+    let currentIndex = 0;
+    let currentKeys = [];
+
+    for (let key of keys) {
+      if (Array.isArray(currentObj)) {
+        isArray = true;
+        currentKeys = keys.slice(currentIndex);
+        break;
+      }
+
+      if (!currentObj.hasOwnProperty(key)) {
+        handleError(keys, endPoint);
+      }
+
+      currentObj = currentObj[key];
+      currentIndex++;
+    }
+
+    if (isArray) {
+      handleIfObjectIsArray(currentKeys, currentObj, endPoint);
+    }
+  }
+};
+
+function handleIfObjectIsArray(keys, currentObj, endPoint) {
+  if (Array.isArray(currentObj)) {
+    for (let obj of currentObj) {
+      if (typeof obj === "object") {
+        checkKeysExistence(obj, [keys], endPoint);
+      } else if (Array.isArray(obj)) {
+        handleIfObjectIsArray(keys, obj, endPoint);
+      }
+    }
+  }
+}
+
+function findMandatoryRequiredKeys(obj, result, parentKeys = []) {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      if (typeof obj[key] === "object") {
+        findMandatoryRequiredKeys(obj[key], result, [...parentKeys, key]);
+      } else if (key === "required" && obj[key] == "mandatory") {
+        result.push([...parentKeys]);
+      }
+    }
+  }
+}
+  
+const iterateObject = (example, mandatoryRequiredKeys, endPoint) => { 
+  for ( const attribs of Object.keys(attrib)){
+    //console.log('attribs', attribs, attrib[attribs])
+    if( typeof attrib[attribs] === "object" && attrib[attribs]?.required){
+      console.log('example----', attrib[attribs], getExample[attribs])
+      if(getExample[attribs]){
+        console.log('value against attribute found', attribs);
+      }
+    }else{
+      if(typeof attrib[attribs] === "object" && !attrib[attribs]?.required){
+        if(typeof attrib[attribs]){
+          iterateObject()
+        }
+      }
+    }
+}
+
+}
+
+async function validateExamplesAttributes(exampleSets, attributes) {
+  try {
+    for (const exampleSet of Object.keys(exampleSets)) {
+      //check if attributes found for particular example.
+      if (attributes.hasOwnProperty(exampleSet)) {
+        const { example_set } = exampleSets[exampleSet] || {};
+        const { attribute_set } = attributes[exampleSet] || {};
+        for (const example_sets of Object.keys(example_set)) {
+          const { examples } = example_set[example_sets] || []
+          for (const example of examples) {
+              //sending only matched examples=attribute set like search=search
+              if(attribute_set[example_sets]){
+                const currentAttribute = attribute_set[example_sets]
+                await validateObject(example?.value, currentAttribute, example_sets)
+              }else{
+                console.log(`attribute not found for ${example_sets}`)
+              }
+              
+          }
+          
+        }
+      }
+    }
+  } catch (error) {
+    console.log("Error validating examples with attributes", error);
+  }
+}
 function cleanup() {
   try {
     fs.unlinkSync(tempPath);
@@ -374,7 +501,6 @@ function addEnumTag(base, layer) {
   base["x-tlc"] = layer["tlc"];
   base["x-featureui"] = layer["feature-ui"]
   base["x-sandboxui"] = layer["sandbox-ui"]
-  base["x-testcasesui"] = layer["testcases-ui"]
 
 }
 

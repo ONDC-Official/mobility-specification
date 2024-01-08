@@ -193,6 +193,8 @@ paths:
                   properties:
                     ref_id:
                       $ref: '#/components/schemas/Order/properties/id'
+                    order_id:
+                      $ref: '#/components/schemas/Order/properties/id'
               required:
                 - context
                 - message
@@ -1205,6 +1207,7 @@ components:
           type: string
         additional_desc:
           type: object
+          additionalProperties: false
           properties:
             url:
               type: string
@@ -1299,6 +1302,9 @@ components:
       type: object
       additionalProperties: false
       properties:
+        id:
+          description: The form identifier.
+          type: string
         url:
           description: >-
             The URL from where the form can be fetched. The content fetched from
@@ -1323,10 +1329,12 @@ components:
           type: string
           enum:
             - text/html
+            - application/html
             - application/xml
-        submission_id:
-          type: string
-          format: uuid
+        resubmit:
+          type: boolean
+        multiple_sumbissions:
+          type: boolean
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
       type: object
@@ -1526,6 +1534,7 @@ components:
             This represents the exact quantity allocated for purchase of the
             item.
           type: object
+          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1537,6 +1546,7 @@ components:
             This represents the exact quantity available for purchase of the
             item. The buyer can only purchase multiples of this
           type: object
+          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1548,6 +1558,7 @@ components:
             This represents the maximum quantity allowed for purchase of the
             item
           type: object
+          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1559,6 +1570,7 @@ components:
             This represents the minimum quantity allowed for purchase of the
             item
           type: object
+          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1568,6 +1580,7 @@ components:
         selected:
           description: This represents the quantity selected for purchase of the item
           type: object
+          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1577,6 +1590,7 @@ components:
         unitized:
           description: This represents the quantity available in a single unit of the item
           type: object
+          additionalProperties: false
           properties:
             count:
               type: integer
@@ -2038,6 +2052,7 @@ components:
           type: string
         params:
           type: object
+          additionalProperties: false
           properties:
             transaction_id:
               type: string
@@ -2164,6 +2179,7 @@ components:
     Provider:
       description: Describes the catalog of a business.
       type: object
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -2238,6 +2254,7 @@ components:
           type: array
           items:
             type: object
+            additionalProperties: false
             properties:
               item:
                 $ref: '#/components/schemas/Item'
@@ -2386,6 +2403,7 @@ components:
           $ref: '#/components/schemas/DecimalValue'
         range:
           type: object
+          additionalProperties: false
           properties:
             min:
               $ref: '#/components/schemas/DecimalValue'
@@ -2565,6 +2583,7 @@ components:
           $ref: '#/components/schemas/Duration'
         range:
           type: object
+          additionalProperties: false
           properties:
             start:
               type: string
@@ -2672,8 +2691,46 @@ components:
       type: object
       additionalProperties: false
       properties:
+        head:
+          description: Provides the header information for the xinput.
+          additionalProperties: false
+          type: object
+          properties:
+            descriptor:
+              $ref: '#/components/schemas/Descriptor'
+            index:
+              additionalProperties: false
+              type: object
+              properties:
+                min:
+                  type: integer
+                cur:
+                  type: integer
+                max:
+                  type: integer
+            headings:
+              type: array
+              items:
+                type: string
+                description: The heading names of the forms
         form:
           $ref: '#/components/schemas/Form'
+        form_response:
+          description: Describes the response to a form submission
+          type: object
+          additionalProperties: false
+          properties:
+            status:
+              description: Contains the status of form submission.
+              type: string
+            signature:
+              type: string
+            submission_id:
+              type: string
+            errors:
+              type: array
+              items:
+                $ref: '#/components/schemas/Error'
         required:
           description: >-
             Indicates whether the form data is mandatorily required by the BPP
@@ -3900,6 +3957,7 @@ x-flows:
                   price:
                     currency: INR
                     value: '146'
+                  ttl: PT30S
       - summary: Buyer app confirms the ride
         api: confirm
         details:
@@ -3961,6 +4019,7 @@ x-flows:
                   - id: I1
                 payments:
                   - collected_by: BPP
+                    id: PA1
                     params:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
@@ -4240,6 +4299,7 @@ x-flows:
                   price:
                     currency: INR
                     value: '146'
+                  ttl: PT30S
                 status: ACTIVE
                 created_at: '2023-12-10T08:03:34.294Z'
                 updated_at: '2023-12-10T08:03:34.294Z'
@@ -4469,6 +4529,7 @@ x-flows:
                   price:
                     currency: INR
                     value: '146'
+                  ttl: PT30S
                 status: COMPLETED
                 created_at: '2023-12-10T08:03:34.294Z'
                 updated_at: '2023-12-11T03:54:28.832Z'
@@ -5177,6 +5238,7 @@ x-flows:
                   price:
                     currency: INR
                     value: '146'
+                  ttl: PT30S
                 status: ACTIVE
                 created_at: '2023-03-23T04:48:34.53Z'
                 updated_at: '2023-03-23T04:48:34.53Z'
@@ -5417,10 +5479,10 @@ x-flows:
                   price:
                     currency: INR
                     value: '146'
+                  ttl: PT30S
                 status: ACTIVE
                 created_at: '2023-03-23T04:48:34.53Z'
                 updated_at: '2023-03-23T04:49:34.53Z'
-              update_target: order.fulfillment.agent
       - summary: Buyer app seeks the most recent status update
         api: status
         details:
@@ -5802,6 +5864,7 @@ x-flows:
               timestamp: '2023-03-23T04:48:53Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               version: 2.0.0
+              ttl: PT30S
             message:
               order:
                 cancellation_terms:
@@ -6095,6 +6158,7 @@ x-flows:
               timestamp: '2023-03-23T04:48:53Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               version: 2.0.0
+              ttl: PT30S
             message:
               order:
                 cancellation_terms:
@@ -7116,6 +7180,7 @@ x-flows:
                   price:
                     currency: INR
                     value: '146'
+                  ttl: PT30S
                 status: ACTIVE
                 created_at: '2023-12-10T04:34:52.031Z'
                 updated_at: '2023-12-10T04:34:52.031Z'
@@ -7136,6 +7201,64 @@ x-examples:
       to broadcast demands originating from a consumer platform to all
       applicable provider platforms in a transparent and unbiased manner.
     example_set:
+      search:
+        examples:
+          - *ref_13
+          - summary: >-
+              Search for mobility services by pickup and drop location[Buyer
+              Collecting]
+            value:
+              context:
+                action: search
+                bap_id: example-bap.com
+                bap_uri: https://example-bap.com/prod/trv10
+                domain: ONDC:TRV10
+                location:
+                  city:
+                    code: std:080
+                  country:
+                    code: IND
+                message_id: 40963dc1-e402-4f4d-ae70-7c5864ca682c
+                timestamp: '2023-12-09T13:40:21.452Z'
+                transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+                ttl: PT30S
+                version: 2.0.0
+              message:
+                intent:
+                  fulfillment:
+                    stops:
+                      - location:
+                          gps: 13.008935, 77.644408
+                        type: START
+                      - location:
+                          gps: 12.971186, 77.586812
+                        type: END
+                  payment:
+                    collected_by: BAP
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT1D
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: DELIVERY
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://example-test-bap.com/static-terms.txt
+      select:
+        examples:
+          - *ref_15
       cancel:
         examples:
           - *ref_23
@@ -7374,6 +7497,7 @@ x-examples:
                     price:
                       currency: INR
                       value: '146'
+                    ttl: PT30S
                   status: ACTIVE
                   created_at: '2023-12-10T08:03:34.294Z'
                   updated_at: '2023-12-10T08:03:34.294Z'
@@ -8474,6 +8598,7 @@ x-examples:
                     price:
                       currency: INR
                       value: '146'
+                    ttl: PT30S
                   status: ACTIVE
           - *ref_29
       rating:
@@ -8529,64 +8654,6 @@ x-examples:
                 id: b0462745-f6c9-4100-bbe7-4fa3648b6b40
                 rating_category: DRIVER
                 value: 4
-      search:
-        examples:
-          - *ref_13
-          - summary: >-
-              Search for mobility services by pickup and drop location[Buyer
-              Collecting]
-            value:
-              context:
-                action: search
-                bap_id: example-bap.com
-                bap_uri: https://example-bap.com/prod/trv10
-                domain: ONDC:TRV10
-                location:
-                  city:
-                    code: std:080
-                  country:
-                    code: IND
-                message_id: 40963dc1-e402-4f4d-ae70-7c5864ca682c
-                timestamp: '2023-12-09T13:40:21.452Z'
-                transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-                ttl: PT30S
-                version: 2.0.0
-              message:
-                intent:
-                  fulfillment:
-                    stops:
-                      - location:
-                          gps: 13.008935, 77.644408
-                        type: START
-                      - location:
-                          gps: 12.971186, 77.586812
-                        type: END
-                  payment:
-                    collected_by: BAP
-                    tags:
-                      - descriptor:
-                          code: BUYER_FINDER_FEES
-                        display: false
-                        list:
-                          - descriptor:
-                              code: BUYER_FINDER_FEES_PERCENTAGE
-                            value: '1'
-                      - descriptor:
-                          code: SETTLEMENT_TERMS
-                        display: false
-                        list:
-                          - descriptor:
-                              code: SETTLEMENT_WINDOW
-                            value: PT1D
-                          - descriptor:
-                              code: SETTLEMENT_BASIS
-                            value: DELIVERY
-                          - descriptor:
-                              code: STATIC_TERMS
-                            value: https://example-test-bap.com/static-terms.txt
-      select:
-        examples:
-          - *ref_15
       status:
         examples:
           - *ref_20
@@ -9800,14 +9867,14 @@ x-attributes:
                     required: mandatory
                     type: string
                     owner: BPP
-                    usage: 2
+                    usage: RIDE_ENROUTE_PICKUP
                     description: Describes the unique code for the cancellation terms
-                reason_required:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: RIDE_ENROUTE_PICKUP
-                  description: Indicates whether a reason is required to cancel the order
+              reason_required:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: true
+                description: Indicates whether a reason is required to cancel the order
               cancellation_fee:
                 percentage:
                   required: optional
@@ -9817,11 +9884,17 @@ x-attributes:
                   description: Describes the percentage value for cancellation fee
                 amount:
                   currency:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: INR
                     description: Describes the currency of a product or service
+                  value:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: 30
+                    description: Describes the price of a product or service
       confirm:
         context:
           location:
@@ -10004,26 +10077,6 @@ x-attributes:
                     owner: BPP
                     usage: 28.686576, 77.441632
                     description: The GPS co-ordinates of this location.
-                authorization:
-                  type:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: OTP
-                    description: >-
-                      Type of authorization mechanism used. The allowed values
-                      for this field can be published as part of the network
-                      policy.
-                  token:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: 232312
-                    description: >-
-                      Token used for authorization. This is typically generated
-                      at the BPP. The BAP can send this value to the user via
-                      any channel that it uses to authenticate the user like
-                      SMS, Email, Push notification, or in-app rendering.
               vehicle:
                 category:
                   required: mandatory
@@ -10232,14 +10285,14 @@ x-attributes:
               agent:
                 person:
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: John Doe
                     description: Describes the name of the agent
                 contact:
                   phone:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: 7845981268
@@ -10270,7 +10323,7 @@ x-attributes:
                     description: The GPS co-ordinates of this location.
                 authorization:
                   type:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: OTP
@@ -10279,7 +10332,7 @@ x-attributes:
                       for this field can be published as part of the network
                       policy.
                   token:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: 232312
@@ -10408,30 +10461,30 @@ x-attributes:
                     required: mandatory
                     type: string
                     owner: BPP
-                    usage: 2
+                    usage: RIDE_ENROUTE_PICKUP
                     description: Describes the unique code for the cancellation terms.
-                reason_required:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: RIDE_ENROUTE_PICKUP
-                  description: Indicates whether a reason is required to cancel the order
+              reason_required:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: true
+                description: Indicates whether a reason is required to cancel the order
               cancellation_fee:
                 percentage:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: 2
                   description: Describes the percentage value for cancellation fee
                 amount:
                   currency:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: INR
                     description: Describes the currency of a product or service
                   value:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: 30
@@ -10780,7 +10833,7 @@ x-attributes:
                     usage: DRIVER_ENROUTE
                     description: Describes the state's code for fulfillment.
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: Driver is on the way
@@ -10841,20 +10894,14 @@ x-attributes:
                 usage: PRE-ORDER
                 description: Describe the Payment type
               params:
-                transaction_status:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: Cancelled
-                  description: Describes transaction status of the payment
                 currency:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: INR
                   description: Describes currency value in string form
                 amount:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: 60
@@ -10872,7 +10919,7 @@ x-attributes:
                   usage: xxxxxxxxxxxxxx
                   description: Bank account number associated with payment activity
                 bank_account_name:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: Raghvinder J
@@ -10891,30 +10938,30 @@ x-attributes:
                     required: mandatory
                     type: string
                     owner: BPP
-                    usage: 2
+                    usage: RIDE_ENROUTE_PICKUP
                     description: Describes the unique code for the cancellation terms.
-                reason_required:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: RIDE_ENROUTE_PICKUP
-                  description: Indicates whether a reason is required to cancel the order
+              reason_required:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: true
+                description: Indicates whether a reason is required to cancel the order
               cancellation_fee:
                 percentage:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: 2
                   description: Describes the percentage value for cancellation fee
                 amount:
                   currency:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: INR
                     description: Describes the currency of a product or service
                   value:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: 30
@@ -11266,14 +11313,14 @@ x-attributes:
                 description: Describes type of fullfilment
               state:
                 descriptor:
-                  "code\n\n":
+                  code:
                     required: mandatory
                     type: string
                     owner: BPP
                     usage: DRIVER_ENROUTE
                     description: Describes the state's code for fulfillment.
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: Driver is on the way
@@ -11373,30 +11420,30 @@ x-attributes:
                     required: mandatory
                     type: string
                     owner: BPP
-                    usage: 2
+                    usage: RIDE_ENROUTE_PICKUP
                     description: Describes the unique code for the cancellation terms.
-                reason_required:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: RIDE_ENROUTE_PICKUP
-                  description: Indicates whether a reason is required to cancel the order
+              reason_required:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: true
+                description: Indicates whether a reason is required to cancel the order
               cancellation_fee:
                 percentage:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: 2
                   description: Describes the percentage value for cancellation fee
                 amount:
                   currency:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: INR
                     description: Describes the currency of a product or service
                   value:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: 30
@@ -11758,14 +11805,14 @@ x-attributes:
                 description: Describes type of fullfilment
               state:
                 descriptor:
-                  "code\n\n":
+                  code:
                     required: mandatory
                     type: string
                     owner: BPP
                     usage: DRIVER_ENROUTE
                     description: Describes the state's code for fulfillment.
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: Driver is on the way
@@ -11865,40 +11912,34 @@ x-attributes:
                     required: mandatory
                     type: string
                     owner: BPP
-                    usage: 2
+                    usage: RIDE_ENROUTE_PICKUP
                     description: Describes the unique code for the cancellation terms.
-                reason_required:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: RIDE_ENROUTE_PICKUP
-                  description: Indicates whether a reason is required to cancel the order
+              reason_required:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: true
+                description: Indicates whether a reason is required to cancel the order
               cancellation_fee:
                 percentage:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: 2
                   description: Describes the percentage value for cancellation fee
                 amount:
                   currency:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: INR
                     description: Describes the currency of a product or service
                   value:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: 30
                     description: Describes the price of a product or service
-            update_target:
-              required: mandatory
-              type: string
-              owner: BPP
-              usage: order.fulfillment.agent
-              description: Describes the target for update
 x-errorcodes:
   code:
     - Event: Route Serviceability error
@@ -11909,6 +11950,3 @@ x-errorcodes:
       Description: Tracking not enabled for any fulfillment in the order
       From: BPP
       code: 90202
-x-testcasesui:
-  filenames:
-    - OnDemand.md
