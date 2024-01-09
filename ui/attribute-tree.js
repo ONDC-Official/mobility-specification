@@ -1,19 +1,48 @@
-function displayTooltip(data, name) {
+function displayTooltip(data, name, attrPath) {
   const cmp = document.getElementById("node-info");
   cmp.innerHTML = `
-      <p><b>${name}</b></p>
-      <small><b>Required</b> : ${data["_required"] || data["required"]}</small>
-      <small><b>Sample Usage</b> : ${data["_usage"] || data["usage"]}</small>
-      <small><b>Owner</b> : ${data["_owner"] || data["owner"]}</small>
-      <small><b>Type</b> : ${data["_type"] || data["type"]}</small>
-      <small><b>Description</b> : ${
-        data["_description"] || data["description"]
-      }</small>`;
+    <p><b>Attribute Name:</b> ${name}</p>
+    <div id="attribute-tree-data">
+    <div class="tree-data-field">
+        <div class="key-field"><small><b>Attribute path</b></small></div>
+        <div class="value-field"><small>${attrPath}</small></div>
+    </div>
+    <div class="tree-data-field">
+        <div class="key-field"><small><b>Required</b></small></div>
+        <div class="value-field"><small>${
+          data["_required"] || data["required"]
+        }</small></div>
+    </div>
+    <div class="tree-data-field">
+        <div class="key-field"><small><b>Sample Usage</b></small></div>
+        <div class="value-field"><small>${
+          data["_usage"] || data["usage"]
+        }</small></div>
+    </div>
+    <div class="tree-data-field">
+        <div class="key-field"><small><b>Owner</b></small></div>
+        <div class="value-field"><small>${
+          data["_owner"] || data["owner"]
+        }</small></div>
+    </div>
+    <div class="tree-data-field">
+        <div class="key-field"><small><b>Type</b></small></div>
+        <div class="value-field"><small>${
+          data["_type"] || data["type"]
+        }</small></div>
+    </div>
+    <div class="tree-data-field">
+        <div class="key-field"><small><b>Description</b></small></div>
+        <div class="value-field"><small>${
+          data["_description"] || data["description"]
+        }</small></div>
+    </div>
+    </div>`;
   cmp.style.display = "flex";
 }
 
 function displayAttributeTree(payload) {
-  function formatdataForTree(data) {
+  function formatdataForTree(data, preKey = "") {
     const noOfKeys = Object.keys(data).length;
     if (
       ("required" in data &&
@@ -37,16 +66,17 @@ function displayAttributeTree(payload) {
     Object.entries(data).forEach(([key, value]) => {
       const tempObj = {};
       tempObj.name = key;
+      tempObj.attrPath = preKey.length ? preKey + "." + key : key;
 
       if (typeof value === "object") {
-        const response = formatdataForTree(value);
+        const response = formatdataForTree(value, tempObj.attrPath);
         if (response.leafNode) {
           tempObj.tooltip = value;
         } else if (response.children && response._info) {
-          tempObj.children = response.children;
+          tempObj._children = response.children;
           tempObj._info = response._info;
         } else {
-          tempObj.children = response.children;
+          tempObj._children = response.children;
         }
 
         allObj.push(tempObj);
@@ -115,7 +145,7 @@ function displayAttributeTree(payload) {
   //   }
 
   const childrenData = formatdataForTree(payload);
-  var treeData = { name: "payload", children: childrenData.children };
+  var treeData = { name: "payload", _children: childrenData.children };
   console.log("treeData", treeData);
 
   // Get JSON data
@@ -613,7 +643,7 @@ function displayAttributeTree(payload) {
       })
       .on("mouseover", function (d) {
         if (d.tooltip || d._info) {
-          displayTooltip(d.tooltip || d._info, d.name);
+          displayTooltip(d.tooltip || d._info, d.name, d.attrPath);
         }
       });
     //   .on("mouseout", function (d) {
