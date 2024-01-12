@@ -374,6 +374,7 @@ function addEnumTag(base, layer) {
   base["x-tlc"] = layer["tlc"];
   base["x-featureui"] = layer["feature-ui"]
   base["x-sandboxui"] = layer["sandbox-ui"]
+  base["x-testcasesui"] = layer["testcases-ui"]
 
 }
 
@@ -426,4 +427,3 @@ function compareFiles () {
     const yamlString = yaml.dump(yamlData);
     fs.writeFileSync(yamlFilePath, yamlString, 'utf8');
   };
-    
