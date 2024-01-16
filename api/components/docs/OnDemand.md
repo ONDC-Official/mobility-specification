@@ -40,4 +40,42 @@
 
 Logs should be extracted for each of the flows above in this sequence: /search & /on_search, /select & /on_select, /init & /on_init, /confirm & /on_confirm, /status & /on_status (after confirm), /update & /on_update, /status & /on_status;
 
+### Log Verification
+To verify your logs, you can use the POST api exposed at [https://log-validation.ondc.org/api/validate/trv/trv10](https://log-validation.ondc.org/api/validate/trv/trv10) within the [Log Validation Utility](https://github.com/ONDC-Official/log-validation-utility).
+
+Available flows are:
+- HAPPY_FLOW
+- RIDER_CANCEL
+- DRIVER_CANCEL
+- PRICE_UPDATE
+
+ The payload structure for validation is as follows:
+
+```json
+{
+    "domain": "ONDC:TRV10",
+    "version": "2.0.0",
+    "flow": "RIDER_CANCEL",
+    "payload": {
+        "search": {},
+        "on_search": {},
+        "select": {},
+        "on_select": {},
+        "init": {},
+        "on_init": {},
+        "confirm": {},
+        "on_confirm": {},
+        "status": {},
+        "on_status": {},
+        "soft_cancel": {},
+        "soft_on_cancel": {},
+        "cancel": {},
+        "on_cancel": {}
+    }
+}
+```
+
+The api call sequence inside the payload object might differ based on different flows
+
+
 *Note: Log verification will follow a FIFO model with a TAT of 4 days*
