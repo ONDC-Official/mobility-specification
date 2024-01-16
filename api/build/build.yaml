@@ -191,8 +191,6 @@ paths:
                 message:
                   type: object
                   properties:
-                    ref_id:
-                      $ref: '#/components/schemas/Order/properties/id'
                     order_id:
                       $ref: '#/components/schemas/Order/properties/id'
               required:
@@ -1207,7 +1205,6 @@ components:
           type: string
         additional_desc:
           type: object
-          additionalProperties: false
           properties:
             url:
               type: string
@@ -1302,9 +1299,6 @@ components:
       type: object
       additionalProperties: false
       properties:
-        id:
-          description: The form identifier.
-          type: string
         url:
           description: >-
             The URL from where the form can be fetched. The content fetched from
@@ -1329,12 +1323,10 @@ components:
           type: string
           enum:
             - text/html
-            - application/html
             - application/xml
-        resubmit:
-          type: boolean
-        multiple_sumbissions:
-          type: boolean
+        submission_id:
+          type: string
+          format: uuid
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
       type: object
@@ -1534,7 +1526,6 @@ components:
             This represents the exact quantity allocated for purchase of the
             item.
           type: object
-          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1546,7 +1537,6 @@ components:
             This represents the exact quantity available for purchase of the
             item. The buyer can only purchase multiples of this
           type: object
-          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1558,7 +1548,6 @@ components:
             This represents the maximum quantity allowed for purchase of the
             item
           type: object
-          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1570,7 +1559,6 @@ components:
             This represents the minimum quantity allowed for purchase of the
             item
           type: object
-          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1580,7 +1568,6 @@ components:
         selected:
           description: This represents the quantity selected for purchase of the item
           type: object
-          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1590,7 +1577,6 @@ components:
         unitized:
           description: This represents the quantity available in a single unit of the item
           type: object
-          additionalProperties: false
           properties:
             count:
               type: integer
@@ -2052,7 +2038,6 @@ components:
           type: string
         params:
           type: object
-          additionalProperties: false
           properties:
             transaction_id:
               type: string
@@ -2179,7 +2164,6 @@ components:
     Provider:
       description: Describes the catalog of a business.
       type: object
-      additionalProperties: false
       properties:
         id:
           type: string
@@ -2254,7 +2238,6 @@ components:
           type: array
           items:
             type: object
-            additionalProperties: false
             properties:
               item:
                 $ref: '#/components/schemas/Item'
@@ -2403,7 +2386,6 @@ components:
           $ref: '#/components/schemas/DecimalValue'
         range:
           type: object
-          additionalProperties: false
           properties:
             min:
               $ref: '#/components/schemas/DecimalValue'
@@ -2583,7 +2565,6 @@ components:
           $ref: '#/components/schemas/Duration'
         range:
           type: object
-          additionalProperties: false
           properties:
             start:
               type: string
@@ -2691,46 +2672,8 @@ components:
       type: object
       additionalProperties: false
       properties:
-        head:
-          description: Provides the header information for the xinput.
-          additionalProperties: false
-          type: object
-          properties:
-            descriptor:
-              $ref: '#/components/schemas/Descriptor'
-            index:
-              additionalProperties: false
-              type: object
-              properties:
-                min:
-                  type: integer
-                cur:
-                  type: integer
-                max:
-                  type: integer
-            headings:
-              type: array
-              items:
-                type: string
-                description: The heading names of the forms
         form:
           $ref: '#/components/schemas/Form'
-        form_response:
-          description: Describes the response to a form submission
-          type: object
-          additionalProperties: false
-          properties:
-            status:
-              description: Contains the status of form submission.
-              type: string
-            signature:
-              type: string
-            submission_id:
-              type: string
-            errors:
-              type: array
-              items:
-                $ref: '#/components/schemas/Error'
         required:
           description: >-
             Indicates whether the form data is mandatorily required by the BPP
@@ -11954,3 +11897,6 @@ x-sandboxui:
   dropdown:
     - environment-name: staging
       link: https://mobility-staging.ondc.org
+x-testcasesui:
+  filenames:
+    - OnDemand.md
