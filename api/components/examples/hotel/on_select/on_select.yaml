@@ -1,0 +1,115 @@
+value:
+  context:
+    domain: 'ONDC:TRV13'
+    location:
+      country:
+        code: IND
+      city:
+        code: 'std:080'
+    transaction_id: b9aaecca-10b7-4d19-b640-b047a7c62196
+    message_id: aa579fb8-cb82-4824-be12-fcbc405b6608
+    action: on_select
+    timestamp: '2023-12-20T05:28:04.401Z'
+    version: 2.0.0
+    bap_uri: 'https://ondc.hotelbap.com/'
+    bap_id: ondc.hotelbap.com
+    bpp_uri: 'https://ondc.hotelbpp.com/'
+    bpp_id: ondc.hotelbpp.com
+    ttl: PT30S
+  message:
+    order:
+      provider:
+        id: P1
+      items:
+        - id: Accommodation-1
+          add_ons:
+            - id: full-board
+          payment_ids:
+            - pymnt-3
+      quote:
+        price:
+          currency: INR
+          value: '3025.00'
+        breakup:
+          - item:
+              id: Accommodation-1
+              quantity:
+                selected:
+                  count: 1
+              price:
+                currency: INR
+                value: '2000.00'
+              add_ons:
+                - id: full-board
+                  price:
+                    currency: INR
+                    value: '500.00'
+            title: 'Deluxe Room accommodation with all meals included (breakfast, lunch, and dinner)'
+            price:
+              currency: INR
+              value: '2500.00'
+          - title: 'Service Tax @ 9%'
+            price:
+              currency: INR
+              value: '225'
+          - title: 'GST @ 12%'
+            price:
+              currency: INR
+              value: '300'
+        ttl: P1D
+      payments:
+        - id: pymnt-1
+          type: PRE-ORDER
+          tags:
+            - descriptor:
+                code: FULL-PAYMENT
+        - id: pymnt-2
+          type: ON-FULFILLMENT
+          tags:
+            - descriptor:
+                code: FULL-PAYMENT
+        - id: pymnt-3
+          type: PART-PAYMENT
+          tags:
+            - descriptor:
+                code: LINKED-PAYMENTS
+              list:
+                - descriptor:
+                    code: pymnt-4
+                  value: '1'
+                - descriptor:
+                    code: pymnt-5
+                  value: '2'
+                # - descriptor:
+                #     code: pymnt-4
+                #   list:
+                #     - descriptor:
+                #         code: seq
+                #       value: '1'
+                # - descriptor:
+                #     code: pymnt-5
+                #   list:
+                #     - descriptor:
+                #         code: seq
+                #       value: '2'
+        - id: pymnt-4
+          type: PRE-ORDER
+          tags:
+            - descriptor:
+                code: ADV-DEPOSIT
+              list:
+                - descriptor:
+                    code: AMOUNT
+                  value: '2000.00'
+        - id: pymnt-5
+          type: ON-FULFILLMENT
+          tags:
+            - descriptor:
+                code: FINAL-PAYMENT
+              list:
+                - descriptor:
+                    code: AMOUNT
+                  value: '1025.00'
+  error:
+    code: ''
+    message: ''
