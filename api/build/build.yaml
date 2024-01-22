@@ -23198,7 +23198,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_79
+        example: &ref_80
           value:
             context:
               domain: ONDC:TRV13
@@ -23241,10 +23241,6 @@ x-flows:
                         overall quality and enjoyment of your experience
                       images:
                         - url: https://remote-image-ABC.ondc.hotelbpp.com
-                    categories:
-                      - id: V1
-                        descriptor:
-                          name: Variant Group 1
                     fulfillments:
                       - {}
                     locations:
@@ -23428,7 +23424,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_80
+        example: &ref_81
           value:
             context:
               domain: ONDC:TRV13
@@ -23691,7 +23687,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: &ref_81
+        example: &ref_82
           value:
             context:
               domain: ONDC:TRV13
@@ -24096,7 +24092,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_82
+        example: &ref_83
           value:
             context:
               domain: ONDC:TRV13
@@ -24341,7 +24337,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_84
+        example: &ref_85
           value:
             context:
               domain: ONDC:TRV13
@@ -24543,6 +24539,252 @@ x-flows:
                       code: INVOICE
                     url: https://invoice-O1.ondc.hotelbpp.com
                 updated_at: '2023-12-20T05:28:10.000Z'
+      - summary: Consumer platform updates the booking details
+        api: update
+        details:
+          - description: >-
+              The consumer platform updates the ride with some certain details
+              he wants to be updated.
+        reference: if any
+        example: &ref_78
+          value:
+            context:
+              domain: ONDC:TRV13
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              transaction_id: b9aaecca-10b7-4d19-b640-b047a7c62196
+              message_id: af986fb8-cb82-4824-be12-fcbc405b6608
+              action: update
+              timestamp: '2023-12-20T05:28:05.390Z'
+              version: 2.0.0
+              bap_uri: https://ondc.hotelbap.com/
+              bap_id: ondc.hotelbap.com
+              bpp_uri: https://ondc.hotelbpp.com/
+              bpp_id: ondc.hotelbpp.com
+              ttl: PT30S
+            message:
+              update_target: fulfillment
+              order:
+                id: O1
+                fulfillments:
+                  - id: customer-1
+                    tags:
+                      - descriptor:
+                          code: UPDATE_REQUEST
+                        list:
+                          - descriptor:
+                              code: contact.email
+                            value: newemail@ondc.org
+      - summary: Provider platform provides latest update on the order
+        api: on_update
+        details:
+          - description: >-
+              Provider platform provides the booking details with updated
+              fields.
+        reference: if any
+        example: &ref_86
+          value:
+            context:
+              domain: ONDC:TRV13
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              transaction_id: b9aaecca-10b7-4d19-b640-b047a7c62196
+              message_id: af986fb8-cb82-4824-be12-fcbc405b6608
+              action: on_update
+              timestamp: '2023-12-20T05:28:05.395Z'
+              version: 2.0.0
+              bap_uri: https://ondc.hotelbap.com/
+              bap_id: ondc.hotelbap.com
+              bpp_uri: https://ondc.hotelbpp.com/
+              bpp_id: ondc.hotelbpp.com
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                status: COMPLETED
+                provider:
+                  id: P1
+                items:
+                  - id: Accommodation-1
+                    location_ids:
+                      - L1
+                    quantity:
+                      selected:
+                        count: 1
+                    add_ons:
+                      - id: full-board
+                quote:
+                  price:
+                    currency: INR
+                    value: '3025.00'
+                  breakup:
+                    - item:
+                        id: Accommodation-1
+                        quantity:
+                          selected:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '2000.00'
+                        add_ons:
+                          - id: full-board
+                            price:
+                              currency: INR
+                              value: '500.00'
+                      title: >-
+                        Deluxe Room accommodation with all meals included
+                        (breakfast, lunch, and dinner)
+                      price:
+                        currency: INR
+                        value: '2500.00'
+                    - title: Service Tax @ 9%
+                      price:
+                        currency: INR
+                        value: '225'
+                    - title: GST @ 12%
+                      price:
+                        currency: INR
+                        value: '300'
+                  ttl: P1D
+                payments:
+                  - id: pymnt-3
+                    type: PART-PAYMENT
+                    status: PAID
+                    tags:
+                      - descriptor:
+                          code: LINKED-PAYMENTS
+                        list:
+                          - descriptor:
+                              code: pymnt-4
+                            value: '1'
+                          - descriptor:
+                              code: pymnt-5
+                            value: '2'
+                  - id: pymnt-4
+                    type: PRE-ORDER
+                    status: PAID
+                    collected_by: BAP
+                    tags:
+                      - descriptor:
+                          code: ADV-DEPOSIT
+                        list:
+                          - descriptor:
+                              code: AMOUNT
+                            value: '2000.00'
+                      - descriptor:
+                          code: SETTLEMENT_DETAILS
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: NEFT
+                    params:
+                      currency: INR
+                      amount: '2000.00'
+                      transaction_id: payment-utr-1234
+                      bank_account_number: Bank Account Number of Seller App
+                      virtual_payment_address: ' VPA of Seller App'
+                  - id: pymnt-5
+                    type: ON-FULFILLMENT
+                    status: PAID
+                    collected_by: BPP
+                    tags:
+                      - descriptor:
+                          code: FINAL-PAYMENT
+                        list:
+                          - descriptor:
+                              code: AMOUNT
+                            value: '1025.00'
+                    params:
+                      currency: INR
+                      amount: '1025.00'
+                      transaction_id: payment-utr-5678
+                      bank_account_number: Bank Account Number of Buyer App
+                      virtual_payment_address: ' VPA of Buyer App'
+                    time:
+                      timestamp: '2023-12-20T05:28:09.500Z'
+                billing:
+                  name: Sandeep S
+                  address: Dwarka, Delhi-110075
+                  state:
+                    name: Delhi
+                  city:
+                    name: Delhi
+                  organization:
+                    descriptor:
+                      name: ONDC
+                    address: ONDC, Delhi-110049
+                  email: email@ondc.org
+                  phone: '1704380085'
+                  tax_id: GSTIN1234567890
+                fulfillments:
+                  - id: customer-1
+                    customer:
+                      person:
+                        name: Sandeep S
+                        age: '25'
+                        dob: '2023-12-20'
+                        gender: M
+                        creds:
+                          - id: AADHAAR_NO_123
+                            type: AADHAAR
+                      contact:
+                        phone: '1704380085'
+                        email: email@ondc.org
+                tags:
+                  - descriptor:
+                      code: BAP_TERMS
+                    list:
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: ''
+                      - descriptor:
+                          code: STATIC_TERMS_NEW
+                        value: >-
+                          https://github.com/ONDC-Official/NP-Static-Terms/buyerNP_BNP/1.0/tc.pdf
+                      - descriptor:
+                          code: EFFECTIVE_DATE
+                        value: '2024-01-01T00:00:00.000Z'
+                  - descriptor:
+                      code: BUYER_FINDER_FEES
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '3'
+                  - descriptor:
+                      code: BPP_TERMS
+                    list:
+                      - descriptor:
+                          code: MAX_LIABILITY
+                        value: '2'
+                      - descriptor:
+                          code: MAX_LIABILITY_CAP
+                        value: '1000.00'
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'false'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: New Delhi
+                      - descriptor:
+                          code: TAX_NUMBER
+                        value: GST_NUMBER_SELLERNP
+                documents:
+                  - descriptor:
+                      code: BOOKING_CONFIRMATION
+                    url: https://confirmation-O1.ondc.hotelbpp.com
+                  - descriptor:
+                      code: INVOICE
+                    url: https://invoice-O1.ondc.hotelbpp.com
+                updated_at: '2023-12-20T05:28:10.000Z'
       - summary: Consumer platform cancels the request
         api: cancel
         details:
@@ -24561,7 +24803,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_78
+        example: &ref_79
           value:
             context:
               domain: ONDC:TRV13
@@ -24604,7 +24846,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_83
+        example: &ref_84
           value:
             context:
               domain: ONDC:TRV13
@@ -27167,37 +27409,7 @@ x-examples:
           - *ref_77
       update:
         examples:
-          - value:
-              context:
-                domain: ONDC:TRV13
-                location:
-                  country:
-                    code: IND
-                  city:
-                    code: std:080
-                transaction_id: b9aaecca-10b7-4d19-b640-b047a7c62196
-                message_id: af986fb8-cb82-4824-be12-fcbc405b6608
-                action: update
-                timestamp: '2023-12-20T05:28:05.390Z'
-                version: 2.0.0
-                bap_uri: https://ondc.hotelbap.com/
-                bap_id: ondc.hotelbap.com
-                bpp_uri: https://ondc.hotelbpp.com/
-                bpp_id: ondc.hotelbpp.com
-                ttl: PT30S
-              message:
-                update_target: fulfillment
-                order:
-                  id: O1
-                  fulfillments:
-                    - id: customer-1
-                      tags:
-                        - descriptor:
-                            code: UPDATE_REQUEST
-                          list:
-                            - descriptor:
-                                code: contact.email
-                              value: newemail@ondc.org
+          - *ref_78
       support:
         examples:
           - value:
@@ -27222,25 +27434,25 @@ x-examples:
                 ref_id: O1
       cancel:
         examples:
-          - *ref_78
+          - *ref_79
       on_search:
         examples:
-          - *ref_79
+          - *ref_80
       on_select:
         examples:
-          - *ref_80
+          - *ref_81
       on_init:
         examples:
-          - *ref_81
+          - *ref_82
       on_confirm:
         examples:
-          - *ref_82
+          - *ref_83
       on_cancel:
         examples:
-          - *ref_83
+          - *ref_84
       on_status:
         examples:
-          - *ref_84
+          - *ref_85
       on_support:
         examples:
           - value:
@@ -27267,205 +27479,7 @@ x-examples:
                 email: help@hotelbpp.com
       on_update:
         examples:
-          - value:
-              context:
-                domain: ONDC:TRV13
-                location:
-                  country:
-                    code: IND
-                  city:
-                    code: std:080
-                transaction_id: b9aaecca-10b7-4d19-b640-b047a7c62196
-                message_id: af986fb8-cb82-4824-be12-fcbc405b6608
-                action: on_update
-                timestamp: '2023-12-20T05:28:05.395Z'
-                version: 2.0.0
-                bap_uri: https://ondc.hotelbap.com/
-                bap_id: ondc.hotelbap.com
-                bpp_uri: https://ondc.hotelbpp.com/
-                bpp_id: ondc.hotelbpp.com
-                ttl: PT30S
-              message:
-                order:
-                  id: O1
-                  status: COMPLETED
-                  provider:
-                    id: P1
-                  items:
-                    - id: Accommodation-1
-                      location_ids:
-                        - L1
-                      quantity:
-                        selected:
-                          count: 1
-                      add_ons:
-                        - id: full-board
-                  quote:
-                    price:
-                      currency: INR
-                      value: '3025.00'
-                    breakup:
-                      - item:
-                          id: Accommodation-1
-                          quantity:
-                            selected:
-                              count: 1
-                          price:
-                            currency: INR
-                            value: '2000.00'
-                          add_ons:
-                            - id: full-board
-                              price:
-                                currency: INR
-                                value: '500.00'
-                        title: >-
-                          Deluxe Room accommodation with all meals included
-                          (breakfast, lunch, and dinner)
-                        price:
-                          currency: INR
-                          value: '2500.00'
-                      - title: Service Tax @ 9%
-                        price:
-                          currency: INR
-                          value: '225'
-                      - title: GST @ 12%
-                        price:
-                          currency: INR
-                          value: '300'
-                    ttl: P1D
-                  payments:
-                    - id: pymnt-3
-                      type: PART-PAYMENT
-                      status: PAID
-                      tags:
-                        - descriptor:
-                            code: LINKED-PAYMENTS
-                          list:
-                            - descriptor:
-                                code: pymnt-4
-                              value: '1'
-                            - descriptor:
-                                code: pymnt-5
-                              value: '2'
-                    - id: pymnt-4
-                      type: PRE-ORDER
-                      status: PAID
-                      collected_by: BAP
-                      tags:
-                        - descriptor:
-                            code: ADV-DEPOSIT
-                          list:
-                            - descriptor:
-                                code: AMOUNT
-                              value: '2000.00'
-                        - descriptor:
-                            code: SETTLEMENT_DETAILS
-                          list:
-                            - descriptor:
-                                code: SETTLEMENT_TYPE
-                              value: NEFT
-                      params:
-                        currency: INR
-                        amount: '2000.00'
-                        transaction_id: payment-utr-1234
-                        bank_account_number: Bank Account Number of Seller App
-                        virtual_payment_address: ' VPA of Seller App'
-                    - id: pymnt-5
-                      type: ON-FULFILLMENT
-                      status: PAID
-                      collected_by: BPP
-                      tags:
-                        - descriptor:
-                            code: FINAL-PAYMENT
-                          list:
-                            - descriptor:
-                                code: AMOUNT
-                              value: '1025.00'
-                      params:
-                        currency: INR
-                        amount: '1025.00'
-                        transaction_id: payment-utr-5678
-                        bank_account_number: Bank Account Number of Buyer App
-                        virtual_payment_address: ' VPA of Buyer App'
-                      time:
-                        timestamp: '2023-12-20T05:28:09.500Z'
-                  billing:
-                    name: Sandeep S
-                    address: Dwarka, Delhi-110075
-                    state:
-                      name: Delhi
-                    city:
-                      name: Delhi
-                    organization:
-                      descriptor:
-                        name: ONDC
-                      address: ONDC, Delhi-110049
-                    email: email@ondc.org
-                    phone: '1704380085'
-                    tax_id: GSTIN1234567890
-                  fulfillments:
-                    - id: customer-1
-                      customer:
-                        person:
-                          name: Sandeep S
-                          age: '25'
-                          dob: '2023-12-20'
-                          gender: M
-                          creds:
-                            - id: AADHAAR_NO_123
-                              type: AADHAAR
-                        contact:
-                          phone: '1704380085'
-                          email: email@ondc.org
-                  tags:
-                    - descriptor:
-                        code: BAP_TERMS
-                      list:
-                        - descriptor:
-                            code: STATIC_TERMS
-                          value: ''
-                        - descriptor:
-                            code: STATIC_TERMS_NEW
-                          value: >-
-                            https://github.com/ONDC-Official/NP-Static-Terms/buyerNP_BNP/1.0/tc.pdf
-                        - descriptor:
-                            code: EFFECTIVE_DATE
-                          value: '2024-01-01T00:00:00.000Z'
-                    - descriptor:
-                        code: BUYER_FINDER_FEES
-                      list:
-                        - descriptor:
-                            code: BUYER_FINDER_FEES_PERCENTAGE
-                          value: '3'
-                    - descriptor:
-                        code: BPP_TERMS
-                      list:
-                        - descriptor:
-                            code: MAX_LIABILITY
-                          value: '2'
-                        - descriptor:
-                            code: MAX_LIABILITY_CAP
-                          value: '1000.00'
-                        - descriptor:
-                            code: MANDATORY_ARBITRATION
-                          value: 'false'
-                        - descriptor:
-                            code: COURT_JURISDICTION
-                          value: New Delhi
-                        - descriptor:
-                            code: DELAY_INTEREST
-                          value: New Delhi
-                        - descriptor:
-                            code: TAX_NUMBER
-                          value: GST_NUMBER_SELLERNP
-                  documents:
-                    - descriptor:
-                        code: BOOKING_CONFIRMATION
-                      url: https://confirmation-O1.ondc.hotelbpp.com
-                    - descriptor:
-                        code: INVOICE
-                      url: https://invoice-O1.ondc.hotelbpp.com
-                  updated_at: '2023-12-20T05:28:10.000Z'
+          - *ref_86
 x-attributes:
   metro:
     attribute_set:
