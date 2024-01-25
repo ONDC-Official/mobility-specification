@@ -2816,7 +2816,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order:
+      order: &ref_6
         items: *ref_4
         fulfillments: *ref_2
         payments: *ref_3
@@ -2851,7 +2851,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: &ref_6
+      order: &ref_10
         items: *ref_4
         fulfillments: *ref_2
         payments: *ref_3
@@ -2864,6 +2864,9 @@ x-enum:
                 reference: <PR/Issue/Discussion Links md format text
               - code: DISTANCE_FARE
                 description: Describes the distance fare for a specific ride.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: CANCELLATION_CHARGES
+                description: Describes the cancellation charges for a specific ride.
                 reference: <PR/Issue/Discussion Links md format text
   init:
     context:
@@ -2888,7 +2891,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order:
+      order: &ref_9
         items: *ref_4
         fulfillments: *ref_2
         payments: *ref_3
@@ -2916,7 +2919,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_6
+      order: *ref_9
   status:
     context:
       action:
@@ -2934,7 +2937,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_6
+      order: *ref_9
   cancel:
     context:
       action:
@@ -2987,6 +2990,7 @@ x-enum:
                 - code: '013'
                   description: Driver accepted the ride mistakenly
                   reference: <PR/Issue/Discussion Links md format text
+        quote: *ref_8
   update:
     context:
       action:
@@ -2996,7 +3000,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_6
+      order: *ref_10
   on_update:
     context:
       action:
@@ -3006,12 +3010,12 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_6
+      order: *ref_10
 x-tags:
   search:
     message:
       intent:
-        payment: &ref_9
+        payment: &ref_11
           tags:
             - code: BUYER_FINDER_FEES
               description: Describes the finder fees for buyer
@@ -3060,7 +3064,7 @@ x-tags:
     message:
       catalog:
         providers:
-          items: &ref_10
+          items: &ref_12
             tags:
               - code: FARE_POLICY
                 description: Details about fare for the ride
@@ -3106,12 +3110,12 @@ x-tags:
                   - code: ETA_TO_NEAREST_DRIVER_MIN
                     description: Describes the ETA to nearest driver.
                     reference: <PR/Issue/Discussion Links md format text>
-          payments: *ref_9
+          payments: *ref_11
   on_select:
     message:
       order:
-        items: *ref_10
-        fulfillments: &ref_11
+        items: *ref_12
+        fulfillments: &ref_13
           tags:
             - code: ROUTE_INFO
               description: Describes the route information.
@@ -3126,18 +3130,18 @@ x-tags:
   init:
     message:
       order:
-        payments: *ref_9
-  on_init: &ref_12
+        payments: *ref_11
+  on_init: &ref_14
     message:
       order:
-        items: *ref_10
-        payments: *ref_9
-        fulfillments: *ref_11
-  confirm: *ref_12
-  on_confirm: *ref_12
-  on_status: *ref_12
-  on_cancel: *ref_12
-  on_update: *ref_12
+        items: *ref_12
+        payments: *ref_11
+        fulfillments: *ref_13
+  confirm: *ref_14
+  on_confirm: *ref_14
+  on_status: *ref_14
+  on_cancel: *ref_14
+  on_update: *ref_14
 x-flows:
   - summary: On-Demand - Assign driver on on-confirm
     details:
@@ -3216,7 +3220,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_13
+        example: &ref_15
           summary: >-
             Search for mobility services by pickup and drop location[Seller
             Collecting]
@@ -3289,7 +3293,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: &ref_14
+        example: &ref_16
           summary: Return a mobility catalog[Seller Collecting]
           value:
             context:
@@ -3424,7 +3428,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_15
+        example: &ref_17
           summary: Get quote for a specific product from a mobility catalog
           value:
             context:
@@ -3467,7 +3471,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_16
+        example: &ref_18
           summary: Return a quote offered by a provider
           value:
             context:
@@ -3607,7 +3611,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_17
+        example: &ref_19
           summary: >-
             Initialize draft order and request for terms of service[Seller
             Collecting]
@@ -3702,7 +3706,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_18
+        example: &ref_20
           summary: Return draft order with payment terms[Seller Collecting]
           value:
             context:
@@ -3918,7 +3922,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_19
+        example: &ref_21
           summary: Confirm ride booking
           value:
             context:
@@ -4024,7 +4028,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_21
+        example: &ref_23
           summary: Return confirmed order with latest fulfillment details
           value:
             context:
@@ -4265,7 +4269,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_28
+        example: &ref_30
           summary: Return updated order with recomputed charges
           value:
             context:
@@ -4495,7 +4499,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_20
+        example: &ref_22
           summary: Get latest fulfillment status of a booking
           value:
             context:
@@ -4840,7 +4844,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_13
+        example: *ref_15
       - summary: Get a list of all services from ride providers
         api: on_search
         details:
@@ -4861,7 +4865,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_14
+        example: *ref_16
       - summary: Buyer app selects a specific service for more details
         api: select
         details:
@@ -4881,7 +4885,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_15
+        example: *ref_17
       - summary: Ride provider provides the quote for selected service
         api: on_select
         details:
@@ -4899,7 +4903,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_16
+        example: *ref_18
       - summary: Buyer app initializes the ride request
         api: init
         details:
@@ -4917,7 +4921,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_17
+        example: *ref_19
       - summary: Ride provider accepts/appends the terms of orders
         api: on_init
         details:
@@ -4935,7 +4939,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end  
         reference: if any
-        example: *ref_18
+        example: *ref_20
       - summary: Buyer app confirms the ride
         api: confirm
         details:
@@ -4953,7 +4957,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_19
+        example: *ref_21
       - summary: Ride provider confirms the ride request
         api: on_confirm
         details:
@@ -4971,7 +4975,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_26
+        example: &ref_28
           summary: Return confirmed order with latest fulfillment details
           value:
             context:
@@ -5204,7 +5208,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_29
+        example: &ref_31
           summary: Return updated order with updated agent details
           value:
             context:
@@ -5445,7 +5449,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_20
+        example: *ref_22
       - summary: Ride provider provides latest order status
         api: on_status
         details:
@@ -5463,7 +5467,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_27
+        example: &ref_29
           summary: Return order with status - Driver at pickup
           value:
             context:
@@ -5724,7 +5728,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
         reference: if any
-        example: *ref_21
+        example: *ref_23
       - summary: Buyer app cancels the request for ride
         api: cancel
         details:
@@ -5742,7 +5746,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_23
+        example: &ref_25
           summary: Initiates cancelling a ride with soft cancel status
           value:
             context:
@@ -5788,7 +5792,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_25
+        example: &ref_27
           summary: Return current order status after soft-cancel
           value:
             context:
@@ -6008,19 +6012,15 @@ x-flows:
                       title: BASE_FARE
                     - price:
                         currency: INR
-                        value: '146'
+                        value: '116'
                       title: DISTANCE_FARE
-                    - price:
-                        currency: INR
-                        value: '100'
-                      title: CURRENT_FARE_CHARGE
                     - price:
                         currency: INR
                         value: '10'
                       title: CANCELLATION_CHARGES
                   price:
                     currency: INR
-                    value: '86'
+                    value: '156'
                   ttl: P200S
                 status: SOFT_CANCEL
       - summary: Buyer app confirms the cancel request for ride
@@ -6038,7 +6038,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_24
+        example: &ref_26
           summary: Initiates cancelling a ride with confirm cancel status
           value:
             context:
@@ -6082,7 +6082,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_22
+        example: &ref_24
           summary: Return current order status after confirm-cancel
           value:
             context:
@@ -6302,15 +6302,11 @@ x-flows:
                       title: BASE_FARE
                     - price:
                         currency: INR
-                        value: '146'
+                        value: '116'
                       title: DISTANCE_FARE
-                    - price:
-                        currency: INR
-                        value: '100'
-                      title: CURRENT_FARE_CHARGE
                   price:
                     currency: INR
-                    value: '86'
+                    value: '146'
                   ttl: P200S
                 status: CANCELLED
   - summary: On-Demand - Ride cancellation by driver
@@ -6343,7 +6339,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel (unsolicited)
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_21
+        example: *ref_23
       - summary: Ride provider accepts the terms of cancellation
         api: on_cancel
         details:
@@ -6361,7 +6357,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_22
+        example: *ref_24
   - summary: BPP Collecting - Payment Confirmation
     details:
       - description: >-
@@ -6505,7 +6501,7 @@ x-flows:
                 end
                 Seller Platform (BPP) ->>  Buyer Platform (BAP) : form
         reference: if any
-        example: *ref_18
+        example: *ref_20
       - summary: Buyer app redirects to payment gateway page.
         api: form
         details:
@@ -7146,7 +7142,7 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_13
+          - *ref_15
           - summary: >-
               Search for mobility services by pickup and drop location[Buyer
               Collecting]
@@ -7201,25 +7197,25 @@ x-examples:
                             value: https://example-test-bap.com/static-terms.txt
       select:
         examples:
-          - *ref_15
+          - *ref_17
       cancel:
         examples:
-          - *ref_23
-          - *ref_24
+          - *ref_25
+          - *ref_26
       confirm:
         examples:
-          - *ref_19
+          - *ref_21
       init:
         examples:
-          - *ref_17
+          - *ref_19
       on_cancel:
         examples:
-          - *ref_25
-          - *ref_22
+          - *ref_27
+          - *ref_24
       on_confirm:
         examples:
-          - *ref_21
-          - *ref_26
+          - *ref_23
+          - *ref_28
           - summary: Return confirmed order with latest fulfillment details
             value:
               context:
@@ -7446,7 +7442,7 @@ x-examples:
                   updated_at: '2023-12-10T08:03:34.294Z'
       on_init:
         examples:
-          - *ref_18
+          - *ref_20
       on_rating:
         examples:
           - summary: Return acknowledgement of rating and feedback
@@ -7474,7 +7470,7 @@ x-examples:
                 rating_ack: true
       on_search:
         examples:
-          - *ref_14
+          - *ref_16
           - summary: Return a mobility catalog[Buyer Collecting]
             value:
               context:
@@ -7593,10 +7589,10 @@ x-examples:
                                     https://example-test-bpp.com/static-terms.txt
       on_select:
         examples:
-          - *ref_16
+          - *ref_18
       on_status:
         examples:
-          - *ref_27
+          - *ref_29
           - summary: >-
               Return order with latest fulfillment status - Driver en-route to
               pickup
@@ -8319,7 +8315,7 @@ x-examples:
                     https://api.beckn.juspay.in/dobpp/ui/driver/location/abc9f0aa-bbfd-4e91-b378-41feee12f05f
       on_update:
         examples:
-          - *ref_28
+          - *ref_30
           - summary: Return updated order with updated billing details
             value:
               context:
@@ -8543,7 +8539,7 @@ x-examples:
                       value: '146'
                     ttl: PT30S
                   status: ACTIVE
-          - *ref_29
+          - *ref_31
       rating:
         examples:
           - summary: Provide a rating
@@ -8599,7 +8595,7 @@ x-examples:
                 value: 4
       status:
         examples:
-          - *ref_20
+          - *ref_22
       support:
         examples:
           - summary: Fetch support information related to a particular order
@@ -11893,10 +11889,10 @@ x-errorcodes:
       Description: Tracking not enabled for any fulfillment in the order
       From: BPP
       code: 90202
+x-testcasesui:
+  filenames:
+    - log-verification.md
 x-sandboxui:
   dropdown:
     - environment-name: staging
       link: https://mobility-staging.ondc.org
-x-testcasesui:
-  filenames:
-    - log-verification.md
