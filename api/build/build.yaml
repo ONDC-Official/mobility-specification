@@ -193,8 +193,6 @@ paths:
                   properties:
                     order_id:
                       $ref: '#/components/schemas/Order/properties/id'
-                  required:
-                    - order_id
               required:
                 - context
                 - message
@@ -8958,7 +8956,7 @@ x-attributes:
               callback cycle.
           version:
             required: mandatory
-            type: integer
+            type: string
             owner: BAP
             usage: 2.0.0
             description: >-
@@ -8993,7 +8991,7 @@ x-attributes:
             fulfillment:
               stops:
                 type:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BAP
                   usage: START
@@ -9009,7 +9007,7 @@ x-attributes:
                     description: Describes a GPS coordinate
                   descriptor:
                     code:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BAP
                       usage: SHAHEED_STHAL
@@ -9072,7 +9070,7 @@ x-attributes:
               callback cycle.
           version:
             required: mandatory
-            type: integer
+            type: string
             owner: BAP
             usage: 2.0.0
             description: >-
@@ -9138,6 +9136,40 @@ x-attributes:
                 owner: BPP
                 usage: db1928f9
                 description: Id of the provider
+              categories:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: C1
+                  description: Unique Id for the categories
+                descriptor:
+                  name:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: Ticket
+                    description: Describes the category name.
+                  code:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: TICKET
+                    description: Describes the category code.
+              time:
+                range:
+                  start:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: '2023-09-14T05:30:00.000Z'
+                    description: Describes the start time period for individual category.
+                  end:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: '2023-09-14T23:30:00.000Z'
+                    description: Describes the end time period for individual category.
               descriptor:
                 name:
                   required: mandatory
@@ -9169,6 +9201,18 @@ x-attributes:
                     typically set when there are multiple ways an order can be
                     fulfilled. 
                 stops:
+                  id:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 2
+                    description: Unique reference ID for individual stop
+                  parent_stop_id:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: 1
+                    description: Unique ID for referencing parent stop
                   type:
                     required: mandatory
                     type: string
@@ -9207,7 +9251,7 @@ x-attributes:
                         usage: Kashmere Gate
                         description: Describes the name for a particular location.
                     gps:
-                      required: optional
+                      required: mandatory
                       type: string
                       owner: BPP
                       usage: 28.707358, 77.180910
@@ -9221,14 +9265,14 @@ x-attributes:
                     description: Describes category of a vehicle
               items:
                 id:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: b2400168
                   description: ID of the item.
                 descriptor:
                   code:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: Single Journey Ticket
@@ -9241,14 +9285,14 @@ x-attributes:
                     description: Describes the name for a particular item.
                 price:
                   currency:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: INR
                     description: Describes the price of a product or service
                   value:
-                    required: mandatory
-                    type: integer
+                    required: optional
+                    type: string
                     owner: BPP
                     usage: 60
                     description: Describes the currency of a product or service
@@ -9272,11 +9316,30 @@ x-attributes:
                         This represents the minimum quantity allowed for
                         purchase of the item
                 fulfillment_ids:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: 3bd4ea25
                   description: Unique reference ID to the fulfillment of an order
+                category_ids:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: C1
+                  description: Unique reference ID to the categories of an order
+                time:
+                  duration:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: PT2D
+                    description: Time duration for servicibility
+                  label:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: Validity
+                    description: label for time
       select:
         context:
           location:
@@ -9328,7 +9391,7 @@ x-attributes:
               callback cycle.
           version:
             required: mandatory
-            type: integer
+            type: string
             owner: BAP
             usage: 2.0.0
             description: >-
@@ -9448,7 +9511,7 @@ x-attributes:
               callback cycle.
           version:
             required: mandatory
-            type: integer
+            type: string
             owner: BAP
             usage: 2.0.0
             description: >-
@@ -9502,7 +9565,7 @@ x-attributes:
                 description: ID of the item.
               descriptor:
                 name:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: Single Journey Ticket
@@ -9522,7 +9585,7 @@ x-attributes:
                   description: Price of the selected item.
                 value:
                   required: mandatory
-                  type: integer
+                  type: string
                   owner: BPP
                   usage: 60
                   description: Describes a numerical value in decimal form
@@ -9542,6 +9605,25 @@ x-attributes:
                 owner: BPP
                 usage: 3bd4ea25
                 description: Unique reference ID to the fulfillment of an order
+              category_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: C1
+                description: Unique reference ID to the categories of an order
+              time:
+                label:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: PT2D
+                  description: Time duration for servicibility
+                duration:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Validity
+                  description: label for time
             provider:
               id:
                 required: mandatory
@@ -9549,6 +9631,20 @@ x-attributes:
                 owner: BPP
                 usage: db1928f9
                 description: Id of the provider
+                time:
+                  range:
+                    start:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: '2023-09-14T05:30:00.000Z'
+                      description: Describes the start time period.
+                    end:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: '2023-09-14T23:30:00.000Z'
+                      description: Describes the end time period.
               descriptor:
                 name:
                   required: mandatory
@@ -9570,12 +9666,30 @@ x-attributes:
                 owner: BPP
                 usage: 3bd4ea25
                 description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: TRIP
+                description: Denotes the fulfillment type
               stops:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 2
+                  description: Unique reference ID for individual stop
+                parent_stop_id:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: 1
+                  description: Unique ID for referencing parent stop
                 type:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: START
+                  usage: INTERMEDIATE_STOP
                   description: >-
                     The type of stop. Allowed values of this property can be
                     defined by the network policy.
@@ -9590,7 +9704,7 @@ x-attributes:
                 location:
                   descriptor:
                     name:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       usage: Shaheed Sthal(New Bus Adda)
@@ -9602,7 +9716,7 @@ x-attributes:
                       usage: SHAHEED_STHAL
                       description: Describes the code for a particular location.
                   gps:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
@@ -9628,6 +9742,64 @@ x-attributes:
                   owner: BPP
                   usage: INR
                   description: Describes the currency of a product or service
+              breakup:
+                title:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: BASE_FARE
+                  description: Breakup title of the total quoted price
+                item:
+                  id:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: I1
+                    description: ID of the item.
+                  price:
+                    currency:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: INR
+                      description: Describes the currency of breakup item
+                    value:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: 60
+                      description: Describes the value of breakup item
+                  quantity:
+                    selected:
+                      count:
+                        required: mandatory
+                        type: string
+                        owner: BPP
+                        usage: 2
+                        description: Describes the count of breakup item
+                price:
+                  value:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: 120
+                    description: Describes the price of a product or service
+            cancellation_terms:
+              external_ref:
+                url:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: https://transitsolutions.com/mf/tnc.html
+                  description: >-
+                    URL to the cancellation terms. This can be a data url or an
+                    remote url
+                mimetype:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: text/html
+                  description: Describes the mimetype for provided url
       init:
         context:
           location:
@@ -9679,7 +9851,7 @@ x-attributes:
               callback cycle.
           version:
             required: mandatory
-            type: integer
+            type: string
             owner: BAP
             usage: 2.0.0
             description: >-
@@ -9750,19 +9922,19 @@ x-attributes:
                 description: Id of the provider
             billing:
               name:
-                required: mandatory
+                required: optional
                 type: string
                 owner: BAP
                 usage: John Doe
                 description: Name of the billable entity
               email:
-                required: mandatory
+                required: optional
                 type: string
                 owner: BAP
                 usage: john.doe@example.com
                 description: Email address where the bill is sent to
               phone:
-                required: mandatory
+                required: optional
                 type: string
                 owner: BAP
                 usage: 9897867564
@@ -9786,6 +9958,25 @@ x-attributes:
                 owner: BAP
                 usage: PRE-ORDER
                 description: Payment Type
+              params:
+                bank_code:
+                  required: optional
+                  type: string
+                  owner: BAP
+                  usage: XXXXXXXX
+                  description: Bank code associated with payment activity
+                bank_account_number:
+                  required: optional
+                  type: string
+                  owner: BAP
+                  usage: xxxxxxxxxxxxxx
+                  description: Bank account number associated with payment activity
+                virtual_payment_address:
+                  required: optional
+                  type: string
+                  owner: BAP
+                  usage: 9988199772@okicic
+                  description: Virtual payment address associated with payment activity
       on_init:
         context:
           location:
@@ -9837,7 +10028,7 @@ x-attributes:
               callback cycle.
           version:
             required: mandatory
-            type: integer
+            type: string
             owner: BAP
             usage: 2.0.0
             description: >-
@@ -9891,7 +10082,7 @@ x-attributes:
                 description: ID of the item.
               descriptor:
                 name:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: Single Journey Ticket
@@ -9911,7 +10102,7 @@ x-attributes:
                   description: Price of the selected item.
                 value:
                   required: mandatory
-                  type: integer
+                  type: string
                   owner: BPP
                   usage: 60
                   description: Describes a numerical value in decimal form
@@ -9925,6 +10116,25 @@ x-attributes:
                     description: >-
                       This represents the quantity selected for purchase of the
                       item
+              category_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: C1
+                description: Unique reference ID to the categories of an order
+              time:
+                label:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: PT2D
+                  description: Time duration for servicibility
+                duration:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Validity
+                  description: label for time
               fulfillment_ids:
                 required: mandatory
                 type: string
@@ -9938,6 +10148,20 @@ x-attributes:
                 owner: BPP
                 usage: db1928f9
                 description: Id of the provider
+                time:
+                  range:
+                    start:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: '2023-09-14T05:30:00.000Z'
+                      description: Describes the start time period.
+                    end:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: '2023-09-14T23:30:00.000Z'
+                      description: Describes the end time period.
               descriptor:
                 name:
                   required: mandatory
@@ -9959,12 +10183,30 @@ x-attributes:
                 owner: BPP
                 usage: 3bd4ea25-021d-46ba-aac1-5bab903adde1
                 description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: TRIP
+                description: Denotes the fulfillment type
               stops:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 2
+                  description: Unique reference ID for individual stop
+                parent_stop_id:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: 1
+                  description: Unique ID for referencing parent stop
                 type:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: START
+                  usage: INTERMEDIATE_STOP
                   description: >-
                     The type of stop. Allowed values of this property can be
                     defined by the network policy.
@@ -9990,7 +10232,7 @@ x-attributes:
                       usage: SHAHEED_STHAL
                       description: Describes the code for a particular location.
                   gps:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
@@ -10004,28 +10246,28 @@ x-attributes:
                   description: Describes vehicle category
             billing:
               name:
-                required: mandatory
+                required: optional
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: John Doe
                 description: Name of the billable entity
               email:
-                required: mandatory
+                required: optional
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: john.doe@example.com
                 description: Email address where the bill is sent to
               phone:
-                required: mandatory
-                type: integer
-                owner: BPP
+                required: optional
+                type: string
+                owner: BAP
                 usage: 9897867564
                 description: Phone number of the billable entity
             quote:
               price:
                 value:
                   required: mandatory
-                  type: integer
+                  type: string
                   owner: BPP
                   usage: 60
                   description: Describes the price of a product or service
@@ -10049,6 +10291,27 @@ x-attributes:
                     owner: BPP
                     usage: b2400168
                     description: ID of the item.
+                  quantity:
+                    selected:
+                      count:
+                        required: mandatory
+                        type: string
+                        owner: BPP
+                        usage: 2
+                        description: Describes the count of breakup item
+                  price:
+                    value:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: 60
+                      description: Describes the value of breakup item
+                    currency:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: INR
+                      description: Describes the currency to be paid in of a breakup item
                 price:
                   currency:
                     required: mandatory
@@ -10058,7 +10321,7 @@ x-attributes:
                     description: Describes the price of a product or service
                   value:
                     required: mandatory
-                    type: integer
+                    type: string
                     owner: BPP
                     usage: 120
                     description: >-
@@ -10110,45 +10373,22 @@ x-attributes:
                   owner: BPP
                   usage: 9988199772@okicic
                   description: Virtual payment address associated with payment activity
-              tags:
-                descriptor:
-                  code:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: SETTLEMENT_DETAILS
-                    description: Describes the code for a tag.
-                display:
+            cancellation_terms:
+              external_ref:
+                url:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: optional
+                  usage: https://transitsolutions.com/mf/tnc.html
                   description: >-
-                    Indicates the display properties of the tag group. If
-                    display is set to false, then the group will not be
-                    displayed. If it is set to true, it should be displayed.
-                    However, group-level display properties can be overriden by
-                    individual tag-level display property. As this schema is
-                    purely for catalog display purposes, it is not recommended
-                    to send this value during search.
-                list:
-                  descriptor:
-                    code:
-                      required: mandatory
-                      type: string
-                      owner: BPP
-                      usage: SETTLEMENT_TYPE
-                      description: >-
-                        Description of the Tag, can be used to store detailed
-                        information.
-                  value:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: UPI
-                    description: >-
-                      The value of the tag. This set by the BPP and rendered
-                      as-is by the BAP.
+                    URL to the cancellation terms. This can be a data url or an
+                    remote url
+                mimetype:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: text/html
+                  description: Describes the mimetype for provided url
       confirm:
         context:
           location:
@@ -10200,7 +10440,7 @@ x-attributes:
               callback cycle.
           version:
             required: mandatory
-            type: integer
+            type: string
             owner: BAP
             usage: 2.0.0
             description: >-
@@ -10271,20 +10511,20 @@ x-attributes:
                 description: Id of the provider
             billing:
               name:
-                required: mandatory
+                required: optional
                 type: string
                 owner: BAP
                 usage: John Doe
                 description: Name of the billable entity
               email:
-                required: mandatory
+                required: optional
                 type: string
                 owner: BAP
                 usage: john.doe@example.com
                 description: Email address where the bill is sent to
               phone:
-                required: mandatory
-                type: integer
+                required: optional
+                type: string
                 owner: BAP
                 usage: 9897867564
                 description: Phone number of the billable entity
@@ -10315,27 +10555,27 @@ x-attributes:
                 owner: BAP
                 usage: PRE-ORDER
                 description: Payment Type
-                params:
-                  transaction_id:
-                    required: mandatory
-                    type: string
-                    owner: BAP
-                    usage: 34cc9b0b
-                    description: >-
-                      The reference transaction ID associated with a payment
-                      activity
-                  currency:
-                    required: mandatory
-                    type: string
-                    owner: BAP
-                    usage: INR
-                    description: Describes currency value in string form
-                  amount:
-                    required: mandatory
-                    type: integer
-                    owner: BAP
-                    usage: 60
-                    description: Describes a numerical value in decimal form
+              params:
+                transaction_id:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: 34cc9b0b
+                  description: >-
+                    The reference transaction ID associated with a payment
+                    activity
+                currency:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: INR
+                  description: Describes currency value in string form
+                amount:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: 60
+                  description: Describes a numerical value in decimal form
       on_confirm:
         context:
           location:
@@ -10387,7 +10627,7 @@ x-attributes:
               callback cycle.
           version:
             required: mandatory
-            type: integer
+            type: string
             owner: BAP
             usage: 2.0.0
             description: >-
@@ -10495,6 +10735,25 @@ x-attributes:
                 owner: BPP
                 usage: 3bd4ea25
                 description: Unique reference ID to the fulfillment of an order
+              category_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: C1
+                description: Unique reference ID to the categories of an order
+              time:
+                label:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: PT2D
+                  description: Time duration for servicibility
+                duration:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Validity
+                  description: label for time
             provider:
               id:
                 required: mandatory
@@ -10502,6 +10761,20 @@ x-attributes:
                 owner: BPP
                 usage: db1928f9
                 description: Id of the provider
+                time:
+                  range:
+                    start:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: '2023-09-14T05:30:00.000Z'
+                      description: Describes the start time period.
+                    end:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: '2023-09-14T23:30:00.000Z'
+                      description: Describes the end time period.
               descriptor:
                 name:
                   required: mandatory
@@ -10523,7 +10796,25 @@ x-attributes:
                 owner: BPP
                 usage: 3bd4ea25
                 description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: TRIP
+                description: Denotes the fulfillment type
               stops:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 2
+                  description: Unique reference ID for individual stop
+                parent_stop_id:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: 1
+                  description: Unique ID for referencing parent stop
                 type:
                   required: mandatory
                   type: string
@@ -10532,6 +10823,32 @@ x-attributes:
                   description: >-
                     The type of stop. Allowed values of this property can be
                     defined by the network policy.
+                authorization:
+                  type:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: QR
+                    description: Denotes the authorization type
+                  token:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: >-
+                      iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                    description: Denotes the authorization token
+                  valid_to:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: '2021-03-23T23:59:59.999Z'
+                    description: Denotes the validity of token
+                  status:
+                    required: mandatory
+                    type: string
+                    owner: BPP
+                    usage: UNCLAIMED
+                    description: Denotes the token status
                 instructions:
                   name:
                     required: optional
@@ -10542,7 +10859,7 @@ x-attributes:
                 location:
                   descriptor:
                     name:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       usage: Shaheed Sthal(New Bus Adda)
@@ -10554,7 +10871,7 @@ x-attributes:
                       usage: SHAHEED_STHAL
                       description: Describes the code for a particular location.
                   gps:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
@@ -10568,21 +10885,21 @@ x-attributes:
                   description: Describes vehicle category
             billing:
               name:
-                required: mandatory
+                required: optional
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: John Doe
                 description: Name of the billable entity
               email:
-                required: mandatory
+                required: optional
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: john.doe@example.com
                 description: Email address where the bill is sent to
               phone:
-                required: mandatory
-                type: integer
-                owner: BPP
+                required: optional
+                type: string
+                owner: BAP
                 usage: 9897867564
                 description: Phone number of the billable entity
             quote:
@@ -10613,6 +10930,27 @@ x-attributes:
                     owner: BPP
                     usage: b2400168
                     description: ID of the item.
+                  price:
+                    value:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: 60
+                      description: Describes the value of breakup item
+                    currency:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: INR
+                      description: Describes the currency to be paid in of a breakup item
+                  quantity:
+                    selected:
+                      count:
+                        required: mandatory
+                        type: string
+                        owner: BPP
+                        usage: 2
+                        description: Describes the count of breakup item
                 price:
                   currency:
                     required: mandatory
@@ -10694,38 +11032,34 @@ x-attributes:
                   owner: BPP
                   usage: 9988199772@okicic
                   description: Virtual payment address associated with payment activity
-              tags:
-                descriptor:
-                  code:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: SETTLEMENT_DETAILS
-                    description: Describes the name for tags.
-                display:
+            cancellation_terms:
+              external_ref:
+                url:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: optional
-                  description: Indicates the display properties of the tag group.
-                list:
-                  descriptor:
-                    code:
-                      required: mandatory
-                      type: string
-                      owner: BPP
-                      usage: SETTLEMENT_TYPE
-                      description: >-
-                        Description of the Tag, can be used to store detailed
-                        information.
-                  value:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: UPI
-                    description: >-
-                      The value of the tag. This set by the BPP and rendered
-                      as-is by the BAP.
+                  usage: https://transitsolutions.com/mf/tnc.html
+                  description: >-
+                    URL to the cancellation terms. This can be a data url or an
+                    remote url
+                mimetype:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: text/html
+                  description: Describes the mimetype for provided url
+            created_at:
+              required: mandatory
+              type: string
+              owner: BPP
+              usage: '2021-03-23T10:00:40.065Z'
+              description: Denotes the timestamp when order got created
+            updated_at:
+              required: mandatory
+              type: string
+              owner: BPP
+              usage: '2021-03-23T10:00:40.065Z'
+              description: Denotes the timestamp when order was updated
       cancel:
         context:
           location:
@@ -10777,7 +11111,7 @@ x-attributes:
               callback cycle.
           version:
             required: mandatory
-            type: integer
+            type: string
             owner: BAP
             usage: 2.0.0
             description: >-
@@ -10827,6 +11161,25 @@ x-attributes:
             owner: BPP
             usage: 077b248f
             description: 'Describes the  ID of the order. '
+          cancellation_reason_id:
+            required: mandatory
+            type: string
+            owner: BAP
+            usage: 1
+            description: Describes the cancellation reason ID.
+          descriptor:
+            code:
+              required: mandatory
+              type: string
+              owner: BAP
+              usage: SOFT_CANCEL
+              description: Describes the cancellation code.
+            name:
+              required: mandatory
+              type: string
+              owner: BAP
+              usage: Ride Cancellation
+              description: Describes the cancellation name.
       on_cancel:
         context:
           location:
@@ -10878,7 +11231,7 @@ x-attributes:
               callback cycle.
           version:
             required: mandatory
-            type: integer
+            type: string
             owner: BAP
             usage: 2.0.0
             description: >-
@@ -10933,7 +11286,7 @@ x-attributes:
               required: mandatory
               type: string
               owner: BPP
-              usage: ACTIVE
+              usage: CANCELLED
               description: >-
                 Status of the order. Allowed values can be defined by the
                 network policy
@@ -10986,6 +11339,25 @@ x-attributes:
                 owner: BPP
                 usage: 3bd4ea25
                 description: Unique reference ID to the fulfillment of an order
+              category_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: C1
+                description: Unique reference ID to the categories of an order
+              time:
+                label:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: PT2D
+                  description: Time duration for servicibility
+                duration:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Validity
+                  description: label for time
             provider:
               id:
                 required: mandatory
@@ -10993,6 +11365,20 @@ x-attributes:
                 owner: BPP
                 usage: db1928f9
                 description: Id of the provider
+                time:
+                  range:
+                    start:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: '2023-09-14T05:30:00.000Z'
+                      description: Describes the start time period.
+                    end:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: '2023-09-14T23:30:00.000Z'
+                      description: Describes the end time period.
               descriptor:
                 name:
                   required: mandatory
@@ -11014,7 +11400,25 @@ x-attributes:
                 owner: BPP
                 usage: 3bd4ea25
                 description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: TRIP
+                description: Denotes the fulfillment type
               stops:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 2
+                  description: Unique reference ID for individual stop
+                parent_stop_id:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: 1
+                  description: Unique ID for referencing parent stop
                 type:
                   required: mandatory
                   type: string
@@ -11033,7 +11437,7 @@ x-attributes:
                 location:
                   descriptor:
                     name:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       usage: Shaheed Sthal(New Bus Adda)
@@ -11045,7 +11449,7 @@ x-attributes:
                       usage: SHAHEED_STHAL
                       description: Describes the code for a particular location.
                   gps:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
@@ -11059,21 +11463,21 @@ x-attributes:
                   description: Describes vehicle category
             billing:
               name:
-                required: mandatory
+                required: optional
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: John Doe
                 description: Name of the billable entity
               email:
-                required: mandatory
+                required: optional
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: john.doe@example.com
                 description: Email address where the bill is sent to
               phone:
-                required: mandatory
-                type: integer
-                owner: BPP
+                required: optional
+                type: string
+                owner: BAP
                 usage: 9897867564
                 description: Phone number of the billable entity
             quote:
@@ -11099,11 +11503,32 @@ x-attributes:
                   description: Breakup title of the total quoted price
                 item:
                   id:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: b2400168
                     description: ID of the item.
+                  price:
+                    currency:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: INR
+                      description: Describes the currency of breakup item
+                    value:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: 60
+                      description: Describes the value of breakup item
+                  quantity:
+                    selected:
+                      count:
+                        required: mandatory
+                        type: string
+                        owner: BPP
+                        usage: 2
+                        description: Describes the count of breakup item
                 price:
                   currency:
                     required: mandatory
@@ -11147,26 +11572,6 @@ x-attributes:
                 usage: PRE-ORDER
                 description: Payment type
               params:
-                transaction_id:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: 34cc9b0b
-                  description: >-
-                    The reference transaction ID associated with a payment
-                    activity
-                currency:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: INR
-                  description: Describes currency value in string form
-                amount:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  usage: 60
-                  description: Describes a numerical value in decimal form
                 bank_code:
                   required: mandatory
                   type: string
@@ -11185,38 +11590,35 @@ x-attributes:
                   owner: BPP
                   usage: 9988199772@okicic
                   description: Virtual payment address associated with payment activity
-              tags:
-                descriptor:
-                  code:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: SETTLEMENT_DETAILS
-                    description: Describes the code for a tag.
-                display:
+            cancellation_terms:
+              external_ref:
+                url:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: optional
-                  description: Indicates the display properties of the tag group.
-                list:
-                  descriptor:
-                    code:
-                      required: mandatory
-                      type: string
-                      owner: BPP
-                      usage: SETTLEMENT_TYPE
-                      description: >-
-                        Description of the Tag, can be used to store detailed
-                        information.
-                  value:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: UPI
-                    description: >-
-                      The value of the tag. This set by the BPP and rendered
-                      as-is by the BAP.
+                  usage: https://transitsolutions.com/mf/tnc.html
+                  description: >-
+                    URL to the cancellation terms. This can be a data url or an
+                    remote url
+                mimetype:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: text/html
+                  description: Describes the mimetype for provided url
+            cancellation:
+              cancelled_by:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: CONSUMER
+                description: Denotes the person or entity who wants to cancel the order
+              time:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: '2021-03-23T10:00:00.065Z'
+                description: Denotes the time for cancellation
       status:
         context:
           location:
@@ -11268,7 +11670,7 @@ x-attributes:
               callback cycle.
           version:
             required: mandatory
-            type: integer
+            type: string
             owner: BAP
             usage: 2.0.0
             description: >-
@@ -11313,11 +11715,17 @@ x-attributes:
             description: Describes subscriber URL of the BPP for accepting calls from BAPs.
         message:
           order_id:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: 077b248f
             description: 'Describes the ID of the order. '
+          ref_id:
+            required: optional
+            type: string
+            owner: BPP
+            usage: 6743e9e2
+            description: Describes the ref to the order
       on_status:
         context:
           location:
@@ -11369,7 +11777,7 @@ x-attributes:
               callback cycle.
           version:
             required: mandatory
-            type: integer
+            type: string
             owner: BAP
             usage: 2.0.0
             description: >-
@@ -11394,7 +11802,7 @@ x-attributes:
           ttl:
             required: mandatory
             type: string
-            owner: BAP
+            owner: BPP
             usage: PT30S
             description: >-
               Describes the duration in ISO8601 format after timestamp for which
@@ -11424,7 +11832,7 @@ x-attributes:
               required: mandatory
               type: string
               owner: BPP
-              usage: ACTIVE
+              usage: COMPLETE
               description: >-
                 Status of the order. Allowed values can be defined by the
                 network policy
@@ -11477,6 +11885,25 @@ x-attributes:
                 owner: BPP
                 usage: 3bd4ea25
                 description: Unique reference ID to the fulfillment of an order
+              category_ids:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: C1
+                description: Unique reference ID to the categories of an order
+              time:
+                label:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: PT2D
+                  description: Time duration for servicibility
+                duration:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: Validity
+                  description: label for time
             provider:
               id:
                 required: mandatory
@@ -11484,6 +11911,20 @@ x-attributes:
                 owner: BPP
                 usage: db1928f9
                 description: Id of the provider
+                time:
+                  range:
+                    start:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: '2023-09-14T05:30:00.000Z'
+                      description: Describes the start time period.
+                    end:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: '2023-09-14T23:30:00.000Z'
+                      description: Describes the end time period.
               descriptor:
                 name:
                   required: mandatory
@@ -11505,12 +11946,30 @@ x-attributes:
                 owner: BPP
                 usage: 3bd4ea25
                 description: Unique reference ID to the fulfillment of an order
+              type:
+                required: mandatory
+                type: string
+                owner: BPP
+                usage: TRIP
+                description: Denotes the fulfillment type
               stops:
+                id:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: 2
+                  description: Unique reference ID for individual stop
+                parent_stop_id:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: 1
+                  description: Unique ID for referencing parent stop
                 type:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: START
+                  usage: INTERMEDIATE_STOP
                   description: >-
                     The type of stop. Allowed values of this property can be
                     defined by the network policy.
@@ -11524,7 +11983,7 @@ x-attributes:
                 location:
                   descriptor:
                     name:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       usage: Shaheed Sthal(New Bus Adda)
@@ -11536,7 +11995,7 @@ x-attributes:
                       usage: SHAHEED_STHAL
                       description: Describes the code for a particular location.
                   gps:
-                    required: optional
+                    required: mandatory
                     type: string
                     owner: BPP
                     usage: 28.686576, 77.441632
@@ -11550,21 +12009,21 @@ x-attributes:
                   description: Describes vehicle category
             billing:
               name:
-                required: mandatory
+                required: optional
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: John Doe
                 description: Name of the billable entity
               email:
-                required: mandatory
+                required: optional
                 type: string
-                owner: BPP
+                owner: BAP
                 usage: john.doe@example.com
                 description: Email address where the bill is sent to
               phone:
-                required: mandatory
-                type: integer
-                owner: BPP
+                required: optional
+                type: string
+                owner: BAP
                 usage: 9897867564
                 description: Phone number of the billable entity
             quote:
@@ -11595,6 +12054,27 @@ x-attributes:
                     owner: BPP
                     usage: b2400168
                     description: ID of the item.
+                  price:
+                    currency:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: INR
+                      description: Describes the currency of breakup item
+                    value:
+                      required: mandatory
+                      type: string
+                      owner: BPP
+                      usage: 60
+                      description: Describes the value of breakup item
+                  quantity:
+                    selected:
+                      count:
+                        required: mandatory
+                        type: string
+                        owner: BPP
+                        usage: 2
+                        description: Describes the count of breakup item
                 price:
                   currency:
                     required: mandatory
@@ -11676,38 +12156,34 @@ x-attributes:
                   owner: BPP
                   usage: 9988199772@okicic
                   description: Virtual payment address associated with payment activity
-              tags:
-                descriptor:
-                  code:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: SETTLEMENT_DETAILS
-                    description: Describes the code for a tag.
-                display:
+            cancellation_terms:
+              external_ref:
+                url:
                   required: mandatory
                   type: string
                   owner: BPP
-                  usage: optional
-                  description: Indicates the display properties of the tag group.
-                list:
-                  descriptor:
-                    code:
-                      required: mandatory
-                      type: string
-                      owner: BPP
-                      usage: SETTLEMENT_TYPE
-                      description: >-
-                        Description of the Tag, can be used to store detailed
-                        information.
-                  value:
-                    required: mandatory
-                    type: string
-                    owner: BPP
-                    usage: UPI
-                    description: >-
-                      The value of the tag. This set by the BPP and rendered
-                      as-is by the BAP.
+                  usage: https://transitsolutions.com/mf/tnc.html
+                  description: >-
+                    URL to the cancellation terms. This can be a data url or an
+                    remote url
+                mimetype:
+                  required: mandatory
+                  type: string
+                  owner: BPP
+                  usage: text/html
+                  description: Describes the mimetype for provided url
+            created_at:
+              required: mandatory
+              type: string
+              owner: BPP
+              usage: '2021-03-23T10:00:40.065Z'
+              description: Denotes the timestamp when order got created
+            updated_at:
+              required: mandatory
+              type: string
+              owner: BPP
+              usage: '2021-03-23T10:00:40.065Z'
+              description: Denotes the timestamp when order was updated
 x-errorcodes:
   code:
     - Event: Route Serviceability error
