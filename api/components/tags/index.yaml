@@ -8,7 +8,12 @@ on_search:
     catalog:
       providers:
         fulfillments: &fulfillments
-          $ref: "./tag-group.yaml#/fulfillment"
+          tags:
+            - code: INFO
+              description : Describes the details about trip.
+              reference: <PR/Issue/Discussion Links md format text>
+              list:
+                $ref: "./Tag.yaml#/trip_details"
         payments: *payment
         tags: 
          $ref:  "./tag-group.yaml#/scheduled-info"
@@ -32,10 +37,17 @@ on_init:
       fulfillments: *fulfillments
       # provider: *provider
       payments: *payment
-on_confirm: *ref0
-on_status:
+on_confirm: &ref1
   message:
     order:
-      fulfillments: *fulfillments
-on_cancel: *ref0
+      fulfillments:
+        tags: 
+          - code: INFO
+            description : Describes the details about trip.
+            reference: <PR/Issue/Discussion Links md format text>
+            list:
+              $ref: "./Tag.yaml#/info"
+         
+on_status: *ref1
+on_cancel: *ref1
 on_update: *ref0
