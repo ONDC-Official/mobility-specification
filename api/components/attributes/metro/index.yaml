@@ -180,6 +180,12 @@ search:
             This field indicates the payment collector. If set to 'bap,' BAP
             collects first and settles with BPP. If BPP agrees, no payment link
             is sent. If set to 'bpp,' BPP collects payment directly.
+        _description:
+          required: optional
+          type: object
+          owner: BAP
+          usage: '--'
+          description: The terms of settlement for this order
       _description:
         required: Mandatory
         type: object
@@ -444,12 +450,6 @@ on_search:
             description: >-
               A code that describes the mode of fulfillment. This is typically
               set when there are multiple ways an order can be fulfilled. 
-            _description:
-              required: Mandatory
-              type: object
-              owner: BPP
-              usage: '--'
-              description: Describes the fulfillments type.
           stops:
             id:
               required: mandatory
@@ -717,6 +717,14 @@ select:
           owner: BAP
           usage: IND
           description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+        _description:
+          required: Mandatory
+          type: object
+          owner: BAP
+          usage: '--'
+          description: >-
+            This attribute defines the country of location where the transaction
+            is meant to be completed.
       city:
         code:
           required: mandatory
@@ -724,6 +732,22 @@ select:
           owner: BAP
           usage: std:080
           description: Describes the city code this location is, or is located within
+        _description:
+          required: Mandatory
+          type: object
+          owner: BAP
+          usage: '--'
+          description: >-
+            This attribute defines the city of location where the transaction is
+            meant to be completed.
+      _description:
+        required: Mandatory
+        type: object
+        owner: BAP
+        usage: '--'
+        description: >-
+          This attribute defines the location where the transaction is meant to
+          be completed.
     domain:
       required: mandatory
       type: string
@@ -813,6 +837,26 @@ select:
               owner: BAP
               usage: 1
               description: This represents the quantity selected for purchase of the item
+            _description:
+              required: Mandatory
+              type: object
+              owner: BAP
+              usage: '--'
+              description: Describes the selected quantity of an item.
+          _description:
+            required: Mandatory
+            type: object
+            owner: BAP/BPP
+            usage: '--'
+            description: Describes the quantity info of an item.
+        _description:
+          required: Mandatory
+          type: object
+          owner: BAP/BPP
+          usage: '--'
+          description: >-
+            This decription refers to the comprehensive list of the products or
+            services selected and obtained within the specified order.
       provider:
         id:
           required: mandatory
@@ -820,6 +864,22 @@ select:
           owner: BPP
           usage: db1928f9
           description: Id of the provider
+        _description:
+          required: mandatory
+          type: object
+          owner: BPP
+          usage: '--'
+          description: >-
+            This describes the complete formulated description of the loan
+            provider whose catalog items have been selected.
+      _description:
+        required: Mandatory
+        type: object
+        owner: BPP
+        usage: '--'
+        description: >-
+          This refers to the complete description of the legal contract created
+          between the buyer and the seller.
 on_select:
   context:
     location:
@@ -931,6 +991,12 @@ on_select:
             owner: BPP
             usage: SJT
             description: Describes the code for a particular item.
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the items description.
         price:
           currency:
             required: mandatory
@@ -944,6 +1010,12 @@ on_select:
             owner: BPP
             usage: 60
             description: Describes a numerical value in decimal form
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the price of an item.
         quantity:
           selected:
             count:
@@ -952,6 +1024,18 @@ on_select:
               owner: BPP
               usage: 2
               description: This represents the quantity selected for purchase of the item
+            _description:
+              required: Mandatory
+              type: object
+              owner: BAP
+              usage: '--'
+              description: Describes the selected quantity of an item.
+          _description:
+            required: Mandatory
+            type: object
+            owner: BAP/BPP
+            usage: '--'
+            description: Describes the quantity info of an item.
         fulfillment_ids:
           required: mandatory
           type: string
@@ -977,6 +1061,25 @@ on_select:
             owner: BPP
             usage: Validity
             description: label for time
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: >-
+              Temporal attributes of this item. This property is used when the
+              item exists on the catalog only for a limited period of time.
+        _description:
+          required: Mandatory
+          type: object
+          owner: BAP/BPP
+          usage: '--'
+          description: >-
+            Describes a product or a service offered to the end consumer by the
+            provider. In the mobility sector, it can represent a fare product
+            like one way journey. In the logistics sector, it can represent the
+            delivery service offering. In the retail domain it can represent a
+            product like a grocery item.
       provider:
         id:
           required: mandatory
@@ -998,6 +1101,18 @@ on_select:
               owner: BPP
               usage: https://delhimetrorail.com/logos/logo.ico
               description: URL to the image. This can be a data url or an remote url
+            _description:
+              required: optional
+              type: object
+              owner: BPP
+              usage: '--'
+              description: Describes the images description.
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the provider's description.
         time:
           range:
             start:
@@ -1012,6 +1127,46 @@ on_select:
               owner: BPP
               usage: '2023-09-14T23:30:00.000Z'
               description: Describes the end time period.
+            _description:
+              required: Mandatory
+              type: object
+              owner: BPP
+              usage: '--'
+              description: >-
+                Describes time in its various forms. It can be a single point in
+                time; duration; or a structured timetable of operations<br>This
+                has properties like label, time stamp,duration,range, days,
+                schedule
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: >-
+              Describes time in its various forms. It can be a single point in
+              time; duration; or a structured timetable of operations<br>This
+              has properties like label, time stamp,duration,range, days,
+              schedule
+        _description:
+          required: Mandatory
+          type: object
+          owner: BPP
+          usage: '--'
+          description: Describes the provider's description.
+        categories:
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the provider's categories.
+          descriptor:
+            _description:
+              required: Mandatory
+              type: object
+              owner: BPP
+              usage: '--'
+              description: Describes the provider's categories description.
       fulfillments:
         id:
           required: mandatory
@@ -1061,6 +1216,12 @@ on_select:
               usage: Change for Pink Line
               description: |
                 Describes the instructions short description.
+            _description:
+              required: optional
+              type: object
+              owner: BPP
+              usage: '--'
+              description: Describes the fulfillments stops instructions.
           location:
             descriptor:
               name:
@@ -1075,12 +1236,30 @@ on_select:
                 owner: BPP
                 usage: SHAHEED_STHAL
                 description: Describes the code for a particular location.
+              _description:
+                required: optional
+                type: object
+                owner: BPP
+                usage: '--'
+                description: Describes the description of location.
             gps:
               required: mandatory
               type: string
               owner: BPP
               usage: 28.686576, 77.441632
               description: Describes a GPS coordinate
+            _description:
+              required: optional
+              type: object
+              owner: BPP
+              usage: '--'
+              description: Describes the location of stops.
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the fulfillments stops.
         vehicle:
           category:
             required: mandatory
@@ -1088,6 +1267,20 @@ on_select:
             owner: BPP
             usage: METRO
             description: Describes vehicle category
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the vehicle type.
+        _description:
+          required: Mandatory
+          type: object
+          owner: BPP
+          usage: '--'
+          description: >-
+            Describes how a an order will be rendered/fulfilled to the
+            end-customer
       quote:
         price:
           value:
@@ -1102,6 +1295,12 @@ on_select:
             owner: BPP
             usage: INR
             description: Describes the currency of a product or service
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: This refers to the value of used currency of quoted price.
         breakup:
           title:
             required: mandatory
@@ -1129,6 +1328,12 @@ on_select:
                 owner: BPP
                 usage: 60
                 description: Describes the value of breakup item
+              _description:
+                required: Mandatory
+                type: object
+                owner: BPP
+                usage: '--'
+                description: This attribute describes the item price description.
             quantity:
               selected:
                 count:
@@ -1137,6 +1342,24 @@ on_select:
                   owner: BPP
                   usage: 2
                   description: Describes the count of breakup item
+                _description:
+                  required: Mandatory
+                  type: object
+                  owner: BPP
+                  usage: '--'
+                  description: This attribute describes the selected quantity.
+              _description:
+                required: Mandatory
+                type: object
+                owner: BPP
+                usage: '--'
+                description: This attribute describes the item quantity description.
+            _description:
+              required: Mandatory
+              type: object
+              owner: BPP
+              usage: '--'
+              description: This attribute describes the breakup's item description.
           price:
             value:
               required: optional
@@ -1144,6 +1367,20 @@ on_select:
               owner: BPP
               usage: 120
               description: Describes the price of a product or service
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: This attribute describes the breakup of the total quoted price.
+        _description:
+          required: Mandatory
+          type: object
+          owner: BPP
+          usage: '--'
+          description: >-
+            This refers to the complete description of the mutually agreed upon
+            quotation for this order.
       cancellation_terms:
         external_ref:
           url:
@@ -1160,6 +1397,26 @@ on_select:
             owner: BPP
             usage: text/html
             description: Describes the mimetype for provided url
+          _description:
+            required: mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the external_ref for cancellation terms
+        _description:
+          required: mandatory
+          type: object
+          owner: BPP
+          usage: '--'
+          description: Describes the cancellation_terms
+      _description:
+        required: Mandatory
+        type: object
+        owner: BPP
+        usage: '--'
+        description: >-
+          This refers to the complete description of the legal contract created
+          between the buyer and the seller.
 init:
   context:
     location:
@@ -1170,6 +1427,14 @@ init:
           owner: BAP
           usage: IND
           description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+        _description:
+          required: Mandatory
+          type: object
+          owner: BAP
+          usage: '--'
+          description: >-
+            This attribute defines the country of location where the transaction
+            is meant to be completed.
       city:
         code:
           required: mandatory
@@ -1177,6 +1442,22 @@ init:
           owner: BAP
           usage: std:080
           description: Describes the city code this location is, or is located within
+        _description:
+          required: Mandatory
+          type: object
+          owner: BAP
+          usage: '--'
+          description: >-
+            This attribute defines the city of location where the transaction is
+            meant to be completed.
+      _description:
+        required: Mandatory
+        type: object
+        owner: BAP
+        usage: '--'
+        description: >-
+          This attribute defines the location where the transaction is meant to
+          be completed.
     domain:
       required: mandatory
       type: string
@@ -1266,6 +1547,26 @@ init:
               owner: BPP
               usage: 1
               description: This represents the quantity selected for purchase of the item
+            _description:
+              required: Mandatory
+              type: object
+              owner: BAP
+              usage: '--'
+              description: Describes the selected quantity of an item.
+          _description:
+            required: Mandatory
+            type: object
+            owner: BAP/BPP
+            usage: '--'
+            description: Describes the quantity info of an item.
+        _description:
+          required: Mandatory
+          type: object
+          owner: BAP/BPP
+          usage: '--'
+          description: >-
+            This decription refers to the comprehensive list of the products or
+            services selected and obtained within the specified order.
       provider:
         id:
           required: mandatory
@@ -1273,6 +1574,14 @@ init:
           owner: BPP
           usage: db1928f9
           description: Id of the provider
+        _description:
+          required: mandatory
+          type: object
+          owner: BPP
+          usage: '--'
+          description: >-
+            This describes the complete formulated description of the loan
+            provider whose catalog items have been selected.
       billing:
         name:
           required: optional
@@ -1292,6 +1601,12 @@ init:
           owner: BAP
           usage: 9897867564
           description: Phone number of the billable entity
+        _description:
+          required: mandatory
+          type: object
+          owner: BPP
+          usage: '--'
+          description: The billing details of this order
       payments:
         collected_by:
           required: mandatory
@@ -1330,6 +1645,26 @@ init:
             owner: BAP
             usage: 9988199772@okicic
             description: Virtual payment address associated with payment activity
+          _description:
+            required: mandatory
+            type: object
+            owner: BAP
+            usage: '--'
+            description: This attribute defines the payment params for this order.
+        _description:
+          required: mandatory
+          type: object
+          owner: BAP/BPP
+          usage: '--'
+          description: The terms of settlement for this order
+      _description:
+        required: Mandatory
+        type: object
+        owner: BPP
+        usage: '--'
+        description: >-
+          This refers to the complete description of the legal contract created
+          between the buyer and the seller.
 on_init:
   context:
     location:
@@ -1441,6 +1776,12 @@ on_init:
             owner: BPP
             usage: SJT
             description: Describes the code for a particular item.
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the items description.
         price:
           currency:
             required: mandatory
@@ -1454,6 +1795,12 @@ on_init:
             owner: BPP
             usage: 60
             description: Describes a numerical value in decimal form
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the price of an item.
         quantity:
           selected:
             count:
@@ -1462,6 +1809,18 @@ on_init:
               owner: BPP
               usage: 2
               description: This represents the quantity selected for purchase of the item
+            _description:
+              required: Mandatory
+              type: object
+              owner: BAP
+              usage: '--'
+              description: Describes the selected quantity of an item.
+          _description:
+            required: Mandatory
+            type: object
+            owner: BAP/BPP
+            usage: '--'
+            description: Describes the quantity info of an item.
         category_ids:
           required: mandatory
           type: string
@@ -1481,12 +1840,31 @@ on_init:
             owner: BPP
             usage: Validity
             description: label for time
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: >-
+              Temporal attributes of this item. This property is used when the
+              item exists on the catalog only for a limited period of time.
         fulfillment_ids:
           required: mandatory
           type: string
           owner: BPP
           usage: 3bd4ea25
           description: Unique reference ID to the fulfillment of an order
+        _description:
+          required: Mandatory
+          type: object
+          owner: BAP/BPP
+          usage: '--'
+          description: >-
+            Describes a product or a service offered to the end consumer by the
+            provider. In the mobility sector, it can represent a fare product
+            like one way journey. In the logistics sector, it can represent the
+            delivery service offering. In the retail domain it can represent a
+            product like a grocery item.
       provider:
         id:
           required: mandatory
@@ -1508,6 +1886,18 @@ on_init:
               owner: BPP
               usage: https://delhimetrorail.com/logos/logo.ico
               description: URL to the image. This can be a data url or an remote url
+            _description:
+              required: optional
+              type: object
+              owner: BPP
+              usage: '--'
+              description: Describes the images description.
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the provider's description.
         time:
           range:
             start:
@@ -1522,6 +1912,46 @@ on_init:
               owner: BPP
               usage: '2023-09-14T23:30:00.000Z'
               description: Describes the end time period.
+            _description:
+              required: Mandatory
+              type: object
+              owner: BPP
+              usage: '--'
+              description: >-
+                Describes time in its various forms. It can be a single point in
+                time; duration; or a structured timetable of operations<br>This
+                has properties like label, time stamp,duration,range, days,
+                schedule
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: >-
+              Describes time in its various forms. It can be a single point in
+              time; duration; or a structured timetable of operations<br>This
+              has properties like label, time stamp,duration,range, days,
+              schedule
+        _description:
+          required: Mandatory
+          type: object
+          owner: BPP
+          usage: '--'
+          description: Describes the provider's description.
+        categories:
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the provider's categories.
+          descriptor:
+            _description:
+              required: Mandatory
+              type: object
+              owner: BPP
+              usage: '--'
+              description: Describes the provider's categories description.
       fulfillments:
         id:
           required: mandatory
@@ -1570,6 +2000,12 @@ on_init:
               usage: Change for Pink Line
               description: |
                 Describes the instructions short description.
+            _description:
+              required: optional
+              type: object
+              owner: BPP
+              usage: '--'
+              description: Describes the fulfillments stops instructions.
           location:
             descriptor:
               name:
@@ -1584,12 +2020,30 @@ on_init:
                 owner: BPP
                 usage: SHAHEED_STHAL
                 description: Describes the code for a particular location.
+              _description:
+                required: optional
+                type: object
+                owner: BPP
+                usage: '--'
+                description: Describes the description of location.
             gps:
               required: mandatory
               type: string
               owner: BPP
               usage: 28.686576, 77.441632
               description: Describes a GPS coordinate
+            _description:
+              required: optional
+              type: object
+              owner: BPP
+              usage: '--'
+              description: Describes the location of stops.
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the fulfillments stops.
         vehicle:
           category:
             required: mandatory
@@ -1597,6 +2051,20 @@ on_init:
             owner: BPP
             usage: METRO
             description: Describes vehicle category
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the vehicle type.
+        _description:
+          required: Mandatory
+          type: object
+          owner: BPP
+          usage: '--'
+          description: >-
+            Describes how a an order will be rendered/fulfilled to the
+            end-customer
       billing:
         name:
           required: optional
@@ -1616,6 +2084,12 @@ on_init:
           owner: BAP
           usage: 9897867564
           description: Phone number of the billable entity
+        _description:
+          required: mandatory
+          type: object
+          owner: BPP
+          usage: '--'
+          description: The billing details of this order
       quote:
         price:
           value:
@@ -1630,6 +2104,12 @@ on_init:
             owner: BPP
             usage: INR
             description: Describes the currency of a product or service
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: This refers to the value of used currency of quoted price.
         breakup:
           title:
             required: mandatory
@@ -1652,6 +2132,18 @@ on_init:
                   owner: BPP
                   usage: 2
                   description: Describes the count of breakup item
+                _description:
+                  required: Mandatory
+                  type: object
+                  owner: BPP
+                  usage: '--'
+                  description: This attribute describes the selected quantity.
+              _description:
+                required: Mandatory
+                type: object
+                owner: BPP
+                usage: '--'
+                description: This attribute describes the item quantity description.
             price:
               value:
                 required: mandatory
@@ -1665,6 +2157,18 @@ on_init:
                 owner: BPP
                 usage: INR
                 description: Describes the currency to be paid in of a breakup item
+              _description:
+                required: Mandatory
+                type: object
+                owner: BPP
+                usage: '--'
+                description: This attribute describes the item price description.
+            _description:
+              required: Mandatory
+              type: object
+              owner: BPP
+              usage: '--'
+              description: This attribute describes the breakup's item description.
           price:
             currency:
               required: optional
@@ -1678,6 +2182,20 @@ on_init:
               owner: BPP
               usage: 120
               description: Describes the currency to be paid in of a product or service
+          _description:
+            required: Mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: This attribute describes the breakup of the total quoted price.
+        _description:
+          required: Mandatory
+          type: object
+          owner: BPP
+          usage: '--'
+          description: >-
+            This refers to the complete description of the mutually agreed upon
+            quotation for this order.
       payments:
         id:
           required: mandatory
@@ -1724,6 +2242,18 @@ on_init:
             owner: BPP
             usage: 9988199772@okicic
             description: Virtual payment address associated with payment activity
+          _description:
+            required: mandatory
+            type: object
+            owner: BAP
+            usage: '--'
+            description: This attribute defines the payment params for this order.
+        _description:
+          required: mandatory
+          type: object
+          owner: BAP/BPP
+          usage: '--'
+          description: The terms of settlement for this order
       cancellation_terms:
         external_ref:
           url:
@@ -1740,6 +2270,26 @@ on_init:
             owner: BPP
             usage: text/html
             description: Describes the mimetype for provided url
+          _description:
+            required: mandatory
+            type: object
+            owner: BPP
+            usage: '--'
+            description: Describes the external_ref for cancellation terms
+        _description:
+          required: mandatory
+          type: object
+          owner: BPP
+          usage: '--'
+          description: Describes the cancellation_terms
+      _description:
+        required: Mandatory
+        type: object
+        owner: BPP
+        usage: '--'
+        description: >-
+          This refers to the complete description of the legal contract created
+          between the buyer and the seller.
 confirm:
   context:
     location:
