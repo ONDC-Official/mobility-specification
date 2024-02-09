@@ -591,6 +591,7 @@ function checkMDFiles(){
 if(!fs.existsSync(path.join(filePath)))fs.mkdirSync(filePath) //create docs folder if not exists
   const files = fs.readdirSync(filePath);
   const markdownFiles=files.filter((file)=>file.endsWith(".md"))
+  console.log('markdownFiles', markdownFiles)
  return markdownFiles
 }
 
