@@ -3179,7 +3179,7 @@ x-flows:
             Buyer Platform (BAP)->>Seller Platform (BPP): init
             Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
             Seller Platform (BPP)->>Buyer Platform (BAP):on_init
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
       - description: Order Confirmation
         mermaid: |-
           sequenceDiagram
@@ -3189,7 +3189,7 @@ x-flows:
             Buyer Platform (BAP)->>Seller Platform (BPP): confirm
             Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
             Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
       - description: Fulfillment
         mermaid: |-
           sequenceDiagram
@@ -3199,7 +3199,7 @@ x-flows:
             Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
             Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
             Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK       
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
     steps:
       - summary: Buyer app search for available ride providers
         api: search
@@ -3288,7 +3288,7 @@ x-flows:
                 rect rgb(191, 223, 255)
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
-                end 
+                end
         reference: if any
         example: &ref_16
           summary: Return a mobility catalog[Seller Collecting]
@@ -3472,7 +3472,7 @@ x-flows:
                 rect rgb(191, 223, 255)
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-                end 
+                end
         reference: if any
         example: &ref_18
           summary: Return a quote offered by a provider
@@ -3771,6 +3771,11 @@ x-flows:
                     reason_required: true
                 fulfillments:
                   - id: F1
+                    customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
                     stops:
                       - location:
                           gps: 13.008935, 77.644408
@@ -4040,7 +4045,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_23
+        example: &ref_25
           summary: Return confirmed order with latest fulfillment details
           value:
             context:
@@ -4281,7 +4286,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_30
+        example: &ref_32
           summary: Return updated order with recomputed charges
           value:
             context:
@@ -4348,10 +4353,7 @@ x-flows:
                       descriptor:
                         code: RIDE_ENDED
                     stops:
-                      - authorization:
-                          token: '234234'
-                          type: OTP
-                        location:
+                      - location:
                           gps: 13.008935, 77.644408
                         type: START
                       - location:
@@ -4492,6 +4494,87 @@ x-flows:
                 status: COMPLETED
                 created_at: '2023-12-10T08:03:34.294Z'
                 updated_at: '2023-12-11T03:54:28.832Z'
+      - summary: Buyer app requests for tracking status
+        api: track
+        details:
+          - description: >-
+              Buyer app request the provider platform to provide with latest
+              tracking status
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example: &ref_22
+          summary: Track an active ride
+          value:
+            context:
+              action: track
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 8926b747-0362-4fcc-b795-0994a6287700
+              timestamp: '2023-03-23T04:48:53Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.0
+            message:
+              order_id: O1
+      - summary: Provider platform provides latest order tracking status
+        api: on_track
+        details:
+          - description: >-
+              Provider platform provides the updated order tracking status to
+              the consumer
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+                end
+        reference: if any
+        example: &ref_23
+          summary: Return tracking information for an order
+          value:
+            context:
+              action: on_track
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: ec3dea8c-c64c-4f06-b2a0-ec1f9584d7ba
+              timestamp: '2023-03-23T05:41:09Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.0
+            message:
+              tracking:
+                status: active
+                location:
+                  gps: 28.620976, 77.046732
       - summary: Buyer app seeks the most recent status update
         api: status
         details:
@@ -4511,7 +4594,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_22
+        example: &ref_24
           summary: Get latest fulfillment status of a booking
           value:
             context:
@@ -4980,7 +5063,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_28
+        example: &ref_30
           summary: Return confirmed order with latest fulfillment details
           value:
             context:
@@ -5213,7 +5296,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_31
+        example: &ref_33
           summary: Return updated order with updated agent details
           value:
             context:
@@ -5435,6 +5518,42 @@ x-flows:
                 status: ACTIVE
                 created_at: '2023-03-23T04:48:34.53Z'
                 updated_at: '2023-03-23T04:49:34.53Z'
+      - summary: Buyer app requests for tracking status
+        api: track
+        details:
+          - description: >-
+              Buyer app request the provider platform to provide with latest
+              tracking status
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example: *ref_22
+      - summary: Provider platform provides latest order tracking status
+        api: on_track
+        details:
+          - description: >-
+              Provider platform provides the updated order tracking status to
+              the consumer
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+                end
+        reference: if any
+        example: *ref_23
       - summary: Buyer app seeks the most recent status update
         api: status
         details:
@@ -5454,7 +5573,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_22
+        example: *ref_24
       - summary: Ride provider provides latest order status
         api: on_status
         details:
@@ -5472,7 +5591,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_29
+        example: &ref_31
           summary: Return order with status - Driver at pickup
           value:
             context:
@@ -5726,7 +5845,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
         reference: if any
-        example: *ref_23
+        example: *ref_25
       - summary: Buyer app cancels the request for ride
         api: cancel
         details:
@@ -5744,7 +5863,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_25
+        example: &ref_27
           summary: Initiates cancelling a ride with soft cancel status
           value:
             context:
@@ -5790,7 +5909,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_27
+        example: &ref_29
           summary: Return current order status after soft-cancel
           value:
             context:
@@ -6029,7 +6148,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_26
+        example: &ref_28
           summary: Initiates cancelling a ride with confirm cancel status
           value:
             context:
@@ -6073,7 +6192,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_24
+        example: &ref_26
           summary: Return current order status after confirm-cancel
           value:
             context:
@@ -6323,7 +6442,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel (unsolicited)
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_23
+        example: *ref_25
       - summary: Ride provider accepts the terms of cancellation
         api: on_cancel
         details:
@@ -6341,7 +6460,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_24
+        example: *ref_26
   - summary: BPP Collecting - Payment Confirmation
     details:
       - description: >-
@@ -6550,6 +6669,11 @@ x-flows:
                     reason_required: true
                 fulfillments:
                   - id: F1
+                    customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
                     stops:
                       - location:
                           gps: 13.008935, 77.644408
@@ -7394,8 +7518,8 @@ x-examples:
           - *ref_17
       cancel:
         examples:
-          - *ref_25
-          - *ref_26
+          - *ref_27
+          - *ref_28
       confirm:
         examples:
           - *ref_21
@@ -7404,12 +7528,12 @@ x-examples:
           - *ref_19
       on_cancel:
         examples:
-          - *ref_27
-          - *ref_24
+          - *ref_29
+          - *ref_26
       on_confirm:
         examples:
-          - *ref_23
-          - *ref_28
+          - *ref_25
+          - *ref_30
           - summary: Return confirmed order with latest fulfillment details
             value:
               context:
@@ -7786,7 +7910,7 @@ x-examples:
           - *ref_18
       on_status:
         examples:
-          - *ref_29
+          - *ref_31
           - summary: >-
               Return order with latest fulfillment status - Driver en-route to
               pickup
@@ -8462,33 +8586,10 @@ x-examples:
                   url: https://support.nammayatri.com/gethelp
       on_track:
         examples:
-          - summary: Return tracking information for an order
-            value:
-              context:
-                action: on_track
-                bap_id: example-bap.com
-                bap_uri: https://example-bap.com/prod/trv10
-                bpp_id: example-bpp.com
-                bpp_uri: https://example-bpp.com/prod/seller
-                domain: ONDC:TRV10
-                location:
-                  city:
-                    code: std:080
-                  country:
-                    code: IND
-                message_id: ec3dea8c-c64c-4f06-b2a0-ec1f9584d7ba
-                timestamp: '2023-03-23T05:41:09Z'
-                transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-                ttl: PT30S
-                version: 2.0.0
-              message:
-                tracking:
-                  status: active
-                  url: >-
-                    https://api.beckn.juspay.in/dobpp/ui/driver/location/abc9f0aa-bbfd-4e91-b378-41feee12f05f
+          - *ref_23
       on_update:
         examples:
-          - *ref_30
+          - *ref_32
           - summary: Return updated order with updated billing details
             value:
               context:
@@ -8712,7 +8813,7 @@ x-examples:
                       value: '146'
                     ttl: PT30S
                   status: ACTIVE
-          - *ref_31
+          - *ref_33
       rating:
         examples:
           - summary: Provide a rating
@@ -8768,7 +8869,7 @@ x-examples:
                 value: 4
       status:
         examples:
-          - *ref_22
+          - *ref_24
       support:
         examples:
           - summary: Fetch support information related to a particular order
@@ -8794,27 +8895,7 @@ x-examples:
                 ref_id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
       track:
         examples:
-          - summary: Track an active ride
-            value:
-              context:
-                action: track
-                bap_id: example-bap.com
-                bap_uri: https://example-bap.com/prod/trv10
-                bpp_id: example-bpp.com
-                bpp_uri: https://example-bpp.com/prod/seller
-                domain: ONDC:TRV10
-                location:
-                  city:
-                    code: std:080
-                  country:
-                    code: IND
-                message_id: 8926b747-0362-4fcc-b795-0994a6287700
-                timestamp: '2023-03-23T04:48:53Z'
-                transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-                ttl: PT30S
-                version: 2.0.0
-              message:
-                order_id: 22e090fc-b8b1-4437-9126-ff7a71c7845c
+          - *ref_22
 x-attributes:
   on-demand:
     attribute_set:
@@ -12222,9 +12303,6 @@ x-tlc:
         Terms and the ONDC Network Policy or the Static Terms and the Network
         Participant Agreement, the terms of the ONDC Network Policy or the
         Network Participant Agreement (as the case may be) will prevail.
-x-testcasesui:
-  filenames:
-    - log-verification.md
 x-sandboxui:
   dropdown:
     - environment-name: staging
