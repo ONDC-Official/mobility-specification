@@ -213,6 +213,40 @@ steps:
     reference: if any
     example:
       $ref: "../../examples/on-demand/on_update/on_update_2.yaml"   
+  - summary: Buyer app requests for tracking status
+    api: track
+    details:
+      - description: Buyer app request the provider platform to provide with latest tracking status
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/track/track_0.yaml"
+  - summary: Provider platform provides latest order tracking status
+    api: on_track
+    details:
+      - description: Provider platform provides the updated order tracking status to the consumer
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_track/on_track_0.yaml"
   - summary: Buyer app seeks the most recent status update
     api: status
     details: 
