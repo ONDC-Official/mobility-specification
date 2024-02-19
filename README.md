@@ -40,10 +40,6 @@ This would be possible in the mobility domain by making sure all mobility apps i
 * Auto assignment of driver post on_confirm.
 * Soft/Hard cancellation of ride.
 
-## Working with Protocol
-
-Refer the [link](./Usage.md) for details regarding how to use this repository
-
 ## Evolution
 
 The evolution of ONDC mobility specification driven by 2 factors:
