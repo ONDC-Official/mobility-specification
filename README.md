@@ -35,7 +35,7 @@ This would be possible in the mobility domain by making sure all mobility apps i
 
 ## Enabled/Supported use cases on network
 
-* On-demand Ride hailing with various transport modes.
+* On-demand Ride hailing with fix pick-up and drop locations for transport modes : Car, Autorickshaw, Motorcycle
 * Auto assignment of driver on on_confirm.
 * Auto assignment of driver post on_confirm.
 * Soft/Hard cancellation of ride.
