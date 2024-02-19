@@ -64,12 +64,11 @@ sudo npm install -g swagger-cli
 
 ## Generate the resolved OpenAPI illustration viewer file
 
-- Copy the build utility files app.js and package.json from [here]()
 - Run the following command
 
 ```
 cd ./api/components
-./ondc-build-utility
+node app
 ```
 
 - If the command runs successfully, you should see an output like this,
