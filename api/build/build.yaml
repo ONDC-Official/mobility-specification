@@ -2883,6 +2883,9 @@ x-enum:
             - code: BAP
               description: Describes when the buyer app is collecting the payment.
               reference: <PR/Issue/Discussion Links md format text
+            - code: SELLER
+              description: Describes when the seller is directly collecting the payment.
+              reference: <PR/Issue/Discussion Links md format text
           type:
             - code: PRE-ORDER
               description: Payment occurs prior to order placement.
@@ -3165,6 +3168,18 @@ x-tags:
                 - code: SETTLEMENT_AMOUNT
                   description: Denotes settlement amount
                   reference: <PR/Issue/Discussion Links md format text>
+        fulfillment:
+          tags:
+            - code: LOCATION
+              description: Describes the location information.
+              reference: <PR/Issue/Discussion Links md format text>
+              list: &ref_13
+                - code: START_AREA
+                  description: Describes the area code of start location.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: END_AREA
+                  description: Describes the area code of end location.
+                  reference: <PR/Issue/Discussion Links md format text>
   on_search:
     message:
       catalog:
@@ -3214,7 +3229,7 @@ x-tags:
     message:
       order:
         items: *ref_12
-        fulfillments: &ref_13
+        fulfillments: &ref_14
           tags:
             - code: ROUTE_INFO
               description: Describes the route information.
@@ -3226,21 +3241,25 @@ x-tags:
                 - code: WAYPOINTS
                   description: Describes the waypoints value.
                   reference: <PR/Issue/Discussion Links md format text>
+            - code: LOCATION
+              description: Describes the location information.
+              reference: <PR/Issue/Discussion Links md format text>
+              list: *ref_13
   init:
     message:
       order:
         payments: *ref_11
-  on_init: &ref_14
+  on_init: &ref_15
     message:
       order:
         items: *ref_12
         payments: *ref_11
-        fulfillments: *ref_13
-  confirm: *ref_14
-  on_confirm: *ref_14
-  on_status: *ref_14
-  on_cancel: *ref_14
-  on_update: *ref_14
+        fulfillments: *ref_14
+  confirm: *ref_15
+  on_confirm: *ref_15
+  on_status: *ref_15
+  on_cancel: *ref_15
+  on_update: *ref_15
 x-flows:
   - summary: On-Demand - Assign driver on on-confirm
     details:
@@ -3319,7 +3338,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_15
+        example: &ref_16
           summary: >-
             Search for mobility services by pickup and drop location[Seller
             Collecting]
@@ -3349,6 +3368,17 @@ x-flows:
                     - location:
                         gps: 12.971186, 77.586812
                       type: END
+                  tags:
+                    - descriptor:
+                        code: LOCATION
+                      display: false
+                      list:
+                        - descriptor:
+                            code: START_AREA
+                          value: '560043'
+                        - descriptor:
+                            code: END_AREA
+                          value: '560001'
                 payment:
                   collected_by: BPP
                   tags:
@@ -3389,7 +3419,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: &ref_16
+        example: &ref_17
           summary: Return a mobility catalog[Seller Collecting]
           value:
             context:
@@ -3531,7 +3561,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_17
+        example: &ref_18
           summary: Get quote for a specific product from a mobility catalog
           value:
             context:
@@ -3574,7 +3604,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_18
+        example: &ref_19
           summary: Return a quote offered by a provider
           value:
             context:
@@ -3714,7 +3744,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_19
+        example: &ref_20
           summary: >-
             Initialize draft order and request for terms of service[Seller
             Collecting]
@@ -3756,6 +3786,17 @@ x-flows:
                         type: END
                     vehicle:
                       category: AUTO_RICKSHAW
+                    tags:
+                      - descriptor:
+                          code: LOCATION
+                        display: false
+                        list:
+                          - descriptor:
+                              code: START_AREA
+                            value: '560043'
+                          - descriptor:
+                              code: END_AREA
+                            value: '560001'
                 items:
                   - id: I1
                 payments:
@@ -3818,7 +3859,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_20
+        example: &ref_21
           summary: Return draft order with payment terms[Seller Collecting]
           value:
             context:
@@ -4039,7 +4080,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_21
+        example: &ref_22
           summary: Confirm ride booking
           value:
             context:
@@ -4079,6 +4120,17 @@ x-flows:
                         type: END
                     vehicle:
                       category: AUTO_RICKSHAW
+                    tags:
+                      - descriptor:
+                          code: LOCATION
+                        display: false
+                        list:
+                          - descriptor:
+                              code: START_AREA
+                            value: '560043'
+                          - descriptor:
+                              code: END_AREA
+                            value: '560001'
                 items:
                   - id: I1
                 payments:
@@ -4145,7 +4197,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_25
+        example: &ref_26
           summary: Return confirmed order with latest fulfillment details
           value:
             context:
@@ -4238,6 +4290,16 @@ x-flows:
                               [{"gps":"12.909982,
                               77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                               77.611822"}]
+                      - descriptor:
+                          code: LOCATION
+                        display: false
+                        list:
+                          - descriptor:
+                              code: START_AREA
+                            value: '560043'
+                          - descriptor:
+                              code: END_AREA
+                            value: '560001'
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
@@ -4386,7 +4448,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_32
+        example: &ref_33
           summary: Return updated order with recomputed charges
           value:
             context:
@@ -4476,6 +4538,16 @@ x-flows:
                               [{"gps":"12.909982,
                               77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                               77.611822"}]
+                      - descriptor:
+                          code: LOCATION
+                        display: false
+                        list:
+                          - descriptor:
+                              code: START_AREA
+                            value: '560043'
+                          - descriptor:
+                              code: END_AREA
+                            value: '560001'
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
@@ -4611,7 +4683,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_22
+        example: &ref_23
           summary: Track an active ride
           value:
             context:
@@ -4650,7 +4722,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: &ref_23
+        example: &ref_24
           summary: Return tracking information for an order
           value:
             context:
@@ -4695,7 +4767,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_24
+        example: &ref_25
           summary: Get latest fulfillment status of a booking
           value:
             context:
@@ -4826,6 +4898,16 @@ x-flows:
                               [{"gps":"12.909982,
                               77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                               77.611822"}]
+                      - descriptor:
+                          code: LOCATION
+                        display: false
+                        list:
+                          - descriptor:
+                              code: START_AREA
+                            value: '560043'
+                          - descriptor:
+                              code: END_AREA
+                            value: '560001'
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
@@ -5033,7 +5115,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_15
+        example: *ref_16
       - summary: Get a list of all services from ride providers
         api: on_search
         details:
@@ -5054,7 +5136,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_16
+        example: *ref_17
       - summary: Buyer app selects a specific service for more details
         api: select
         details:
@@ -5074,7 +5156,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_17
+        example: *ref_18
       - summary: Ride provider provides the quote for selected service
         api: on_select
         details:
@@ -5092,7 +5174,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_18
+        example: *ref_19
       - summary: Buyer app initializes the ride request
         api: init
         details:
@@ -5110,7 +5192,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_19
+        example: *ref_20
       - summary: Ride provider accepts/appends the terms of orders
         api: on_init
         details:
@@ -5128,7 +5210,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end  
         reference: if any
-        example: *ref_20
+        example: *ref_21
       - summary: Buyer app confirms the ride
         api: confirm
         details:
@@ -5146,7 +5228,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_21
+        example: *ref_22
       - summary: Ride provider confirms the ride request
         api: on_confirm
         details:
@@ -5164,7 +5246,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_30
+        example: &ref_31
           summary: Return confirmed order with latest fulfillment details
           value:
             context:
@@ -5249,6 +5331,16 @@ x-flows:
                               [{"gps":"12.909982,
                               77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                               77.611822"}]
+                      - descriptor:
+                          code: LOCATION
+                        display: false
+                        list:
+                          - descriptor:
+                              code: START_AREA
+                            value: '560043'
+                          - descriptor:
+                              code: END_AREA
+                            value: '560001'
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
@@ -5397,7 +5489,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_33
+        example: &ref_34
           summary: Return updated order with updated agent details
           value:
             context:
@@ -5490,6 +5582,16 @@ x-flows:
                               [{"gps":"12.909982,
                               77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                               77.611822"}]
+                      - descriptor:
+                          code: LOCATION
+                        display: false
+                        list:
+                          - descriptor:
+                              code: START_AREA
+                            value: '560043'
+                          - descriptor:
+                              code: END_AREA
+                            value: '560001'
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
@@ -5636,7 +5738,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_22
+        example: *ref_23
       - summary: Provider platform provides latest order tracking status
         api: on_track
         details:
@@ -5654,7 +5756,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_23
+        example: *ref_24
       - summary: Buyer app seeks the most recent status update
         api: status
         details:
@@ -5674,7 +5776,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_24
+        example: *ref_25
       - summary: Ride provider provides latest order status
         api: on_status
         details:
@@ -5692,7 +5794,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_31
+        example: &ref_32
           summary: Return order with status - Driver at pickup
           value:
             context:
@@ -5784,6 +5886,16 @@ x-flows:
                               [{"gps":"12.909982,
                               77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                               77.611822"}]
+                      - descriptor:
+                          code: LOCATION
+                        display: false
+                        list:
+                          - descriptor:
+                              code: START_AREA
+                            value: '560043'
+                          - descriptor:
+                              code: END_AREA
+                            value: '560001'
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
@@ -5946,7 +6058,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
         reference: if any
-        example: *ref_25
+        example: *ref_26
       - summary: Buyer app cancels the request for ride
         api: cancel
         details:
@@ -5964,7 +6076,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_27
+        example: &ref_28
           summary: Initiates cancelling a ride with soft cancel status
           value:
             context:
@@ -6010,7 +6122,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_29
+        example: &ref_30
           summary: Return current order status after soft-cancel
           value:
             context:
@@ -6252,7 +6364,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_28
+        example: &ref_29
           summary: Initiates cancelling a ride with confirm cancel status
           value:
             context:
@@ -6296,7 +6408,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_26
+        example: &ref_27
           summary: Return current order status after confirm-cancel
           value:
             context:
@@ -6549,7 +6661,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel (unsolicited)
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_25
+        example: *ref_26
       - summary: Ride provider accepts the terms of cancellation
         api: on_cancel
         details:
@@ -6567,7 +6679,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_26
+        example: *ref_27
   - summary: BPP Collecting - Payment Confirmation
     details:
       - description: >-
@@ -6664,6 +6776,17 @@ x-flows:
                         type: END
                     vehicle:
                       category: AUTO_RICKSHAW
+                    tags:
+                      - descriptor:
+                          code: LOCATION
+                        display: false
+                        list:
+                          - descriptor:
+                              code: START_AREA
+                            value: '560043'
+                          - descriptor:
+                              code: END_AREA
+                            value: '560001'
                 items:
                   - id: I1
                 payments:
@@ -7077,6 +7200,16 @@ x-flows:
                               [{"gps":"12.909982,
                               77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                               77.611822"}]
+                      - descriptor:
+                          code: LOCATION
+                        display: false
+                        list:
+                          - descriptor:
+                              code: START_AREA
+                            value: '560043'
+                          - descriptor:
+                              code: END_AREA
+                            value: '560001'
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
@@ -7257,6 +7390,17 @@ x-flows:
                         type: END
                     vehicle:
                       category: AUTO_RICKSHAW
+                    tags:
+                      - descriptor:
+                          code: LOCATION
+                        display: false
+                        list:
+                          - descriptor:
+                              code: START_AREA
+                            value: '560043'
+                          - descriptor:
+                              code: END_AREA
+                            value: '560001'
                 items:
                   - id: I1
                 payments:
@@ -7417,6 +7561,16 @@ x-flows:
                               [{"gps":"12.909982,
                               77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                               77.611822"}]
+                      - descriptor:
+                          code: LOCATION
+                        display: false
+                        list:
+                          - descriptor:
+                              code: START_AREA
+                            value: '560043'
+                          - descriptor:
+                              code: END_AREA
+                            value: '560001'
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
@@ -7567,7 +7721,7 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_15
+          - *ref_16
           - summary: >-
               Search for mobility services by pickup and drop location[Buyer
               Collecting]
@@ -7597,6 +7751,17 @@ x-examples:
                       - location:
                           gps: 12.971186, 77.586812
                         type: END
+                    tags:
+                      - descriptor:
+                          code: LOCATION
+                        display: false
+                        list:
+                          - descriptor:
+                              code: START_AREA
+                            value: '560043'
+                          - descriptor:
+                              code: END_AREA
+                            value: '560001'
                   payment:
                     collected_by: BAP
                     tags:
@@ -7622,25 +7787,25 @@ x-examples:
                             value: https://example-test-bap.com/static-terms.txt
       select:
         examples:
-          - *ref_17
+          - *ref_18
       cancel:
         examples:
-          - *ref_27
           - *ref_28
+          - *ref_29
       confirm:
         examples:
-          - *ref_21
+          - *ref_22
       init:
         examples:
-          - *ref_19
+          - *ref_20
       on_cancel:
         examples:
-          - *ref_29
-          - *ref_26
+          - *ref_30
+          - *ref_27
       on_confirm:
         examples:
-          - *ref_25
-          - *ref_30
+          - *ref_26
+          - *ref_31
           - summary: Return confirmed order with latest fulfillment details
             value:
               context:
@@ -7733,6 +7898,16 @@ x-examples:
                                 [{"gps":"12.909982,
                                 77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                                 77.611822"}]
+                        - descriptor:
+                            code: LOCATION
+                          display: false
+                          list:
+                            - descriptor:
+                                code: START_AREA
+                              value: '560043'
+                            - descriptor:
+                                code: END_AREA
+                              value: '560001'
                       type: DELIVERY
                       vehicle:
                         category: AUTO_RICKSHAW
@@ -7867,7 +8042,7 @@ x-examples:
                   updated_at: '2023-12-10T08:03:34.294Z'
       on_init:
         examples:
-          - *ref_20
+          - *ref_21
       on_rating:
         examples:
           - summary: Return acknowledgement of rating and feedback
@@ -7895,7 +8070,7 @@ x-examples:
                 rating_ack: true
       on_search:
         examples:
-          - *ref_16
+          - *ref_17
           - summary: Return a mobility catalog[Buyer Collecting]
             value:
               context:
@@ -8015,10 +8190,10 @@ x-examples:
                                     https://example-test-bpp.com/static-terms.txt
       on_select:
         examples:
-          - *ref_18
+          - *ref_19
       on_status:
         examples:
-          - *ref_31
+          - *ref_32
           - summary: >-
               Return order with latest fulfillment status - Driver en-route to
               pickup
@@ -8111,6 +8286,16 @@ x-examples:
                                 [{"gps":"12.909982,
                                 77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                                 77.611822"}]
+                        - descriptor:
+                            code: LOCATION
+                          display: false
+                          list:
+                            - descriptor:
+                                code: START_AREA
+                              value: '560043'
+                            - descriptor:
+                                code: END_AREA
+                              value: '560001'
                       type: DELIVERY
                       vehicle:
                         category: AUTO_RICKSHAW
@@ -8326,6 +8511,16 @@ x-examples:
                                 [{"gps":"12.909982,
                                 77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                                 77.611822"}]
+                        - descriptor:
+                            code: LOCATION
+                          display: false
+                          list:
+                            - descriptor:
+                                code: START_AREA
+                              value: '560043'
+                            - descriptor:
+                                code: END_AREA
+                              value: '560001'
                       type: DELIVERY
                       vehicle:
                         category: AUTO_RICKSHAW
@@ -8541,6 +8736,16 @@ x-examples:
                                 [{"gps":"12.909982,
                                 77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                                 77.611822"}]
+                        - descriptor:
+                            code: LOCATION
+                          display: false
+                          list:
+                            - descriptor:
+                                code: START_AREA
+                              value: '560043'
+                            - descriptor:
+                                code: END_AREA
+                              value: '560001'
                       type: DELIVERY
                       vehicle:
                         category: AUTO_RICKSHAW
@@ -8694,10 +8899,10 @@ x-examples:
                   url: https://support.nammayatri.com/gethelp
       on_track:
         examples:
-          - *ref_23
+          - *ref_24
       on_update:
         examples:
-          - *ref_32
+          - *ref_33
           - summary: Return updated order with updated billing details
             value:
               context:
@@ -8794,6 +8999,16 @@ x-examples:
                                 [{"gps":"12.909982,
                                 77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                                 77.611822"}]
+                        - descriptor:
+                            code: LOCATION
+                          display: false
+                          list:
+                            - descriptor:
+                                code: START_AREA
+                              value: '560043'
+                            - descriptor:
+                                code: END_AREA
+                              value: '560001'
                       type: DELIVERY
                       vehicle:
                         category: AUTO_RICKSHAW
@@ -8923,7 +9138,7 @@ x-examples:
                   status: ACTIVE
                   created_at: '2023-03-23T04:48:53Z'
                   updated_at: '2023-03-23T04:48:53Z'
-          - *ref_33
+          - *ref_34
       rating:
         examples:
           - summary: Provide a rating
@@ -8979,7 +9194,7 @@ x-examples:
                 value: 4
       status:
         examples:
-          - *ref_24
+          - *ref_25
       support:
         examples:
           - summary: Fetch support information related to a particular order
@@ -9005,7 +9220,7 @@ x-examples:
                 ref_id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
       track:
         examples:
-          - *ref_22
+          - *ref_23
 x-attributes:
   on-demand:
     attribute_set:
