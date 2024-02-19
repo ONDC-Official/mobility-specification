@@ -17,7 +17,7 @@ ONDC mobility specification swagger [link](https://ondc-official.github.io/mobil
 | Version | Release Date | beckn Version                      | Comments                                                           |
 | ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------ |
 | v1.0.0  | 14 Jun 2023  | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for on-demand ride hailing use case |
-| v2.0.0  | 19 Feb 2024  | core - 1.2.0                       | Base version of mobilty for ride hailing is completed              |
+| v2.0.0  | 19 Feb 2024  | core - 1.2.0                       | Base version of mobility for ride hailing is completed              |
 
 ## Introduction
 
