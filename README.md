@@ -10,14 +10,14 @@ ONDC mobility specification swagger [link](https://ondc-official.github.io/mobil
 
 ## Latest Version
 
-[v1.0.0](https://github.com/ONDC-Official/mobility-specification/releases/tag/v1.0.0)
+[v2.0.0](https://github.com/ONDC-Official/mobility-specification/releases/tag/v1.0.0)
 
 ## Earlier Versions
 
-| Version | Release Date | beckn Version                      | Comments                                                                                                                      |
-| ------- | ------------ | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| v1.0.0  | 14 Jun 2023  | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for on-demand ride hailing use case                                                            |
-| v2.0.0  | TBD          | core - 1.2.0                       | On-demand rides<br />Scheduled rides<br />Rental rides<br />Scheduled rental rides<br />Ticket booking - no seat confirmation |
+| Version | Release Date | beckn Version                      | Comments                                                           |
+| ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------ |
+| v1.0.0  | 14 Jun 2023  | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for on-demand ride hailing use case |
+| v2.0.0  | 19 Feb 2024  | core - 1.2.0                       | Base version of mobilty for ride hailing is completed              |
 
 ## Introduction
 
@@ -36,7 +36,9 @@ This would be possible in the mobility domain by making sure all mobility apps i
 ## Enabled/Supported use cases on network
 
 * On-demand Ride hailing with various transport modes.
-* Ticket Booking without designated seat.
+* Auto assignment of driver on on_confirm.
+* Auto assignment of driver post on_confirm.
+* Soft/Hard cancellation of ride.
 
 ## Working with Protocol
 
