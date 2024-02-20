@@ -35,6 +35,7 @@ This would be possible in the mobility domain by making sure all mobility apps i
 
 ## Enabled/Supported use cases on network
 
+* Base version of mobility for metro is completed with Station code, GPS and cancel flows.
 * Added TICKET_INFO tag group for ticket number
 * Added ref_id in status call
 * Added parent_stop_id for stops
