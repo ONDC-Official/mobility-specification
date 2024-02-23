@@ -1,3 +1,9 @@
+
+var tokens = {
+  first: "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",
+  second: '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'
+}
+var token_flag = true 
 function getStringAfterEquals(inputString) {
   const index = inputString.indexOf("=");
   if (index !== -1) {
@@ -7,14 +13,15 @@ function getStringAfterEquals(inputString) {
   }
 }
 
-async function readBuildFile(branchName) {
+async function readBuildFile(branchName, isError) {
   if (!branchName) return;
   const url = `https://api.github.com/repos/ondc-official/mobility-specification/contents/ui/build.js?ref=${branchName}`;
 
   try {
+    const {first, second} = tokens;  
     const response = await fetch(url, {
       headers: {
-        Authorization: "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",
+        Authorization: isError ? second: first,
       },
     });
     const formattedResponse = await response?.json();
@@ -37,6 +44,12 @@ async function readBuildFile(branchName) {
     // onFirstLoad(build_spec);
     
   } catch (error) {
+    //add logic to check correct error code for rate limiting
+    if(token_flag){
+      readBuildFile(branchName, true)
+      token_flag = false;
+    }
+    
     console.log("Error fetching contract", error?.message || error);
     //alert('Something went wrong, Please try again later')
   }

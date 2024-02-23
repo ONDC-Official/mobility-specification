@@ -47,7 +47,6 @@ function loadDropdown4() {
   data.forEach(function (item) {
     var option = document.createElement('option');
     option.text = item["code"];
-    console.log("iten added", item.code)
     dropdown4.add(option);
   });
   displayTable()
@@ -92,7 +91,6 @@ function displayTable() {
   var selectedValue2 = dropdown2.value;
   var selectedValue3 = dropdown4.value;
 
-  console.log("selectedValue3", selectedValue3)
   // Get the table data
   let data = getAttribute(parsedData[selectedValue1], selectedValue2.split("."))
   var tableData = data.find(obj => {
@@ -127,7 +125,6 @@ function fetchData(url) {
 function populateEnums(url) {
   // Example usage: fetch YAML data from a URL
   fetchData(url).then(data => {
-    console.log(data)
     initSchema(data["x-enum"])
     initTag(data["x-tags"])
   })
