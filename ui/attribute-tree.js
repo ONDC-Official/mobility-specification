@@ -157,7 +157,6 @@ function displayAttributeTree(payload) {
 
   const childrenData = formatdataForTree(payload);
   var treeData = { name: "payload", _children: childrenData.children };
-  console.log("treeData", treeData);
 
   // Get JSON data
   // treeJSON = d3.json("flare.json", function (error, treeData) {
@@ -641,7 +640,6 @@ function displayAttributeTree(payload) {
     node
       .select("circle")
       .style("fill", function (d) {
-        console.log("d>>>", d);
         return d?.tooltip?.required?.toLowerCase() === "mandatory" ||
           d?.tooltip?._required?.toLowerCase() === "mandatory"
           ? "blue"

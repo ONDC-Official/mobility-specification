@@ -1,7 +1,6 @@
 var errors;
 
 function loadErrors(data) {
-  console.log('data', data)
   var elements = document.getElementsByClassName("error-wrapper");
   while (elements.length > 0) {
     elements[0].parentNode.removeChild(elements[0]);
