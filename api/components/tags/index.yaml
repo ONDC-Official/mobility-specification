@@ -1,0 +1,53 @@
+search:
+  message:
+    intent:
+      payment: &payment
+        $ref: "./tag-group.yaml#/payment"     
+on_search:
+  message:
+    catalog:
+      providers:
+        fulfillments: &fulfillments
+          tags:
+            - code: INFO
+              description : Describes the details about trip.
+              reference: <PR/Issue/Discussion Links md format text>
+              list:
+                $ref: "./Tag.yaml#/trip_details"
+        payments: *payment
+        tags: 
+         $ref:  "./tag-group.yaml#/scheduled-info"
+select: 
+  message:
+    order:
+      fulfillments: *fulfillments
+on_select: &ref0
+  message:
+    order:
+      fulfillments: *fulfillments
+      # provider: &provider
+      #   $ref: "./tag-group.yaml#/provider"
+init:
+  message:
+    order:
+      payments: *payment
+on_init:
+  message:
+    order:
+      fulfillments: *fulfillments
+      # provider: *provider
+      payments: *payment
+on_confirm: &ref1
+  message:
+    order:
+      fulfillments:
+        tags: 
+          - code: INFO
+            description : Describes the details about trip.
+            reference: <PR/Issue/Discussion Links md format text>
+            list:
+              $ref: "./Tag.yaml#/info"
+         
+on_status: *ref1
+on_cancel: *ref1
+on_update: *ref0

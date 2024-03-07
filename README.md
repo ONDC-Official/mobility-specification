@@ -6,7 +6,7 @@ ONDC mobility specification is an adaptation of [beckn mobility specifications](
 
 These specifications will be released in multiple phases enabling different use case and enhancements.
 
-ONDC mobility specification swaggerhub [link](https://app.swaggerhub.com/apis/ONDC/ONDC-Mobility-API-Specification)
+ONDC mobility specification swagger [link](https://ondc-official.github.io/mobility-specification/)
 
 ## Latest Version
 
@@ -14,9 +14,10 @@ ONDC mobility specification swaggerhub [link](https://app.swaggerhub.com/apis/ON
 
 ## Earlier Versions
 
-| Version | Release Date | beckn Version                      | Comments                                                           |
-| ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------ |
-| v1.0.0  | TBD          | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for on-demand ride hailing use case |
+| Version | Release Date | beckn Version                      | Comments                                                                                                           |
+| ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| v1.0.0  | 14 Jun 2023  | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for metro use case                                                                  |
+| v2.0.0  | 20 Feb 2024  | core - 1.2.0                       | Base version of mobility for metro is completed<br />Station code based flow<br />GPS based flow<br />Cancel flow |
 
 ## Introduction
 
@@ -34,7 +35,10 @@ This would be possible in the mobility domain by making sure all mobility apps i
 
 ## Enabled/Supported use cases on network
 
-* On-demand Ride hailing with fix pick-up and drop locations for transport modes : Car, Autorickshaw, Motorcycle
+* Base version of mobility for metro is completed with Station code, GPS and cancel flows.
+* Added TICKET_INFO tag group for ticket number
+* Added ref_id in status call
+* Added parent_stop_id for stops
 
 ## Evolution
 
@@ -47,7 +51,7 @@ To know more about how the specification evolves, visit the Network GOVERNANCE d
 
 To follow discussions related to the mobility specification please visit the [Discussions Forum](https://github.com/ONDC-Official/mobility-specification/discussions) on GitHub
 
-Each major release of ONDC mobility specification will be approved by ONDC mobility working group members for which are listed [here](./committee.md)
+Each major release of ONDC mobility specification will be approved by ONDC mobility working group members for which are listed [here](./Committee.md)
 
 For minor releases for bug fix and cosmetic changes ONDC would make a minor release based on internal approval process and update the committee in the next scheduled discussion.
 
