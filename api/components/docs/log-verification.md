@@ -41,7 +41,7 @@
 Logs should be extracted for each of the flows above in this sequence: /search & /on_search, /select & /on_select, /init & /on_init, /confirm & /on_confirm, /status & /on_status (after confirm), /update & /on_update, /status & /on_status;
 
 ### Log Verification
-To verify your logs, you can use the POST api exposed at [https://log-validation.ondc.org/api/validate/trv/trv10](https://log-validation.ondc.org/api/validate/trv/trv10) within the [Log Validation Utility](https://github.com/ONDC-Official/log-validation-utility).
+To verify your logs, you can use the POST api exposed at [https://log-validation.ondc.org/api/validate/trv](https://log-validation.ondc.org/api/validate/trv) within the [Log Validation Utility](https://github.com/ONDC-Official/log-validation-utility).
 
 Available flows are:
 - HAPPY_FLOW
