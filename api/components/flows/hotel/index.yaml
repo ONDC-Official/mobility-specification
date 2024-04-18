@@ -54,10 +54,10 @@ details:
         Buyer Platform (BAP)-->>Seller Platform (BPP): ACK      
 reference: if any
 steps:
-  - summary: Search for the hotel
+  - summary: Search for the hotels (city-based)
     api: search
-    details: 
-      - description: Users searches over the network to avail the services
+    details:
+      - description: User searches over the network to avail the services
         mermaid: &search >-
           sequenceDiagram
             rect rgb(191, 223, 255)
@@ -72,10 +72,10 @@ steps:
             Buyer Platform (BAP)->>Seller Platform (BPP): ACK
     reference: if any
     example:
-      $ref: "../../examples/hotel/search/search-city.yaml" 
-  - summary: Get a list of all services from providers
+      $ref: "../../examples/hotel/search/search-city.yaml"
+  - summary: Get a list of all the accommodations in that particular city
     api: on_search
-    details: 
+    details:
       - description: Provider sends the catalog of all services that can be used for hotel booking.
         mermaid: &onSearch >-
           sequenceDiagram
@@ -91,7 +91,84 @@ steps:
             end
     reference: if any
     example:
-      $ref: "../../examples/hotel/on_search/on_search.yaml" 
+      $ref: "../../examples/hotel/on_search/on_search.yaml"
+  - summary: Search for the availability of hotel (with time range)
+    api: search
+    details:
+      - description: User searches over the network to avail the services
+        mermaid: &search >-
+          sequenceDiagram
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/hotel/search/search-city-time.yaml"
+  - summary: Get a list of all the available accommodations
+    api: on_search
+    details:
+      - description: Provider sends the catalog of all services that can be used for hotel booking.
+        mermaid: &onSearch >-
+          sequenceDiagram
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/hotel/on_search/on_search.yaml"
+  - summary: Search for a provider specific hotel (Optional)
+    api: search
+    details:
+      - description: User searches over the network to avail the services
+        mermaid: &search >-
+          sequenceDiagram
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/hotel/search/search-provider-specific.yaml"
+  - summary: Get a list of all the accommodations from that particular provider
+    api: on_search
+    details:
+      - description: Provider sends the catalog of all services that can be used for hotel booking.
+        mermaid: &onSearch >-
+          sequenceDiagram
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/hotel/on_search/on_search.yaml"
+  
   - summary: Selection of specific service
     api: select
     details: 

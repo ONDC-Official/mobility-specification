@@ -3600,10 +3600,10 @@ x-flows:
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK      
     reference: if any
     steps:
-      - summary: Search for the hotel
+      - summary: Search for the hotels (city-based)
         api: search
         details:
-          - description: Users searches over the network to avail the services
+          - description: User searches over the network to avail the services
             mermaid: |-
               sequenceDiagram
                 rect rgb(191, 223, 255)
@@ -3617,7 +3617,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_14
+        example: &ref_15
           value:
             context:
               domain: ONDC:TRV13
@@ -3659,7 +3659,7 @@ x-flows:
                       - descriptor:
                           code: BUYER_FINDER_FEES_PERCENTAGE
                         value: '3'
-      - summary: Get a list of all services from providers
+      - summary: Get a list of all the accommodations in that particular city
         api: on_search
         details:
           - description: >-
@@ -3678,7 +3678,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_21
+        example: &ref_14
           value:
             context:
               domain: ONDC:TRV13
@@ -3822,6 +3822,184 @@ x-flows:
                               mimetype: application/json
                               url: https://remote-terms-ABC.ondc.hotelbpp.com
                         recommended: true
+      - summary: Search for the availability of hotel (with time range)
+        api: search
+        details:
+          - description: User searches over the network to avail the services
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+        reference: if any
+        example: &ref_16
+          value:
+            context:
+              domain: ONDC:TRV13
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              transaction_id: a9aaecca-10b7-4d19-b640-b047a7c62196
+              message_id: bb579fb8-cb82-4824-be12-fcbc405b6608
+              action: search
+              timestamp: '2023-12-20T05:23:03.443Z'
+              version: 2.0.0
+              bap_uri: https://ondc.hotelbap.com/
+              bap_id: ondc.hotelbap.com
+              ttl: PT30S
+            message:
+              intent:
+                category:
+                  descriptor:
+                    code: HOTEL
+                  time:
+                    label: AVAILABLE
+                    range:
+                      start: '2023-12-25T00:00:00.000Z'
+                      end: '2023-12-27T00:00:00.000Z'
+                tags:
+                  - descriptor:
+                      code: BAP_TERMS
+                    list:
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: ''
+                      - descriptor:
+                          code: STATIC_TERMS_NEW
+                        value: >-
+                          https://github.com/ONDC-Official/NP-Static-Terms/buyerNP_BNP/1.0/tc.pdf
+                      - descriptor:
+                          code: EFFECTIVE_DATE
+                        value: '2024-01-01T00:00:00.000Z'
+                  - descriptor:
+                      code: BUYER_FINDER_FEES
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '3'
+      - summary: Get a list of all the available accommodations
+        api: on_search
+        details:
+          - description: >-
+              Provider sends the catalog of all services that can be used for
+              hotel booking.
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example: *ref_14
+      - summary: Search for a provider specific hotel (Optional)
+        api: search
+        details:
+          - description: User searches over the network to avail the services
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+        reference: if any
+        example: &ref_17
+          value:
+            context:
+              domain: ONDC:TRV13
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              transaction_id: a9aaecca-10b7-4d19-b640-b047a7c62176
+              message_id: bb579fb8-cb82-4824-be12-fbcb306d2745
+              action: search
+              timestamp: '2023-12-20T07:23:03.443Z'
+              version: 2.0.0
+              bap_uri: https://ondc.hotelbap.com/
+              bap_id: ondc.hotelbap.com
+              bpp_uri: https://ondc.hotelbpp.com/
+              bpp_id: ondc.hotelbpp.com
+              ttl: PT30S
+            message:
+              intent:
+                category:
+                  descriptor:
+                    code: HOTEL
+                provider:
+                  id: ondc-hotel-provider1
+                  time:
+                    label: AVAILABLE
+                    range:
+                      start: '2023-12-25T00:00:00.000Z'
+                      end: '2023-12-27T00:00:00.000Z'
+                fulfillment:
+                  stops:
+                    - type: END
+                      location:
+                        gps: 12.82735998361846, 77.69157068978166
+                        area_code: '560100'
+                tags:
+                  - descriptor:
+                      code: BAP_TERMS
+                    list:
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: ''
+                      - descriptor:
+                          code: STATIC_TERMS_NEW
+                        value: >-
+                          https://github.com/ONDC-Official/NP-Static-Terms/buyerNP_BNP/1.0/tc.pdf
+                      - descriptor:
+                          code: EFFECTIVE_DATE
+                        value: '2024-01-01T00:00:00.000Z'
+                  - descriptor:
+                      code: BUYER_FINDER_FEES
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '3'
+      - summary: Get a list of all the accommodations from that particular provider
+        api: on_search
+        details:
+          - description: >-
+              Provider sends the catalog of all services that can be used for
+              hotel booking.
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example: *ref_14
       - summary: Selection of specific service
         api: select
         details:
@@ -3839,7 +4017,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_15
+        example: &ref_18
           value:
             context:
               domain: ONDC:TRV13
@@ -3905,7 +4083,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_22
+        example: &ref_24
           value:
             context:
               domain: ONDC:TRV13
@@ -4028,7 +4206,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_17
+        example: &ref_20
           value:
             context:
               domain: ONDC:TRV13
@@ -4168,7 +4346,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: &ref_23
+        example: &ref_25
           value:
             context:
               domain: ONDC:TRV13
@@ -4369,7 +4547,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_16
+        example: &ref_19
           value:
             context:
               domain: ONDC:TRV13
@@ -4573,7 +4751,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_24
+        example: &ref_26
           value:
             context:
               domain: ONDC:TRV13
@@ -4779,7 +4957,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_18
+        example: &ref_21
           value:
             context:
               domain: ONDC:TRV13
@@ -4818,7 +4996,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_26
+        example: &ref_28
           value:
             context:
               domain: ONDC:TRV13
@@ -5027,7 +5205,7 @@ x-flows:
               The consumer platform updates the ride with some certain details
               he wants to be updated.
         reference: if any
-        example: &ref_19
+        example: &ref_22
           value:
             context:
               domain: ONDC:TRV13
@@ -5066,7 +5244,7 @@ x-flows:
               Provider platform provides the booking details with updated
               fields.
         reference: if any
-        example: &ref_27
+        example: &ref_29
           value:
             context:
               domain: ONDC:TRV13
@@ -5284,7 +5462,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_20
+        example: &ref_23
           value:
             context:
               domain: ONDC:TRV13
@@ -5327,7 +5505,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_25
+        example: &ref_27
           value:
             context:
               domain: ONDC:TRV13
@@ -5365,124 +5543,24 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_14
-          - value:
-              context:
-                domain: ONDC:TRV13
-                location:
-                  country:
-                    code: IND
-                  city:
-                    code: std:080
-                transaction_id: a9aaecca-10b7-4d19-b640-b047a7c62196
-                message_id: bb579fb8-cb82-4824-be12-fcbc405b6608
-                action: search
-                timestamp: '2023-12-20T05:23:03.443Z'
-                version: 2.0.0
-                bap_uri: https://ondc.hotelbap.com/
-                bap_id: ondc.hotelbap.com
-                ttl: PT30S
-              message:
-                intent:
-                  category:
-                    descriptor:
-                      code: HOTEL
-                    time:
-                      label: AVAILABLE
-                      range:
-                        start: '2023-12-25T00:00:00.000Z'
-                        end: '2023-12-27T00:00:00.000Z'
-                  tags:
-                    - descriptor:
-                        code: BAP_TERMS
-                      list:
-                        - descriptor:
-                            code: STATIC_TERMS
-                          value: ''
-                        - descriptor:
-                            code: STATIC_TERMS_NEW
-                          value: >-
-                            https://github.com/ONDC-Official/NP-Static-Terms/buyerNP_BNP/1.0/tc.pdf
-                        - descriptor:
-                            code: EFFECTIVE_DATE
-                          value: '2024-01-01T00:00:00.000Z'
-                    - descriptor:
-                        code: BUYER_FINDER_FEES
-                      list:
-                        - descriptor:
-                            code: BUYER_FINDER_FEES_PERCENTAGE
-                          value: '3'
-          - value:
-              context:
-                domain: ONDC:TRV13
-                location:
-                  country:
-                    code: IND
-                  city:
-                    code: std:080
-                transaction_id: a9aaecca-10b7-4d19-b640-b047a7c62176
-                message_id: bb579fb8-cb82-4824-be12-fbcb306d2745
-                action: search
-                timestamp: '2023-12-20T07:23:03.443Z'
-                version: 2.0.0
-                bap_uri: https://ondc.hotelbap.com/
-                bap_id: ondc.hotelbap.com
-                bpp_uri: https://ondc.hotelbpp.com/
-                bpp_id: ondc.hotelbpp.com
-                ttl: PT30S
-              message:
-                intent:
-                  category:
-                    descriptor:
-                      code: HOTEL
-                  provider:
-                    id: ondc-hotel-provider1
-                    time:
-                      label: AVAILABLE
-                      range:
-                        start: '2023-12-25T00:00:00.000Z'
-                        end: '2023-12-27T00:00:00.000Z'
-                  fulfillment:
-                    stops:
-                      - type: END
-                        location:
-                          gps: 12.82735998361846, 77.69157068978166
-                          area_code: '560100'
-                  tags:
-                    - descriptor:
-                        code: BAP_TERMS
-                      list:
-                        - descriptor:
-                            code: STATIC_TERMS
-                          value: ''
-                        - descriptor:
-                            code: STATIC_TERMS_NEW
-                          value: >-
-                            https://github.com/ONDC-Official/NP-Static-Terms/buyerNP_BNP/1.0/tc.pdf
-                        - descriptor:
-                            code: EFFECTIVE_DATE
-                          value: '2024-01-01T00:00:00.000Z'
-                    - descriptor:
-                        code: BUYER_FINDER_FEES
-                      list:
-                        - descriptor:
-                            code: BUYER_FINDER_FEES_PERCENTAGE
-                          value: '3'
+          - *ref_15
+          - *ref_16
+          - *ref_17
       select:
         examples:
-          - *ref_15
+          - *ref_18
       confirm:
         examples:
-          - *ref_16
+          - *ref_19
       init:
         examples:
-          - *ref_17
+          - *ref_20
       status:
         examples:
-          - *ref_18
+          - *ref_21
       update:
         examples:
-          - *ref_19
+          - *ref_22
       support:
         examples:
           - value:
@@ -5507,25 +5585,25 @@ x-examples:
                 ref_id: O1
       cancel:
         examples:
-          - *ref_20
+          - *ref_23
       on_search:
         examples:
-          - *ref_21
+          - *ref_14
       on_select:
         examples:
-          - *ref_22
+          - *ref_24
       on_init:
         examples:
-          - *ref_23
+          - *ref_25
       on_confirm:
         examples:
-          - *ref_24
+          - *ref_26
       on_cancel:
         examples:
-          - *ref_25
+          - *ref_27
       on_status:
         examples:
-          - *ref_26
+          - *ref_28
       on_support:
         examples:
           - value:
@@ -5552,7 +5630,7 @@ x-examples:
                 email: help@hotelbpp.com
       on_update:
         examples:
-          - *ref_27
+          - *ref_29
 x-attributes:
   hotel:
     attribute_set:
