@@ -45,14 +45,14 @@ value:
       items:
         - id: I1
           descriptor:
-            name: Non Stop
-            code: NON_STOP
+            name: Adult
+            code: ADULT
           price:
             currency: INR
             value: "9280"
           quantity:
               selected: 
-                count: 1 
+                count: 3 
           category_ids: 
             - C1 
           fulfillment_ids:
@@ -63,11 +63,11 @@ value:
                 name: meals
                 code: MEALS
               quantity:
-                available:
+                selected:
                   count: 1 
               price: 
                 currency: INR
-                value: '300'     
+                value: "300"    
           tags:
             - descriptor:
                 code: GENERAL_INFO
@@ -88,6 +88,52 @@ value:
                     code: PR
                     name: Prohibited Items
                   value: "15 KG"   
+        - id: I2
+          descriptor:
+            name: Child
+            code: CHILD
+          price:
+            currency: INR
+            value: "4280"
+          quantity:
+              selected: 
+                count: 1
+          category_ids: 
+            - C1 
+          fulfillment_ids:
+            - F1
+          add_ons: 
+            - id: A1
+              descriptor: 
+                name: meals
+                code: MEALS
+              quantity:
+                selected:
+                  count: 1 
+              price: 
+                currency: INR
+                value: "300"    
+          tags:
+            - descriptor:
+                code: GENERAL_INFO
+                name: General Info
+              display: true
+              list:
+                - descriptor:
+                    code: CABIN_BAGGAGE
+                    name: Cabin Baggage
+                    short_desc: Allowed limit for cabin baggage
+                  value: "7 KG"
+                - descriptor:
+                    code: CHECK_IN_BAGGAGE
+                    name: Check-in Baggage
+                    short_desc: Allowed limit for checkin baggage
+                  value: "15 KG"
+                - descriptor:
+                    code: PR
+                    name: Prohibited Items
+                  value: "15 KG"   
+      
       fulfillments:
         - id: F1
           type: TRIP
@@ -106,8 +152,8 @@ value:
               type: END
               location:
                 descriptor:
-                  name: Mumbai
-                  code: BOM
+                  name: Bengaluru
+                  code: BLR
                 # gps: 12.979759, 77.590427
               time:
                 label: DATE_TIME
@@ -124,6 +170,38 @@ value:
             category: AIRLINE
             code: '6E284'
           tags: 
+            - descriptor:
+                code: INFO
+                name: Info
+              display: true  
+              list:
+                - descriptor:
+                    code: OPERATED_BY
+                  value:  "AirIndia"
+            - descriptor:
+                code: SEAT_GRID
+              list:
+                - descriptor:
+                    code: X
+                  value: "0"
+                - descriptor:
+                    code: Y
+                  value: "0"
+                - descriptor:
+                    code: Z
+                  value: "0"
+                - descriptor:
+                    code: SEAT_NUMBER
+                  value: "A1"
+                - descriptor:
+                    code: SELECTED_SEAT
+                  value: 'A1'
+                - descriptor:
+                    code: SEAT_PRICE
+                  value: "200"
+                - descriptor:
+                    code: ITEM_ID
+                  value: "I1" 
             - descriptor:
                 code: SEAT_GRID
               list:
@@ -147,25 +225,85 @@ value:
                   value: "200"
                 - descriptor:
                     code: ITEM_ID
-                  value: "I1"           
-          
+                  value: "I1"
+            - descriptor:
+                code: SEAT_GRID
+              list:
+                - descriptor:
+                    code: X
+                  value: "0"
+                - descriptor:
+                    code: Y
+                  value: "0"
+                - descriptor:
+                    code: Z
+                  value: "0"
+                - descriptor:
+                    code: SEAT_NUMBER
+                  value: "A2"
+                - descriptor:
+                    code: SELECTED_SEAT
+                  value: 'A2'
+                - descriptor:
+                    code: SEAT_PRICE
+                  value: "200"
+                - descriptor:
+                    code: ITEM_ID
+                  value: "I1"
+            - descriptor:
+                code: SEAT_GRID
+              list:
+                - descriptor:
+                    code: X
+                  value: "0"
+                - descriptor:
+                    code: Y
+                  value: "0"
+                - descriptor:
+                    code: Z
+                  value: "0"
+                - descriptor:
+                    code: SEAT_NUMBER
+                  value: "A2"
+                - descriptor:
+                    code: SELECTED_SEAT
+                  value: 'A2'
+                - descriptor:
+                    code: SEAT_PRICE
+                  value: "200"
+                - descriptor:
+                    code: ITEM_ID
+                  value: "I2"
+        
       quote:
         price:
-          value: "10727"
+          value: "34467"
           currency: INR
         breakup:
           - title: BASE_FARE
             item:
+              id: I1
               price:
                 currency: INR
                 value: "9280"
-              add_ons:
-                - id: A1
-                  price:
-                    value: "300"
-            # price:
-            #   currency: INR
-            #   value: "9280"
+              quantity:
+                selected:
+                  count: 3
+            price: 
+              value: "27840"
+              currency: INR     
+          - title: BASE_FARE
+            item:
+              id: I2
+              price:
+                currency: INR
+                value: "4280"
+              quantity:
+                selected:
+                  count: 1
+            price: 
+              value: "4280"
+              currency: INR
           - title: CGST @ 5%
             price:
               currency: INR
@@ -178,15 +316,46 @@ value:
             price:
               currency: INR
               value: "19"
-          # - title: "Add On"
-          #   item:
-          #     id: A1
-          #   price:
-          #     value: "300" 
           - title: "Seat Fare"
+            item:
+              id: I1
+              price:
+                currency: INR
+                value: "200"
+              quantity:
+                selected:
+                  count: 3
+            price:
+              value: "600" 
+              currency: INR
+          - title: "Seat Fare"
+            item:
+              id: I2
+              price:
+                currency: INR
+                value: "200"
+              quantity:
+                selected:
+                  count: 1
             price:
               value: "200" 
-              currency: INR      
+              currency: INR    
+          - title: ADD_ONS
+            item:
+              id: "I1"
+              add_ons:
+                - id: "A1"
+            price:
+              value: "300"
+              currency: INR 
+          - title: ADD_ONS
+            item:
+              id: "I2"
+              add_ons:
+                - id: "A1"
+            price:
+              value: "300"
+              currency: INR            
       
       payments:
         - id: PA1
@@ -194,6 +363,7 @@ value:
           status: NOT-PAID
           type: PRE-ORDER
           params:
+            amount: '34467'
             bank_code: XXXXXXXX
             bank_account_number: xxxxxxxxxxxxxx
             virtual_payment_address: 9988199772@okicic

@@ -2820,8 +2820,11 @@ x-enum:
                 description: Describes the vehicle category as Airline
                 reference: <PR/Issue/Discussion Links md format text
           type:
-            - code: DELIVERY
-              description: Describes the type of fulfillment.
+            - code: TRIP
+              description: Describes the type of journey
+              reference: <PR/Issue/Discussion Links md format text
+            - code: CONNECT
+              description: Describes the type of journey
               reference: <PR/Issue/Discussion Links md format text
           stops:
             type:
@@ -2948,11 +2951,14 @@ x-enum:
                 - code: SEAT
                   description: Describes the kind of ticket seat
                   reference: <PR/Issue/Discussion Links md format text
-                - code: NON_STOP
-                  description: Describes the kind of type of journey
+                - code: ADULT
+                  description: Describes the item type
                   reference: <PR/Issue/Discussion Links md format text
-                - code: CONNECT
-                  description: Describes the kind of type of journey
+                - code: CHILD
+                  description: Describes the item type
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: INFANT
+                  description: Describes the item type
                   reference: <PR/Issue/Discussion Links md format text
           fulfillments: *ref_2
           payments: &ref_4
@@ -3335,6 +3341,22 @@ x-tags:
                   - code: ROUTE_DIRECTION
                     description: Describes the direction of a particular route
                     reference: <PR/Issue/Discussion Links md format text>
+              - code: INFO
+                description: Describes the information about the fuflillment
+                reference: <PR/Issue/Discussion Links md format text>
+                list:
+                  - code: OPERATED_BY
+                    description: Time window to complete settlement
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: PARENT_ITEM_ID
+                    description: Describes the parent item id for the fulfillment
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: PARENT_ITEM_ID
+                    description: Describes the parent item id for the fulfillment
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: FULFILLMENT_SEQUENCE
+                    description: Describes the sequence of the multiple fulfillments
+                    reference: <PR/Issue/Discussion Links md format text>
           payments: *ref_7
   select:
     message:
@@ -3501,9 +3523,23 @@ x-flows:
                     - type: END
                       location:
                         descriptor:
-                          code: BOM
+                          code: BLR
                   vehicle:
                     category: AIRLINE
+                provider:
+                  items:
+                    - descriptor:
+                        name: Adult
+                        code: ADULT
+                      quantity:
+                        selected:
+                          count: 3
+                    - descriptor:
+                        name: Child
+                        code: CHILD
+                      quantity:
+                        selected:
+                          count: 1
                 payment:
                   tags:
                     - descriptor:
@@ -3598,8 +3634,8 @@ x-flows:
                     items:
                       - id: I1
                         descriptor:
-                          name: Non Stop
-                          code: NON_STOP
+                          name: Adult
+                          code: ADULT
                         price:
                           currency: INR
                           value: '9280'
@@ -3727,523 +3763,14 @@ x-flows:
                                 value: list of items
                       - id: I2
                         descriptor:
-                          name: Connect
-                          code: CONNECT
+                          name: Child
+                          code: CHILD
                         price:
                           currency: INR
-                          value: '7280'
-                        fulfillment_ids:
-                          - F2
-                        category_ids:
-                          - C1
-                        tags:
-                          - descriptor:
-                              code: FARE_TYPE
-                              name: Fare Type
-                            display: true
-                            list:
-                              - descriptor:
-                                  code: REGULAR
-                              - descriptor:
-                                  code: STUDENT
-                              - descriptor:
-                                  code: SENIOR_CITIZEN
-                              - descriptor:
-                                  code: ARMED_FORCES
-                              - descriptor:
-                                  code: DOCTORS_NURSES
-                          - descriptor:
-                              code: GENERAL_INFO
-                              name: General Info
-                            display: true
-                            list:
-                              - descriptor:
-                                  code: CABIN_BAGGAGE
-                                  name: Cabin Baggage
-                                  short_desc: Allowed limit for cabin baggage
-                                value: 7 KG
-                              - descriptor:
-                                  code: CHECK_IN_BAGGAGE
-                                  name: Check-in Baggage
-                                  short_desc: Allowed limit for checkin baggage
-                                value: 15 KG
-                              - descriptor:
-                                  code: PROHIBITED_ITEMS
-                                  name: Prohibited Items
-                                value: list of items
-                      - id: I3
-                        descriptor:
-                          name: Connect
-                          code: CONNECT
-                        price:
-                          currency: INR
-                          value: '7280'
-                        category_ids:
-                          - C1
-                        fulfillment_ids:
-                          - F2
-                        parent_item_id: I2
-                        add_ons:
-                          - id: A1
-                            descriptor:
-                              name: meals
-                              code: MEALS
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '300'
-                          - id: A2
-                            descriptor:
-                              name: Delayed and Lost Baggage Protection
-                              code: BAGGAGE
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '500'
-                          - id: A3
-                            descriptor:
-                              name: Fast Forward
-                              code: FAST_FORWARD
-                              short_desc: >-
-                                Get priority check-in & baggage handling
-                                services to save time.
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '200'
-                          - id: A4
-                            descriptor:
-                              name: Travel Assistance
-                              code: TRAVEL_ASSISTANCE
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '500'
-                          - id: A5
-                            descriptor:
-                              name: Saver
-                              code: SAVER
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '9280'
-                          - id: A6
-                            descriptor:
-                              name: Flexi Plus
-                              code: FLEXI_PLUS
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '9580'
-                          - id: A7
-                            descriptor:
-                              name: Free Cancellation
-                              code: FREE_CANCELLATION
-                            price:
-                              currency: INR
-                              value: '500'
-                          - id: A8
-                            descriptor:
-                              name: Free Date Changes
-                              code: FREE_DATE_CHANGE
-                            price:
-                              currency: INR
-                              value: '200'
-                      - id: I4
-                        descriptor:
-                          name: Connect
-                          code: CONNECT
-                        price:
-                          currency: INR
-                          value: '7280'
-                        category_ids:
-                          - C1
-                        fulfillment_ids:
-                          - F3
-                          - F4
-                        parent_item_id: I3
-                        add_ons:
-                          - id: A1
-                            descriptor:
-                              name: meals
-                              code: MEALS
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '300'
-                          - id: A2
-                            descriptor:
-                              name: Delayed and Lost Baggage Protection
-                              code: BAGGAGE
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '500'
-                          - id: A3
-                            descriptor:
-                              name: Fast Forward
-                              code: FAST_FORWARD
-                              short_desc: >-
-                                Get priority check-in & baggage handling
-                                services to save time.
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '200'
-                          - id: A4
-                            descriptor:
-                              name: Travel Assistance
-                              code: TRAVEL_ASSISTANCE
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '500'
-                          - id: A5
-                            descriptor:
-                              name: Saver
-                              code: SAVER
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '9280'
-                          - id: A6
-                            descriptor:
-                              name: Flexi Plus
-                              code: FLEXI_PLUS
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '9580'
-                          - id: A7
-                            descriptor:
-                              name: Free Cancellation
-                              code: FREE_CANCELLATION
-                            price:
-                              currency: INR
-                              value: '500'
-                          - id: A8
-                            descriptor:
-                              name: Free Date Changes
-                              code: FREE_DATE_CHANGE
-                            price:
-                              currency: INR
-                              value: '200'
-                    fulfillments:
-                      - id: F1
-                        type: TRIP
-                        stops:
-                          - id: S1
-                            type: START
-                            location:
-                              descriptor:
-                                name: Delhi
-                                code: DEL
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-10-15T20:00:00.000Z'
-                          - id: S2
-                            type: END
-                            location:
-                              descriptor:
-                                name: Mumbai
-                                code: BOM
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-10-15T20:00:00.000Z'
-                        vehicle:
-                          category: AIRLINE
-                          code: '6E284'
-                      - id: F2
-                        type: TRIP
-                        stops:
-                          - type: START
-                            id: S1
-                            location:
-                              descriptor:
-                                name: Delhi
-                                code: DEL
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-10-15T20:00:00.000Z'
-                          - type: LAYOVER
-                            id: S2
-                            parent_stop_id: S1
-                            location:
-                              descriptor:
-                                name: Goa - Dabolim Airport, India
-                                code: GOI
-                            time:
-                              duration: PT1H
-                          - type: END
-                            id: S3
-                            parent_stop_id: S2
-                            location:
-                              descriptor:
-                                name: Goa - Dabolim Airport, India
-                                code: GOI
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-10-15T21:00:00.000Z'
-                        vehicle:
-                          category: AIRLINE
-                          code: '6E284'
-                      - id: F3
-                        type: TRIP
-                        stops:
-                          - type: START
-                            id: S1
-                            location:
-                              descriptor:
-                                name: Goa - Dabolim Airport, India
-                                code: GOI
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-10-15T22:00:00.000Z'
-                          - type: LAYOVER
-                            id: S2
-                            parent_stop_id: S1
-                            location:
-                              descriptor:
-                                name: Bengaluru
-                                code: BLR
-                            time:
-                              duration: PT1H
-                          - type: END
-                            id: S3
-                            parent_stop_id: S2
-                            location:
-                              descriptor:
-                                name: Bengaluru
-                                code: BLR
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-10-15T23:00:00.000Z'
-                        vehicle:
-                          category: AIRLINE
-                          code: '6E285'
-                      - id: F4
-                        type: TRIP
-                        stops:
-                          - type: START
-                            id: S1
-                            location:
-                              descriptor:
-                                name: Bengaluru
-                                code: BLR
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-10-15T23:20:00.000Z'
-                          - type: END
-                            id: S2
-                            location:
-                              descriptor:
-                                name: Mumbai
-                                code: BOM
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-10-16T01:00:00.000Z'
-                        vehicle:
-                          category: AIRLINE
-                          code: '6E285'
-                    payments:
-                      - tags:
-                          - descriptor:
-                              code: BUYER_FINDER_FEES
-                            display: false
-                            list:
-                              - descriptor:
-                                  code: BUYER_FINDER_FEES_PERCENTAGE
-                                value: '1'
-                          - descriptor:
-                              code: SETTLEMENT_TERMS
-                            display: false
-                            list:
-                              - descriptor:
-                                  code: SETTLEMENT_WINDOW
-                                value: PT30D
-                              - descriptor:
-                                  code: SETTLEMENT_BASIS
-                                value: INVOICE_RECEIPT
-                              - descriptor:
-                                  code: MANDATORY_ARBITRATION
-                                value: 'TRUE'
-                              - descriptor:
-                                  code: COURT_JURISDICTION
-                                value: New Delhi
-                              - descriptor:
-                                  code: STATIC_TERMS
-                                value: https://api.example-bpp.com/booking/terms
-      - summary: Search for the flight by start and end airport code
-        api: search
-        details:
-          - description: >-
-              Users searches over the network to avail the airline mode of
-              transport from one airport to another
-            mermaid: |-
-              sequenceDiagram
-               participant Buyer Platform (BAP)
-               participant Seller Platform (BPP)
-               rect rgb(191, 223, 255)
-               Buyer Platform (BAP)->>Seller Platform (BPP): search
-               Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-               end
-               Seller Platform (BPP)->>Buyer Platform (BAP):on_search
-               Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-        reference: if any
-        example:
-          summary: Search for airline services by standard airport codes
-          value:
-            context:
-              location:
-                country:
-                  code: IND
-                city:
-                  code: std:080
-              domain: ONDC:TRV12
-              timestamp: '2023-03-23T04:41:16Z'
-              bap_id: example-test-bap.com
-              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
-              message_id: 7381c78e-1eb4-47bb-96b4-ac2fce74e565
-              version: 2.0.0
-              action: search
-              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
-              ttl: PT30S
-            message:
-              intent:
-                category:
-                  descriptor:
-                    code: ECONOMY
-                fulfillment:
-                  id: F1
-                  stops:
-                    - id: S1
-                    - id: S2
-                  vehicle:
-                    category: AIRLINE
-                payment:
-                  tags:
-                    - descriptor:
-                        code: BUYER_FINDER_FEES
-                      display: false
-                      list:
-                        - descriptor:
-                            code: BUYER_FINDER_FEES_PERCENTAGE
-                          value: '1'
-                    - descriptor:
-                        code: SETTLEMENT_TERMS
-                      display: false
-                      list:
-                        - descriptor:
-                            code: DELAY_INTEREST
-                          value: '2.5'
-                        - descriptor:
-                            code: STATIC_TERMS
-                          value: https://api.example-bap.com/booking/terms
-      - summary: >-
-          Return an airline catalog of all flights services from one airport to
-          another
-        api: on_search
-        details:
-          - description: >-
-              Users searches over the network to avail the airline mode of
-              transport from one airport to another
-            mermaid: |-
-              sequenceDiagram
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                Buyer Platform (BAP)->>Seller Platform (BPP): search
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                rect rgb(191, 223, 255)
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_search
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-                end
-        reference: if any
-        example:
-          summary: Return services available for provided start and end code
-          value:
-            context:
-              location:
-                country:
-                  code: IND
-                city:
-                  code: std:080
-              domain: ONDC:TRV12
-              timestamp: '2023-03-23T04:41:16Z'
-              bap_id: example-test-bap.com
-              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
-              message_id: 7381c78e-1eb4-47bb-96b4-ac2fce74e565
-              version: 2.0.0
-              action: on_search
-              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
-              bpp_id: example-bpp.com
-              bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
-              ttl: PT30S
-            message:
-              catalog:
-                descriptor:
-                  name: ABC Fights Services Solutions
-                  images:
-                    - url: https://abc-AIRLINE.in/logos/logo.ico
-                      size_type: xs
-                providers:
-                  - id: P1
-                    descriptor:
-                      name: ABC Operator Fights Services
-                      images:
-                        - url: https://operator1.com/logos/logo.ico
-                          size_type: xs
-                    categories:
-                      - id: C1
-                        descriptor:
-                          name: Economy
-                          code: ECONOMY
-                      - id: C2
-                        descriptor:
-                          name: Premium Economy
-                          code: PREMIUM_ECONOMY
-                      - id: C3
-                        descriptor:
-                          name: Business
-                          code: BUSINESS
-                      - id: C4
-                        descriptor:
-                          name: First Class
-                          code: FIRST_CLASS
-                    items:
-                      - id: I1
-                        descriptor:
-                          name: Non Stop
-                          code: NON_STOP
-                        price:
-                          currency: INR
-                          value: '9280'
+                          value: '4280'
                         quantity:
                           maximum:
-                            count: 9
+                            count: 5
                           minimum:
                             count: 1
                         category_ids:
@@ -4363,15 +3890,100 @@ x-flows:
                                   code: PROHIBITED_ITEMS
                                   name: Prohibited Items
                                 value: list of items
-                      - id: I2
+                      - id: I3
                         descriptor:
-                          name: Connect
-                          code: CONNECT
+                          name: Adult
+                          code: ADULT
                         price:
                           currency: INR
-                          value: '7280'
+                          value: '9280'
+                        quantity:
+                          maximum:
+                            count: 9
+                          minimum:
+                            count: 1
                         category_ids:
                           - C1
+                        fulfillment_ids:
+                          - F2
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A5
+                            descriptor:
+                              name: Saver
+                              code: SAVER
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9280'
+                          - id: A6
+                            descriptor:
+                              name: Flexi Plus
+                              code: FLEXI_PLUS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '9580'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
                         tags:
                           - descriptor:
                               code: FARE_TYPE
@@ -4407,109 +4019,22 @@ x-flows:
                                   code: PROHIBITED_ITEMS
                                   name: Prohibited Items
                                 value: list of items
-                      - id: I3
-                        descriptor:
-                          name: Connect
-                          code: CONNECT
-                        price:
-                          currency: INR
-                          value: '7280'
-                        category_ids:
-                          - C1
-                        fulfillment_ids:
-                          - F2
-                        parent_item_id: I2
-                        add_ons:
-                          - id: A1
-                            descriptor:
-                              name: meals
-                              code: MEALS
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '300'
-                          - id: A2
-                            descriptor:
-                              name: Delayed and Lost Baggage Protection
-                              code: BAGGAGE
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '500'
-                          - id: A3
-                            descriptor:
-                              name: Fast Forward
-                              code: FAST_FORWARD
-                              short_desc: >-
-                                Get priority check-in & baggage handling
-                                services to save time.
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '200'
-                          - id: A4
-                            descriptor:
-                              name: Travel Assistance
-                              code: TRAVEL_ASSISTANCE
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '500'
-                          - id: A5
-                            descriptor:
-                              name: Saver
-                              code: SAVER
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '9280'
-                          - id: A6
-                            descriptor:
-                              name: Flexi Plus
-                              code: FLEXI_PLUS
-                            quantity:
-                              available:
-                                count: 1
-                            price:
-                              currency: INR
-                              value: '9580'
-                          - id: A7
-                            descriptor:
-                              name: Free Cancellation
-                              code: FREE_CANCELLATION
-                            price:
-                              currency: INR
-                              value: '500'
-                          - id: A8
-                            descriptor:
-                              name: Free Date Changes
-                              code: FREE_DATE_CHANGE
-                            price:
-                              currency: INR
-                              value: '200'
                       - id: I4
                         descriptor:
-                          name: Connect
-                          code: CONNECT
+                          name: Child
+                          code: CHILD
                         price:
                           currency: INR
-                          value: '7280'
+                          value: '4280'
+                        quantity:
+                          maximum:
+                            count: 5
+                          minimum:
+                            count: 1
                         category_ids:
                           - C1
                         fulfillment_ids:
                           - F3
-                          - F4
-                        parent_item_id: I3
                         add_ons:
                           - id: A1
                             descriptor:
@@ -4588,8 +4113,118 @@ x-flows:
                             price:
                               currency: INR
                               value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
                     fulfillments:
                       - id: F1
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E284'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F2
+                        type: CONNECT
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: LAYOVER
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S3
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: FULFILLMENT_SEQUENCE
+                                value: F3, F4
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F3
                         type: TRIP
                         stops:
                           - id: S1
@@ -4609,441 +4244,58 @@ x-flows:
                                 code: BOM
                             time:
                               label: DATE_TIME
-                              timestamp: '2023-10-15T20:00:00.000Z'
+                              timestamp: '2023-10-17T20:00:00.000Z'
                         vehicle:
                           category: AIRLINE
-                          code: '6E284'
+                          code: '6E286'
                         tags:
                           - descriptor:
-                              code: VEHICLE_GRID
-                            display: false
+                              code: INFO
+                              name: Info
+                            display: true
                             list:
                               - descriptor:
-                                  code: X_MAX
-                                value: '14'
-                              - descriptor:
-                                  code: Y_MAX
-                                value: '3'
-                              - descriptor:
-                                  code: Z_MAX
-                                value: '1'
-                              - descriptor:
-                                  code: X_LOBBY_START
-                                value: '0'
-                              - descriptor:
-                                  code: X_LOBBY_SIZE
-                                value: '12'
-                              - descriptor:
-                                  code: Y_LOBBY_START
-                                value: '1'
-                              - descriptor:
-                                  code: Y_LOBBY_SIZE
-                                value: '1'
-                              - descriptor:
-                                  code: SEAT_SELECTION
-                                value: mandatory
-                          - descriptor:
-                              code: VEHICLE_AVAIBALITY
-                            display: false
-                            list:
-                              - descriptor:
-                                  code: AVALIABLE_SEATS
-                                value: '20'
-                          - descriptor:
-                              code: SEAT_GRID
-                            list:
-                              - descriptor:
-                                  code: X
-                                value: '0'
-                              - descriptor:
-                                  code: 'Y'
-                                value: '0'
-                              - descriptor:
-                                  code: Z
-                                value: '0'
-                              - descriptor:
-                                  code: SEAT_NUMBER
-                                value: A1
-                              - descriptor:
-                                  code: AVAILABLE
-                                value: 'true'
-                              - descriptor:
-                                  code: SEAT_PRICE
-                                value: '200'
-                              - descriptor:
-                                  code: ITEM_ID
-                                value: I1
-                          - descriptor:
-                              code: SEAT_GRID
-                            list:
-                              - descriptor:
-                                  code: X
-                                value: '0'
-                              - descriptor:
-                                  code: 'Y'
-                                value: '0'
-                              - descriptor:
-                                  code: Z
-                                value: '0'
-                              - descriptor:
-                                  code: SEAT_NUMBER
-                                value: A2
-                              - descriptor:
-                                  code: AVAILABLE
-                                value: 'true'
-                              - descriptor:
-                                  code: SEAT_PRICE
-                                value: '200'
-                              - descriptor:
-                                  code: ITEM_ID
-                                value: I1
-                      - id: F2
-                        type: TRIP
-                        stops:
-                          - type: START
-                            id: S1
-                            location:
-                              descriptor:
-                                name: Delhi
-                                code: DEL
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-10-15T20:00:00.000Z'
-                          - type: LAYOVER
-                            id: S2
-                            parent_stop_id: S1
-                            location:
-                              descriptor:
-                                name: Goa - Dabolim Airport, India
-                                code: GOI
-                            time:
-                              duration: PT1H
-                          - type: END
-                            id: S3
-                            parent_stop_id: S2
-                            location:
-                              descriptor:
-                                name: Goa - Dabolim Airport, India
-                                code: GOI
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-10-15T21:00:00.000Z'
-                        vehicle:
-                          category: AIRLINE
-                          code: '6E284'
-                        tags:
-                          - descriptor:
-                              code: VEHICLE_GRID
-                            display: false
-                            list:
-                              - descriptor:
-                                  code: X_MAX
-                                value: '14'
-                              - descriptor:
-                                  code: Y_MAX
-                                value: '3'
-                              - descriptor:
-                                  code: Z_MAX
-                                value: '1'
-                              - descriptor:
-                                  code: X_LOBBY_START
-                                value: '0'
-                              - descriptor:
-                                  code: X_LOBBY_SIZE
-                                value: '12'
-                              - descriptor:
-                                  code: Y_LOBBY_START
-                                value: '1'
-                              - descriptor:
-                                  code: Y_LOBBY_SIZE
-                                value: '1'
-                              - descriptor:
-                                  code: SEAT_SELECTION
-                                value: optional
-                          - descriptor:
-                              code: VEHICLE_AVAIBALITY
-                            display: false
-                            list:
-                              - descriptor:
-                                  code: AVALIABLE_SEATS
-                                value: '20'
-                          - descriptor:
-                              code: SEAT_GRID
-                            list:
-                              - descriptor:
-                                  code: X
-                                value: '0'
-                              - descriptor:
-                                  code: 'Y'
-                                value: '0'
-                              - descriptor:
-                                  code: Z
-                                value: '0'
-                              - descriptor:
-                                  code: SEAT_NUMBER
-                                value: A1
-                              - descriptor:
-                                  code: AVAILABLE
-                                value: 'true'
-                              - descriptor:
-                                  code: SEAT_PRICE
-                                value: '200'
-                              - descriptor:
-                                  code: ITEM_ID
-                                value: I2
-                          - descriptor:
-                              code: SEAT_GRID
-                            list:
-                              - descriptor:
-                                  code: X
-                                value: '0'
-                              - descriptor:
-                                  code: 'Y'
-                                value: '0'
-                              - descriptor:
-                                  code: Z
-                                value: '0'
-                              - descriptor:
-                                  code: SEAT_NUMBER
-                                value: A2
-                              - descriptor:
-                                  code: AVAILABLE
-                                value: 'true'
-                              - descriptor:
-                                  code: SEAT_PRICE
-                                value: '200'
-                              - descriptor:
-                                  code: ITEM_ID
-                                value: I2
-                      - id: F3
-                        type: TRIP
-                        stops:
-                          - type: START
-                            id: S1
-                            location:
-                              descriptor:
-                                name: Goa - Dabolim Airport, India
-                                code: GOI
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-10-15T22:00:00.000Z'
-                          - type: LAYOVER
-                            id: S2
-                            parent_stop_id: S1
-                            location:
-                              descriptor:
-                                name: Bengaluru
-                                code: BLR
-                            time:
-                              duration: PT1H
-                          - type: END
-                            id: S3
-                            parent_stop_id: S2
-                            location:
-                              descriptor:
-                                name: Bengaluru
-                                code: BLR
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-10-15T23:00:00.000Z'
-                        vehicle:
-                          category: AIRLINE
-                          code: '6E285'
-                        tags:
-                          - descriptor:
-                              code: VEHICLE_GRID
-                            display: false
-                            list:
-                              - descriptor:
-                                  code: X_MAX
-                                value: '14'
-                              - descriptor:
-                                  code: Y_MAX
-                                value: '3'
-                              - descriptor:
-                                  code: Z_MAX
-                                value: '1'
-                              - descriptor:
-                                  code: X_LOBBY_START
-                                value: '0'
-                              - descriptor:
-                                  code: X_LOBBY_SIZE
-                                value: '12'
-                              - descriptor:
-                                  code: Y_LOBBY_START
-                                value: '1'
-                              - descriptor:
-                                  code: Y_LOBBY_SIZE
-                                value: '1'
-                              - descriptor:
-                                  code: SEAT_SELECTION
-                                value: mandatory
-                          - descriptor:
-                              code: VEHICLE_AVAIBALITY
-                            display: false
-                            list:
-                              - descriptor:
-                                  code: AVALIABLE_SEATS
-                                value: '20'
-                          - descriptor:
-                              code: SEAT_GRID
-                            list:
-                              - descriptor:
-                                  code: X
-                                value: '0'
-                              - descriptor:
-                                  code: 'Y'
-                                value: '0'
-                              - descriptor:
-                                  code: Z
-                                value: '0'
-                              - descriptor:
-                                  code: SEAT_NUMBER
-                                value: A1
-                              - descriptor:
-                                  code: AVAILABLE
-                                value: 'true'
-                              - descriptor:
-                                  code: SEAT_PRICE
-                                value: '200'
-                              - descriptor:
-                                  code: ITEM_ID
-                                value: I2
-                          - descriptor:
-                              code: SEAT_GRID
-                            list:
-                              - descriptor:
-                                  code: X
-                                value: '0'
-                              - descriptor:
-                                  code: 'Y'
-                                value: '0'
-                              - descriptor:
-                                  code: Z
-                                value: '0'
-                              - descriptor:
-                                  code: SEAT_NUMBER
-                                value: A2
-                              - descriptor:
-                                  code: AVAILABLE
-                                value: 'true'
-                              - descriptor:
-                                  code: SEAT_PRICE
-                                value: '200'
-                              - descriptor:
-                                  code: ITEM_ID
-                                value: I2
+                                  code: PARENT_ITEM_ID
+                                value: F2
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
                       - id: F4
                         type: TRIP
                         stops:
-                          - type: START
-                            id: S1
-                            location:
-                              descriptor:
-                                name: Bengaluru
-                                code: BLR
-                            time:
-                              label: DATE_TIME
-                              timestamp: '2023-10-15T23:20:00.000Z'
-                          - type: END
-                            id: S2
+                          - id: S1
+                            type: START
                             location:
                               descriptor:
                                 name: Mumbai
                                 code: BOM
                             time:
                               label: DATE_TIME
-                              timestamp: '2023-10-16T01:00:00.000Z'
+                              timestamp: '2023-10-19T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-21T20:00:00.000Z'
                         vehicle:
                           category: AIRLINE
-                          code: '6E285'
+                          code: '6E287'
                         tags:
                           - descriptor:
-                              code: VEHICLE_GRID
-                            display: false
+                              code: INFO
+                              name: Info
+                            display: true
                             list:
                               - descriptor:
-                                  code: X_MAX
-                                value: '14'
+                                  code: PARENT_ITEM_ID
+                                value: F3
                               - descriptor:
-                                  code: Y_MAX
-                                value: '3'
-                              - descriptor:
-                                  code: Z_MAX
-                                value: '1'
-                              - descriptor:
-                                  code: X_LOBBY_START
-                                value: '0'
-                              - descriptor:
-                                  code: X_LOBBY_SIZE
-                                value: '12'
-                              - descriptor:
-                                  code: Y_LOBBY_START
-                                value: '1'
-                              - descriptor:
-                                  code: Y_LOBBY_SIZE
-                                value: '1'
-                              - descriptor:
-                                  code: SEAT_SELECTION
-                                value: mandatory
-                          - descriptor:
-                              code: VEHICLE_AVAIBALITY
-                            display: false
-                            list:
-                              - descriptor:
-                                  code: AVALIABLE_SEATS
-                                value: '20'
-                          - descriptor:
-                              code: SEAT_GRID
-                            list:
-                              - descriptor:
-                                  code: X
-                                value: '0'
-                              - descriptor:
-                                  code: 'Y'
-                                value: '0'
-                              - descriptor:
-                                  code: Z
-                                value: '0'
-                              - descriptor:
-                                  code: SEAT_NUMBER
-                                value: A1
-                              - descriptor:
-                                  code: AVAILABLE
-                                value: 'true'
-                              - descriptor:
-                                  code: SEAT_PRICE
-                                value: '200'
-                              - descriptor:
-                                  code: ITEM_ID
-                                value: I2
-                          - descriptor:
-                              code: SEAT_GRID
-                            list:
-                              - descriptor:
-                                  code: X
-                                value: '0'
-                              - descriptor:
-                                  code: 'Y'
-                                value: '0'
-                              - descriptor:
-                                  code: Z
-                                value: '0'
-                              - descriptor:
-                                  code: SEAT_NUMBER
-                                value: A2
-                              - descriptor:
-                                  code: SINGLE_SEAT
-                                value: 'TRUE'
-                              - descriptor:
-                                  code: AVAILABLE
-                                value: 'true'
-                              - descriptor:
-                                  code: SEAT_PRICE
-                                value: '200'
-                              - descriptor:
-                                  code: ITEM_ID
-                                value: I2
+                                  code: OPERATED_BY
+                                value: AirIndia
                     payments:
                       - tags:
                           - descriptor:
@@ -5117,6 +4369,15 @@ x-flows:
                   - id: I1
                     quantity:
                       selected:
+                        count: 3
+                    add_ons:
+                      - id: A1
+                        quantity:
+                          selected:
+                            count: 1
+                  - id: I2
+                    quantity:
+                      selected:
                         count: 1
                     add_ons:
                       - id: A1
@@ -5128,21 +4389,6 @@ x-flows:
                     stops:
                       - id: S1
                       - id: S2
-                    vehicle:
-                      category: AIRLINE
-                    tags:
-                      - descriptor:
-                          code: SEAT_GRID
-                        list:
-                          - descriptor:
-                              code: NUMBER
-                            value: A2
-                          - descriptor:
-                              code: SELECTED
-                            value: 'true'
-                          - descriptor:
-                              code: SEAT_PRICE
-                            value: '200'
       - summary: Provider platform provides the quote for selected service of airline
         api: on_select
         details:
@@ -5209,11 +4455,71 @@ x-flows:
                 items:
                   - id: I1
                     descriptor:
-                      name: Non Stop
-                      code: NON_STOP
+                      name: Adult
+                      code: ADULT
                     price:
                       currency: INR
                       value: '9280'
+                    quantity:
+                      selected:
+                        count: 3
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          selected:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I2
+                    descriptor:
+                      name: Child
+                      code: CHILD
+                    price:
+                      currency: INR
+                      value: '4280'
                     quantity:
                       selected:
                         count: 1
@@ -5228,6 +4534,452 @@ x-flows:
                           code: MEALS
                         quantity:
                           available:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - id: S1
+                        type: START
+                        location:
+                          descriptor:
+                            name: Delhi
+                            code: DEL
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-10-15T20:00:00.000Z'
+                      - id: S2
+                        type: END
+                        location:
+                          descriptor:
+                            name: Bengaluru
+                            code: BLR
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-10-15T20:00:00.000Z'
+                    vehicle:
+                      category: AIRLINE
+                      code: '6E284'
+                    tags:
+                      - descriptor:
+                          code: VEHICLE_GRID
+                        display: false
+                        list:
+                          - descriptor:
+                              code: X_MAX
+                            value: '14'
+                          - descriptor:
+                              code: Y_MAX
+                            value: '3'
+                          - descriptor:
+                              code: Z_MAX
+                            value: '1'
+                          - descriptor:
+                              code: X_LOBBY_START
+                            value: '0'
+                          - descriptor:
+                              code: X_LOBBY_SIZE
+                            value: '12'
+                          - descriptor:
+                              code: Y_LOBBY_START
+                            value: '1'
+                          - descriptor:
+                              code: Y_LOBBY_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: SEAT_SELECTION
+                            value: mandatory
+                      - descriptor:
+                          code: VEHICLE_AVAIBALITY
+                        display: false
+                        list:
+                          - descriptor:
+                              code: AVALIABLE_SEATS
+                            value: '20'
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A1
+                          - descriptor:
+                              code: AVAILABLE
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A2
+                          - descriptor:
+                              code: AVAILABLE
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A3
+                          - descriptor:
+                              code: AVAILABLE
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: B1
+                          - descriptor:
+                              code: AVAILABLE
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                      - descriptor:
+                          code: INFO
+                          name: Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: OPERATED_BY
+                            value: AirIndia
+      - summary: Selection of specific service
+        api: select
+        details:
+          - description: >-
+              The end consumer have to select the specific service and would
+              like to have the necesary details
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: Get Quote of a selected item
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV12
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 614730da-eacc-46b8-9799-86f75bf35f31
+              version: 2.0.0
+              action: select
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              order:
+                provider:
+                  id: P1
+                items:
+                  - id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                    add_ons:
+                      - id: A1
+                        quantity:
+                          selected:
+                            count: 3
+                  - id: I2
+                    quantity:
+                      selected:
+                        count: 1
+                    add_ons:
+                      - id: A1
+                        quantity:
+                          selected:
+                            count: 1
+                fulfillments:
+                  - id: F1
+                    stops:
+                      - id: S1
+                      - id: S2
+                    vehicle:
+                      category: AIRLINE
+                    tags:
+                      - descriptor:
+                          code: INFO
+                          name: Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: OPERATED_BY
+                            value: AirIndia
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: A1
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: A2
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: A3
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: B1
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+      - summary: Provider platform provides the quote for selected service of airline
+        api: on_select
+        details:
+          - description: >-
+              Provider platform responds with the service detailed information
+              and quotes for the specific service that consumer would like to
+              avail
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example:
+          summary: Get Quote of a selected item
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV12
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 614730da-eacc-46b8-9799-86f75bf35f31
+              version: 2.0.0
+              action: on_select
+              bap_uri: https://api.example-bap.com/pilot/bap/cab/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bap/cab/v1
+              ttl: PT30S
+            message:
+              order:
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator Fights Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                        size_type: xs
+                  tags:
+                    - descriptor:
+                        code: FARE_TYPE
+                        name: Fare Type
+                      display: true
+                      list:
+                        - descriptor:
+                            code: REGULAR
+                        - descriptor:
+                            code: STUDENT
+                        - descriptor:
+                            code: SENIOR_CITIZEN
+                        - descriptor:
+                            code: ARMED_FORCES
+                        - descriptor:
+                            code: DOCTORS_NURSES
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 3
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          selected:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PR
+                              name: Prohibited Items
+                            value: 15 KG
+                  - id: I2
+                    descriptor:
+                      name: Child
+                      code: CHILD
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          selected:
                             count: 1
                         price:
                           currency: INR
@@ -5269,8 +5021,8 @@ x-flows:
                         type: END
                         location:
                           descriptor:
-                            name: Mumbai
-                            code: BOM
+                            name: Bengaluru
+                            code: BLR
                         time:
                           label: DATE_TIME
                           timestamp: '2023-10-15T20:00:00.000Z'
@@ -5278,6 +5030,38 @@ x-flows:
                       category: AIRLINE
                       code: '6E284'
                     tags:
+                      - descriptor:
+                          code: INFO
+                          name: Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: OPERATED_BY
+                            value: AirIndia
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A1
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A1
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I1
                       - descriptor:
                           code: SEAT_GRID
                         list:
@@ -5302,20 +5086,83 @@ x-flows:
                           - descriptor:
                               code: ITEM_ID
                             value: I1
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I1
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I2
                 quote:
                   price:
-                    value: '10727'
+                    value: '34467'
                     currency: INR
                   breakup:
                     - title: BASE_FARE
                       item:
+                        id: I1
                         price:
                           currency: INR
                           value: '9280'
-                        add_ons:
-                          - id: A1
-                            price:
-                              value: '300'
+                        quantity:
+                          selected:
+                            count: 3
+                      price:
+                        value: '27840'
+                        currency: INR
+                    - title: BASE_FARE
+                      item:
+                        id: I2
+                        price:
+                          currency: INR
+                          value: '4280'
+                        quantity:
+                          selected:
+                            count: 1
+                      price:
+                        value: '4280'
+                        currency: INR
                     - title: CGST @ 5%
                       price:
                         currency: INR
@@ -5329,8 +5176,44 @@ x-flows:
                         currency: INR
                         value: '19'
                     - title: Seat Fare
+                      item:
+                        id: I1
+                        price:
+                          currency: INR
+                          value: '200'
+                        quantity:
+                          selected:
+                            count: 3
+                      price:
+                        value: '600'
+                        currency: INR
+                    - title: Seat Fare
+                      item:
+                        id: I2
+                        price:
+                          currency: INR
+                          value: '200'
+                        quantity:
+                          selected:
+                            count: 1
                       price:
                         value: '200'
+                        currency: INR
+                    - title: ADD_ONS
+                      item:
+                        id: I1
+                        add_ons:
+                          - id: A1
+                      price:
+                        value: '300'
+                        currency: INR
+                    - title: ADD_ONS
+                      item:
+                        id: I2
+                        add_ons:
+                          - id: A1
+                      price:
+                        value: '300'
                         currency: INR
       - summary: Consumer platform initializes the order
         api: init
@@ -5375,6 +5258,15 @@ x-flows:
                   id: P1
                 items:
                   - id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                    add_ons:
+                      - id: A1
+                        quantity:
+                          selected:
+                            count: 3
+                  - id: I2
                     quantity:
                       selected:
                         count: 1
@@ -5502,11 +5394,56 @@ x-flows:
                 items:
                   - id: I1
                     descriptor:
-                      name: Non Stop
-                      code: NON_STOP
+                      name: Adult
+                      code: ADULT
                     price:
                       currency: INR
                       value: '9280'
+                    quantity:
+                      selected:
+                        count: 3
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          selected:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PR
+                              name: Prohibited Items
+                            value: 15 KG
+                  - id: I2
+                    descriptor:
+                      name: Child
+                      code: CHILD
+                    price:
+                      currency: INR
+                      value: '4280'
                     quantity:
                       selected:
                         count: 1
@@ -5520,7 +5457,7 @@ x-flows:
                           name: meals
                           code: MEALS
                         quantity:
-                          available:
+                          selected:
                             count: 1
                         price:
                           currency: INR
@@ -5562,8 +5499,8 @@ x-flows:
                         type: END
                         location:
                           descriptor:
-                            name: Mumbai
-                            code: BOM
+                            name: Bengaluru
+                            code: BLR
                         time:
                           label: DATE_TIME
                           timestamp: '2023-10-15T20:00:00.000Z'
@@ -5579,6 +5516,38 @@ x-flows:
                       category: AIRLINE
                       code: '6E284'
                     tags:
+                      - descriptor:
+                          code: INFO
+                          name: Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: OPERATED_BY
+                            value: AirIndia
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A1
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A1
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I1
                       - descriptor:
                           code: SEAT_GRID
                         list:
@@ -5603,20 +5572,83 @@ x-flows:
                           - descriptor:
                               code: ITEM_ID
                             value: I1
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I1
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I2
                 quote:
                   price:
-                    value: '10727'
+                    value: '34467'
                     currency: INR
                   breakup:
                     - title: BASE_FARE
                       item:
+                        id: I1
                         price:
                           currency: INR
                           value: '9280'
-                        add_ons:
-                          - id: A1
-                            price:
-                              value: '300'
+                        quantity:
+                          selected:
+                            count: 3
+                      price:
+                        value: '27840'
+                        currency: INR
+                    - title: BASE_FARE
+                      item:
+                        id: I2
+                        price:
+                          currency: INR
+                          value: '4280'
+                        quantity:
+                          selected:
+                            count: 1
+                      price:
+                        value: '4280'
+                        currency: INR
                     - title: CGST @ 5%
                       price:
                         currency: INR
@@ -5630,8 +5662,44 @@ x-flows:
                         currency: INR
                         value: '19'
                     - title: Seat Fare
+                      item:
+                        id: I1
+                        price:
+                          currency: INR
+                          value: '200'
+                        quantity:
+                          selected:
+                            count: 3
+                      price:
+                        value: '600'
+                        currency: INR
+                    - title: Seat Fare
+                      item:
+                        id: I2
+                        price:
+                          currency: INR
+                          value: '200'
+                        quantity:
+                          selected:
+                            count: 1
                       price:
                         value: '200'
+                        currency: INR
+                    - title: ADD_ONS
+                      item:
+                        id: I1
+                        add_ons:
+                          - id: A1
+                      price:
+                        value: '300'
+                        currency: INR
+                    - title: ADD_ONS
+                      item:
+                        id: I2
+                        add_ons:
+                          - id: A1
+                      price:
+                        value: '300'
                         currency: INR
                 payments:
                   - id: PA1
@@ -5639,6 +5707,7 @@ x-flows:
                     status: NOT-PAID
                     type: PRE-ORDER
                     params:
+                      amount: '34467'
                       bank_code: XXXXXXXX
                       bank_account_number: xxxxxxxxxxxxxx
                       virtual_payment_address: 9988199772@okicic
@@ -5844,11 +5913,56 @@ x-flows:
                 items:
                   - id: I1
                     descriptor:
-                      name: Non Stop
-                      code: NON_STOP
+                      name: Adult
+                      code: ADULT
                     price:
                       currency: INR
                       value: '9280'
+                    quantity:
+                      selected:
+                        count: 3
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          selected:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PR
+                              name: Prohibited Items
+                            value: 15 KG
+                  - id: I2
+                    descriptor:
+                      name: Child
+                      code: CHILD
+                    price:
+                      currency: INR
+                      value: '4280'
                     quantity:
                       selected:
                         count: 1
@@ -5862,7 +5976,7 @@ x-flows:
                           name: meals
                           code: MEALS
                         quantity:
-                          available:
+                          selected:
                             count: 1
                         price:
                           currency: INR
@@ -5906,8 +6020,8 @@ x-flows:
                       - type: END
                         location:
                           descriptor:
-                            name: Mumbai
-                            code: BOM
+                            name: Bengaluru
+                            code: BLR
                         time:
                           label: DATE_TIME
                           timestamp: '2023-10-15T20:00:00.000Z'
@@ -5923,6 +6037,38 @@ x-flows:
                       category: AIRLINE
                       code: '6E284'
                     tags:
+                      - descriptor:
+                          code: INFO
+                          name: Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: OPERATED_BY
+                            value: AirIndia
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A1
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A1
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I1
                       - descriptor:
                           code: SEAT_GRID
                         list:
@@ -5947,20 +6093,83 @@ x-flows:
                           - descriptor:
                               code: ITEM_ID
                             value: I1
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I1
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I2
                 quote:
                   price:
-                    value: '10727'
+                    value: '34467'
                     currency: INR
                   breakup:
                     - title: BASE_FARE
                       item:
+                        id: I1
                         price:
                           currency: INR
                           value: '9280'
-                        add_ons:
-                          - id: A1
-                            price:
-                              value: '300'
+                        quantity:
+                          selected:
+                            count: 3
+                      price:
+                        value: '27840'
+                        currency: INR
+                    - title: BASE_FARE
+                      item:
+                        id: I2
+                        price:
+                          currency: INR
+                          value: '4280'
+                        quantity:
+                          selected:
+                            count: 1
+                      price:
+                        value: '4280'
+                        currency: INR
                     - title: CGST @ 5%
                       price:
                         currency: INR
@@ -5974,8 +6183,44 @@ x-flows:
                         currency: INR
                         value: '19'
                     - title: Seat Fare
+                      item:
+                        id: I1
+                        price:
+                          currency: INR
+                          value: '200'
+                        quantity:
+                          selected:
+                            count: 3
+                      price:
+                        value: '600'
+                        currency: INR
+                    - title: Seat Fare
+                      item:
+                        id: I2
+                        price:
+                          currency: INR
+                          value: '200'
+                        quantity:
+                          selected:
+                            count: 1
                       price:
                         value: '200'
+                        currency: INR
+                    - title: ADD_ONS
+                      item:
+                        id: I1
+                        add_ons:
+                          - id: A1
+                      price:
+                        value: '300'
+                        currency: INR
+                    - title: ADD_ONS
+                      item:
+                        id: I2
+                        add_ons:
+                          - id: A1
+                      price:
+                        value: '300'
                         currency: INR
                 payments:
                   - id: PA1
@@ -5985,7 +6230,7 @@ x-flows:
                     params:
                       transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
                       currency: INR
-                      amount: '10727'
+                      amount: '34467'
                       bank_code: XXXXXXXX
                       bank_account_number: xxxxxxxxxxxxxx
                       virtual_payment_address: 9988199772@okicic
@@ -6138,11 +6383,56 @@ x-flows:
                 items:
                   - id: I1
                     descriptor:
-                      name: Non Stop
-                      code: NON_STOP
+                      name: Adult
+                      code: ADULT
                     price:
                       currency: INR
                       value: '9280'
+                    quantity:
+                      selected:
+                        count: 3
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          selected:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PR
+                              name: Prohibited Items
+                            value: 15 KG
+                  - id: I2
+                    descriptor:
+                      name: Child
+                      code: CHILD
+                    price:
+                      currency: INR
+                      value: '4280'
                     quantity:
                       selected:
                         count: 1
@@ -6156,7 +6446,7 @@ x-flows:
                           name: meals
                           code: MEALS
                         quantity:
-                          available:
+                          selected:
                             count: 1
                         price:
                           currency: INR
@@ -6200,8 +6490,8 @@ x-flows:
                       - type: END
                         location:
                           descriptor:
-                            name: Mumbai
-                            code: BOM
+                            name: Bengaluru
+                            code: BLR
                         time:
                           label: DATE_TIME
                           timestamp: '2023-10-15T20:00:00.000Z'
@@ -6218,6 +6508,38 @@ x-flows:
                       code: '6E284'
                     tags:
                       - descriptor:
+                          code: INFO
+                          name: Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: OPERATED_BY
+                            value: AirIndia
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A1
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A1
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I1
+                      - descriptor:
                           code: SEAT_GRID
                         list:
                           - descriptor:
@@ -6233,31 +6555,91 @@ x-flows:
                               code: SEAT_NUMBER
                             value: A2
                           - descriptor:
-                              code: SELECTED
-                            value: 'true'
+                              code: SELECTED_SEAT
+                            value: A2
                           - descriptor:
                               code: SEAT_PRICE
                             value: '200'
                           - descriptor:
+                              code: ITEM_ID
+                            value: I1
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A2
+                          - descriptor:
                               code: SELECTED_SEAT
                             value: A2
                           - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                          - descriptor:
                               code: ITEM_ID
                             value: I1
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I2
                 quote:
                   price:
-                    value: '10727'
+                    value: '34467'
                     currency: INR
                   breakup:
                     - title: BASE_FARE
                       item:
+                        id: I1
                         price:
                           currency: INR
                           value: '9280'
-                        add_ons:
-                          - id: A1
-                            price:
-                              value: '300'
+                        quantity:
+                          selected:
+                            count: 3
+                      price:
+                        value: '27840'
+                        currency: INR
+                    - title: BASE_FARE
+                      item:
+                        id: I2
+                        price:
+                          currency: INR
+                          value: '4280'
+                        quantity:
+                          selected:
+                            count: 1
+                      price:
+                        value: '4280'
+                        currency: INR
                     - title: CGST @ 5%
                       price:
                         currency: INR
@@ -6271,8 +6653,44 @@ x-flows:
                         currency: INR
                         value: '19'
                     - title: Seat Fare
+                      item:
+                        id: I1
+                        price:
+                          currency: INR
+                          value: '200'
+                        quantity:
+                          selected:
+                            count: 3
+                      price:
+                        value: '600'
+                        currency: INR
+                    - title: Seat Fare
+                      item:
+                        id: I2
+                        price:
+                          currency: INR
+                          value: '200'
+                        quantity:
+                          selected:
+                            count: 1
                       price:
                         value: '200'
+                        currency: INR
+                    - title: ADD_ONS
+                      item:
+                        id: I1
+                        add_ons:
+                          - id: A1
+                      price:
+                        value: '300'
+                        currency: INR
+                    - title: ADD_ONS
+                      item:
+                        id: I2
+                        add_ons:
+                          - id: A1
+                      price:
+                        value: '300'
                         currency: INR
                 payments:
                   - id: PA1
@@ -6282,7 +6700,7 @@ x-flows:
                     params:
                       transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
                       currency: INR
-                      amount: '10727'
+                      amount: '34467'
                       bank_code: XXXXXXXX
                       bank_account_number: xxxxxxxxxxxxxx
                       virtual_payment_address: 9988199772@okicic
