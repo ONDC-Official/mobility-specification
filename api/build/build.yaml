@@ -4192,6 +4192,9 @@ x-flows:
                             time:
                               label: DATE_TIME
                               timestamp: '2023-10-15T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E281'
                         tags:
                           - descriptor:
                               code: INFO
@@ -4984,7 +4987,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example:
+        example: &ref_19
           summary: Get Quote of a selected item
           value:
             context:
@@ -5605,7 +5608,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: &ref_19
+        example: &ref_20
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -6170,6 +6173,9 @@ x-flows:
                             count: 1
                 fulfillments:
                   - id: F1
+                    stops:
+                      - id: S1
+                      - id: S2
                     customer:
                       person:
                         name: Joe Adams
@@ -6234,7 +6240,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_20
+        example: &ref_21
           summary: Confirm ticket booking
           value:
             context:
@@ -6455,6 +6461,7 @@ x-flows:
                     type: TRIP
                     stops:
                       - type: START
+                        id: S1
                         location:
                           descriptor:
                             name: Delhi
@@ -6467,6 +6474,7 @@ x-flows:
                           token: >-
                             iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
                       - type: END
+                        id: S2
                         location:
                           descriptor:
                             name: Bengaluru
@@ -6791,7 +6799,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_21
+        example: &ref_22
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -7337,12 +7345,13 @@ x-examples:
       on_select:
         examples:
           - *ref_18
+          - *ref_19
       on_init:
         examples:
-          - *ref_19
+          - *ref_20
       on_confirm:
         examples:
-          - *ref_20
+          - *ref_21
       on_update:
         examples:
           - summary: Return updated order with customer details
@@ -7534,7 +7543,7 @@ x-examples:
                       url: https://abcoperator.com/booking/O1.pdf
       on_cancel:
         examples:
-          - *ref_21
+          - *ref_22
 x-attributes:
   airline:
     attribute_set:
@@ -7641,13 +7650,13 @@ x-attributes:
                       description: Physical description of code.
                 time:
                   label:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: Date Of Journey
                     description: Label for denoting stop time or date
                   timestamp:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: '2023-10-15T00:32:19.000Z'
@@ -7659,6 +7668,37 @@ x-attributes:
                   owner: BAP
                   usage: AIRLINE
                   description: Describes category of a vehicle
+            provider:
+              items:
+                descriptor:
+                  name:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: Adult
+                    description: Describes the name of an item
+                  code:
+                    required: mandatory
+                    type: string
+                    owner: BAP
+                    usage: ADULT_TICKET
+                    description: Describes the code of an item
+                quantity:
+                  selected:
+                    count:
+                      required: mandatory
+                      type: string
+                      owner: BAP
+                      usage: 3
+                      description: Describes the count for an item
+            category:
+              descriptor:
+                code:
+                  required: mandatory
+                  type: string
+                  owner: BAP
+                  usage: ECONOMY
+                  description: Describes the category code
       on_search:
         context:
           location:
@@ -7844,15 +7884,6 @@ x-attributes:
                     usage: 8999
                     description: Describes the currency of a product or service
                 quantity:
-                  available:
-                    count:
-                      required: mandatory
-                      type: integer
-                      owner: BPP
-                      usage: 1
-                      description: >-
-                        This represents the available quantity present for
-                        purchase of the item
                   maximum:
                     count:
                       required: mandatory
@@ -7874,6 +7905,47 @@ x-attributes:
                   owner: BPP
                   usage: C1
                   description: Id of Categories this item can be listed under
+                add_ons:
+                  id:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: e74e5s5
+                    description: Describes the id of the add_ons
+                  descriptor:
+                    name:
+                      required: optional
+                      type: string
+                      owner: BPP
+                      usage: meals
+                      description: Describes the name of add_ons
+                    code:
+                      required: optional
+                      type: string
+                      owner: BPP
+                      usage: MEALS
+                      description: Describes the code of add_ons
+                  quantity:
+                    available:
+                      count:
+                        required: optional
+                        type: string
+                        owner: BPP
+                        usage: 1
+                        description: Describes the available count for add_ons
+                  price:
+                    value:
+                      required: optional
+                      type: string
+                      owner: BPP
+                      usage: 422
+                      description: Describes the price of add_on services
+                    currency:
+                      required: optional
+                      type: string
+                      owner: BPP
+                      usage: 422
+                      description: Describes the currency  of add_on services
               fulfillments:
                 id:
                   required: mandatory
@@ -7933,7 +8005,7 @@ x-attributes:
                   category:
                     required: mandatory
                     type: string
-                    owner: BAP
+                    owner: BPP
                     usage: AIRLINE
                     description: Describes category of a vehicle
                   code:
@@ -8242,6 +8314,47 @@ x-attributes:
                 owner: BPP
                 usage: C1
                 description: Unique reference ID
+              add_ons:
+                descriptor:
+                  name:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: meals
+                    description: Describes the name of add_ons
+                  code:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: MEALS
+                    description: Describes the code of add_ons
+                quantity:
+                  selected:
+                    count:
+                      required: optional
+                      type: string
+                      owner: BPP
+                      usage: 1
+                      description: Describes the available count for add_ons
+                price:
+                  value:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: 422
+                    description: Describes the price of add_on services
+                  currency:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: 422
+                    description: Describes the currency  of add_on services
+                id:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: e74e5s5
+                  description: Describes the id of the add_ons
             provider:
               id:
                 required: mandatory
@@ -8336,37 +8449,44 @@ x-attributes:
             quote:
               price:
                 value:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: 8999
                   description: Describes the price of a product or service
                 currency:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: INR
                   description: Describes the currency of a product or service
               breakup:
                 title:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: BASE_FARE
                   description: Title of total quoted price
                 price:
                   value:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: 800
                     description: Value of total quoted price
-                  ' currency':
-                    required: mandatory
+                  currency:
+                    required: optional
                     type: string
                     owner: BPP
                     usage: INR
                     description: Currency for total quoted price
+                item:
+                  id:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: ex7U62tr
+                    description: Describes the item id for quote.
       init:
         context:
           location:
@@ -8751,6 +8871,47 @@ x-attributes:
                 owner: BPP
                 usage: C1
                 description: Unique reference ID
+              add_ons:
+                descriptor:
+                  name:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: meals
+                    description: Describes the name of add_ons
+                  code:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: MEALS
+                    description: Describes the code of add_ons
+                quantity:
+                  selected:
+                    count:
+                      required: optional
+                      type: string
+                      owner: BPP
+                      usage: 1
+                      description: Describes the available count for add_ons
+                price:
+                  value:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: 422
+                    description: Describes the price of add_on services
+                  currency:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: 422
+                    description: Describes the currency  of add_on services
+                id:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: e74e5s5
+                  description: Describes the id of the add_ons
             provider:
               id:
                 required: mandatory
@@ -8870,12 +9031,19 @@ x-attributes:
                     owner: BPP
                     usage: 800
                     description: Value of total quoted price
-                  ' currency':
+                  currency:
                     required: mandatory
                     type: string
                     owner: BPP
                     usage: INR
                     description: Currency for total quoted price
+                item:
+                  id:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: ex7U62tr
+                    description: Describes the item id for quote.
             payments:
               id:
                 required: mandatory
@@ -9337,6 +9505,47 @@ x-attributes:
                 owner: BPP
                 usage: C1
                 description: Unique reference ID
+              add_ons:
+                descriptor:
+                  name:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: meals
+                    description: Describes the name of add_ons
+                  code:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: MEALS
+                    description: Describes the code of add_ons
+                quantity:
+                  selected:
+                    count:
+                      required: optional
+                      type: string
+                      owner: BPP
+                      usage: 1
+                      description: Describes the available count for add_ons
+                price:
+                  value:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: 422
+                    description: Describes the price of add_on services
+                  currency:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: 422
+                    description: Describes the currency  of add_on services
+                id:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: e74e5s5
+                  description: Describes the id of the add_ons
             provider:
               id:
                 required: mandatory
@@ -9456,12 +9665,19 @@ x-attributes:
                     owner: BPP
                     usage: 800
                     description: Value of total quoted price
-                  ' currency':
+                  currency:
                     required: mandatory
                     type: string
                     owner: BPP
                     usage: INR
                     description: Currency for total quoted price
+                item:
+                  id:
+                    required: optional
+                    type: string
+                    owner: BPP
+                    usage: ex7U62tr
+                    description: Describes the item id for quote.
             payments:
               id:
                 required: mandatory
