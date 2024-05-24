@@ -2892,9 +2892,6 @@ x-enum:
           items: &ref_3
             descriptor:
               code:
-                - code: RIDE
-                  description: Describes the type of ride.
-                  reference: <PR/Issue/Discussion Links md format text
                 - code: SJT
                   description: Describes the kind of ticket Single Journey Ticket
                   reference: <PR/Issue/Discussion Links md format text
@@ -2908,9 +2905,6 @@ x-enum:
                   reference: <PR/Issue/Discussion Links md format text
                 - code: PASS
                   description: Describes the kind of ticket Pass (multiple use ticket)
-                  reference: <PR/Issue/Discussion Links md format text
-                - code: SEAT
-                  description: Describes the kind of ticket seat
                   reference: <PR/Issue/Discussion Links md format text
           fulfillments: *ref_2
           payments: &ref_6
@@ -2995,6 +2989,12 @@ x-enum:
                 reference: <PR/Issue/Discussion Links md format text
               - code: CANCELLATION_CHARGES
                 description: Describes the CANCELLATION_CHARGES for an item.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: OFFER
+                description: Describes the Offer for an item.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: TOLL
+                description: Describes the Toll charges for an item.
                 reference: <PR/Issue/Discussion Links md format text
   init:
     context:
@@ -3338,6 +3338,19 @@ x-flows:
                         - descriptor:
                             code: BUYER_FINDER_FEES_PERCENTAGE
                           value: '1'
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_TYPE
+                          value: percent-annualized
+                    - descriptor:
+                        code: SETTLEMENT_TERMS
+                      display: false
+                      list:
+                        - descriptor:
+                            code: DELAY_INTEREST
+                          value: '2.5'
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://api.example-bap.com/booking/terms
       - summary: >-
           Return a bus catalog of all intracity bus services from point A(gps)
           to point B(gps)
@@ -3413,6 +3426,9 @@ x-flows:
                             count: 6
                           minimum:
                             count: 1
+                        time:
+                          label: Validity
+                          duration: PT2D
                       - id: I2
                         descriptor:
                           name: Special Fair Single Journey Ticket
@@ -3685,6 +3701,39 @@ x-flows:
                               - descriptor:
                                   code: OPERATION_END_TIME
                                 value: '2023-09-14T20:30:00.000Z'
+                    payments:
+                      - collected_by: BPP
+                        tags:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: BUYER_FINDER_FEES_PERCENTAGE
+                                value: '1'
+                              - descriptor:
+                                  code: BUYER_FINDER_FEES_TYPE
+                                value: percent-annualized
+                          - descriptor:
+                              code: SETTLEMENT_TERMS
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: SETTLEMENT_WINDOW
+                                value: PT30D
+                              - descriptor:
+                                  code: SETTLEMENT_BASIS
+                                value: INVOICE_RECEIPT
+                              - descriptor:
+                                  code: MANDATORY_ARBITRATION
+                                value: 'TRUE'
+                              - descriptor:
+                                  code: COURT_JURISDICTION
+                                value: New Delhi
+                              - descriptor:
+                                  code: STATIC_TERMS
+                                value: >-
+                                  https://api.transit-solutions.com/booking/terms
       - summary: Selection of specific service
         api: select
         details:
@@ -3791,6 +3840,9 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
+                    time:
+                      label: Validity
+                      duration: PT2D
                 provider:
                   id: P1
                   descriptor:
@@ -3957,6 +4009,14 @@ x-flows:
                       price:
                         currency: INR
                         value: '70'
+                    - title: OFFER
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: TOLL
+                      price:
+                        currency: INR
+                        value: '0'
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -4018,17 +4078,16 @@ x-flows:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
-                      - descriptor:
-                          code: SETTLEMENT_DETAILS
-                        display: false
-                        list:
                           - descriptor:
-                              code: SETTLEMENT_TYPE
-                            value: UPI
+                              code: BUYER_FINDER_FEES_TYPE
+                            value: percent-annualized
                       - descriptor:
                           code: SETTLEMENT_TERMS
                         display: false
                         list:
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: neft
                           - descriptor:
                               code: SETTLEMENT_WINDOW
                             value: PT60M
@@ -4111,6 +4170,9 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
+                    time:
+                      label: Validity
+                      duration: PT2D
                 provider:
                   id: P1
                   descriptor:
@@ -4286,6 +4348,14 @@ x-flows:
                       price:
                         currency: INR
                         value: '70'
+                    - title: OFFER
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: TOLL
+                      price:
+                        currency: INR
+                        value: '0'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -4297,19 +4367,15 @@ x-flows:
                       virtual_payment_address: 9988199772@okicic
                     tags:
                       - descriptor:
-                          code: SETTLEMENT_DETAILS
-                        display: false
-                        list:
-                          - descriptor:
-                              code: SETTLEMENT_TYPE
-                            value: UPI
-                      - descriptor:
                           code: BUYER_FINDER_FEES
                         display: false
                         list:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_TYPE
+                            value: percent-annualized
                       - descriptor:
                           code: SETTLEMENT_TERMS
                         display: false
@@ -4404,13 +4470,9 @@ x-flows:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
-                      - descriptor:
-                          code: SETTLEMENT_DETAILS
-                        display: false
-                        list:
                           - descriptor:
-                              code: SETTLEMENT_TYPE
-                            value: UPI
+                              code: BUYER_FINDER_FEES_TYPE
+                            value: percent-annualized
                       - descriptor:
                           code: SETTLEMENT_TERMS
                         display: false
@@ -4497,6 +4559,9 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
+                    time:
+                      label: Validity
+                      duration: PT2D
                 provider:
                   id: P1
                   descriptor:
@@ -4682,6 +4747,14 @@ x-flows:
                       price:
                         currency: INR
                         value: '70'
+                    - title: OFFER
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: TOLL
+                      price:
+                        currency: INR
+                        value: '0'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -4696,19 +4769,15 @@ x-flows:
                       virtual_payment_address: 9988199772@okicic
                     tags:
                       - descriptor:
-                          code: SETTLEMENT_DETAILS
-                        display: false
-                        list:
-                          - descriptor:
-                              code: SETTLEMENT_TYPE
-                            value: UPI
-                      - descriptor:
                           code: BUYER_FINDER_FEES
                         display: false
                         list:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_TYPE
+                            value: percent-annualized
                       - descriptor:
                           code: SETTLEMENT_TERMS
                         display: false
@@ -4836,6 +4905,9 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
+                    time:
+                      label: Validity
+                      duration: PT2D
                 provider:
                   id: P1
                   descriptor:
@@ -5011,6 +5083,14 @@ x-flows:
                       price:
                         currency: INR
                         value: '70'
+                    - title: OFFER
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: TOLL
+                      price:
+                        currency: INR
+                        value: '0'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -5025,19 +5105,15 @@ x-flows:
                       virtual_payment_address: 9988199772@okicic
                     tags:
                       - descriptor:
-                          code: SETTLEMENT_DETAILS
-                        display: false
-                        list:
-                          - descriptor:
-                              code: SETTLEMENT_TYPE
-                            value: UPI
-                      - descriptor:
                           code: BUYER_FINDER_FEES
                         display: false
                         list:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_TYPE
+                            value: percent-annualized
                       - descriptor:
                           code: SETTLEMENT_TERMS
                         display: false
@@ -5176,6 +5252,19 @@ x-flows:
                         - descriptor:
                             code: BUYER_FINDER_FEES_PERCENTAGE
                           value: '1'
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_TYPE
+                          value: percent-annualized
+                    - descriptor:
+                        code: SETTLEMENT_TERMS
+                      display: false
+                      list:
+                        - descriptor:
+                            code: DELAY_INTEREST
+                          value: '2.5'
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://api.example-bap.com/booking/terms
       - summary: >-
           Return a bus catalog of all intracity bus services from the given
           point(code)
@@ -5452,6 +5541,39 @@ x-flows:
                               - descriptor:
                                   code: ROUTE_DIRECTION
                                 value: DOWN
+                    payments:
+                      - collected_by: BPP
+                        tags:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: BUYER_FINDER_FEES_PERCENTAGE
+                                value: '1'
+                              - descriptor:
+                                  code: BUYER_FINDER_FEES_TYPE
+                                value: percent-annualized
+                          - descriptor:
+                              code: SETTLEMENT_TERMS
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: SETTLEMENT_WINDOW
+                                value: PT30D
+                              - descriptor:
+                                  code: SETTLEMENT_BASIS
+                                value: INVOICE_RECEIPT
+                              - descriptor:
+                                  code: MANDATORY_ARBITRATION
+                                value: 'TRUE'
+                              - descriptor:
+                                  code: COURT_JURISDICTION
+                                value: New Delhi
+                              - descriptor:
+                                  code: STATIC_TERMS
+                                value: >-
+                                  https://api.transit-solutions.com/booking/terms
       - summary: Search for the intracity bus from point A to point B
         api: search
         details:
@@ -5512,6 +5634,19 @@ x-flows:
                         - descriptor:
                             code: BUYER_FINDER_FEES_PERCENTAGE
                           value: '1'
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_TYPE
+                          value: percent-annualized
+                    - descriptor:
+                        code: SETTLEMENT_TERMS
+                      display: false
+                      list:
+                        - descriptor:
+                            code: DELAY_INTEREST
+                          value: '2.5'
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://api.example-bap.com/booking/terms
       - summary: >-
           Return a bus catalog of all intracity bus services from point A(code)
           to point B(code)
@@ -5726,6 +5861,9 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
+                    time:
+                      label: Validity
+                      duration: PT2D
                 provider:
                   id: P1
                   descriptor:
@@ -5901,6 +6039,14 @@ x-flows:
                       price:
                         currency: INR
                         value: '70'
+                    - title: OFFER
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: TOLL
+                      price:
+                        currency: INR
+                        value: '0'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -5915,19 +6061,15 @@ x-flows:
                       virtual_payment_address: 9988199772@okicic
                     tags:
                       - descriptor:
-                          code: SETTLEMENT_DETAILS
-                        display: false
-                        list:
-                          - descriptor:
-                              code: SETTLEMENT_TYPE
-                            value: UPI
-                      - descriptor:
                           code: BUYER_FINDER_FEES
                         display: false
                         list:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_TYPE
+                            value: percent-annualized
                       - descriptor:
                           code: SETTLEMENT_TERMS
                         display: false
@@ -6097,6 +6239,9 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
+                    time:
+                      label: Validity
+                      duration: PT2D
                 provider:
                   id: P1
                   descriptor:
@@ -6288,6 +6433,14 @@ x-flows:
                       price:
                         currency: INR
                         value: '10'
+                    - title: OFFER
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: TOLL
+                      price:
+                        currency: INR
+                        value: '0'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -6302,19 +6455,15 @@ x-flows:
                       virtual_payment_address: 9988199772@okicic
                     tags:
                       - descriptor:
-                          code: SETTLEMENT_DETAILS
-                        display: false
-                        list:
-                          - descriptor:
-                              code: SETTLEMENT_TYPE
-                            value: UPI
-                      - descriptor:
                           code: BUYER_FINDER_FEES
                         display: false
                         list:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_TYPE
+                            value: percent-annualized
                       - descriptor:
                           code: SETTLEMENT_TERMS
                         display: false
@@ -6441,6 +6590,9 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
+                    time:
+                      label: Validity
+                      duration: PT2D
                 provider:
                   id: P1
                   descriptor:
@@ -6632,6 +6784,14 @@ x-flows:
                       price:
                         currency: INR
                         value: '10'
+                    - title: OFFER
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: TOLL
+                      price:
+                        currency: INR
+                        value: '0'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -6646,19 +6806,15 @@ x-flows:
                       virtual_payment_address: 9988199772@okicic
                     tags:
                       - descriptor:
-                          code: SETTLEMENT_DETAILS
-                        display: false
-                        list:
-                          - descriptor:
-                              code: SETTLEMENT_TYPE
-                            value: UPI
-                      - descriptor:
                           code: BUYER_FINDER_FEES
                         display: false
                         list:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_TYPE
+                            value: percent-annualized
                       - descriptor:
                           code: SETTLEMENT_TERMS
                         display: false
@@ -6828,6 +6984,9 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
+                    time:
+                      label: Validity
+                      duration: PT2D
                 provider:
                   id: P1
                   descriptor:
@@ -7019,6 +7178,14 @@ x-flows:
                       price:
                         currency: INR
                         value: '0'
+                    - title: OFFER
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: TOLL
+                      price:
+                        currency: INR
+                        value: '0'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -7033,19 +7200,15 @@ x-flows:
                       virtual_payment_address: 9988199772@okicic
                     tags:
                       - descriptor:
-                          code: SETTLEMENT_DETAILS
-                        display: false
-                        list:
-                          - descriptor:
-                              code: SETTLEMENT_TYPE
-                            value: UPI
-                      - descriptor:
                           code: BUYER_FINDER_FEES
                         display: false
                         list:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_TYPE
+                            value: percent-annualized
                       - descriptor:
                           code: SETTLEMENT_TERMS
                         display: false
@@ -7172,6 +7335,9 @@ x-flows:
                     quantity:
                       selected:
                         count: 2
+                    time:
+                      label: Validity
+                      duration: PT2D
                 provider:
                   id: P1
                   descriptor:
@@ -7363,6 +7529,14 @@ x-flows:
                       price:
                         currency: INR
                         value: '0'
+                    - title: OFFER
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: TOLL
+                      price:
+                        currency: INR
+                        value: '0'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -7377,19 +7551,15 @@ x-flows:
                       virtual_payment_address: 9988199772@okicic
                     tags:
                       - descriptor:
-                          code: SETTLEMENT_DETAILS
-                        display: false
-                        list:
-                          - descriptor:
-                              code: SETTLEMENT_TYPE
-                            value: UPI
-                      - descriptor:
                           code: BUYER_FINDER_FEES
                         display: false
                         list:
                           - descriptor:
                               code: BUYER_FINDER_FEES_PERCENTAGE
                             value: '1'
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_TYPE
+                            value: percent-annualized
                       - descriptor:
                           code: SETTLEMENT_TERMS
                         display: false
