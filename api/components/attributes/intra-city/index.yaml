@@ -1,10 +1,98 @@
 search:
+  context:
+    location:
+      country:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: IND
+          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+      city:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: '*'
+          description: Describes the city code this location is, or is located within
+    domain:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: ONDC:FIS13
+      description: Describes domain code that is relevant to this transaction context
+    timestamp:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: '2023-03-23T04:41:16Z'
+      description: Describes tme of request generation in RFC3339 format
+    bap_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: fis.test.bap.io
+      description: Describes subscriber ID of the BAP
+    transaction_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 6743e9e2
+      description: Describes  a unique value which persists across all API calls
+    message_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 13ba8018f176
+      description: >-
+        Describes a unique value which persists during a request / callback
+        cycle.
+    version:
+      required: mandatory
+      type: integer
+      owner: BAP
+      usage: 2.0.0
+      description: Describes the version of transaction protocol being used by the sender.
+    action:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: search
+      description: >-
+        Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: https://fis.test.bap.io/
+      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
+    ttl:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: PT30S
+      description: >-
+        Describes the duration in ISO8601 format after timestamp for which this
+        message holds valid
+    bpp_id:
+      required: optional
+      type: string
+      owner: BPP
+      usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri:
+      required: optional
+      type: string
+      owner: BPP
+      usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
   message:
     intent:
       fulfillment:
         stops:
           type:
-            required: mandatory
+            required: optional
             type: string
             owner: BAP
             usage: START
@@ -13,7 +101,7 @@ search:
               order.
           location:
             gps:
-              required: mandatory
+              required: optional
               type: string
               owner: BAP
               usage: 28.666576, 77.233332
@@ -32,7 +120,147 @@ search:
             owner: BAP
             usage: BUS
             description: Describes category of a vehicle
+      payment:
+        tags:
+          BUYER_FINDER_FEES:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes Buyer finder fee
+            list:
+              BUYER_FINDER_FEES_TYPE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee type
+              BUYER_FINDER_FEES_PERCENTAGE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee percentage
+          SETTLEMENT_TERMS:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes settlement terms
+            list:
+              SETTLEMENT_WINDOW:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement window
+              SETTLEMENT_BASIS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement basis
+              DELAY_INTEREST:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes delay interest
+              STATIC_TERMS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes static terms
 on_search:
+  context:
+    location:
+      country:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: IND
+          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+      city:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: '*'
+          description: Describes the city code this location is, or is located within
+    domain:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: ONDC:FIS13
+      description: Describes domain code that is relevant to this transaction context
+    timestamp:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: '2023-03-23T04:41:16Z'
+      description: Describes tme of request generation in RFC3339 format
+    bap_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: fis.test.bap.io
+      description: Describes subscriber ID of the BAP
+    transaction_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 6743e9e2
+      description: Describes  a unique value which persists across all API calls
+    message_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 13ba8018f176
+      description: >-
+        Describes a unique value which persists during a request / callback
+        cycle.
+    version:
+      required: mandatory
+      type: integer
+      owner: BAP
+      usage: 2.0.0
+      description: Describes the version of transaction protocol being used by the sender.
+    action:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: on_search
+      description: >-
+        Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: https://fis.test.bap.io/
+      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
+    ttl:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: PT30S
+      description: >-
+        Describes the duration in ISO8601 format after timestamp for which this
+        message holds valid
+    bpp_id:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
   message:
     catalog:
       descriptor:
@@ -44,7 +272,7 @@ on_search:
           description: Physical description of something.
         images:
           url:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: https://transitsolutions.in/logos/logo.ico
@@ -123,27 +351,70 @@ on_search:
                   usage: INDIRA_GANDHI_TECHNICAL_UNIV
                   description: Physical description of something.
                 name:
-                  required: optional
+                  required: mandatory
                   type: string
                   owner: BPP
                   usage: Indira Gandhi Technical Unviversity
                   description: Physical description of something.
               gps:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: 28.624097, 77.204991
                 description: The GPS co-ordinates of this location.
+            id:
+              required: mandatory
+              type: string
+              owner: BPP
+              usage: 2
+              description: Unique reference ID for individual stop
+            parent_stop_id:
+              required: optional
+              type: string
+              owner: BPP
+              usage: 1
+              description: Unique ID for referencing parent stop
           vehicle:
             category:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: BUS
               description: Describes category of a vehicle
+          tags:
+            ROUTE_INFO:
+              required: Mandatory
+              type: string
+              owner: BPP
+              usage: '--'
+              description: Describes route info
+              ROUTE_ID:
+                required: Mandatory
+                type: string
+                owner: BPP
+                usage: '--'
+                description: Describes route id
+              ROUTE_DIRECTION:
+                required: Mandatory
+                type: string
+                owner: BPP
+                usage: '--'
+                description: Describes route direction
+              OPERATIONAL_START_TIME:
+                required: optional
+                type: string
+                owner: BPP
+                usage: '--'
+                description: Describes route operational times
+              OPERATIONAL_END_TIME:
+                required: optional
+                type: string
+                owner: BPP
+                usage: '--'
+                description: Describes route operational end times
         items:
           id:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: I1
@@ -213,7 +484,192 @@ on_search:
             owner: BPP
             usage: F1
             description: Unique reference ID to the fulfillment of an order
+          time:
+            duration:
+              required: optional
+              type: string
+              owner: BPP
+              usage: PT2D
+              description: Time duration for servicibility
+            label:
+              required: optional
+              type: string
+              owner: BPP
+              usage: Validity
+              description: label for time
+          tags:
+            FARE_POLICY:
+              required: Mandatory
+              type: string
+              owner: BPP
+              usage: '--'
+              description: Describes fair policy
+              list:
+                RESTRICTED_PERSON:
+                  required: Mandatory
+                  type: string
+                  owner: BPP
+                  usage: '--'
+                  description: Describes fair policy tags
+                RESTRICTION_PROOF:
+                  required: Mandatory
+                  type: string
+                  owner: BPP
+                  usage: '--'
+                  description: Describes fair policy tags
+        payments:
+          tags:
+            BUYER_FINDER_FEES:
+              required: Mandatory
+              type: string
+              owner: BAP
+              usage: '--'
+              description: Describes Buyer finder fee
+              list:
+                BUYER_FINDER_FEES_TYPE:
+                  required: Mandatory
+                  type: string
+                  owner: BAP
+                  usage: '--'
+                  description: Describes Buyer finder fee type
+                BUYER_FINDER_FEES_PERCENTAGE:
+                  required: Mandatory
+                  type: string
+                  owner: BAP
+                  usage: '--'
+                  description: Describes Buyer finder fee percentage
+            SETTLEMENT_TERMS:
+              required: Mandatory
+              type: string
+              owner: BAP
+              usage: '--'
+              description: Describes settlement terms
+              list:
+                SETTLEMENT_WINDOW:
+                  required: Mandatory
+                  type: string
+                  owner: BAP
+                  usage: '--'
+                  description: Describes settlement window
+                SETTLEMENT_BASIS:
+                  required: Mandatory
+                  type: string
+                  owner: BAP
+                  usage: '--'
+                  description: Describes settlement basis
+                DELAY_INTEREST:
+                  required: Mandatory
+                  type: string
+                  owner: BAP
+                  usage: '--'
+                  description: Describes delay interest
+                STATIC_TERMS:
+                  required: Mandatory
+                  type: string
+                  owner: BAP
+                  usage: '--'
+                  description: Describes static terms
+                MANDATORY_ARBITRATION:
+                  required: Mandatory
+                  type: string
+                  owner: BPP
+                  usage: '--'
+                  description: Describes mandatory arbitration
+                COURT_JURISDICTION:
+                  required: Mandatory
+                  type: string
+                  owner: BPP
+                  usage: '--'
+                  description: Describes court jurisdiction
 select:
+  context:
+    location:
+      country:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: IND
+          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+      city:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: '*'
+          description: Describes the city code this location is, or is located within
+    domain:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: ONDC:FIS13
+      description: Describes domain code that is relevant to this transaction context
+    timestamp:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: '2023-03-23T04:41:16Z'
+      description: Describes tme of request generation in RFC3339 format
+    bap_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: fis.test.bap.io
+      description: Describes subscriber ID of the BAP
+    transaction_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 6743e9e2
+      description: Describes  a unique value which persists across all API calls
+    message_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 13ba8018f176
+      description: >-
+        Describes a unique value which persists during a request / callback
+        cycle.
+    version:
+      required: mandatory
+      type: integer
+      owner: BAP
+      usage: 2.0.0
+      description: Describes the version of transaction protocol being used by the sender.
+    action:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: select
+      description: >-
+        Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: https://fis.test.bap.io/
+      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
+    ttl:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: PT30S
+      description: >-
+        Describes the duration in ISO8601 format after timestamp for which this
+        message holds valid
+    bpp_id:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
   message:
     order:
       items:
@@ -239,6 +695,94 @@ select:
           usage: P1
           description: Id of the provider
 on_select:
+  context:
+    location:
+      country:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: IND
+          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+      city:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: '*'
+          description: Describes the city code this location is, or is located within
+    domain:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: ONDC:FIS13
+      description: Describes domain code that is relevant to this transaction context
+    timestamp:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: '2023-03-23T04:41:16Z'
+      description: Describes tme of request generation in RFC3339 format
+    bap_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: fis.test.bap.io
+      description: Describes subscriber ID of the BAP
+    transaction_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 6743e9e2
+      description: Describes  a unique value which persists across all API calls
+    message_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 13ba8018f176
+      description: >-
+        Describes a unique value which persists during a request / callback
+        cycle.
+    version:
+      required: mandatory
+      type: integer
+      owner: BAP
+      usage: 2.0.0
+      description: Describes the version of transaction protocol being used by the sender.
+    action:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: on_select
+      description: >-
+        Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: https://fis.test.bap.io/
+      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
+    ttl:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: PT30S
+      description: >-
+        Describes the duration in ISO8601 format after timestamp for which this
+        message holds valid
+    bpp_id:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
   message:
     order:
       items:
@@ -263,7 +807,7 @@ on_select:
             description: Physical description of something.
           images:
             url:
-              required: mandatory
+              required: optional
               type: string
               owner: BPP
               usage: >-
@@ -274,7 +818,7 @@ on_select:
               type: string
               owner: BPP
               usage: xs
-              description: Size type of URL image 
+              description: Size type of URL image
         price:
           currency:
             required: mandatory
@@ -302,6 +846,19 @@ on_select:
           owner: BPP
           usage: F1
           description: Unique reference ID to the fulfillment of an order
+        time:
+          label:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: PT2D
+            description: Time duration for servicibility
+          duration:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: Validity
+            description: label for time
       provider:
         id:
           required: mandatory
@@ -318,7 +875,7 @@ on_select:
             description: Physical description of something.
           images:
             url:
-              required: mandatory
+              required: optional
               type: string
               owner: BPP
               usage: >-
@@ -367,6 +924,18 @@ on_select:
               owner: BPP
               usage: 28.624097, 77.204991
               description: Describes a GPS coordinate
+          id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: 2
+            description: Unique reference ID for individual stop
+          parent_stop_id:
+            required: optional
+            type: string
+            owner: BPP
+            usage: 1
+            description: Unique ID for referencing parent stop
         vehicle:
           category:
             required: mandatory
@@ -374,6 +943,25 @@ on_select:
             owner: BPP
             usage: BUS
             description: Describes vehicle category
+        tags:
+          ROUTE_INFO:
+            required: Mandatory
+            type: string
+            owner: BPP
+            usage: '--'
+            description: Describes route info
+            ROUTE_ID:
+              required: Mandatory
+              type: string
+              owner: BPP
+              usage: '--'
+              description: Describes route id
+            ROUTE_DIRECTION:
+              required: Mandatory
+              type: string
+              owner: BPP
+              usage: '--'
+              description: Describes route direction
       quote:
         price:
           value:
@@ -416,6 +1004,94 @@ on_select:
               usage: 35
               description: false
 init:
+  context:
+    location:
+      country:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: IND
+          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+      city:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: '*'
+          description: Describes the city code this location is, or is located within
+    domain:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: ONDC:FIS13
+      description: Describes domain code that is relevant to this transaction context
+    timestamp:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: '2023-03-23T04:41:16Z'
+      description: Describes tme of request generation in RFC3339 format
+    bap_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: fis.test.bap.io
+      description: Describes subscriber ID of the BAP
+    transaction_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 6743e9e2
+      description: Describes  a unique value which persists across all API calls
+    message_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 13ba8018f176
+      description: >-
+        Describes a unique value which persists during a request / callback
+        cycle.
+    version:
+      required: mandatory
+      type: integer
+      owner: BAP
+      usage: 2.0.0
+      description: Describes the version of transaction protocol being used by the sender.
+    action:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: init
+      description: >-
+        Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: https://fis.test.bap.io/
+      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
+    ttl:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: PT30S
+      description: >-
+        Describes the duration in ISO8601 format after timestamp for which this
+        message holds valid
+    bpp_id:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
   message:
     order:
       items:
@@ -442,19 +1118,19 @@ init:
           description: Id of the provider
       billing:
         name:
-          required: mandatory
+          required: optional
           type: string
           owner: BAP
           usage: John Doe
           description: Name of the billable entity
         email:
-          required: mandatory
+          required: optional
           type: string
           owner: BAP
           usage: john.doe@example.com
           description: Email address where the bill is sent to
         phone:
-          required: mandatory
+          required: optional
           type: string
           owner: BAP
           usage: 9897867564
@@ -478,7 +1154,158 @@ init:
           owner: BAP
           usage: PRE-ORDER
           description: Payment Type
+        tags:
+          BUYER_FINDER_FEES:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes Buyer finder fee
+            list:
+              BUYER_FINDER_FEES_TYPE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee type
+              BUYER_FINDER_FEES_PERCENTAGE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee percentage
+          SETTLEMENT_TERMS:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes settlement terms
+            list:
+              SETTLEMENT_WINDOW:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement window
+              SETTLEMENT_BASIS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement basis
+              DELAY_INTEREST:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes delay interest
+              STATIC_TERMS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes static terms
+              SETTLEMENT_AMOUNT:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement amount to counter-party
+              SETTLEMENT_TYPE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement type
 on_init:
+  context:
+    location:
+      country:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: IND
+          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+      city:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: '*'
+          description: Describes the city code this location is, or is located within
+    domain:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: ONDC:FIS13
+      description: Describes domain code that is relevant to this transaction context
+    timestamp:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: '2023-03-23T04:41:16Z'
+      description: Describes tme of request generation in RFC3339 format
+    bap_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: fis.test.bap.io
+      description: Describes subscriber ID of the BAP
+    transaction_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 6743e9e2
+      description: Describes  a unique value which persists across all API calls
+    message_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 13ba8018f176
+      description: >-
+        Describes a unique value which persists during a request / callback
+        cycle.
+    version:
+      required: mandatory
+      type: integer
+      owner: BAP
+      usage: 2.0.0
+      description: Describes the version of transaction protocol being used by the sender.
+    action:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: on_init
+      description: >-
+        Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: https://fis.test.bap.io/
+      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
+    ttl:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: PT30S
+      description: >-
+        Describes the duration in ISO8601 format after timestamp for which this
+        message holds valid
+    bpp_id:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
   message:
     order:
       items:
@@ -503,7 +1330,7 @@ on_init:
             description: Physical description of something.
           images:
             url:
-              required: mandatory
+              required: optional
               type: string
               owner: BPP
               usage: >-
@@ -542,6 +1369,19 @@ on_init:
           owner: BPP
           usage: F1
           description: Unique reference ID to the fulfillment of an order
+        time:
+          label:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: PT2D
+            description: Time duration for servicibility
+          duration:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: Validity
+            description: label for time
       provider:
         id:
           required: mandatory
@@ -558,21 +1398,21 @@ on_init:
             description: Physical description of something.
           images:
             url:
-              required: mandatory
+              required: optional
               type: string
               owner: BPP
               usage: https://delhimetrorail.com/logos/logo.ico
               description: URL to the image. This can be a data url or an remote url
       fulfillments:
         id:
-          required: optional
+          required: mandatory
           type: string
           owner: BPP
           usage: F1
           description: Unique reference ID to the fulfillment of an order
         stops:
           type:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: INTERMEDIATE_STOP
@@ -589,45 +1429,76 @@ on_init:
           location:
             descriptor:
               name:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: kashmere gate
                 description: Physical description of something.
               code:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: KASHMERE_GATE
                 description: Physical description of something.
             gps:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: 28.666576, 77.233332
               description: Describes a GPS coordinate
+          id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: 2
+            description: Unique reference ID for individual stop
+          parent_stop_id:
+            required: optional
+            type: string
+            owner: BPP
+            usage: 1
+            description: Unique ID for referencing parent stop
         vehicle:
           category:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: BUS
             description: Describes vehicle category
+        tags:
+          ROUTE_INFO:
+            required: Mandatory
+            type: string
+            owner: BPP
+            usage: '--'
+            description: Describes route info
+            ROUTE_ID:
+              required: Mandatory
+              type: string
+              owner: BPP
+              usage: '--'
+              description: Describes route id
+            ROUTE_DIRECTION:
+              required: Mandatory
+              type: string
+              owner: BPP
+              usage: '--'
+              description: Describes route direction
       billing:
         name:
-          required: mandatory
+          required: optional
           type: string
           owner: BAP
           usage: John Doe
           description: Name of the billable entity
         email:
-          required: mandatory
+          required: optional
           type: string
           owner: BAP
           usage: john.doe@example.com
           description: Email address where the bill is sent to
         phone:
-          required: mandatory
+          required: optional
           type: integer
           owner: BAP
           usage: 9897867564
@@ -702,39 +1573,190 @@ on_init:
           description: Payment type
         params:
           bank_code:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: XXXXXXXX
             description: Bank code associated with payment activity
           bank_account_number:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: xxxxxxxxxxxxxx
             description: Bank account number associated with payment activity
           virtual_payment_address:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: 9988199772@okicici
             description: Virtual payment address associated with payment activity
+        tags:
+          BUYER_FINDER_FEES:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes Buyer finder fee
+            list:
+              BUYER_FINDER_FEES_TYPE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee type
+              BUYER_FINDER_FEES_PERCENTAGE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee percentage
+          SETTLEMENT_TERMS:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes settlement terms
+            list:
+              SETTLEMENT_WINDOW:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement window
+              SETTLEMENT_BASIS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement basis
+              DELAY_INTEREST:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes delay interest
+              STATIC_TERMS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes static terms
+              SETTLEMENT_AMOUNT:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement amount to counter-party
+              SETTLEMENT_TYPE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement type
       cancellation_terms:
         cancel_by:
           duration:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: PT60M
             description: Duration for cancellation of order
         cancellation_fee:
           percentage:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: false
             description: Fee Percentage for cancellation
 confirm:
+  context:
+    location:
+      country:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: IND
+          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+      city:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: '*'
+          description: Describes the city code this location is, or is located within
+    domain:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: ONDC:FIS13
+      description: Describes domain code that is relevant to this transaction context
+    timestamp:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: '2023-03-23T04:41:16Z'
+      description: Describes tme of request generation in RFC3339 format
+    bap_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: fis.test.bap.io
+      description: Describes subscriber ID of the BAP
+    transaction_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 6743e9e2
+      description: Describes  a unique value which persists across all API calls
+    message_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 13ba8018f176
+      description: >-
+        Describes a unique value which persists during a request / callback
+        cycle.
+    version:
+      required: mandatory
+      type: integer
+      owner: BAP
+      usage: 2.0.0
+      description: Describes the version of transaction protocol being used by the sender.
+    action:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: confirm
+      description: >-
+        Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: https://fis.test.bap.io/
+      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
+    ttl:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: PT30S
+      description: >-
+        Describes the duration in ISO8601 format after timestamp for which this
+        message holds valid
+    bpp_id:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
   message:
     order:
       id:
@@ -767,19 +1789,19 @@ confirm:
           description: Id of the provider
       billing:
         name:
-          required: mandatory
+          required: optional
           type: string
           owner: BAP
           usage: John Doe
           description: Name of the billable entity
         email:
-          required: mandatory
+          required: optional
           type: string
           owner: BAP
           usage: john.doe@example.com
           description: Email address where the bill is sent to
         phone:
-          required: mandatory
+          required: optional
           type: integer
           owner: BAP
           usage: 9897867564
@@ -830,7 +1852,158 @@ confirm:
               owner: BPP
               usage: 9988199772@okicic
               description: Describes a numerical value in decimal form
+        tags:
+          BUYER_FINDER_FEES:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes Buyer finder fee
+            list:
+              BUYER_FINDER_FEES_TYPE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee type
+              BUYER_FINDER_FEES_PERCENTAGE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee percentage
+          SETTLEMENT_TERMS:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes settlement terms
+            list:
+              SETTLEMENT_WINDOW:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement window
+              SETTLEMENT_BASIS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement basis
+              DELAY_INTEREST:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes delay interest
+              STATIC_TERMS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes static terms
+              SETTLEMENT_AMOUNT:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement amount to counter-party
+              SETTLEMENT_TYPE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement type
 on_confirm:
+  context:
+    location:
+      country:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: IND
+          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+      city:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: '*'
+          description: Describes the city code this location is, or is located within
+    domain:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: ONDC:FIS13
+      description: Describes domain code that is relevant to this transaction context
+    timestamp:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: '2023-03-23T04:41:16Z'
+      description: Describes tme of request generation in RFC3339 format
+    bap_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: fis.test.bap.io
+      description: Describes subscriber ID of the BAP
+    transaction_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 6743e9e2
+      description: Describes  a unique value which persists across all API calls
+    message_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 13ba8018f176
+      description: >-
+        Describes a unique value which persists during a request / callback
+        cycle.
+    version:
+      required: mandatory
+      type: integer
+      owner: BAP
+      usage: 2.0.0
+      description: Describes the version of transaction protocol being used by the sender.
+    action:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: on_confirm
+      description: >-
+        Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: https://fis.test.bap.io/
+      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
+    ttl:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: PT30S
+      description: >-
+        Describes the duration in ISO8601 format after timestamp for which this
+        message holds valid
+    bpp_id:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
   message:
     order:
       id:
@@ -861,7 +2034,7 @@ on_confirm:
             description: Physical description of something.
           images:
             url:
-              required: mandatory
+              required: optional
               type: string
               owner: BPP
               usage: >-
@@ -900,6 +2073,19 @@ on_confirm:
           owner: BPP
           usage: F1
           description: Unique reference ID to the fulfillment of an order
+        time:
+          label:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: PT2D
+            description: Time duration for servicibility
+          duration:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: Validity
+            description: label for time
       provider:
         id:
           required: mandatory
@@ -916,21 +2102,21 @@ on_confirm:
             description: Physical description of something.
           images:
             url:
-              required: mandatory
+              required: optional
               type: string
               owner: BPP
               usage: https://delhimetrorail.com/logos/logo.ico
               description: URL to the image. This can be a data url or an remote url
       fulfillments:
         id:
-          required: optional
+          required: mandatory
           type: string
           owner: BPP
           usage: F1
           description: Unique reference ID to the fulfillment of an order
         stops:
           type:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: START
@@ -947,19 +2133,19 @@ on_confirm:
           location:
             descriptor:
               name:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: kashmere gate
                 description: Physical description of something.
               code:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: KASHMERE_GATE
                 description: Physical description of something.
             gps:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: 28.666576, 77.233332
@@ -984,28 +2170,59 @@ on_confirm:
               owner: BPP
               usage: '2021-03-23T23:59:59.999Z'
               description: Describes validity for authorization token
+          id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: 2
+            description: Unique reference ID for individual stop
+          parent_stop_id:
+            required: optional
+            type: string
+            owner: BPP
+            usage: 1
+            description: Unique ID for referencing parent stop
         vehicle:
           category:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: BUS
             description: Describes vehicle category
+        tags:
+          ROUTE_INFO:
+            required: Mandatory
+            type: string
+            owner: BPP
+            usage: '--'
+            description: Describes route info
+            ROUTE_ID:
+              required: Mandatory
+              type: string
+              owner: BPP
+              usage: '--'
+              description: Describes route id
+            ROUTE_DIRECTION:
+              required: Mandatory
+              type: string
+              owner: BPP
+              usage: '--'
+              description: Describes route direction
       billing:
         name:
-          required: mandatory
+          required: optional
           type: string
           owner: BAP
           usage: John Doe
           description: Name of the billable entity
         email:
-          required: mandatory
+          required: optional
           type: string
           owner: BAP
           usage: john.doe@example.com
           description: Email address where the bill is sent to
         phone:
-          required: mandatory
+          required: optional
           type: integer
           owner: BAP
           usage: 9897867564
@@ -1098,23 +2315,86 @@ on_confirm:
             usage: 70
             description: Describes a numerical value in decimal form
           bank_code:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: XXXXXXXX
             description: Bank code associated with payment activity
           bank_account_number:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: xxxxxxxxxxxxxx
             description: Bank account number associated with payment activity
           virtual_payment_address:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: 9988199772@okicic
             description: Virtual payment address associated with payment activity
+        tags:
+          BUYER_FINDER_FEES:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes Buyer finder fee
+            list:
+              BUYER_FINDER_FEES_TYPE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee type
+              BUYER_FINDER_FEES_PERCENTAGE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee percentage
+          SETTLEMENT_TERMS:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes settlement terms
+            list:
+              SETTLEMENT_WINDOW:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement window
+              SETTLEMENT_BASIS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement basis
+              DELAY_INTEREST:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes delay interest
+              STATIC_TERMS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes static terms
+              SETTLEMENT_AMOUNT:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement amount to counter-party
+              SETTLEMENT_TYPE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement type
       cancellation_terms:
         cancel_by:
           duration:
@@ -1131,6 +2411,94 @@ on_confirm:
             usage: false
             description: Fee Percentage for cancellation
 status:
+  context:
+    location:
+      country:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          sample usage: IND
+          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+      city:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          sample usage: '*'
+          description: Describes the city code this location is, or is located within
+    domain:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: ONDC:FIS13
+      description: Describes domain code that is relevant to this transaction context
+    timestamp:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: '2023-03-23T04:41:16Z'
+      description: Describes tme of request generation in RFC3339 format
+    bap_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: fis.test.bap.io
+      description: Describes subscriber ID of the BAP
+    transaction_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: 6743e9e2
+      description: Describes  a unique value which persists across all API calls
+    message_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: 13ba8018f176
+      description: >-
+        Describes a unique value which persists during a request / callback
+        cycle.
+    version:
+      required: mandatory
+      type: integer
+      owner: BAP
+      sample usage: 2.0.0
+      description: Describes the version of transaction protocol being used by the sender.
+    action:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: status
+      description: >-
+        Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: https://fis.test.bap.io/
+      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
+    ttl:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: PT30S
+      description: >-
+        Describes the duration in ISO8601 format after timestamp for which this
+        message holds valid
+    bpp_id:
+      required: mandatory
+      type: string
+      owner: BPP
+      sample usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri:
+      required: mandatory
+      type: string
+      owner: BPP
+      sample usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
   message:
     order_id:
       required: mandatory
@@ -1139,6 +2507,94 @@ status:
       sample usage: O1
       description: 'Human-readable ID of the order. '
 on_status:
+  context:
+    location:
+      country:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: IND
+          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+      city:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: '*'
+          description: Describes the city code this location is, or is located within
+    domain:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: ONDC:FIS13
+      description: Describes domain code that is relevant to this transaction context
+    timestamp:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: '2023-03-23T04:41:16Z'
+      description: Describes tme of request generation in RFC3339 format
+    bap_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: fis.test.bap.io
+      description: Describes subscriber ID of the BAP
+    transaction_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 6743e9e2
+      description: Describes  a unique value which persists across all API calls
+    message_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 13ba8018f176
+      description: >-
+        Describes a unique value which persists during a request / callback
+        cycle.
+    version:
+      required: mandatory
+      type: integer
+      owner: BAP
+      usage: 2.0.0
+      description: Describes the version of transaction protocol being used by the sender.
+    action:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: on_status
+      description: >-
+        Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: https://fis.test.bap.io/
+      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
+    ttl:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: PT30S
+      description: >-
+        Describes the duration in ISO8601 format after timestamp for which this
+        message holds valid
+    bpp_id:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
   message:
     order:
       id:
@@ -1175,7 +2631,7 @@ on_status:
             description: Physical description of something.
           images:
             url:
-              required: mandatory
+              required: optional
               type: string
               owner: BPP
               usage: >-
@@ -1214,6 +2670,19 @@ on_status:
           owner: BPP
           usage: F1
           description: Unique reference ID to the fulfillment of an order
+        time:
+          label:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: PT2D
+            description: Time duration for servicibility
+          duration:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: Validity
+            description: label for time
       provider:
         id:
           required: mandatory
@@ -1230,21 +2699,21 @@ on_status:
             description: Physical description of something.
           images:
             url:
-              required: mandatory
+              required: optional
               type: string
               owner: BPP
               usage: https://delhimetrorail.com/logos/logo.ico
               description: URL to the image. This can be a data url or an remote url
       fulfillments:
         id:
-          required: optional
+          required: mandatory
           type: string
           owner: BPP
           usage: F1
           description: Unique reference ID to the fulfillment of an order
         stops:
           type:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: START
@@ -1253,7 +2722,7 @@ on_status:
               by the network policy.
           instructions:
             name:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: Stop 1
@@ -1261,19 +2730,19 @@ on_status:
           location:
             descriptor:
               name:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: kashmere gate
                 description: Physical description of something.
               code:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: KASHMERE_GATE
                 description: Physical description of something.
             gps:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: 28.666576, 77.233332
@@ -1286,40 +2755,71 @@ on_status:
               usage: QR
               description: Describes type of Authorization
             token:
-              required: optional
+              required: false
               type: string
               owner: BPP
               usage: >-
                 iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
               description: Describes authorization token
             valid_to:
-              required: optional
+              required: false
               type: string
               owner: BPP
               usage: '2021-03-23T23:59:59.999Z'
               description: Describes validity for authorization token
+          id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: 2
+            description: Unique reference ID for individual stop
+          parent_stop_id:
+            required: optional
+            type: string
+            owner: BPP
+            usage: 1
+            description: Unique ID for referencing parent stop
         vehicle:
           category:
-            required: optional
+            required: false
             type: string
             owner: BPP
             usage: BUS
             description: Describes vehicle category
+        tags:
+          ROUTE_INFO:
+            required: Mandatory
+            type: string
+            owner: BPP
+            usage: '--'
+            description: Describes route info
+            ROUTE_ID:
+              required: Mandatory
+              type: string
+              owner: BPP
+              usage: '--'
+              description: Describes route id
+            ROUTE_DIRECTION:
+              required: Mandatory
+              type: string
+              owner: BPP
+              usage: '--'
+              description: Describes route direction
       billing:
         name:
-          required: mandatory
+          required: optional
           type: string
           owner: BAP
           usage: John Doe
           description: Name of the billable entity
         email:
-          required: mandatory
+          required: optional
           type: string
           owner: BAP
           usage: john_doe@example.com
           description: Email address where the bill is sent to
         phone:
-          required: mandatory
+          required: optional
           type: integer
           owner: BAP
           usage: 9897867564
@@ -1412,23 +2912,86 @@ on_status:
             usage: 70
             description: Describes a numerical value in decimal form
           bank_code:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: XXXXXXXX
             description: Bank code associated with payment activity
           bank_account_number:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: xxxxxxxxxxxxxx
             description: Bank account number associated with payment activity
           virtual_payment_address:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: 9988199772@okicic
             description: Virtual payment address associated with payment activity
+        tags:
+          BUYER_FINDER_FEES:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes Buyer finder fee
+            list:
+              BUYER_FINDER_FEES_TYPE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee type
+              BUYER_FINDER_FEES_PERCENTAGE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee percentage
+          SETTLEMENT_TERMS:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes settlement terms
+            list:
+              SETTLEMENT_WINDOW:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement window
+              SETTLEMENT_BASIS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement basis
+              DELAY_INTEREST:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes delay interest
+              STATIC_TERMS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes static terms
+              SETTLEMENT_AMOUNT:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement amount to counter-party
+              SETTLEMENT_TYPE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement type
       cancellation_terms:
         cancel_by:
           duration:
@@ -1445,6 +3008,94 @@ on_status:
             usage: false
             description: Fee Percentage for cancellation
 update:
+  context:
+    location:
+      country:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          sample usage: IND
+          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+      city:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          sample usage: '*'
+          description: Describes the city code this location is, or is located within
+    domain:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: ONDC:FIS13
+      description: Describes domain code that is relevant to this transaction context
+    timestamp:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: '2023-03-23T04:41:16Z'
+      description: Describes tme of request generation in RFC3339 format
+    bap_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: fis.test.bap.io
+      description: Describes subscriber ID of the BAP
+    transaction_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: 6743e9e2
+      description: Describes  a unique value which persists across all API calls
+    message_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: 13ba8018f176
+      description: >-
+        Describes a unique value which persists during a request / callback
+        cycle.
+    version:
+      required: mandatory
+      type: integer
+      owner: BAP
+      sample usage: 2.0.0
+      description: Describes the version of transaction protocol being used by the sender.
+    action:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: update
+      description: >-
+        Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: https://fis.test.bap.io/
+      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
+    ttl:
+      required: mandatory
+      type: string
+      owner: BAP
+      sample usage: PT30S
+      description: >-
+        Describes the duration in ISO8601 format after timestamp for which this
+        message holds valid
+    bpp_id:
+      required: mandatory
+      type: string
+      owner: BPP
+      sample usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri:
+      required: mandatory
+      type: string
+      owner: BPP
+      sample usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
   message:
     update_target:
       required: mandatory
@@ -1479,6 +3130,94 @@ update:
           sample usage: 9897867564
           description: billing phone number of customer
 on_update:
+  context:
+    location:
+      country:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: IND
+          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+      city:
+        code:
+          required: mandatory
+          type: string
+          owner: BAP
+          usage: '*'
+          description: Describes the city code this location is, or is located within
+    domain:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: ONDC:FIS13
+      description: Describes domain code that is relevant to this transaction context
+    timestamp:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: '2023-03-23T04:41:16Z'
+      description: Describes tme of request generation in RFC3339 format
+    bap_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: fis.test.bap.io
+      description: Describes subscriber ID of the BAP
+    transaction_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 6743e9e2
+      description: Describes  a unique value which persists across all API calls
+    message_id:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: 13ba8018f176
+      description: >-
+        Describes a unique value which persists during a request / callback
+        cycle.
+    version:
+      required: mandatory
+      type: integer
+      owner: BAP
+      usage: 2.0.0
+      description: Describes the version of transaction protocol being used by the sender.
+    action:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: on_update
+      description: >-
+        Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: https://fis.test.bap.io/
+      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
+    ttl:
+      required: mandatory
+      type: string
+      owner: BAP
+      usage: PT30S
+      description: >-
+        Describes the duration in ISO8601 format after timestamp for which this
+        message holds valid
+    bpp_id:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri:
+      required: mandatory
+      type: string
+      owner: BPP
+      usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
   message:
     order:
       id:
@@ -1509,7 +3248,7 @@ on_update:
             description: Physical description of something.
           images:
             url:
-              required: mandatory
+              required: optional
               type: string
               owner: BPP
               usage: >-
@@ -1548,6 +3287,19 @@ on_update:
           owner: BPP
           usage: F1
           description: Unique reference ID to the fulfillment of an order
+        time:
+          label:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: PT2D
+            description: Time duration for servicibility
+          duration:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: Validity
+            description: label for time
       provider:
         id:
           required: mandatory
@@ -1564,21 +3316,21 @@ on_update:
             description: Physical description of something.
           images:
             url:
-              required: mandatory
+              required: optional
               type: string
               owner: BPP
               usage: https://delhimetrorail.com/logos/logo.ico
               description: URL to the image. This can be a data url or an remote url
       fulfillments:
         id:
-          required: optional
+          required: mandatory
           type: string
           owner: BPP
           usage: F1
           description: Unique reference ID to the fulfillment of an order
         stops:
           type:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: START
@@ -1587,7 +3339,7 @@ on_update:
               by the network policy.
           instructions:
             name:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: Stop 1
@@ -1595,19 +3347,19 @@ on_update:
           location:
             descriptor:
               name:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: kashmere gate
                 description: Physical description of something.
               code:
-                required: optional
+                required: mandatory
                 type: string
                 owner: BPP
                 usage: KASHMERE_GATE
                 description: Physical description of something.
             gps:
-              required: optional
+              required: mandatory
               type: string
               owner: BPP
               usage: 28.666576, 77.233332
@@ -1632,28 +3384,59 @@ on_update:
               owner: BPP
               usage: '2021-03-23T23:59:59.999Z'
               description: Describes validity for authorization token
+          id:
+            required: mandatory
+            type: string
+            owner: BPP
+            usage: 2
+            description: Unique reference ID for individual stop
+          parent_stop_id:
+            required: optional
+            type: string
+            owner: BPP
+            usage: 1
+            description: Unique ID for referencing parent stop
         vehicle:
           category:
-            required: optional
+            required: mandatory
             type: string
             owner: BPP
             usage: BUS
             description: Describes vehicle category
+        tags:
+          ROUTE_INFO:
+            required: Mandatory
+            type: string
+            owner: BPP
+            usage: '--'
+            description: Describes route info
+            ROUTE_ID:
+              required: Mandatory
+              type: string
+              owner: BPP
+              usage: '--'
+              description: Describes route id
+            ROUTE_DIRECTION:
+              required: Mandatory
+              type: string
+              owner: BPP
+              usage: '--'
+              description: Describes route direction
       billing:
         name:
-          required: mandatory
+          required: optional
           type: string
           owner: BAP
           usage: John Doe
           description: Name of the billable entity
         email:
-          required: mandatory
+          required: optional
           type: string
           owner: BAP
           usage: john_doe@example.com
           description: Email address where the bill is sent to
         phone:
-          required: mandatory
+          required: optional
           type: integer
           owner: BAP
           usage: 9897867564
@@ -1746,23 +3529,86 @@ on_update:
             usage: 70
             description: Describes a numerical value in decimal form
           bank_code:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: XXXXXXXX
             description: Bank code associated with payment activity
           bank_account_number:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: xxxxxxxxxxxxxx
             description: Bank account number associated with payment activity
           virtual_payment_address:
-            required: mandatory
+            required: optional
             type: string
             owner: BPP
             usage: 9988199772@okicic
             description: Virtual payment address associated with payment activity
+        tags:
+          BUYER_FINDER_FEES:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes Buyer finder fee
+            list:
+              BUYER_FINDER_FEES_TYPE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee type
+              BUYER_FINDER_FEES_PERCENTAGE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes Buyer finder fee percentage
+          SETTLEMENT_TERMS:
+            required: Mandatory
+            type: string
+            owner: BAP
+            usage: '--'
+            description: Describes settlement terms
+            list:
+              SETTLEMENT_WINDOW:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement window
+              SETTLEMENT_BASIS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement basis
+              DELAY_INTEREST:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes delay interest
+              STATIC_TERMS:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes static terms
+              SETTLEMENT_AMOUNT:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement amount to counter-party
+              SETTLEMENT_TYPE:
+                required: Mandatory
+                type: string
+                owner: BAP
+                usage: '--'
+                description: Describes settlement type
       cancellation_terms:
         cancel_by:
           duration:
