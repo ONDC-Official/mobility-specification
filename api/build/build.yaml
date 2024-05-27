@@ -2823,6 +2823,9 @@ x-enum:
             - code: TRIP
               description: Describes the type of fulfillment.
               reference: <PR/Issue/Discussion Links md format text
+            - code: TICKETS
+              description: Describes the type of fulfillment.
+              reference: <PR/Issue/Discussion Links md format text
           stops:
             type:
               - code: START
@@ -2836,6 +2839,9 @@ x-enum:
                 reference: <PR/Issue/Discussion Links md format text
               - code: TRANSIT_STOP
                 description: Describes the transit stops during fulfillment.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: AUTH
+                description: Describes the authorization related info.
                 reference: <PR/Issue/Discussion Links md format text
             authorization:
               type:
@@ -3191,6 +3197,20 @@ x-tags:
                     reference: <PR/Issue/Discussion Links md format text>
                   - code: ROUTE_DIRECTION
                     description: Describes the direction of a particular route
+                    reference: <PR/Issue/Discussion Links md format text>
+              - code: TICKET_INFO
+                description: Describes the information about the ticket
+                reference: <PR/Issue/Discussion Links md format text>
+                list:
+                  - code: NUMBER
+                    description: Describes the ticket number for bus
+                    reference: <PR/Issue/Discussion Links md format text>
+              - code: INFO
+                description: Describes the general information
+                reference: <PR/Issue/Discussion Links md format text>
+                list:
+                  - code: PARENT_ITEM_ID
+                    description: Describes the parent item id for fulfillments
                     reference: <PR/Issue/Discussion Links md format text>
           payments: *ref_9
   select:
@@ -3838,7 +3858,6 @@ x-flows:
                           size_type: xs
                     fulfillment_ids:
                       - F1
-                      - F5
                     price:
                       currency: INR
                       value: '35'
@@ -3928,75 +3947,23 @@ x-flows:
                               code: ROUTE_DIRECTION
                             value: UP
                   - id: F5
-                    type: TRIP
-                    stops:
-                      - type: START
-                        location:
-                          descriptor:
-                            name: kashmere gate
-                            code: KASHMERE_GATE
-                          gps: 28.666576, 77.233332
-                        id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 1
-                        location:
-                          descriptor:
-                            name: Indira Gandhi Technical Unviversity
-                            code: INDIRA_GANDHI_TECHNICAL_UNIV
-                          gps: 28.624097, 77.204991
-                        id: '2'
-                        parent_stop_id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 2
-                        location:
-                          descriptor:
-                            name: Yamuna Bazar
-                            code: YAMUNA_BAZAR
-                          gps: 28.625972,77.209917
-                        id: '3'
-                        parent_stop_id: '2'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 3
-                        location:
-                          descriptor:
-                            name: dhaula kuan
-                            code: DHAULA_KUAN
-                          gps: 28.610972,77.201717
-                        id: '4'
-                        parent_stop_id: '3'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 4
-                        location:
-                          descriptor:
-                            name: gpo
-                            code: GPO
-                          gps: 28.623097,77.209917
-                        id: '5'
-                        parent_stop_id: '4'
-                      - type: END
-                        location:
-                          descriptor:
-                            name: Greater Kailash
-                            code: GREATER_KAILASH
-                          gps: 28.548230, 77.238039
-                        id: '6'
-                        parent_stop_id: '5'
-                    vehicle:
-                      category: BUS
+                    type: TICKET
                     tags:
                       - descriptor:
-                          code: ROUTE_INFO
+                          code: INFO
                         list:
                           - descriptor:
-                              code: ROUTE_ID
-                            value: '242'
+                              code: PARENT_ITEM_ID
+                            value: F1
+                  - id: F6
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: INFO
+                        list:
                           - descriptor:
-                              code: ROUTE_DIRECTION
-                            value: UP
+                              code: PARENT_ITEM_ID
+                            value: F1
                 quote:
                   price:
                     value: '70'
@@ -4167,7 +4134,6 @@ x-flows:
                           size_type: xs
                     fulfillment_ids:
                       - F1
-                      - F5
                     price:
                       currency: INR
                       value: '35'
@@ -4257,75 +4223,23 @@ x-flows:
                               code: ROUTE_DIRECTION
                             value: UP
                   - id: F5
-                    type: TRIP
-                    stops:
-                      - type: START
-                        location:
-                          descriptor:
-                            name: kashmere gate
-                            code: KASHMERE_GATE
-                          gps: 28.666576, 77.233332
-                        id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 1
-                        location:
-                          descriptor:
-                            name: Indira Gandhi Technical Unviversity
-                            code: INDIRA_GANDHI_TECHNICAL_UNIV
-                          gps: 28.624097, 77.204991
-                        id: '2'
-                        parent_stop_id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 2
-                        location:
-                          descriptor:
-                            name: Yamuna Bazar
-                            code: YAMUNA_BAZAR
-                          gps: 28.625972,77.209917
-                        id: '3'
-                        parent_stop_id: '2'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 3
-                        location:
-                          descriptor:
-                            name: dhaula kuan
-                            code: DHAULA_KUAN
-                          gps: 28.610972,77.201717
-                        id: '4'
-                        parent_stop_id: '3'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 4
-                        location:
-                          descriptor:
-                            name: gpo
-                            code: GPO
-                          gps: 28.623097,77.209917
-                        id: '5'
-                        parent_stop_id: '4'
-                      - type: END
-                        location:
-                          descriptor:
-                            name: Greater Kailash
-                            code: GREATER_KAILASH
-                          gps: 28.548230, 77.238039
-                        id: '6'
-                        parent_stop_id: '5'
-                    vehicle:
-                      category: BUS
+                    type: TICKET
                     tags:
                       - descriptor:
-                          code: ROUTE_INFO
+                          code: INFO
                         list:
                           - descriptor:
-                              code: ROUTE_ID
-                            value: '242'
+                              code: PARENT_ITEM_ID
+                            value: F1
+                  - id: F6
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: INFO
+                        list:
                           - descriptor:
-                              code: ROUTE_DIRECTION
-                            value: UP
+                              code: PARENT_ITEM_ID
+                            value: F1
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
@@ -4558,7 +4472,6 @@ x-flows:
                           size_type: xs
                     fulfillment_ids:
                       - F1
-                      - F5
                     price:
                       currency: INR
                       value: '35'
@@ -4586,11 +4499,6 @@ x-flows:
                             name: kashmere gate
                             code: KASHMERE_GATE
                           gps: 28.666576, 77.233332
-                        authorization:
-                          type: QR
-                          token: >-
-                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
-                          valid_to: '2021-03-23T23:59:59.999Z'
                         id: '1'
                       - type: INTERMEDIATE_STOP
                         instructions:
@@ -4653,80 +4561,50 @@ x-flows:
                               code: ROUTE_DIRECTION
                             value: UP
                   - id: F5
-                    type: TRIP
+                    type: TICKET
                     stops:
-                      - type: START
-                        location:
-                          descriptor:
-                            name: kashmere gate
-                            code: KASHMERE_GATE
-                          gps: 28.666576, 77.233332
+                      - type: AUTH
                         authorization:
                           type: QR
                           token: >-
-                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
-                          valid_to: '2021-03-23T23:59:59.999Z'
-                        id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 1
-                        location:
-                          descriptor:
-                            name: Indira Gandhi Technical Unviversity
-                            code: INDIRA_GANDHI_TECHNICAL_UNIV
-                          gps: 28.624097, 77.204991
-                        id: '2'
-                        parent_stop_id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 2
-                        location:
-                          descriptor:
-                            name: Yamuna Bazar
-                            code: YAMUNA_BAZAR
-                          gps: 28.625972,77.209917
-                        id: '3'
-                        parent_stop_id: '2'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 3
-                        location:
-                          descriptor:
-                            name: dhaula kuan
-                            code: DHAULA_KUAN
-                          gps: 28.610972,77.201717
-                        id: '4'
-                        parent_stop_id: '3'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 4
-                        location:
-                          descriptor:
-                            name: gpo
-                            code: GPO
-                          gps: 28.623097,77.209917
-                        id: '5'
-                        parent_stop_id: '4'
-                      - type: END
-                        location:
-                          descriptor:
-                            name: Greater Kailash
-                            code: GREATER_KAILASH
-                          gps: 28.548230, 77.238039
-                        id: '6'
-                        parent_stop_id: '5'
-                    vehicle:
-                      category: BUS
+                            aMOPw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GINAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2024-07-23T23:59:59.999Z'
+                          status: UNCLAIMED
                     tags:
                       - descriptor:
-                          code: ROUTE_INFO
+                          code: INFO
                         list:
                           - descriptor:
-                              code: ROUTE_ID
-                            value: '242'
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
                           - descriptor:
-                              code: ROUTE_DIRECTION
-                            value: UP
+                              code: NUMBER
+                            value: 7ed21b6f
+                  - id: F6
+                    type: TICKET
+                    stops:
+                      - type: AUTH
+                        authorization:
+                          type: QR
+                          token: >-
+                            iNCORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2024-07-23T23:59:59.999Z'
+                    tags:
+                      - descriptor:
+                          code: INFO
+                        list:
+                          - descriptor:
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 5xd31b8f
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
@@ -4997,75 +4875,35 @@ x-flows:
                               code: ROUTE_DIRECTION
                             value: UP
                   - id: F5
-                    type: TRIP
-                    stops:
-                      - type: START
-                        location:
-                          descriptor:
-                            name: kashmere gate
-                            code: KASHMERE_GATE
-                          gps: 28.666576, 77.233332
-                        id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 1
-                        location:
-                          descriptor:
-                            name: Indira Gandhi Technical Unviversity
-                            code: INDIRA_GANDHI_TECHNICAL_UNIV
-                          gps: 28.624097, 77.204991
-                        id: '2'
-                        parent_stop_id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 2
-                        location:
-                          descriptor:
-                            name: Yamuna Bazar
-                            code: YAMUNA_BAZAR
-                          gps: 28.625972,77.209917
-                        id: '3'
-                        parent_stop_id: '2'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 3
-                        location:
-                          descriptor:
-                            name: dhaula kuan
-                            code: DHAULA_KUAN
-                          gps: 28.610972,77.201717
-                        id: '4'
-                        parent_stop_id: '3'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 4
-                        location:
-                          descriptor:
-                            name: gpo
-                            code: GPO
-                          gps: 28.623097,77.209917
-                        id: '5'
-                        parent_stop_id: '4'
-                      - type: END
-                        location:
-                          descriptor:
-                            name: Greater Kailash
-                            code: GREATER_KAILASH
-                          gps: 28.548230, 77.238039
-                        id: '6'
-                        parent_stop_id: '5'
-                    vehicle:
-                      category: BUS
+                    type: TICKET
                     tags:
                       - descriptor:
-                          code: ROUTE_INFO
+                          code: INFO
                         list:
                           - descriptor:
-                              code: ROUTE_ID
-                            value: '242'
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
                           - descriptor:
-                              code: ROUTE_DIRECTION
-                            value: UP
+                              code: NUMBER
+                            value: 7ed21b6f
+                  - id: F6
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: INFO
+                        list:
+                          - descriptor:
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 5xd31b8f
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
@@ -5958,75 +5796,35 @@ x-flows:
                               code: ROUTE_DIRECTION
                             value: UP
                   - id: F5
-                    type: TRIP
-                    stops:
-                      - type: START
-                        location:
-                          descriptor:
-                            name: kashmere gate
-                            code: KASHMERE_GATE
-                          gps: 28.666576, 77.233332
-                        id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 1
-                        location:
-                          descriptor:
-                            name: Indira Gandhi Technical Unviversity
-                            code: INDIRA_GANDHI_TECHNICAL_UNIV
-                          gps: 28.624097, 77.204991
-                        id: '2'
-                        parent_stop_id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 2
-                        location:
-                          descriptor:
-                            name: Yamuna Bazar
-                            code: YAMUNA_BAZAR
-                          gps: 28.625972,77.209917
-                        id: '3'
-                        parent_stop_id: '2'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 3
-                        location:
-                          descriptor:
-                            name: dhaula kuan
-                            code: DHAULA_KUAN
-                          gps: 28.610972,77.201717
-                        id: '4'
-                        parent_stop_id: '3'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 4
-                        location:
-                          descriptor:
-                            name: gpo
-                            code: GPO
-                          gps: 28.623097,77.209917
-                        id: '5'
-                        parent_stop_id: '4'
-                      - type: END
-                        location:
-                          descriptor:
-                            name: Greater Kailash
-                            code: GREATER_KAILASH
-                          gps: 28.548230, 77.238039
-                        id: '6'
-                        parent_stop_id: '5'
-                    vehicle:
-                      category: BUS
+                    type: TICKET
                     tags:
                       - descriptor:
-                          code: ROUTE_INFO
+                          code: INFO
                         list:
                           - descriptor:
-                              code: ROUTE_ID
-                            value: '242'
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
                           - descriptor:
-                              code: ROUTE_DIRECTION
-                            value: UP
+                              code: NUMBER
+                            value: 7ed21b6f
+                  - id: F6
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: INFO
+                        list:
+                          - descriptor:
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 5xd31b8f
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
@@ -6340,75 +6138,35 @@ x-flows:
                               code: ROUTE_DIRECTION
                             value: UP
                   - id: F5
-                    type: TRIP
-                    stops:
-                      - type: START
-                        location:
-                          descriptor:
-                            name: kashmere gate
-                            code: KASHMERE_GATE
-                          gps: 28.666576, 77.233332
-                        id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 1
-                        location:
-                          descriptor:
-                            name: Indira Gandhi Technical Unviversity
-                            code: INDIRA_GANDHI_TECHNICAL_UNIV
-                          gps: 28.624097, 77.204991
-                        id: '2'
-                        parent_stop_id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 2
-                        location:
-                          descriptor:
-                            name: Yamuna Bazar
-                            code: YAMUNA_BAZAR
-                          gps: 28.625972,77.209917
-                        id: '3'
-                        parent_stop_id: '2'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 3
-                        location:
-                          descriptor:
-                            name: dhaula kuan
-                            code: DHAULA_KUAN
-                          gps: 28.610972,77.201717
-                        id: '4'
-                        parent_stop_id: '3'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 4
-                        location:
-                          descriptor:
-                            name: gpo
-                            code: GPO
-                          gps: 28.623097,77.209917
-                        id: '5'
-                        parent_stop_id: '4'
-                      - type: END
-                        location:
-                          descriptor:
-                            name: Greater Kailash
-                            code: GREATER_KAILASH
-                          gps: 28.548230, 77.238039
-                        id: '6'
-                        parent_stop_id: '5'
-                    vehicle:
-                      category: BUS
+                    type: TICKET
                     tags:
                       - descriptor:
-                          code: ROUTE_INFO
+                          code: INFO
                         list:
                           - descriptor:
-                              code: ROUTE_ID
-                            value: '242'
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
                           - descriptor:
-                              code: ROUTE_DIRECTION
-                            value: UP
+                              code: NUMBER
+                            value: 7ed21b6f
+                  - id: F6
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: INFO
+                        list:
+                          - descriptor:
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 5xd31b8f
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
@@ -6693,75 +6451,35 @@ x-flows:
                               code: ROUTE_DIRECTION
                             value: UP
                   - id: F5
-                    type: TRIP
-                    stops:
-                      - type: START
-                        location:
-                          descriptor:
-                            name: kashmere gate
-                            code: KASHMERE_GATE
-                          gps: 28.666576, 77.233332
-                        id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 1
-                        location:
-                          descriptor:
-                            name: Indira Gandhi Technical Unviversity
-                            code: INDIRA_GANDHI_TECHNICAL_UNIV
-                          gps: 28.624097, 77.204991
-                        id: '2'
-                        parent_stop_id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 2
-                        location:
-                          descriptor:
-                            name: Yamuna Bazar
-                            code: YAMUNA_BAZAR
-                          gps: 28.625972,77.209917
-                        id: '3'
-                        parent_stop_id: '2'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 3
-                        location:
-                          descriptor:
-                            name: dhaula kuan
-                            code: DHAULA_KUAN
-                          gps: 28.610972,77.201717
-                        id: '4'
-                        parent_stop_id: '3'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 4
-                        location:
-                          descriptor:
-                            name: gpo
-                            code: GPO
-                          gps: 28.623097,77.209917
-                        id: '5'
-                        parent_stop_id: '4'
-                      - type: END
-                        location:
-                          descriptor:
-                            name: Greater Kailash
-                            code: GREATER_KAILASH
-                          gps: 28.548230, 77.238039
-                        id: '6'
-                        parent_stop_id: '5'
-                    vehicle:
-                      category: BUS
+                    type: TICKET
                     tags:
                       - descriptor:
-                          code: ROUTE_INFO
+                          code: INFO
                         list:
                           - descriptor:
-                              code: ROUTE_ID
-                            value: '242'
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
                           - descriptor:
-                              code: ROUTE_DIRECTION
-                            value: UP
+                              code: NUMBER
+                            value: 7ed21b6f
+                  - id: F6
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: INFO
+                        list:
+                          - descriptor:
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 5xd31b8f
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
@@ -7089,75 +6807,35 @@ x-flows:
                               code: ROUTE_DIRECTION
                             value: UP
                   - id: F5
-                    type: TRIP
-                    stops:
-                      - type: START
-                        location:
-                          descriptor:
-                            name: kashmere gate
-                            code: KASHMERE_GATE
-                          gps: 28.666576, 77.233332
-                        id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 1
-                        location:
-                          descriptor:
-                            name: Indira Gandhi Technical Unviversity
-                            code: INDIRA_GANDHI_TECHNICAL_UNIV
-                          gps: 28.624097, 77.204991
-                        id: '2'
-                        parent_stop_id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 2
-                        location:
-                          descriptor:
-                            name: Yamuna Bazar
-                            code: YAMUNA_BAZAR
-                          gps: 28.625972,77.209917
-                        id: '3'
-                        parent_stop_id: '2'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 3
-                        location:
-                          descriptor:
-                            name: dhaula kuan
-                            code: DHAULA_KUAN
-                          gps: 28.610972,77.201717
-                        id: '4'
-                        parent_stop_id: '3'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 4
-                        location:
-                          descriptor:
-                            name: gpo
-                            code: GPO
-                          gps: 28.623097,77.209917
-                        id: '5'
-                        parent_stop_id: '4'
-                      - type: END
-                        location:
-                          descriptor:
-                            name: Greater Kailash
-                            code: GREATER_KAILASH
-                          gps: 28.548230, 77.238039
-                        id: '6'
-                        parent_stop_id: '5'
-                    vehicle:
-                      category: BUS
+                    type: TICKET
                     tags:
                       - descriptor:
-                          code: ROUTE_INFO
+                          code: INFO
                         list:
                           - descriptor:
-                              code: ROUTE_ID
-                            value: '242'
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
                           - descriptor:
-                              code: ROUTE_DIRECTION
-                            value: UP
+                              code: NUMBER
+                            value: 7ed21b6f
+                  - id: F6
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: INFO
+                        list:
+                          - descriptor:
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 5xd31b8f
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
@@ -7442,75 +7120,35 @@ x-flows:
                               code: ROUTE_DIRECTION
                             value: UP
                   - id: F5
-                    type: TRIP
-                    stops:
-                      - type: START
-                        location:
-                          descriptor:
-                            name: kashmere gate
-                            code: KASHMERE_GATE
-                          gps: 28.666576, 77.233332
-                        id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 1
-                        location:
-                          descriptor:
-                            name: Indira Gandhi Technical Unviversity
-                            code: INDIRA_GANDHI_TECHNICAL_UNIV
-                          gps: 28.624097, 77.204991
-                        id: '2'
-                        parent_stop_id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 2
-                        location:
-                          descriptor:
-                            name: Yamuna Bazar
-                            code: YAMUNA_BAZAR
-                          gps: 28.625972,77.209917
-                        id: '3'
-                        parent_stop_id: '2'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 3
-                        location:
-                          descriptor:
-                            name: dhaula kuan
-                            code: DHAULA_KUAN
-                          gps: 28.610972,77.201717
-                        id: '4'
-                        parent_stop_id: '3'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 4
-                        location:
-                          descriptor:
-                            name: gpo
-                            code: GPO
-                          gps: 28.623097,77.209917
-                        id: '5'
-                        parent_stop_id: '4'
-                      - type: END
-                        location:
-                          descriptor:
-                            name: Greater Kailash
-                            code: GREATER_KAILASH
-                          gps: 28.548230, 77.238039
-                        id: '6'
-                        parent_stop_id: '5'
-                    vehicle:
-                      category: BUS
+                    type: TICKET
                     tags:
                       - descriptor:
-                          code: ROUTE_INFO
+                          code: INFO
                         list:
                           - descriptor:
-                              code: ROUTE_ID
-                            value: '242'
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
                           - descriptor:
-                              code: ROUTE_DIRECTION
-                            value: UP
+                              code: NUMBER
+                            value: 7ed21b6f
+                  - id: F6
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: INFO
+                        list:
+                          - descriptor:
+                              code: PARENT_ITEM_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 5xd31b8f
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
