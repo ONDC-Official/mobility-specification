@@ -69,6 +69,8 @@
         border: 1px solid #dddddd;
         text-align: left;
         padding: 8px;
+        min-width: 60px;
+
       }
 
       .flow-forms{
@@ -80,7 +82,36 @@
             justify-content: center;
             width: 75%;
         }
+        .error-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .error-sub-heading {
+        display: flex;
+        flex-direction: column;
+      }
 
+      td.Attribute{
+        max-width: 100px;
+        word-wrap: break-word;
+      }
+      td.Value {
+        max-width: 160px;
+        word-wrap: break-word;
+      }
+      td.Description {
+        min-width: 200px;
+        word-wrap: break-word;
+      }
+      .tlc-set {
+        overflow: scroll;
+      } 
+
+       #markdown-container img{
+        width: 100%;
+         
+       }
       /* tr:nth-child(even) {
         background-color: #dddddd;
       } */
@@ -88,15 +119,15 @@
   </head>
   <body>
     <header class="bg-dark text-white py-3">
-      <div class="float-end me-5 mt-3">
-        <label for="api-contracts">Release Version:</label>
+      <h1 class="text-center">ONDC Mobility Developer Guide</h1>
+      <div class="me-5 mt-1 ms-3">
+        <label for="api-contracts">Version:</label>
         <select id="contract-dropdown" onchange="upadteContract()">
-          <!-- <option value="draft-1.x">draft-1.x</option> -->
+          <!-- <option value="draft-1.x">draft-1.x</option>
           <option value="draft-2.x">draft-2.x</option>
-          <option value="master">master</option>
+          <option value="master">master</option> -->
         </select>
       </div>
-      <h1 class="text-center">ONDC Financial Services Developer Guide</h1>
     </header>
     <div id="mermaid-renderer"></div>
     <div class="container-fluid">
@@ -137,7 +168,53 @@
                   >Attribute-UI</a
                 >
               </li>
+              <li class="nav-item" id="errorcodes-navbar">
+                <a
+                  class="nav-link"
+                  id="error-tab"
+                  data-bs-toggle="tab"
+                  href="#error"
+                  role="tab"
+                  aria-selected="false"
+                  >Error-UI</a
+                >
+              </li>
+              <li class="nav-item" id="tlc-nav">
+                <a
+                  class="nav-link"
+                  id="tlc-tab"
+                  data-bs-toggle="tab"
+                  href="#tlc"
+                  role="tab"
+                  aria-selected="false"
+                  >TLC-UI</a
+                >
+              </li>
+              <li class="nav-item" id="feature-ui-nav">
+                <a
+                  class="nav-link"
+                  id="feature-tab"
+                  data-bs-toggle="tab"
+                  href="#feature"
+                  role="tab"
+                  aria-selected="false"
+                  >Feature-UI</a
+                  >
+                </li>
+
+              <li class="nav-item d-none" id="sandbox-nav"   >
+                <a
+                  class="nav-link"
+                  id="sandbox-ui-tab"
+                  data-bs-toggle="tab"
+                  href="#sandbox-ui"
+                  role="tab"
+                  aria-selected="false"
+                  >SandBox-UI</a
+                >
+              </li>
             </ul>
+            
           </div>
           <div class="tab-content">
             <div class="tab-pane fade show active" id="swagger" role="tabpanel">
@@ -218,6 +295,76 @@
                     <th>Description</th>
                   </tr>
                 </table>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="error" role="tabpanel">
+              <table class="table">
+                <tr>
+                  <td class="error-heading">
+                    <div><b>Error Set </b></div>
+                    <div class="error-sub-heading">
+                      <b>BPP = Seller App</b><b>BAP = Buyer App</b>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <div class="table-wrapper">
+                <table id="errorset">
+                  <tr>
+                    <th>Code</th>
+                    <th>From</th>
+                    <th>Event</th>
+                    <th>Description</th>
+                  </tr> 
+                </table>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="tlc" role="tabpanel">
+              <table class="table">
+                <tr>
+                  <td><b>TLC Set</b></td>
+                </tr>
+              </table>
+              <div class="tlc-set">
+                <table id="tlcset">
+                  <tr>
+                    <th>Term</th>
+                    <th>Api Call</th>
+                    <th>Attribute/Tag</th>
+                    <th>Owner</th>
+                    <th>Value</th>
+                    <th>Interpretation and configuration</th>
+                  </tr> 
+                </table>
+              </div>
+            </div>  
+            <div class="tab-pane fade" id="sandbox-ui" role="tabpanel">
+              <div class="me-5 mt-1 ms-3">
+                <label for="api-contracts"> Version:</label>
+                <select id="sandbox-dropdown" 
+                
+                onchange="updateSandbox()">
+                  <!-- <option>Credit</option> -->
+                </select>
+              </div>
+
+              <iframe src="" height="800px" width="100%" title="Iframe Example" id="sandbox-iframe"></iframe>
+            </div>
+            <div class="tab-pane fade" id="feature" role="tabpanel">
+              <table class="table">
+                <tr>
+                  <td><b>Feature Set</b></td>
+                  <td>
+                    <select
+                      id="feature-sets-dropdown"
+                      class="form-select"
+                      onchange="updateFeature()"
+                    ></select>
+                  </td>
+                </tr>
+              </table>
+              <div class="feature-set">
+                <div id="markdown-container"></div>
               </div>
             </div>
           </div>
@@ -323,7 +470,8 @@
     <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.52.0/swagger-ui-standalone-preset.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/lib/marked.umd.min.js"></script>
+    
     <script src="ui/build.js"></script>
     <script src="ui/api-contract.js"></script>
     <script src="ui/tabs.js"></script>
@@ -333,6 +481,11 @@
     <script src="ui/flow.js"></script>
     <script src="ui/examples.js"></script>
     <script src="ui/attribute.js"></script>
+    <script src="ui/error.js"></script>
+    <script src="ui/tlc.js"></script>
+    <script src="ui/markdown.js"></script>
+    <script src="ui/sandboxui.js"></script>
+
     <!-- Your existing scripts here -->
   </body>
 </html>
