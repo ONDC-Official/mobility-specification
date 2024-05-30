@@ -14,10 +14,10 @@ ONDC mobility specification swagger [link](https://ondc-official.github.io/mobil
 
 ## Earlier Versions
 
-| Version | Release Date | beckn Version                      | Comments                                                                                                                      |
-| ------- | ------------ | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| v1.0.0  | 14 Jun 2023  | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for on-demand ride hailing use case                                                            |
-| v2.0.0  | TBD          | core - 1.2.0                       | On-demand rides<br />Scheduled rides<br />Rental rides<br />Scheduled rental rides<br />Ticket booking - no seat confirmation |
+| Version | Release Date | beckn Version                      | Comments                                                                                                           |
+| ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| v1.0.0  | 14 Jun 2023  | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for metro use case                                                                  |
+| v2.0.0  | 20 Feb 2024  | core - 1.2.0                       | Base version of mobility for metro is completed<br />Station code based flow<br />GPS based flow<br />Cancel flow |
 
 ## Introduction
 
@@ -35,12 +35,10 @@ This would be possible in the mobility domain by making sure all mobility apps i
 
 ## Enabled/Supported use cases on network
 
-* On-demand Ride hailing with various transport modes.
-* Ticket Booking without designated seat.
-
-## Working with Protocol
-
-Refer the [link](./Usage.md) for details regarding how to use this repository
+* Base version of mobility for metro is completed with Station code, GPS and cancel flows.
+* Added TICKET_INFO tag group for ticket number
+* Added ref_id in status call
+* Added parent_stop_id for stops
 
 ## Evolution
 
