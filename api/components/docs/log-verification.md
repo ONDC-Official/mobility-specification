@@ -1,8 +1,8 @@
-## Log submission Scenarios for Metro
+## Log submission Scenarios
 
 #### Instructions
 - Create a fork of the [verification-logs](https://github.com/ONDC-Official/verification-logs) repository.
-- Create a folder with the name of your entity under your domain folder "TRV11" for metro
+- Create a folder with the name of your entity under your domain folder "TRV11"
 - Commit your logs in the folder (logs should include request & response payloads for all enabled APIs as per the scenarios below)
 - Create PR and label it with your domain name
 - Once submitted, please refer to the comments on logs submitted and update the PR based on the comments provided
@@ -27,35 +27,42 @@ These naming conventions ensure clear identification and organization of files b
 
 1. Flow 1
 
-- Passenger searches for metro services available between a start location and an end location. Providers provide their services details
-- Passenger selects a metro provider and a ticket type. Provider responds with detailed information and quote for the specific service requested
+- Passenger searches for services available between a start location and an end location. Providers provide their services details
+- Passenger selects a provider and a ticket type. Provider responds with detailed information and quote for the specific service requested
 - Passenger proceeds with the details provided and the consumer platform sends the request with respective billing details. Provider platform responds with the updated quote and settlement details
 - Payment is collected and a confirmation call is made. The provider provides confirmation of the order with the ticket
 - Journey is completed and status update is made on the order object
 
 2. Flow 2
 
-- Passenger searches for metro services available between a start location and an end location. Providers provide their services details
-- Passenger selects a metro provider and a ticket type. Provider responds with detailed information and quote for the specific service requested
+- Passenger searches for services available between a start location and an end location. Providers provide their services details
+- Passenger selects a provider and a ticket type. Provider responds with detailed information and quote for the specific service requested
 - Passenger proceeds with the details provided and the consumer platform sends the request with respective billing details. Provider platform responds with the updated quote and settlement details
 - Payment is collected and a confirmation call is made. The provider provides confirmation of the order with the ticket
-- Passenger proceeds to cancel the ticket. Metro provider provides with the requisite response
+- Passenger proceeds to cancel the ticket. Provider provides with the requisite response
 
 ### Log Verification
-To verify your logs, you can use the POST method exposed at [https://log-validation.ondc.org/api/validate/trv/trv11](https://log-validation.ondc.org/api/validate/trv/trv11) within the [Log Validation Utility](https://github.com/ONDC-Official/log-validation-utility).
+To verify your logs, you can use the POST method exposed at [https://log-validation.ondc.org/api/validate/trv](https://log-validation.ondc.org/api/validate/trv) within the [Log Validation Utility](https://github.com/ONDC-Official/log-validation-utility).
 
 Available flows are:
 
-- STATION_CODE
-- GPS
-- CANCEL
+##### Metro
+- METRO_STATION_CODE
+- METRO_GPS
+- METRO_USER_CANCEL
+- METRO_TECHNICAL_CANCEL
+##### Intracity
+- INTRACITY_STATION_CODE
+- INTRACITY_GPS
+- INTRACITY_USER_CANCEL
+- INTRACITY_TECHNICAL_CANCEL
 
 The payload structure for validation is as follows:
 
 ```json
 {
   "domain": "ONDC:TRV11",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "flow": "STATION_CODE",
   "payload": {
     "search_1": {},
