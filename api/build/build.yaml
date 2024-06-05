@@ -3255,7 +3255,7 @@ x-tags:
     message:
       order:
         fulfillments: *ref_9
-  on_select: &ref_12
+  on_select:
     message:
       order:
         fulfillments: *ref_9
@@ -3283,25 +3283,40 @@ x-tags:
                     Describes the special type of fare for armed doctors &
                     nurses
                   reference: <PR/Issue/Discussion Links md format text>
+        quote: &ref_12
+          breakup:
+            item:
+              tags:
+                - code: TAX
+                  description: Describes the taxation elements
+                  reference: <PR/Issue/Discussion Links md format text>
+                  list:
+                    - code: CGST
+                      description: Describes the Central Goods and Services Tax
+                      reference: <PR/Issue/Discussion Links md format text>
+                    - code: SGST
+                      description: Describes the State Goods and Services Tax
+                      reference: <PR/Issue/Discussion Links md format text>
   init:
     message:
       order:
         payments: *ref_8
-  on_init:
+  on_init: &ref_13
     message:
       order:
         fulfillments: *ref_9
         items: *ref_10
         provider: *ref_11
         payments: *ref_8
-  on_confirm: *ref_12
+        quote: *ref_12
+  on_confirm: *ref_13
   on_status:
     message:
       order:
         fulfillments: *ref_9
         items: *ref_10
-  on_cancel: *ref_12
-  on_update: *ref_12
+  on_cancel: *ref_13
+  on_update: *ref_13
 x-flows:
   - summary: Airlines - Code Based Flow
     details:
@@ -3381,7 +3396,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_13
+        example: &ref_14
           summary: Search for airline services by standard airport codes
           value:
             context:
@@ -3473,7 +3488,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_18
+        example: &ref_19
           summary: Return services available for provided start and end code
           value:
             context:
@@ -4228,8 +4243,9 @@ x-flows:
         api: select
         details:
           - description: >-
-              The end consumer have to select the specific service and would
-              like to have the necesary details
+              There are two modes of selecting an item: with base and without
+              base. Either one can be utilized by the network participants. Both
+              are included as part of examples.
             mermaid: |-
               sequenceDiagram
                 participant Buyer Platform (BAP)
@@ -4241,7 +4257,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_14
+        example: &ref_15
           summary: Get Quote of a selected item
           value:
             context:
@@ -4269,14 +4285,8 @@ x-flows:
                   - id: I1
                     quantity:
                       selected:
-                        count: 1
-                    add_ons:
-                      - id: A1
-                        quantity:
-                          selected:
-                            count: 1
+                        count: 3
                   - parent_item_id: I1
-                    id: ''
                     quantity:
                       selected:
                         count: 1
@@ -4286,11 +4296,19 @@ x-flows:
                           selected:
                             count: 1
                   - parent_item_id: I1
-                    id: ''
                     quantity:
                       selected:
                         count: 1
-                  - id: I2
+                    add_ons:
+                      - id: A2
+                        quantity:
+                          selected:
+                            count: 1
+                  - parent_item_id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                  - parent_item_id: I2
                     quantity:
                       selected:
                         count: 1
@@ -4299,6 +4317,10 @@ x-flows:
                         quantity:
                           selected:
                             count: 1
+                  - parent_item_id: I2
+                    quantity:
+                      selected:
+                        count: 1
                 fulfillments:
                   - id: F1
                     stops:
@@ -4322,7 +4344,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_19
+        example: &ref_20
           summary: Get Quote of a selected item
           value:
             context:
@@ -4369,6 +4391,56 @@ x-flows:
                             code: DOCTORS_NURSES
                 items:
                   - id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT_TICKET
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 3
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I1-1
+                    parent_item_id: I1
                     descriptor:
                       name: Adult
                       code: ADULT_TICKET
@@ -4446,16 +4518,16 @@ x-flows:
                       - F1
                       - FT_2
                     add_ons:
-                      - id: A1
+                      - id: A2
                         descriptor:
-                          name: meals
-                          code: MEALS
+                          name: Delayed and Lost Baggage Protection
+                          code: BAGGAGE
                         quantity:
                           selected:
                             count: 1
                         price:
                           currency: INR
-                          value: '300'
+                          value: '500'
                     tags:
                       - descriptor:
                           code: FARE_TYPE
@@ -4551,6 +4623,55 @@ x-flows:
                       value: '4280'
                     quantity:
                       selected:
+                        count: 2
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I2-1
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
                         count: 1
                     category_ids:
                       - C1
@@ -4568,6 +4689,56 @@ x-flows:
                         price:
                           currency: INR
                           value: '300'
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I2-2
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 2
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_5
                     tags:
                       - descriptor:
                           code: FARE_TYPE
@@ -4768,6 +4939,30 @@ x-flows:
                           - descriptor:
                               code: SEAT_PRICE
                             value: '200'
+                  - id: FT_5
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: B2
+                          - descriptor:
+                              code: AVAILABLE
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
       - summary: Selection of specific service
         api: select
         details:
@@ -4810,16 +5005,8 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I1
-                    quantity:
-                      selected:
-                        count: 1
-                    add_ons:
-                      - id: A1
-                        quantity:
-                          selected:
-                            count: 1
                   - id: I1-2
+                    parent_item_id: I1
                     quantity:
                       selected:
                         count: 1
@@ -4829,10 +5016,22 @@ x-flows:
                           selected:
                             count: 1
                   - id: I1-3
+                    parent_item_id: I1
                     quantity:
                       selected:
                         count: 1
-                  - id: I2
+                    add_ons:
+                      - id: A2
+                        quantity:
+                          selected:
+                            count: 1
+                  - id: I1-4
+                    parent_item_id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                  - id: I2-1
+                    parent_item_id: I1
                     quantity:
                       selected:
                         count: 1
@@ -4841,6 +5040,11 @@ x-flows:
                         quantity:
                           selected:
                             count: 1
+                  - id: I2-2
+                    parent_item_id: I1
+                    quantity:
+                      selected:
+                        count: 1
                 fulfillments:
                   - id: F1
                     stops:
@@ -4858,6 +5062,8 @@ x-flows:
                           - descriptor:
                               code: OPERATED_BY
                             value: AirIndia
+                  - id: FT_1
+                    tags:
                       - descriptor:
                           code: SEAT_GRID
                         list:
@@ -4870,6 +5076,8 @@ x-flows:
                           - descriptor:
                               code: SEAT_PRICE
                             value: '200'
+                  - id: FT_2
+                    tags:
                       - descriptor:
                           code: SEAT_GRID
                         list:
@@ -4906,13 +5114,67 @@ x-flows:
                           - descriptor:
                               code: SEAT_PRICE
                             value: '200'
+                  - id: FT_3
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: A3
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: B1
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                  - id: FT_4
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: B1
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                  - id: FT_5
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: B2
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
       - summary: Provider platform provides the quote for selected service of airline
         api: on_select
         details:
           - description: >-
-              Provider platform responds with the service detailed information
-              and quotes for the specific service that consumer would like to
-              avail
+              There are two modes of creating quote: with base and without base
+              item. Either one can be utilized by the network participants. Both
+              are included as part of examples.
             mermaid: |-
               sequenceDiagram
                 participant Buyer Platform (BAP)
@@ -4924,7 +5186,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_20
+        example: &ref_21
           summary: Get Quote of a selected item
           value:
             context:
@@ -4971,6 +5233,56 @@ x-flows:
                             code: DOCTORS_NURSES
                 items:
                   - id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT_TICKET
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 3
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I1-1
+                    parent_item_id: I1
                     descriptor:
                       name: Adult
                       code: ADULT_TICKET
@@ -5048,16 +5360,16 @@ x-flows:
                       - F1
                       - FT_2
                     add_ons:
-                      - id: A1
+                      - id: A2
                         descriptor:
-                          name: meals
-                          code: MEALS
+                          name: Delayed and Lost Baggage Protection
+                          code: BAGGAGE
                         quantity:
                           selected:
                             count: 1
                         price:
                           currency: INR
-                          value: '300'
+                          value: '500'
                     tags:
                       - descriptor:
                           code: FARE_TYPE
@@ -5153,24 +5465,27 @@ x-flows:
                       value: '4280'
                     quantity:
                       selected:
-                        count: 1
+                        count: 2
                     category_ids:
                       - C1
                     fulfillment_ids:
                       - F1
-                      - FT_4
-                    add_ons:
-                      - id: A1
-                        descriptor:
-                          name: meals
-                          code: MEALS
-                        quantity:
-                          selected:
-                            count: 1
-                        price:
-                          currency: INR
-                          value: '300'
                     tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
                       - descriptor:
                           code: GENERAL_INFO
                           name: General Info
@@ -5187,9 +5502,120 @@ x-flows:
                               short_desc: Allowed limit for checkin baggage
                             value: 15 KG
                           - descriptor:
-                              code: PR
+                              code: PROHIBITED_ITEMS
                               name: Prohibited Items
+                            value: list of items
+                  - id: I2-1
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_4
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          available:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
                             value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I2-2
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 2
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_5
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
                 fulfillments:
                   - id: F1
                     type: TRIP
@@ -5320,50 +5746,81 @@ x-flows:
                           - descriptor:
                               code: SEAT_PRICE
                             value: '200'
+                  - id: FT_5
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: B2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: B2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
                 quote:
                   price:
-                    value: '34767'
+                    value: '42159'
                     currency: INR
                   breakup:
                     - title: BASE_FARE
                       item:
                         id: I1
+                        quantity:
+                          selected:
+                            count: 3
+                        price:
+                          currency: INR
+                          value: '9280'
                       price:
                         currency: INR
-                        value: '9280'
+                        value: '27840'
                     - title: BASE_FARE
                       item:
-                        id: I1-2
-                      price:
-                        currency: INR
-                        value: '9280'
-                    - title: BASE_FARE
-                      item:
-                        id: I1-3
-                      price:
-                        currency: INR
-                        value: '9280'
-                    - title: BASE_FARE
-                      item:
-                        id: I2
+                        id: I2-1
                       price:
                         value: '4280'
                         currency: INR
-                    - title: CGST @ 5%
+                    - title: BASE_FARE
+                      item:
+                        id: I2-2
+                      price:
+                        value: '4280'
+                        currency: INR
+                    - title: TAX
+                      item:
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  code: CGST
+                                value: 5%
+                              - descriptor:
+                                  code: SGST
+                                value: 5%
                       price:
                         currency: INR
-                        value: '464'
-                    - title: SGST @ 5%
-                      price:
-                        currency: INR
-                        value: '464'
+                        value: '3640'
                     - title: CONVENIENCE_FEE
                       price:
                         currency: INR
                         value: '19'
                     - title: SEAT_FARE
                       item:
-                        id: I1
+                        id: I1-1
                       price:
                         currency: INR
                         value: '200'
@@ -5381,13 +5838,19 @@ x-flows:
                         currency: INR
                     - title: SEAT_FARE
                       item:
-                        id: I2
+                        id: I2-1
+                      price:
+                        value: '200'
+                        currency: INR
+                    - title: SEAT_FARE
+                      item:
+                        id: I2-2
                       price:
                         value: '200'
                         currency: INR
                     - title: ADD_ONS
                       item:
-                        id: I1
+                        id: I1-1
                         add_ons:
                           - id: A1
                       price:
@@ -5397,13 +5860,13 @@ x-flows:
                       item:
                         id: I1-2
                         add_ons:
-                          - id: A1
+                          - id: A2
                       price:
-                        value: '300'
+                        value: '500'
                         currency: INR
                     - title: ADD_ONS
                       item:
-                        id: I2
+                        id: I2-1
                         add_ons:
                           - id: A1
                       price:
@@ -5426,7 +5889,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_15
+        example: &ref_16
           summary: Initialize draft order and request for terms of service
           value:
             context:
@@ -5451,16 +5914,8 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I1
-                    quantity:
-                      selected:
-                        count: 1
-                    add_ons:
-                      - id: A1
-                        quantity:
-                          selected:
-                            count: 1
                   - id: I1-2
+                    parent_item_id: I1
                     quantity:
                       selected:
                         count: 1
@@ -5470,10 +5925,22 @@ x-flows:
                           selected:
                             count: 1
                   - id: I1-3
+                    parent_item_id: I1
                     quantity:
                       selected:
                         count: 1
-                  - id: I2
+                    add_ons:
+                      - id: A2
+                        quantity:
+                          selected:
+                            count: 1
+                  - id: I1-4
+                    parent_item_id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                  - id: I2-1
+                    parent_item_id: I1
                     quantity:
                       selected:
                         count: 1
@@ -5482,11 +5949,20 @@ x-flows:
                         quantity:
                           selected:
                             count: 1
+                  - id: I2-2
+                    parent_item_id: I1
+                    quantity:
+                      selected:
+                        count: 1
                 fulfillments:
                   - id: F1
                     stops:
                       - id: S1
                       - id: S2
+                    vehicle:
+                      category: AIRLINE
+                      code: '6E284'
+                  - id: FT_1
                     customer:
                       person:
                         name: Joe Adams
@@ -5495,9 +5971,42 @@ x-flows:
                       contact:
                         phone: +91-9988776655
                         email: joeadams@yahoo.com
-                    vehicle:
-                      category: AIRLINE
-                      code: '6E284'
+                  - id: FT_2
+                    customer:
+                      person:
+                        name: Maria
+                        age: '37'
+                        gender: FEMALE
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
+                  - id: FT_3
+                    customer:
+                      person:
+                        name: Mick Adams
+                        age: '20'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
+                  - id: FT_4
+                    customer:
+                      person:
+                        name: John Adams
+                        age: '31'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
+                  - id: FT_5
+                    customer:
+                      person:
+                        name: Nick Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
                 billing:
                   name: Joe Adams
                   phone: +91-9988776655
@@ -5551,7 +6060,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: &ref_21
+        example: &ref_22
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -5608,6 +6117,56 @@ x-flows:
                       value: '9280'
                     quantity:
                       selected:
+                        count: 3
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I1-1
+                    parent_item_id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT_TICKET
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
                         count: 1
                     category_ids:
                       - C1
@@ -5626,6 +6185,21 @@ x-flows:
                           currency: INR
                           value: '300'
                     tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
                       - descriptor:
                           code: GENERAL_INFO
                           name: General Info
@@ -5646,6 +6220,7 @@ x-flows:
                               name: Prohibited Items
                             value: list of items
                   - id: I1-2
+                    parent_item_id: I1
                     descriptor:
                       name: Adult
                       code: ADULT_TICKET
@@ -5661,17 +6236,32 @@ x-flows:
                       - F1
                       - FT_2
                     add_ons:
-                      - id: A1
+                      - id: A2
                         descriptor:
-                          name: meals
-                          code: MEALS
+                          name: Delayed and Lost Baggage Protection
+                          code: BAGGAGE
                         quantity:
                           selected:
                             count: 1
                         price:
                           currency: INR
-                          value: '300'
+                          value: '500'
                     tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
                       - descriptor:
                           code: GENERAL_INFO
                           name: General Info
@@ -5692,6 +6282,7 @@ x-flows:
                               name: Prohibited Items
                             value: list of items
                   - id: I1-3
+                    parent_item_id: I1
                     descriptor:
                       name: Adult
                       code: ADULT_TICKET
@@ -5707,6 +6298,21 @@ x-flows:
                       - F1
                       - FT_3
                     tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
                       - descriptor:
                           code: GENERAL_INFO
                           name: General Info
@@ -5735,24 +6341,27 @@ x-flows:
                       value: '4280'
                     quantity:
                       selected:
-                        count: 1
+                        count: 2
                     category_ids:
                       - C1
                     fulfillment_ids:
                       - F1
-                      - FT_4
-                    add_ons:
-                      - id: A1
-                        descriptor:
-                          name: meals
-                          code: MEALS
-                        quantity:
-                          selected:
-                            count: 1
-                        price:
-                          currency: INR
-                          value: '300'
                     tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
                       - descriptor:
                           code: GENERAL_INFO
                           name: General Info
@@ -5769,9 +6378,120 @@ x-flows:
                               short_desc: Allowed limit for checkin baggage
                             value: 15 KG
                           - descriptor:
-                              code: PR
+                              code: PROHIBITED_ITEMS
                               name: Prohibited Items
+                            value: list of items
+                  - id: I2-1
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_4
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          available:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
                             value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I2-2
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 2
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_5
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
                 fulfillments:
                   - id: F1
                     type: TRIP
@@ -5910,50 +6630,81 @@ x-flows:
                           - descriptor:
                               code: SEAT_PRICE
                             value: '200'
+                  - id: FT_5
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: B2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: B2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
                 quote:
                   price:
-                    value: '34767'
+                    value: '42159'
                     currency: INR
                   breakup:
                     - title: BASE_FARE
                       item:
                         id: I1
+                        quantity:
+                          selected:
+                            count: 3
+                        price:
+                          currency: INR
+                          value: '9280'
                       price:
                         currency: INR
-                        value: '9280'
+                        value: '27840'
                     - title: BASE_FARE
                       item:
-                        id: I1-2
-                      price:
-                        currency: INR
-                        value: '9280'
-                    - title: BASE_FARE
-                      item:
-                        id: I1-3
-                      price:
-                        currency: INR
-                        value: '9280'
-                    - title: BASE_FARE
-                      item:
-                        id: I2
+                        id: I2-1
                       price:
                         value: '4280'
                         currency: INR
-                    - title: CGST @ 5%
+                    - title: BASE_FARE
+                      item:
+                        id: I2-2
+                      price:
+                        value: '4280'
+                        currency: INR
+                    - title: TAX
+                      item:
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  code: CGST
+                                value: 5%
+                              - descriptor:
+                                  code: SGST
+                                value: 5%
                       price:
                         currency: INR
-                        value: '464'
-                    - title: SGST @ 5%
-                      price:
-                        currency: INR
-                        value: '464'
+                        value: '3640'
                     - title: CONVENIENCE_FEE
                       price:
                         currency: INR
                         value: '19'
                     - title: SEAT_FARE
                       item:
-                        id: I1
+                        id: I1-1
                       price:
                         currency: INR
                         value: '200'
@@ -5971,13 +6722,19 @@ x-flows:
                         currency: INR
                     - title: SEAT_FARE
                       item:
-                        id: I2
+                        id: I2-1
+                      price:
+                        value: '200'
+                        currency: INR
+                    - title: SEAT_FARE
+                      item:
+                        id: I2-2
                       price:
                         value: '200'
                         currency: INR
                     - title: ADD_ONS
                       item:
-                        id: I1
+                        id: I1-1
                         add_ons:
                           - id: A1
                       price:
@@ -5987,13 +6744,13 @@ x-flows:
                       item:
                         id: I1-2
                         add_ons:
-                          - id: A1
+                          - id: A2
                       price:
-                        value: '300'
+                        value: '500'
                         currency: INR
                     - title: ADD_ONS
                       item:
-                        id: I2
+                        id: I2-1
                         add_ons:
                           - id: A1
                       price:
@@ -6005,7 +6762,7 @@ x-flows:
                     status: NOT-PAID
                     type: PRE-ORDER
                     params:
-                      amount: '34767'
+                      amount: '42159'
                       bank_code: XXXXXXXX
                       bank_account_number: xxxxxxxxxxxxxx
                       virtual_payment_address: 9988199772@okicic
@@ -6061,7 +6818,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_16
+        example: &ref_17
           summary: Confirm ticket booking
           value:
             context:
@@ -6087,16 +6844,8 @@ x-flows:
                 provider:
                   id: P1
                 items:
-                  - id: I1
-                    quantity:
-                      selected:
-                        count: 1
-                    add_ons:
-                      - id: A1
-                        quantity:
-                          selected:
-                            count: 1
                   - id: I1-2
+                    parent_item_id: I1
                     quantity:
                       selected:
                         count: 1
@@ -6106,10 +6855,22 @@ x-flows:
                           selected:
                             count: 1
                   - id: I1-3
+                    parent_item_id: I1
                     quantity:
                       selected:
                         count: 1
-                  - id: I2
+                    add_ons:
+                      - id: A2
+                        quantity:
+                          selected:
+                            count: 1
+                  - id: I1-4
+                    parent_item_id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                  - id: I2-1
+                    parent_item_id: I1
                     quantity:
                       selected:
                         count: 1
@@ -6118,11 +6879,20 @@ x-flows:
                         quantity:
                           selected:
                             count: 1
+                  - id: I2-2
+                    parent_item_id: I1
+                    quantity:
+                      selected:
+                        count: 1
                 fulfillments:
                   - id: F1
                     stops:
                       - id: S1
                       - id: S2
+                    vehicle:
+                      category: AIRLINE
+                      code: '6E284'
+                  - id: FT_1
                     customer:
                       person:
                         name: Joe Adams
@@ -6131,9 +6901,42 @@ x-flows:
                       contact:
                         phone: +91-9988776655
                         email: joeadams@yahoo.com
-                    vehicle:
-                      category: AIRLINE
-                      code: '6E284'
+                  - id: FT_2
+                    customer:
+                      person:
+                        name: Maria
+                        age: '37'
+                        gender: FEMALE
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
+                  - id: FT_3
+                    customer:
+                      person:
+                        name: Mick Adams
+                        age: '20'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
+                  - id: FT_4
+                    customer:
+                      person:
+                        name: John Adams
+                        age: '31'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
+                  - id: FT_5
+                    customer:
+                      person:
+                        name: Nick Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
                 billing:
                   name: Joe Adams
                   phone: +91-9988776655
@@ -6145,7 +6948,7 @@ x-flows:
                     params:
                       transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
                       currency: INR
-                      amount: '34767'
+                      amount: '42159'
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -6187,7 +6990,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_22
+        example: &ref_23
           summary: Confirm ticket booking
           value:
             context:
@@ -6243,6 +7046,56 @@ x-flows:
                       value: '9280'
                     quantity:
                       selected:
+                        count: 3
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I1-1
+                    parent_item_id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT_TICKET
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
                         count: 1
                     category_ids:
                       - C1
@@ -6261,6 +7114,21 @@ x-flows:
                           currency: INR
                           value: '300'
                     tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
                       - descriptor:
                           code: GENERAL_INFO
                           name: General Info
@@ -6281,6 +7149,7 @@ x-flows:
                               name: Prohibited Items
                             value: list of items
                   - id: I1-2
+                    parent_item_id: I1
                     descriptor:
                       name: Adult
                       code: ADULT_TICKET
@@ -6296,17 +7165,32 @@ x-flows:
                       - F1
                       - FT_2
                     add_ons:
-                      - id: A1
+                      - id: A2
                         descriptor:
-                          name: meals
-                          code: MEALS
+                          name: Delayed and Lost Baggage Protection
+                          code: BAGGAGE
                         quantity:
                           selected:
                             count: 1
                         price:
                           currency: INR
-                          value: '300'
+                          value: '500'
                     tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
                       - descriptor:
                           code: GENERAL_INFO
                           name: General Info
@@ -6327,6 +7211,7 @@ x-flows:
                               name: Prohibited Items
                             value: list of items
                   - id: I1-3
+                    parent_item_id: I1
                     descriptor:
                       name: Adult
                       code: ADULT_TICKET
@@ -6342,6 +7227,21 @@ x-flows:
                       - F1
                       - FT_3
                     tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
                       - descriptor:
                           code: GENERAL_INFO
                           name: General Info
@@ -6370,24 +7270,27 @@ x-flows:
                       value: '4280'
                     quantity:
                       selected:
-                        count: 1
+                        count: 2
                     category_ids:
                       - C1
                     fulfillment_ids:
                       - F1
-                      - FT_4
-                    add_ons:
-                      - id: A1
-                        descriptor:
-                          name: meals
-                          code: MEALS
-                        quantity:
-                          selected:
-                            count: 1
-                        price:
-                          currency: INR
-                          value: '300'
                     tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
                       - descriptor:
                           code: GENERAL_INFO
                           name: General Info
@@ -6404,9 +7307,120 @@ x-flows:
                               short_desc: Allowed limit for checkin baggage
                             value: 15 KG
                           - descriptor:
-                              code: PR
+                              code: PROHIBITED_ITEMS
                               name: Prohibited Items
+                            value: list of items
+                  - id: I2-1
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_4
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          available:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
                             value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I2-2
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 2
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_5
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
                 fulfillments:
                   - id: F1
                     type: TRIP
@@ -6549,50 +7563,81 @@ x-flows:
                           - descriptor:
                               code: SEAT_PRICE
                             value: '200'
+                  - id: FT_5
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: B2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: B2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
                 quote:
                   price:
-                    value: '34767'
+                    value: '42159'
                     currency: INR
                   breakup:
                     - title: BASE_FARE
                       item:
                         id: I1
+                        quantity:
+                          selected:
+                            count: 3
+                        price:
+                          currency: INR
+                          value: '9280'
                       price:
                         currency: INR
-                        value: '9280'
+                        value: '27840'
                     - title: BASE_FARE
                       item:
-                        id: I1-2
-                      price:
-                        currency: INR
-                        value: '9280'
-                    - title: BASE_FARE
-                      item:
-                        id: I1-3
-                      price:
-                        currency: INR
-                        value: '9280'
-                    - title: BASE_FARE
-                      item:
-                        id: I2
+                        id: I2-1
                       price:
                         value: '4280'
                         currency: INR
-                    - title: CGST @ 5%
+                    - title: BASE_FARE
+                      item:
+                        id: I2-2
+                      price:
+                        value: '4280'
+                        currency: INR
+                    - title: TAX
+                      item:
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  code: CGST
+                                value: 5%
+                              - descriptor:
+                                  code: SGST
+                                value: 5%
                       price:
                         currency: INR
-                        value: '464'
-                    - title: SGST @ 5%
-                      price:
-                        currency: INR
-                        value: '464'
+                        value: '3640'
                     - title: CONVENIENCE_FEE
                       price:
                         currency: INR
                         value: '19'
                     - title: SEAT_FARE
                       item:
-                        id: I1
+                        id: I1-1
                       price:
                         currency: INR
                         value: '200'
@@ -6610,13 +7655,19 @@ x-flows:
                         currency: INR
                     - title: SEAT_FARE
                       item:
-                        id: I2
+                        id: I2-1
+                      price:
+                        value: '200'
+                        currency: INR
+                    - title: SEAT_FARE
+                      item:
+                        id: I2-2
                       price:
                         value: '200'
                         currency: INR
                     - title: ADD_ONS
                       item:
-                        id: I1
+                        id: I1-1
                         add_ons:
                           - id: A1
                       price:
@@ -6626,13 +7677,13 @@ x-flows:
                       item:
                         id: I1-2
                         add_ons:
-                          - id: A1
+                          - id: A2
                       price:
-                        value: '300'
+                        value: '500'
                         currency: INR
                     - title: ADD_ONS
                       item:
-                        id: I2
+                        id: I2-1
                         add_ons:
                           - id: A1
                       price:
@@ -6646,7 +7697,7 @@ x-flows:
                     params:
                       transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
                       currency: INR
-                      amount: '34767'
+                      amount: '42159'
                       bank_code: XXXXXXXX
                       bank_account_number: xxxxxxxxxxxxxx
                       virtual_payment_address: 9988199772@okicic
@@ -6712,7 +7763,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_17
+        example: &ref_18
           summary: Cancel a transit ticket booking before the cancellation period
           value:
             context:
@@ -6750,7 +7801,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_23
+        example: &ref_24
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -6806,6 +7857,56 @@ x-flows:
                       value: '9280'
                     quantity:
                       selected:
+                        count: 3
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I1-1
+                    parent_item_id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT_TICKET
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
                         count: 1
                     category_ids:
                       - C1
@@ -6824,6 +7925,21 @@ x-flows:
                           currency: INR
                           value: '300'
                     tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
                       - descriptor:
                           code: GENERAL_INFO
                           name: General Info
@@ -6844,6 +7960,7 @@ x-flows:
                               name: Prohibited Items
                             value: list of items
                   - id: I1-2
+                    parent_item_id: I1
                     descriptor:
                       name: Adult
                       code: ADULT_TICKET
@@ -6859,17 +7976,32 @@ x-flows:
                       - F1
                       - FT_2
                     add_ons:
-                      - id: A1
+                      - id: A2
                         descriptor:
-                          name: meals
-                          code: MEALS
+                          name: Delayed and Lost Baggage Protection
+                          code: BAGGAGE
                         quantity:
                           selected:
                             count: 1
                         price:
                           currency: INR
-                          value: '300'
+                          value: '500'
                     tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
                       - descriptor:
                           code: GENERAL_INFO
                           name: General Info
@@ -6890,6 +8022,7 @@ x-flows:
                               name: Prohibited Items
                             value: list of items
                   - id: I1-3
+                    parent_item_id: I1
                     descriptor:
                       name: Adult
                       code: ADULT_TICKET
@@ -6905,6 +8038,21 @@ x-flows:
                       - F1
                       - FT_3
                     tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
                       - descriptor:
                           code: GENERAL_INFO
                           name: General Info
@@ -6933,24 +8081,27 @@ x-flows:
                       value: '4280'
                     quantity:
                       selected:
-                        count: 1
+                        count: 2
                     category_ids:
                       - C1
                     fulfillment_ids:
                       - F1
-                      - FT_4
-                    add_ons:
-                      - id: A1
-                        descriptor:
-                          name: meals
-                          code: MEALS
-                        quantity:
-                          selected:
-                            count: 1
-                        price:
-                          currency: INR
-                          value: '300'
                     tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
                       - descriptor:
                           code: GENERAL_INFO
                           name: General Info
@@ -6967,14 +8118,126 @@ x-flows:
                               short_desc: Allowed limit for checkin baggage
                             value: 15 KG
                           - descriptor:
-                              code: PR
+                              code: PROHIBITED_ITEMS
                               name: Prohibited Items
+                            value: list of items
+                  - id: I2-1
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_4
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          available:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
                             value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I2-2
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 2
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_5
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
                 fulfillments:
                   - id: F1
                     type: TRIP
                     stops:
                       - type: START
+                        id: S1
                         location:
                           descriptor:
                             name: Delhi
@@ -6982,11 +8245,8 @@ x-flows:
                         time:
                           label: DATE_TIME
                           timestamp: '2023-10-15T20:00:00.000Z'
-                        authorization:
-                          type: QR
-                          token: >-
-                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
                       - type: END
+                        id: S2
                         location:
                           descriptor:
                             name: Bengaluru
@@ -7110,50 +8370,81 @@ x-flows:
                           - descriptor:
                               code: SEAT_PRICE
                             value: '200'
+                  - id: FT_5
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: B2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: B2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
                 quote:
                   price:
-                    value: '34767'
+                    value: '42159'
                     currency: INR
                   breakup:
                     - title: BASE_FARE
                       item:
                         id: I1
+                        quantity:
+                          selected:
+                            count: 3
+                        price:
+                          currency: INR
+                          value: '9280'
                       price:
                         currency: INR
-                        value: '9280'
+                        value: '27840'
                     - title: BASE_FARE
                       item:
-                        id: I1-2
-                      price:
-                        currency: INR
-                        value: '9280'
-                    - title: BASE_FARE
-                      item:
-                        id: I1-3
-                      price:
-                        currency: INR
-                        value: '9280'
-                    - title: BASE_FARE
-                      item:
-                        id: I2
+                        id: I2-1
                       price:
                         value: '4280'
                         currency: INR
-                    - title: CGST @ 5%
+                    - title: BASE_FARE
+                      item:
+                        id: I2-2
+                      price:
+                        value: '4280'
+                        currency: INR
+                    - title: TAX
+                      item:
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  code: CGST
+                                value: 5%
+                              - descriptor:
+                                  code: SGST
+                                value: 5%
                       price:
                         currency: INR
-                        value: '464'
-                    - title: SGST @ 5%
-                      price:
-                        currency: INR
-                        value: '464'
+                        value: '3640'
                     - title: CONVENIENCE_FEE
                       price:
                         currency: INR
                         value: '19'
                     - title: SEAT_FARE
                       item:
-                        id: I1
+                        id: I1-1
                       price:
                         currency: INR
                         value: '200'
@@ -7171,13 +8462,19 @@ x-flows:
                         currency: INR
                     - title: SEAT_FARE
                       item:
-                        id: I2
+                        id: I2-1
+                      price:
+                        value: '200'
+                        currency: INR
+                    - title: SEAT_FARE
+                      item:
+                        id: I2-2
                       price:
                         value: '200'
                         currency: INR
                     - title: ADD_ONS
                       item:
-                        id: I1
+                        id: I1-1
                         add_ons:
                           - id: A1
                       price:
@@ -7187,13 +8484,13 @@ x-flows:
                       item:
                         id: I1-2
                         add_ons:
-                          - id: A1
+                          - id: A2
                       price:
-                        value: '300'
+                        value: '500'
                         currency: INR
                     - title: ADD_ONS
                       item:
-                        id: I2
+                        id: I2-1
                         add_ons:
                           - id: A1
                       price:
@@ -7207,7 +8504,7 @@ x-flows:
                     params:
                       transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
                       currency: INR
-                      amount: '34767'
+                      amount: '42159'
                       bank_code: XXXXXXXX
                       bank_account_number: xxxxxxxxxxxxxx
                       virtual_payment_address: 9988199772@okicic
@@ -7252,16 +8549,16 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_13
+          - *ref_14
       select:
         examples:
-          - *ref_14
+          - *ref_15
       init:
         examples:
-          - *ref_15
+          - *ref_16
       confirm:
         examples:
-          - *ref_16
+          - *ref_17
       update:
         examples:
           - summary: Update customer details
@@ -7301,20 +8598,20 @@ x-examples:
                             email: joeadams@yahoo.com
       cancel:
         examples:
-          - *ref_17
+          - *ref_18
       on_search:
         examples:
-          - *ref_18
+          - *ref_19
       on_select:
         examples:
-          - *ref_19
           - *ref_20
+          - *ref_21
       on_init:
         examples:
-          - *ref_21
+          - *ref_22
       on_confirm:
         examples:
-          - *ref_22
+          - *ref_23
       on_update:
         examples:
           - summary: Return updated order with customer details
@@ -7535,7 +8832,7 @@ x-examples:
                       params:
                         transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
                         currency: INR
-                        amount: '10527'
+                        amount: '42159'
                         bank_code: XXXXXXXX
                         bank_account_number: xxxxxxxxxxxxxx
                         virtual_payment_address: 9988199772@okicic
@@ -7565,7 +8862,7 @@ x-examples:
                       url: https://abcoperator.com/booking/O1.pdf
       on_cancel:
         examples:
-          - *ref_23
+          - *ref_24
 x-attributes:
   airline:
     attribute_set:
@@ -8225,7 +9522,7 @@ x-attributes:
           order:
             items:
               id:
-                required: mandatory
+                required: optional
                 type: string
                 owner: BPP
                 usage: 46b8979
@@ -8264,11 +9561,24 @@ x-attributes:
                 description: Unique reference ID to the fulfillment of an order
               stops:
                 id:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: S1
                   description: Uniques id to refer stop.
+              vehicle:
+                category:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: AIRLINE
+                  description: Describes vehicle category
+                code:
+                  required: optional
+                  type: string
+                  owner: BPP
+                  usage: 6A284
+                  description: Describes vehicle code
             provider:
               id:
                 required: mandatory
@@ -8737,7 +10047,7 @@ x-attributes:
                 description: Unique reference ID to the fulfillment of an order
               stops:
                 id:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BAP
                   usage: S1
@@ -8745,45 +10055,45 @@ x-attributes:
               customer:
                 person:
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: Joe Adams
                     description: Name of the customer
                   age:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: 30
                     description: Age of the customer
                   gender:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: MALE
                     description: Gender of the customer
                 contact:
                   phone:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: 9988776655
                     description: Phone number of customer
                   email:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: joeadams@yahoo.com
                     description: Email of the  customer
               vehicle:
                 category:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: AIRLINE
                   description: Describes vehicle category
                 code:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: 6A284
@@ -9346,7 +10656,7 @@ x-attributes:
                 description: Unique reference ID to the fulfillment of an order
               stops:
                 id:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BAP
                   usage: S1
@@ -9354,45 +10664,45 @@ x-attributes:
               customer:
                 person:
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: Joe Adams
                     description: Name of the customer
                   age:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: 30
                     description: Age of the customer
                   gender:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: MALE
                     description: Gender of the customer
                 contact:
                   phone:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: 9988776655
                     description: Phone number of customer
                   email:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: joeadams@yahoo.com
                     description: Email of the  customer
               vehicle:
                 category:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: AIRLINE
                   description: Describes vehicle category
                 code:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: 6A284
