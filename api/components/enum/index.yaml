@@ -40,9 +40,7 @@ select:
     order: &order
       items: *item
       fulfillments: *fulfillment
-      payments: *payment
-      status: &status
-        $ref: "./status.yaml"
+      
 on_select:
   context: 
     <<: *context
@@ -51,7 +49,11 @@ on_select:
         description: Seller app provides serviceability info, quotes, and O2D TAT for selected items.
         reference: <PR/Issue/Discussion Links md format text>
   message:
-    order: *order
+    order:
+      <<: *order
+      quote: &quote
+        $ref: "./quote.yaml"
+
 init:
   context: 
     <<: *context
@@ -60,7 +62,9 @@ init:
         description: Buyer and seller apps confirm terms & conditions before placing orders.
         reference: <PR/Issue/Discussion Links md format text>
   message:
-    order: *order
+    order: 
+      <<: *order
+      payments: *payment
 on_init:
   context: 
     <<: *context
@@ -69,13 +73,14 @@ on_init:
         description: Buyer and seller apps agree to terms & conditions before placing orders.
         reference: <PR/Issue/Discussion Links md format text>
   message:
-    order:
+    order: &updatedOrder
       items: *item
       fulfillments: *fulfillment
       payments: *payment
       cancellation_terms: 
         fulfillment_state:
           $ref: "./fulfillment.yaml#/state"
+      quote: *quote    
 confirm:
   context: 
     <<: *context
@@ -84,7 +89,9 @@ confirm:
         description: Buyer app submits orders on behalf of the buyer.
         reference: <PR/Issue/Discussion Links md format text>
   message:
-    order: *order
+    order: 
+      <<: *order
+      payments: *payment
 on_confirm:
   context: 
     <<: *context
@@ -93,7 +100,7 @@ on_confirm:
         description: Seller app responds to the order with auto-acceptance, deferred acceptance, or rejection.
         reference: <PR/Issue/Discussion Links md format text>
   message:
-    order: *order
+    order: *updatedOrder
 status:
   context: 
     <<: *context
@@ -109,7 +116,7 @@ on_status:
         description:  Seller app return order with status , Driver pickup - driver drop
         reference: <PR/Issue/Discussion Links md format text>
   message:
-    order: *order
+    order: *updatedOrder
 cancel:
   context: 
     <<: *context
@@ -125,7 +132,7 @@ on_cancel:
         description: Seller app specifies the cancellation status.
         reference: <PR/Issue/Discussion Links md format text>
   message:
-    order: *order
+    order: *updatedOrder
 update:
   context: 
     <<: *context
@@ -143,4 +150,4 @@ on_update:
         description: Seller app specifies the update status.
         reference: <PR/Issue/Discussion Links md format text>
   message:
-    order: *order    
+    order: *updatedOrder

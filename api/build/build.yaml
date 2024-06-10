@@ -2852,7 +2852,7 @@ x-enum:
                     Describes QR as an authorization mechanism used to start or
                     end the fulfillment of an order.
                   reference: <PR/Issue/Discussion Links md format text
-          state: &ref_7
+          state: &ref_6
             descriptor:
               code:
                 - code: FLIGHT_CANCELLED
@@ -2936,40 +2936,9 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: &ref_6
+      order: &ref_9
         items: *ref_4
         fulfillments: *ref_3
-        payments: *ref_5
-        status:
-          - code: SOFT-CANCEL
-            description: >-
-              Describes a soft-cancel request initiated by the buyer app, a step
-              preceding cancellation.
-            reference: <PR/Issue/Discussion Links md format text
-          - code: CONFIRM-CANCEL
-            description: >-
-              Describes a confirm-cancel request initiated by the buyer app,
-              confirming the order cancellation
-            reference: <PR/Issue/Discussion Links md format text
-          - code: SOFT-UPDATE
-            description: >-
-              Describes a soft-update request initiated by the buyer app,
-              occurring before the actual order update.
-            reference: <PR/Issue/Discussion Links md format text
-          - code: CONFIRM-UPDATE
-            description: >-
-              Describes a confirm-update request initiated by the buyer app,
-              confirming the order update.
-            reference: <PR/Issue/Discussion Links md format text
-          - code: ACTIVE
-            description: Describes the status of the order.
-            reference: <PR/Issue/Discussion Links md format text
-          - code: COMPLETE
-            description: Describes the status of the order.
-            reference: <PR/Issue/Discussion Links md format text
-          - code: CANCELLED
-            description: Describes the status of the order.
-            reference: <PR/Issue/Discussion Links md format text
   on_select:
     context:
       action:
@@ -2981,7 +2950,29 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_6
+      order:
+        items: *ref_4
+        fulfillments: *ref_3
+        quote: &ref_7
+          breakup:
+            title:
+              - code: BASE_PRICE
+                description: >-
+                  Describes the basic cost of something without adding anything
+                  extra.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: CONVENIENCE_FEE
+                description: Describes a extra charge fee.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: TAX
+                description: Describes the tax amount charge.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: ADD_ONS
+                description: Describes a charge for additional services.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: SEAT_FARE
+                description: Describes a charge for seat fare.
+                reference: <PR/Issue/Discussion Links md format text
   init:
     context:
       action:
@@ -2993,7 +2984,10 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_6
+      order:
+        items: *ref_4
+        fulfillments: *ref_3
+        payments: *ref_5
   on_init:
     context:
       action:
@@ -3005,12 +2999,13 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order:
+      order: &ref_8
         items: *ref_4
         fulfillments: *ref_3
         payments: *ref_5
         cancellation_terms:
-          fulfillment_state: *ref_7
+          fulfillment_state: *ref_6
+        quote: *ref_7
   confirm:
     context:
       action:
@@ -3020,7 +3015,10 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_6
+      order:
+        items: *ref_4
+        fulfillments: *ref_3
+        payments: *ref_5
   on_confirm:
     context:
       action:
@@ -3032,7 +3030,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_6
+      order: *ref_8
   status:
     context:
       action:
@@ -3050,7 +3048,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_6
+      order: *ref_8
   cancel:
     context:
       action:
@@ -3068,7 +3066,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_6
+      order: *ref_8
   update:
     context:
       action:
@@ -3078,7 +3076,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_6
+      order: *ref_9
   on_update:
     context:
       action:
@@ -3088,12 +3086,12 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_6
+      order: *ref_8
 x-tags:
   search:
     message:
       intent:
-        payment: &ref_8
+        payment: &ref_10
           tags:
             - code: BUYER_FINDER_FEES
               description: Describes the finder fees for buyer
@@ -3142,7 +3140,7 @@ x-tags:
     message:
       catalog:
         providers:
-          items: &ref_10
+          items: &ref_12
             tags:
               - code: GENERAL_INFO
                 description: General information about airlines
@@ -3157,7 +3155,7 @@ x-tags:
                   - code: PROHIBITED_ITEMS
                     description: Describes the list of prohibited items
                     reference: <PR/Issue/Discussion Links md format text>
-          fulfillments: &ref_9
+          fulfillments: &ref_11
             tags:
               - code: SEAT_GRID
                 description: Seat details to identify specifics of seat
@@ -3250,17 +3248,17 @@ x-tags:
                   - code: FULFILLMENT_SEQUENCE
                     description: Describes the sequence of the multiple fulfillments
                     reference: <PR/Issue/Discussion Links md format text>
-          payments: *ref_8
+          payments: *ref_10
   select:
     message:
       order:
-        fulfillments: *ref_9
+        fulfillments: *ref_11
   on_select:
     message:
       order:
-        fulfillments: *ref_9
-        items: *ref_10
-        provider: &ref_11
+        fulfillments: *ref_11
+        items: *ref_12
+        provider: &ref_13
           tags:
             - code: FARE_TYPE
               description: Details about type of fare for the ride
@@ -3283,7 +3281,7 @@ x-tags:
                     Describes the special type of fare for armed doctors &
                     nurses
                   reference: <PR/Issue/Discussion Links md format text>
-        quote: &ref_12
+        quote: &ref_14
           breakup:
             item:
               tags:
@@ -3300,23 +3298,23 @@ x-tags:
   init:
     message:
       order:
-        payments: *ref_8
-  on_init: &ref_13
+        payments: *ref_10
+  on_init: &ref_15
     message:
       order:
-        fulfillments: *ref_9
-        items: *ref_10
-        provider: *ref_11
-        payments: *ref_8
-        quote: *ref_12
-  on_confirm: *ref_13
+        fulfillments: *ref_11
+        items: *ref_12
+        provider: *ref_13
+        payments: *ref_10
+        quote: *ref_14
+  on_confirm: *ref_15
   on_status:
     message:
       order:
-        fulfillments: *ref_9
-        items: *ref_10
-  on_cancel: *ref_13
-  on_update: *ref_13
+        fulfillments: *ref_11
+        items: *ref_12
+  on_cancel: *ref_15
+  on_update: *ref_15
 x-flows:
   - summary: Airlines - Code Based Flow
     details:
@@ -3396,7 +3394,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_14
+        example: &ref_16
           summary: Search for airline services by standard airport codes
           value:
             context:
@@ -3488,7 +3486,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_19
+        example: &ref_21
           summary: Return services available for provided start and end code
           value:
             context:
@@ -4257,7 +4255,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_15
+        example: &ref_17
           summary: Get Quote of a selected item
           value:
             context:
@@ -4344,7 +4342,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_20
+        example: &ref_22
           summary: Get Quote of a selected item
           value:
             context:
@@ -5186,7 +5184,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_21
+        example: &ref_23
           summary: Get Quote of a selected item
           value:
             context:
@@ -5889,7 +5887,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_16
+        example: &ref_18
           summary: Initialize draft order and request for terms of service
           value:
             context:
@@ -6060,7 +6058,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: &ref_22
+        example: &ref_24
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -6818,7 +6816,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_17
+        example: &ref_19
           summary: Confirm ticket booking
           value:
             context:
@@ -6990,7 +6988,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_23
+        example: &ref_25
           summary: Confirm ticket booking
           value:
             context:
@@ -7763,7 +7761,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_18
+        example: &ref_20
           summary: Cancel a transit ticket booking before the cancellation period
           value:
             context:
@@ -7801,7 +7799,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_24
+        example: &ref_26
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -8549,16 +8547,16 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_14
+          - *ref_16
       select:
         examples:
-          - *ref_15
+          - *ref_17
       init:
         examples:
-          - *ref_16
+          - *ref_18
       confirm:
         examples:
-          - *ref_17
+          - *ref_19
       update:
         examples:
           - summary: Update customer details
@@ -8598,20 +8596,20 @@ x-examples:
                             email: joeadams@yahoo.com
       cancel:
         examples:
-          - *ref_18
+          - *ref_20
       on_search:
         examples:
-          - *ref_19
+          - *ref_21
       on_select:
         examples:
-          - *ref_20
-          - *ref_21
+          - *ref_22
+          - *ref_23
       on_init:
         examples:
-          - *ref_22
+          - *ref_24
       on_confirm:
         examples:
-          - *ref_23
+          - *ref_25
       on_update:
         examples:
           - summary: Return updated order with customer details
@@ -8862,7 +8860,7 @@ x-examples:
                       url: https://abcoperator.com/booking/O1.pdf
       on_cancel:
         examples:
-          - *ref_24
+          - *ref_26
 x-attributes:
   airline:
     attribute_set:
