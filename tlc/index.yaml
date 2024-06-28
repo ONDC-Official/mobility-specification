@@ -1,0 +1,172 @@
+code:
+  - Term: Buyer App Fee
+    Api: search/on_search/init/on_init
+    Attribute: BUYER_FINDER_FEE_TYPE
+    Owner: Buyer App
+    Value: “amount”, “percent”
+    Description: >-
+      If set to “amount” it means Buyer App’s fee is a flat amount in INR.
+
+      If set to “percent” it means the Buyer App’s fee is set as a percentage of
+      the total fare value.
+  - Api: search/on_search/init/on_init
+    Attribute: |-
+      BUYER_FINDER_FEE_AMOUNT
+      BUYER_FINDER_FEE_PERCENTAGE
+    Owner: Buyer App
+    Value: Positive Decimal Number
+    Description: >-
+      Quantum of the Buyer App’s Fee. To be interpreted in connection with the
+      “type” field mentioned above.
+
+      For example, let’s assume the value is set at “5”. If the “type” is set to
+      “Amount”, that means the Buyer App Fee is INR 5. If the “type” is set to
+      “percent”, it means the Buyer App Fee is 5% of the Total Order Value.
+  - Term: Payment Collector
+    Api: search/on_search/init/on_init
+    Attribute: payment.collected_by
+    Owner: Either
+    Value: “BAP”, “BPP”
+    Description: >-
+      If set to “BAP”, it means that the Buyer App will collect payment from the
+      Buyer.
+
+      If set to “BPP”, it means that the Seller App will collect payment from
+      the Buyer.
+  - Term: Payment Type
+    Api: init/on_init
+    Attribute: payment.type
+    Owner: Either
+    Value: “ON-ORDER”
+    Description: >-
+      How payment is going to be collected from the Buyer. If this parameter is
+      set to “ON-ORDER”, that means it is a pre-paid order, i.e. the payment is
+      collected at the time of order confirmation.
+  - Term: Settlement Basis
+    Api: search/on_search/init/on_init
+    Attribute: SETTLEMENT_BASIS
+    Owner: Seller App
+    Value: '"INVOICE_RECEIPT", “delivery”'
+    Description: >-
+      The event that will trigger settlement from the Payment Collector to
+      counterparty Network Participant(s).
+
+      Example:
+
+      Upon confirmation of order delivery, then set this to “delivery”
+
+
+      Upon receipt of an invoice from the counterparty, then this to
+      “invoice_receipt”
+  - Term: Settlement Window
+    Api: search/on_search/init/on_init
+    Attribute: SETTLEMENT_WINDOW
+    Owner: Either
+    Value: |-
+      Time period
+      (ISO8601 format)
+    Description: >-
+      The time period from completion of the Settlement Basis within which the
+      Payment Collector will settle with counterparty Network Participant(s). As
+      an example, if the Settlement Basis is set as “delivery” and the
+      Settlement Window is set to 7 days, and the Seller App collects the
+      payment, it means the Seller App will remit funds to the Buyer App on or
+      before the completion of the 7th day after delivery,
+
+      ISO8601 duration notation is used to specify the value of the parameter.
+      As an illustration, a Settlement Window of 5 days after delivery can be
+      specified as “P5D” (i.e. period 5 days) or “PT120H” (i.e. period 120
+      hours).
+  - Term: Settlement Amount
+    Api: init/on_init
+    Attribute: SETTLEMENT_AMOUNT
+    Owner: Either
+    Value: Positive Decimal Number
+    Description: >-
+      The amount that the Payment Collector will remit to the counterparty
+      Network Participant for the instant transaction.
+
+      For clarity, if the Buyer App is the Payment Collector, the Buyer App will
+      deduct their fee and remit the balance to the Seller App. If the Seller
+      App is the Payment Collector, they will remit the Buyer App’s fees, deduct
+      its own charges/commission.
+  - Term: Settlement Type
+    Api: search/on_search/init/on_init
+    Attribute: SETTLEMENT_TYPE
+    Owner: Either
+    Value: “neft”, “rtgs”, “upi”
+    Description: >-
+      The Payment Collector will use the selected method to remit the due
+      payment to the counterparty Network Participant. To illustrate, if the
+      Buyer App collects the payment and the Settlement Type is set to “rtgs”,
+      when the settlement is due, the Buyer App will transfer the Seller App’s
+      share of the Buyer Price to the Seller App’s account via RTGS.
+  - Term: Item Cancellation Window
+    Attribute: Handled in cancellation terms
+    Owner: Seller App
+    Value: |-
+      Time period
+      (ISO8601 format)
+    Description: >-
+      The time period from order confirmation within which the Buyer may cancel
+      the item. The time period follows the ISO8601 duration notation. As an
+      illustration, a cancel period of 5 days after order confirmation can be
+      specified as “P5D” (i.e. period 5 days) or “PT120H” (i.e. period 120
+      hours).
+  - Term: Item Cancellability
+    Attribute: Handled in cancellation terms
+    Owner: Seller App
+    Value: true/ false
+    Description: >-
+      Whether the order for that item can be cancelled after being confirmed. If
+      set to “TRUE” that means the Seller allows the Buyer to cancel the order
+      for the item in question, after confirmation.
+  - Term: Mandatory Arbitration
+    Api: search/on_search/init/on_init
+    Attribute: MANDATORY_ARBITRATION
+    Owner: Seller App
+    Value: true/ false
+    Description: >-
+      If this attribute is set to true, that would mean both parties agree that
+      in case of a dispute, both parties must resolve the dispute through
+      arbitration.
+  - Term: Court Jurisdiction
+    Api: search/on_search/init/on_init
+    Attribute: COURT_JURISDICTION
+    Owner: Seller App
+    Value: Pick a city from a given list of cities which have a High Court bench
+    Description: >-
+      The name of the city whose courts will have exclusive jurisdiction over
+      disputes related to this contract. The list of options will only contain
+      Indian cities which have a High Court bench.
+  - Term: Delay Interest
+    Api: search/on_search/init/on_init
+    Attribute: DELAY_INTEREST
+    Owner: Seller App
+    Value: Positive Decima`1l Number
+    Description: >-
+      This is the annual rate of interest that the Payment Collector will be
+      charged if they delay a payment to the counterparty Network Participant,
+      calculated pro rata for each calendar day of delay. As an example, if the
+      value is set as “7.3”, and the amount of payment due is INR 1000, that
+      will mean the Payment Collector will pay the counterparty Network
+      Participant an interest of 7.3% per annum (i.e. INR 100), calculated pro
+      rata for each day of delay. So if the Payment Collector delay was 50 days,
+      the total interest payable would be INR 10 [calculated as
+      1000x(7.3/100)x(50/365)]
+  - Term: Static Terms
+    Api: search/on_search/init/on_init
+    Attribute: STATIC_TERMS
+    Owner: Seller App & Buyer App
+    Value: URL
+    Description: >-
+      This will be the URL of a web-page where the standard Terms and Conditions
+      of the Network Participant - which are not covered in the API
+      Specification (e.g.: indemnity) - will be hosted. These terms will apply
+      to the transaction, in addition to the terms decided through the ONDC
+      Protocol. If there is a conflict between the terms decided through the
+      Protocol, and the Static Terms, the terms decided through the ONDC
+      Protocol will prevail. Also, if there is a conflict between the Static
+      Terms and the ONDC Network Policy or the Static Terms and the Network
+      Participant Agreement, the terms of the ONDC Network Policy or the Network
+      Participant Agreement (as the case may be) will prevail.
