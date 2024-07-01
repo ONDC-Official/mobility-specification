@@ -30,8 +30,9 @@ function onFirstLoad(build_spec) {
           loadFlows(data[xProperty]);
           break;
         case "x-attributes":
-          loadAttributes(data[xProperty]);
-          break;
+            shouldDisplay(Object.keys(data[xProperty]), "attribute-navbar")
+              loadAttributes(data[xProperty]);
+              break;
         case "x-errorcodes":
           shouldDisplay(data[xProperty].code, "errorcodes-navbar");
           loadErrors(data[xProperty]);
@@ -59,6 +60,9 @@ function onFirstLoad(build_spec) {
     } else {
       //remove from dom if not found
       switch (`${xProperty}`) {
+        case "x-attributes":
+          shouldDisplay([], "attribute-navbar");
+          break;
         case "x-featureui":
           shouldDisplay([], "feature-ui-nav");
           break;
