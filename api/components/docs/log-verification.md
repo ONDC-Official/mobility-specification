@@ -2,7 +2,7 @@
 
 #### Instructions
 - Create a fork of the [verification-logs](https://github.com/ONDC-Official/verification-logs) repository.
-- Create a folder with the name of your entity under your domain folder "TRV11"
+- Create a folder with the name of your entity under your domain folder "TRV14"
 - Commit your logs in the folder (logs should include request & response payloads for all enabled APIs as per the scenarios below)
 - Create PR and label it with your domain name
 - Once submitted, please refer to the comments on logs submitted and update the PR based on the comments provided
@@ -61,7 +61,7 @@ The payload structure for validation is as follows:
 
 ```json
 {
-  "domain": "ONDC:TRV11",
+  "domain": "ONDC:TRV14",
   "version": "2.0.0",
   "flow": "STATION_CODE",
   "payload": {

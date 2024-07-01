@@ -16,9 +16,7 @@ ONDC mobility specification swagger [link](https://ondc-official.github.io/mobil
 
 | Version | Release Date | beckn Version                      | Comments                                                                                                           |
 | ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| v1.0.0  | 14 Jun 2023  | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for metro use case                                                                  |
-| v2.0.0  | 20 Feb 2024  | core - 1.2.0                       | Base version of mobility for metro is completed<br />Station code based flow<br />GPS based flow<br />Cancel flow 
-| v2.0.0  | 30 May 2024  | core - 1.2.0| Base version of intracity is completed.<br/>Station code based flow. <br/>GPS based flow.  <br/>Technical cancellation flow. <br/>User cancellation flow.                                                                 |
+| v1.0.0  | 1 Jully 2024  | core - 1.2.0 | Initial mobility specification for Event Ticketing use case
 
 
                             
@@ -39,15 +37,10 @@ In the mobility space, the intent is to enable seamless and truly multimodal tra
 This would be possible in the mobility domain by making sure all mobility apps in the network are built in such a way as to enable them to communicate with each other in the same language.
 
 ## Enabled/Supported use cases on network
- #### Metro
-* Base version of mobility for metro is completed with Station code, GPS and cancel flows.
-* Added TICKET_INFO tag group for ticket number
-* Added ref_id in status call
-* Added parent_stop_id for stops
+ #### Event Ticketing
+* Base version of mobility for event ticketing is completed with city code and cancel flows.
+* Added separate tag group for BAP & BPP terms
 
-#### Intracity
-* Base version of mobility for intracity is completed with Station code, GPS and cancel flows.
-* Added separate flows for User & Technical cancellations.
 
 
 ## Evolution
