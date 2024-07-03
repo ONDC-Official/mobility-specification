@@ -3192,15 +3192,14 @@ x-tags:
   on_confirm: *ref_12
   on_status: *ref_12
 x-flows:
-  - summary: Event Ticketing
+  - summary: Unreserved Entry Pass
     details:
       - description: >-
-          The illustrative flow to perform a transaction of the nature where a
-          buyer would like to book a event-ticketing bus service from location
-          A(gps-cordinates) to localtion B(gps-cordinates)
+          The illustrative flow to perform a transaction to create an ecosystem
+          where entry tickets/ passes can be bought and sold over the network.
         mermaid: |-
           sequenceDiagram
-            title Event Ticketing Discovery
+            title Unreserved Entry Pass Discovery
             Buyer Platform (BAP)->>Gateway (BG): search
             Gateway (BG) ->> Buyer Platform (BAP): ACK
             Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
@@ -3251,12 +3250,10 @@ x-flows:
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK      
     reference: if any
     steps:
-      - summary: Search for the event-ticketing bus from point A(gps) to point B(gps)
+      - summary: Search for the Unreserved Entry Pass
         api: search
         details:
-          - description: >-
-              Users searches over the network to avail the event-ticketing bus
-              mode of transport from point A(gps) to point B(gps)
+          - description: Users searches over the network to avail the Unreserved Entry Pass
             mermaid: |-
               sequenceDiagram
                 rect rgb(191, 223, 255)
@@ -3271,7 +3268,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK  
         reference: if any
         example: &ref_14
-          summary: Search for event ticketing
+          summary: Search for unreserved entry pass
           value:
             context:
               location:
@@ -3290,12 +3287,15 @@ x-flows:
               ttl: PT30S
             message:
               intent:
+                category:
+                  descriptor:
+                    code: CULTURE_HERITAGE
                 fulfillment:
                   stops:
                     - type: START
                       location:
                         city:
-                          code: std:011
+                          code: std:040
                       time:
                         timestamp: '2024-06-27T04:41:16.000Z'
                   vehicle:
@@ -3313,7 +3313,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -3323,15 +3323,10 @@ x-flows:
                       - descriptor:
                           code: SETTLEMENT_WINDOW
                         value: P30D
-      - summary: >-
-          Return a bus catalog of all event-ticketing bus services from point
-          A(gps) to point B(gps)
+      - summary: Return a catalog of all unreserved-entry-pass services
         api: on_search
         details:
-          - description: >-
-              Provider platform sends the catalog of all the service that can be
-              used for transit using bus service from point A(gps) to point
-              B(gps)
+          - description: Provider platform sends the catalog of all the services
             mermaid: |-
               sequenceDiagram
                 Buyer Platform (BAP)->>Gateway (BG): search
@@ -3346,7 +3341,7 @@ x-flows:
                 end 
         reference: if any
         example: &ref_18
-          summary: Return a catalog for event ticketing
+          summary: Return a catalog for unreserved entry pass
           value:
             context:
               location:
@@ -3363,15 +3358,15 @@ x-flows:
               action: on_search
               bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
-              bpp_id: api.event-ticketing.com
-              bpp_uri: https://api.event-ticketing.com/beckn/
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               catalog:
                 descriptor:
                   name: India tourism
                   long_desc: Online ticket booking service
                   images:
-                    - url: https://api.event-ticketing.com/logos/logo.ico
+                    - url: https://api.unreserved-entry-pass.com/logos/logo.ico
                       size_type: xs
                 providers:
                   - id: P1
@@ -3380,37 +3375,13 @@ x-flows:
                       short_desc: Online Ticket Booking Service
                       images:
                         - url: >-
-                            https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                           size_type: xs
                     categories:
                       - descriptor:
                           name: Culture & Heritage
                           code: CULTURE_HERITAGE
                         id: C1
-                      - descriptor:
-                          name: Leisure
-                          code: LEISURE
-                        id: C2
-                      - descriptor:
-                          name: Sporting & Outdoor
-                          code: SPORTING_OUTDOOR
-                        id: C3
-                      - descriptor:
-                          name: Tours & Sightseeing
-                          code: TOURS_SIGHTSEEING
-                        id: C4
-                      - descriptor:
-                          name: Food & Dining
-                          code: FOOD_DINING
-                        id: C5
-                      - descriptor:
-                          name: Speciality Events
-                          code: SPECIALITY_EVENTS
-                        id: C6
-                      - descriptor:
-                          name: Entertainment
-                          code: ENTERTAINMENT
-                        id: C7
                     time:
                       range:
                         start: '2024-06-14T05:30:00.000Z'
@@ -3427,7 +3398,7 @@ x-flows:
                             Qutb complex
                           additional_desc:
                             url: >-
-                              https://api.event-ticketing.com/sites/additional-info
+                              https://api.unreserved-entry-pass.com/sites/additional-info
                             content_type: text/plain
                       - id: L2
                         gps: 28.5244946, 77.1855177
@@ -3439,18 +3410,18 @@ x-flows:
                             remains a major tourist attraction.
                           additional_desc:
                             url: >-
-                              https://api.event-ticketing.com/sites/additional-info
+                              https://api.unreserved-entry-pass.com/sites/additional-info
                             content_type: text/plain
                     items:
                       - id: I1
                         descriptor:
                           name: Adult-Ticket Culture & Heritage Item
                           code: ENTRY_PASS
-                          short_desc: short description of item
-                          long_desc: long description of item
+                          short_desc: Ticket for Qutab Minar
+                          long_desc: This ticket grants entry to the Qutab Minar.
                           images:
                             - url: >-
-                                https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                                https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                               size_type: xs
                         location_ids:
                           - L1
@@ -3483,12 +3454,13 @@ x-flows:
                         cancellation_terms:
                           - external_ref:
                               mimetype: text/html
-                              url: https://api.event-ticketing.com/beckn/tnc.html
+                              url: >-
+                                https://api.unreserved-entry-pass.com/beckn/tnc.html
                         replacement_terms:
                           - external_ref:
                               mimetype: text/html
                               url: >-
-                                https://api.event-ticketing.com/beckn/replacement.html
+                                https://api.unreserved-entry-pass/beckn/replacement.html
                         tags:
                           - descriptor:
                               code: FARE_POLICY
@@ -3519,11 +3491,11 @@ x-flows:
                         descriptor:
                           name: Child-Ticket Culture & Heritage Item
                           code: ENTRY_PASS
-                          short_desc: short description of item
-                          long_desc: long description of item
+                          short_desc: Ticket for Qutab Minar
+                          long_desc: This ticket grants entry to the Qutab Minar.
                           images:
                             - url: >-
-                                https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                                https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                               size_type: xs
                         location_ids:
                           - L1
@@ -3553,12 +3525,13 @@ x-flows:
                         cancellation_terms:
                           - external_ref:
                               mimetype: text/html
-                              url: https://api.event-ticketing.com/beckn/tnc.html
+                              url: >-
+                                https://api.unreserved-entry-pass.com/beckn/tnc.html
                         replacement_terms:
                           - external_ref:
                               mimetype: text/html
                               url: >-
-                                https://api.event-ticketing.com/beckn/replacement.html
+                                https://api.unreserved-entry-pass/beckn/replacement.html
                         tags:
                           - descriptor:
                               code: FARE_POLICY
@@ -3593,7 +3566,7 @@ x-flows:
                             instructions:
                               additional_desc:
                                 url: >-
-                                  https://api.event-ticketing.com/sites/additional-info
+                                  https://api.unreserved-entry-pass.com/sites/additional-info
                                 content_type: text/plain
                             time:
                               timestamp: '2024-06-28T05:00:16.000Z'
@@ -3609,7 +3582,7 @@ x-flows:
                             instructions:
                               additional_desc:
                                 url: >-
-                                  https://api.event-ticketing.com/sites/additional-info
+                                  https://api.unreserved-entry-pass.com/sites/additional-info
                                 content_type: text/plain
                             time:
                               range:
@@ -3631,7 +3604,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -3651,7 +3624,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -3682,7 +3655,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: &ref_15
-          summary: Select a an item for event-ticketing
+          summary: Select a an item for unreserved-entry-pass
           value:
             context:
               location:
@@ -3699,8 +3672,8 @@ x-flows:
               action: select
               bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
-              bpp_id: api.event-ticketing.com
-              bpp_uri: https://api.event-ticketing.com/beckn/
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order:
                 items:
@@ -3728,7 +3701,7 @@ x-flows:
                   id: P1
       - summary: >-
           Provider platform provides the quote for selected service of
-          event-ticketing bus
+          unreserved-entry-pass
         api: on_select
         details:
           - description: >-
@@ -3747,7 +3720,7 @@ x-flows:
                 end 
         reference: if any
         example: &ref_19
-          summary: Return a selected item for event-ticketing
+          summary: Return a selected item for unreserved-entry-pass
           value:
             context:
               location:
@@ -3764,8 +3737,8 @@ x-flows:
               action: on_select
               bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
-              bpp_id: api.event-ticketing.com
-              bpp_uri: https://api.event-ticketing.com/beckn/
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order:
                 items:
@@ -3773,11 +3746,11 @@ x-flows:
                     descriptor:
                       name: Adult-Ticket Culture & Heritage Item
                       code: ENTRY_PASS
-                      short_desc: short description of item
-                      long_desc: long description of item
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
                       images:
                         - url: >-
-                            https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                           size_type: xs
                     location_ids:
                       - L1
@@ -3834,11 +3807,11 @@ x-flows:
                     descriptor:
                       name: Child-Ticket Culture & Heritage Item
                       code: ENTRY_PASS
-                      short_desc: short description of item
-                      long_desc: long description of item
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
                       images:
                         - url: >-
-                            https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                           size_type: xs
                     location_ids:
                       - L1
@@ -3884,7 +3857,7 @@ x-flows:
                         instructions:
                           additional_desc:
                             url: >-
-                              https://api.event-ticketing.com/sites/additional-info
+                              https://api.unreserved-entry-pass.com/sites/additional-info
                             content_type: text/plain
                         time:
                           timestamp: '2024-06-28T05:00:16.000Z'
@@ -3896,10 +3869,10 @@ x-flows:
                 provider:
                   id: P1
                   descriptor:
-                    name: Event ticketing
+                    name: Unreserved Entry Pass
                     images:
                       - url: >-
-                          https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                          https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                         size_type: xs
                   locations:
                     - id: L1
@@ -3913,16 +3886,17 @@ x-flows:
                           Qutb complex
                         additional_desc:
                           url: >-
-                            https://api.event-ticketing.com/sites/additional-info
+                            https://api.unreserved-entry-pass.com/sites/additional-info
                           content_type: text/plain
                 cancellation_terms:
                   - external_ref:
                       mimetype: text/html
-                      url: https://api.event-ticketing.com/beckn/tnc.html
+                      url: https://api.unreserved-entry-pass.com/beckn/tnc.html
                 replacement_terms:
                   - external_ref:
                       mimetype: text/html
-                      url: https://api.event-ticketing.com/beckn/replacement.html
+                      url: >-
+                        https://api.unreserved-entry-pass.com/beckn/replacement.html
                 quote:
                   breakup:
                     - title: BASE_FARE
@@ -4007,8 +3981,8 @@ x-flows:
               action: init
               bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
-              bpp_id: api.event-ticketing.com
-              bpp_uri: https://api.event-ticketing.com/beckn/
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order:
                 items:
@@ -4053,7 +4027,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -4098,8 +4072,8 @@ x-flows:
               action: on_init
               bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
-              bpp_id: api.event-ticketing.com
-              bpp_uri: https://api.event-ticketing.com/beckn/
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order:
                 items:
@@ -4107,11 +4081,11 @@ x-flows:
                     descriptor:
                       name: Adult-Ticket Culture & Heritage Item
                       code: ENTRY_PASS
-                      short_desc: short description of item
-                      long_desc: long description of item
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
                       images:
                         - url: >-
-                            https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                           size_type: xs
                     location_ids:
                       - L1
@@ -4168,11 +4142,11 @@ x-flows:
                     descriptor:
                       name: Child-Ticket Culture & Heritage Item
                       code: ENTRY_PASS
-                      short_desc: short description of item
-                      long_desc: long description of item
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
                       images:
                         - url: >-
-                            https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                           size_type: xs
                     location_ids:
                       - L1
@@ -4233,7 +4207,7 @@ x-flows:
                         instructions:
                           additional_desc:
                             url: >-
-                              https://api.event-ticketing.com/sites/additional-info
+                              https://api.unreserved-entry-pass.com/sites/additional-info
                             content_type: text/plain
                         time:
                           timestamp: '2024-06-28T05:00:16.000Z'
@@ -4245,10 +4219,10 @@ x-flows:
                 provider:
                   id: P1
                   descriptor:
-                    name: Event ticketing
+                    name: Unreserved Entry Pass
                     images:
                       - url: >-
-                          https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                          https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                         size_type: xs
                   locations:
                     - id: L1
@@ -4262,16 +4236,17 @@ x-flows:
                           Qutb complex
                         additional_desc:
                           url: >-
-                            https://api.event-ticketing.com/sites/additional-info
+                            https://api.unreserved-entry-pass.com/sites/additional-info
                           content_type: text/plain
                 cancellation_terms:
                   - external_ref:
                       mimetype: text/html
-                      url: https://api.event-ticketing.com/beckn/tnc.html
+                      url: https://api.unreserved-entry-pass.com/beckn/tnc.html
                 replacement_terms:
                   - external_ref:
                       mimetype: text/html
-                      url: https://api.event-ticketing.com/beckn/replacement.html
+                      url: >-
+                        https://api.unreserved-entry-pass.com/beckn/replacement.html
                 quote:
                   breakup:
                     - title: BASE_FARE
@@ -4327,7 +4302,7 @@ x-flows:
                     status: NOT-PAID
                     type: PRE-ORDER
                     url: >-
-                      https://api.event-ticketing.com/beckn/payment?amount=700&txn_id=c04a04ee-d892-400f-bbe6-479a43b4448a
+                      https://api.unreserved-entry-pass.com/beckn/payment?amount=700&txn_id=c04a04ee-d892-400f-bbe6-479a43b4448a
                     params:
                       amount: '700'
                       currency: INR
@@ -4342,7 +4317,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -4362,7 +4337,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -4425,8 +4400,8 @@ x-flows:
               action: confirm
               bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
-              bpp_id: api.event-ticketing.com
-              bpp_uri: https://api.event-ticketing.com/beckn/
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order:
                 items:
@@ -4475,7 +4450,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -4495,7 +4470,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -4549,8 +4524,8 @@ x-flows:
               action: on_confirm
               bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
-              bpp_id: api.event-ticketing.com
-              bpp_uri: https://api.event-ticketing.com/beckn/
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order:
                 id: '01'
@@ -4560,11 +4535,11 @@ x-flows:
                     descriptor:
                       name: Adult-Ticket Culture & Heritage Item
                       code: ENTRY_PASS
-                      short_desc: short description of item
-                      long_desc: long description of item
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
                       images:
                         - url: >-
-                            https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                           size_type: xs
                     location_ids:
                       - L1
@@ -4621,11 +4596,11 @@ x-flows:
                     descriptor:
                       name: Child-Ticket Culture & Heritage Item
                       code: ENTRY_PASS
-                      short_desc: short description of item
-                      long_desc: long description of item
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
                       images:
                         - url: >-
-                            https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                           size_type: xs
                     location_ids:
                       - L1
@@ -4686,7 +4661,7 @@ x-flows:
                         instructions:
                           additional_desc:
                             url: >-
-                              https://api.event-ticketing.com/sites/additional-info
+                              https://api.unreserved-entry-pass.com/sites/additional-info
                             content_type: text/plain
                         time:
                           timestamp: '2024-06-28T05:00:16.000Z'
@@ -4704,10 +4679,10 @@ x-flows:
                 provider:
                   id: P1
                   descriptor:
-                    name: Event ticketing
+                    name: Unreserved Entry Pass
                     images:
                       - url: >-
-                          https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                          https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                         size_type: xs
                   locations:
                     - id: L1
@@ -4721,16 +4696,17 @@ x-flows:
                           Qutb complex
                         additional_desc:
                           url: >-
-                            https://api.event-ticketing.com/sites/additional-info
+                            https://api.unreserved-entry-pass.com/sites/additional-info
                           content_type: text/plain
                 cancellation_terms:
                   - external_ref:
                       mimetype: text/html
-                      url: https://api.event-ticketing.com/beckn/tnc.html
+                      url: https://api.unreserved-entry-pass.com/beckn/tnc.html
                 replacement_terms:
                   - external_ref:
                       mimetype: text/html
-                      url: https://api.event-ticketing.com/beckn/replacement.html
+                      url: >-
+                        https://api.unreserved-entry-pass.com/beckn/replacement.html
                 quote:
                   breakup:
                     - title: BASE_FARE
@@ -4800,7 +4776,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -4820,7 +4796,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -4884,8 +4860,8 @@ x-flows:
               action: status
               bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
-              bpp_id: api.event-ticketing.com
-              bpp_uri: https://api.event-ticketing.com/beckn/
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order_id: '01'
       - summary: Provider platform provides latest order status
@@ -4924,8 +4900,8 @@ x-flows:
               action: on_status
               bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
-              bpp_id: api.event-ticketing.com
-              bpp_uri: https://api.event-ticketing.com/beckn/
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order:
                 id: '01'
@@ -4935,11 +4911,11 @@ x-flows:
                     descriptor:
                       name: Adult-Ticket Culture & Heritage Item
                       code: ENTRY_PASS
-                      short_desc: short description of item
-                      long_desc: long description of item
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
                       images:
                         - url: >-
-                            https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                           size_type: xs
                     location_ids:
                       - L1
@@ -4996,11 +4972,11 @@ x-flows:
                     descriptor:
                       name: Child-Ticket Culture & Heritage Item
                       code: ENTRY_PASS
-                      short_desc: short description of item
-                      long_desc: long description of item
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
                       images:
                         - url: >-
-                            https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                           size_type: xs
                     location_ids:
                       - L1
@@ -5061,7 +5037,7 @@ x-flows:
                         instructions:
                           additional_desc:
                             url: >-
-                              https://api.event-ticketing.com/sites/additional-info
+                              https://api.unreserved-entry-pass.com/sites/additional-info
                             content_type: text/plain
                         time:
                           timestamp: '2024-06-28T05:00:16.000Z'
@@ -5079,10 +5055,10 @@ x-flows:
                 provider:
                   id: P1
                   descriptor:
-                    name: Event ticketing
+                    name: Unreserved Entry Pass
                     images:
                       - url: >-
-                          https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                          https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                         size_type: xs
                   locations:
                     - id: L1
@@ -5096,16 +5072,17 @@ x-flows:
                           Qutb complex
                         additional_desc:
                           url: >-
-                            https://api.event-ticketing.com/sites/additional-info
+                            https://api.unreserved-entry-pass.com/sites/additional-info
                           content_type: text/plain
                 cancellation_terms:
                   - external_ref:
                       mimetype: text/html
-                      url: https://api.event-ticketing.com/beckn/tnc.html
+                      url: https://api.unreserved-entry-pass.com/beckn/tnc.html
                 replacement_terms:
                   - external_ref:
                       mimetype: text/html
-                      url: https://api.event-ticketing.com/beckn/replacement.html
+                      url: >-
+                        https://api.unreserved-entry-pass.com/beckn/replacement.html
                 quote:
                   breakup:
                     - title: BASE_FARE
@@ -5175,7 +5152,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -5195,7 +5172,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -5223,7 +5200,7 @@ x-flows:
                       - descriptor:
                           code: SETTLEMENT_BANK_ACCOUNT_NUMBER
                         value: xxxxxxxxxxxxxx
-  - summary: Event Ticketing - Technical Cancellation Flow
+  - summary: Unreserved Entry Pass - Technical Cancellation Flow
     details:
       - description: Detailed process of cancelling a ticket with soft & confirm status.
         mermaid: |-
@@ -5297,8 +5274,8 @@ x-flows:
               action: cancel
               bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
-              bpp_id: api.event-ticketing.com
-              bpp_uri: https://api.event-ticketing.com/beckn/
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order_id: O1
               cancellation_reason_id: '0'
@@ -5342,8 +5319,8 @@ x-flows:
               action: on_cancel
               bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
-              bpp_id: api.event-ticketing.com
-              bpp_uri: https://api.event-ticketing.com/beckn/
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order:
                 id: '01'
@@ -5353,11 +5330,11 @@ x-flows:
                     descriptor:
                       name: Adult-Ticket Culture & Heritage Item
                       code: ENTRY_PASS
-                      short_desc: short description of item
-                      long_desc: long description of item
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
                       images:
                         - url: >-
-                            https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                           size_type: xs
                     location_ids:
                       - L1
@@ -5414,11 +5391,11 @@ x-flows:
                     descriptor:
                       name: Child-Ticket Culture & Heritage Item
                       code: ENTRY_PASS
-                      short_desc: short description of item
-                      long_desc: long description of item
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
                       images:
                         - url: >-
-                            https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                           size_type: xs
                     location_ids:
                       - L1
@@ -5479,7 +5456,7 @@ x-flows:
                         instructions:
                           additional_desc:
                             url: >-
-                              https://api.event-ticketing.com/sites/additional-info
+                              https://api.unreserved-entry-pass.com/sites/additional-info
                             content_type: text/plain
                         time:
                           timestamp: '2024-06-28T05:00:16.000Z'
@@ -5500,7 +5477,7 @@ x-flows:
                     name: Event ticketing
                     images:
                       - url: >-
-                          https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                          https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                         size_type: xs
                   locations:
                     - id: L1
@@ -5514,16 +5491,17 @@ x-flows:
                           Qutb complex
                         additional_desc:
                           url: >-
-                            https://api.event-ticketing.com/sites/additional-info
+                            https://api.unreserved-entry-pass.com/sites/additional-info
                           content_type: text/plain
                 cancellation_terms:
                   - external_ref:
                       mimetype: text/html
-                      url: https://api.event-ticketing.com/beckn/tnc.html
+                      url: https://api.unreserved-entry-pass.com/beckn/tnc.html
                 replacement_terms:
                   - external_ref:
                       mimetype: text/html
-                      url: https://api.event-ticketing.com/beckn/replacement.html
+                      url: >-
+                        https://api.unreserved-entry-pass.com/beckn/replacement.html
                 quote:
                   breakup:
                     - title: BASE_FARE
@@ -5631,7 +5609,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -5651,7 +5629,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -5712,8 +5690,8 @@ x-flows:
               action: cancel
               bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
-              bpp_id: api.event-ticketing.com
-              bpp_uri: https://api.event-ticketing.com/beckn/
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order_id: O1
               cancellation_reason_id: '0'
@@ -5755,8 +5733,8 @@ x-flows:
               action: on_cancel
               bap_uri: https://api.example-bap.com/beckn/
               ttl: PT30S
-              bpp_id: api.event-ticketing.com
-              bpp_uri: https://api.event-ticketing.com/beckn/
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order:
                 id: '01'
@@ -5766,11 +5744,11 @@ x-flows:
                     descriptor:
                       name: Adult-Ticket Culture & Heritage Item
                       code: ENTRY_PASS
-                      short_desc: short description of item
-                      long_desc: long description of item
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
                       images:
                         - url: >-
-                            https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                           size_type: xs
                     location_ids:
                       - L1
@@ -5827,11 +5805,11 @@ x-flows:
                     descriptor:
                       name: Child-Ticket Culture & Heritage Item
                       code: ENTRY_PASS
-                      short_desc: short description of item
-                      long_desc: long description of item
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
                       images:
                         - url: >-
-                            https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                           size_type: xs
                     location_ids:
                       - L1
@@ -5892,7 +5870,7 @@ x-flows:
                         instructions:
                           additional_desc:
                             url: >-
-                              https://api.event-ticketing.com/sites/additional-info
+                              https://api.unreserved-entry-pass.com/sites/additional-info
                             content_type: text/plain
                         time:
                           timestamp: '2024-06-28T05:00:16.000Z'
@@ -5910,10 +5888,10 @@ x-flows:
                 provider:
                   id: P1
                   descriptor:
-                    name: Event ticketing
+                    name: Unreserved Entry Pass
                     images:
                       - url: >-
-                          https://api.event-ticketing.com/sites/default/files/event/logo/event_logo_2.png
+                          https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
                         size_type: xs
                   locations:
                     - id: L1
@@ -5927,16 +5905,17 @@ x-flows:
                           Qutb complex
                         additional_desc:
                           url: >-
-                            https://api.event-ticketing.com/sites/additional-info
+                            https://api.unreserved-entry-pass.com/sites/additional-info
                           content_type: text/plain
                 cancellation_terms:
                   - external_ref:
                       mimetype: text/html
-                      url: https://api.event-ticketing.com/beckn/tnc.html
+                      url: https://api.unreserved-entry-pass.com/beckn/tnc.html
                 replacement_terms:
                   - external_ref:
                       mimetype: text/html
-                      url: https://api.event-ticketing.com/beckn/replacement.html
+                      url: >-
+                        https://api.unreserved-entry-pass.com/beckn/replacement.html
                 quote:
                   breakup:
                     - title: BASE_FARE
@@ -6044,7 +6023,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -6064,7 +6043,7 @@ x-flows:
                         value: '1'
                       - descriptor:
                           code: BUYER_FINDER_FEES_TYPE
-                        value: percent-annualized
+                        value: percent
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bap.com/booking/terms
@@ -6093,16 +6072,16 @@ x-flows:
                           code: SETTLEMENT_BANK_ACCOUNT_NUMBER
                         value: xxxxxxxxxxxxxx
 x-examples:
-  event-ticketing:
-    summary: Event Ticketing Use Case Specification
+  unreserved-entry-pass:
+    summary: Unreserved Entry Pass Use Case Specification
     description: >-
-      Event Ticketing use case on the network would enable NPs to create an
-      ecosystem where entry tickets/ passes can be bought and sold over the
+      Unreserved Entry Pass use case on the network would enable NPs to create
+      an ecosystem where entry tickets/ passes can be bought and sold over the
       network.
     example_set:
       search:
         examples:
-          - summary: Search for event ticketing
+          - summary: Search for unreserved entry pass
             value:
               context:
                 location:
@@ -6121,6 +6100,9 @@ x-examples:
                 ttl: PT30S
               message:
                 intent:
+                  category:
+                    descriptor:
+                      code: CULTURE_HERITAGE
                   fulfillment:
                     stops:
                       - type: START
@@ -6146,7 +6128,7 @@ x-examples:
                           value: '1'
                         - descriptor:
                             code: BUYER_FINDER_FEES_TYPE
-                          value: percent-annualized
+                          value: percent
                         - descriptor:
                             code: STATIC_TERMS
                           value: https://api.example-bap.com/booking/terms
@@ -6157,6 +6139,59 @@ x-examples:
                             code: SETTLEMENT_WINDOW
                           value: P30D
           - *ref_14
+          - summary: Search for unreserved entry pass without timestamp(FOOD_DINING)
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV14
+                timestamp: '2024-06-26T04:41:16.000Z'
+                bap_id: api.example-bap.com
+                transaction_id: cf7bb367-c820-4bc9-9be8-f548e0bbf222
+                message_id: 5fd86e70-3465-4759-ac6c-910ab16e2db9
+                version: 2.0.0
+                action: search
+                bap_uri: https://api.example-bap.com/beckn/
+                ttl: PT30S
+              message:
+                intent:
+                  category:
+                    descriptor:
+                      code: FOOD_DINING
+                  fulfillment:
+                    stops:
+                      - type: START
+                        location:
+                          city:
+                            code: std:011
+                    vehicle:
+                      category: SITE
+                  payment:
+                    collected_by: BAP
+                  tags:
+                    - descriptor:
+                        code: BAP_TERMS
+                        name: BAP Terms of Engagement
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_TYPE
+                          value: percent
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://api.example-bap.com/booking/terms
+                        - descriptor:
+                            code: SETTLEMENT_BASIS
+                          value: https://api.example-bap.com/booking/terms
+                        - descriptor:
+                            code: SETTLEMENT_WINDOW
+                          value: P30D
       select:
         examples:
           - *ref_15
