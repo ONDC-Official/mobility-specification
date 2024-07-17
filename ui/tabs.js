@@ -11,6 +11,7 @@ function onFirstLoad(build_spec) {
     "x-featureui",
     "x-sandboxui",
     "x-testcasesui",
+    "x-changeLog"
   ];
   const dropdown = document.getElementById("contract-dropdown");
   const branch_name = dropdown.options[dropdown.selectedIndex].text;
@@ -53,6 +54,11 @@ function onFirstLoad(build_spec) {
           if (shouldDisplay(data[xProperty].filenames, "testcases-navbar"))
             renderDropdownCases(branch_name, data[xProperty].filenames);
           break;
+        case "x-changeLog":
+          if( shouldDisplay(data[xProperty].filenames, "change-log-nav")) {
+          renderChangeLogDropDown(branch_name,data[xProperty].filenames)
+          }
+          break  
 
         default:
           break;
@@ -78,6 +84,11 @@ function onFirstLoad(build_spec) {
         case "x-testcasesui":
           shouldDisplay([], "testcases-navbar");
           break;
+        case "x-changeLog":
+          shouldDisplay([], "change-log-nav");
+          const swaggerTab = document.getElementById("swagger-tab")
+          swaggerTab.click()
+          break;  
 
         default:
           break;
