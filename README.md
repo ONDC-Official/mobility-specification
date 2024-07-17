@@ -6,7 +6,7 @@ ONDC mobility specification is an adaptation of [beckn mobility specifications](
 
 These specifications will be released in multiple phases enabling different use case and enhancements.
 
-ONDC mobility specification swaggerhub [link](https://app.swaggerhub.com/apis/ONDC/ONDC-Mobility-API-Specification)
+ONDC mobility specification swagger [link](https://ondc-official.github.io/mobility-specification/)
 
 ## Latest Version
 
@@ -14,9 +14,13 @@ ONDC mobility specification swaggerhub [link](https://app.swaggerhub.com/apis/ON
 
 ## Earlier Versions
 
-| Version | Release Date | beckn Version                      | Comments                                                           |
-| ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------ |
-| v1.0.0  | TBD          | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for on-demand ride hailing use case |
+| Version | Release Date | beckn Version                      | Comments                                                                                                           |
+| ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| v1.0.0  | 1 Jully 2024  | core - 1.2.0 | Initial mobility specification for Event Ticketing use case
+
+
+                            
+
 
 ## Introduction
 
@@ -33,8 +37,11 @@ In the mobility space, the intent is to enable seamless and truly multimodal tra
 This would be possible in the mobility domain by making sure all mobility apps in the network are built in such a way as to enable them to communicate with each other in the same language.
 
 ## Enabled/Supported use cases on network
+ #### Event Ticketing
+* Base version of mobility for event ticketing is completed with city code and cancel flows.
+* Added separate tag group for BAP & BPP terms
 
-* On-demand Ride hailing with fix pick-up and drop locations for transport modes : Car, Autorickshaw, Motorcycle
+
 
 ## Evolution
 
@@ -47,7 +54,7 @@ To know more about how the specification evolves, visit the Network GOVERNANCE d
 
 To follow discussions related to the mobility specification please visit the [Discussions Forum](https://github.com/ONDC-Official/mobility-specification/discussions) on GitHub
 
-Each major release of ONDC mobility specification will be approved by ONDC mobility working group members for which are listed [here](./committee.md)
+Each major release of ONDC mobility specification will be approved by ONDC mobility working group members for which are listed [here](./Committee.md)
 
 For minor releases for bug fix and cosmetic changes ONDC would make a minor release based on internal approval process and update the committee in the next scheduled discussion.
 
