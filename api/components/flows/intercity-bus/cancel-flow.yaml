@@ -1,0 +1,110 @@
+summary: InterCity(Bus) - Cancel Flow
+details: 
+  - description: Detailed process of cancelling a ticket with soft & confirm status.
+    mermaid: >-
+      sequenceDiagram
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+        Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK         
+reference: if any
+steps:
+  - summary: Provider platform confirms the request and provides the details on confirmation.
+    api: on_confirm
+    details: 
+      - description: Provider platform confirms the order and provides details of the journey upon confirmation
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+            end
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
+    reference: if any
+    example:
+      $ref: "../../examples/intercity-bus/on_confirm/on_confirm.yaml"
+  - summary: Buyer app cancels the request for ticket
+    api: cancel
+    details: 
+      - description: Buyer app requests for cancellation of ticket.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/intercity-bus/cancel/cancel_soft.yaml"
+  - summary: Provider accepts/appends the terms of cancellation
+    api: on_cancel
+    details: 
+      - description: Provider accepts the terms of order and appends its own terms and provides with latest order update.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/intercity-bus/on_cancel/on_cancel_soft.yaml"
+  - summary: Buyer app confirms the cancel request for ticket
+    api: cancel
+    details: 
+      - description: Buyer app give the confirmation to cancel the ticket.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/intercity-bus/cancel/cancel_confirm.yaml"
+  - summary: Provider accepts the terms of cancellation
+    api: on_cancel
+    details: 
+      - description: Provider accepts the terms of order and provides with latest order update.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end 
+    reference: if any
+    example:
+      $ref: "../../examples/intercity-bus/on_cancel/on_cancel_confirm.yaml"     
