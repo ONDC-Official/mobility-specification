@@ -1,8 +1,8 @@
 
-summary: Confirm ride booking
+summary: Initialize draft order and request for terms of service[Seller Collecting]
 value:
   context:
-    action: confirm
+    action: init
     bap_id: example-bap.com
     bap_uri: https://example-bap.com/prod/trv10
     bpp_id: example-bpp.com
@@ -13,8 +13,8 @@ value:
         code: std:080
       country:
         code: IND
-    message_id: 9a7be37d-f228-432b-9aa9-65144d48da38
-    timestamp: '2023-12-10T04:34:49.031Z'
+    message_id: 8926b747-0362-4fcc-b795-0994a6287700
+    timestamp: '2023-12-09T14:09:31.307Z'
     transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
     ttl: PT30S
     version: 2.0.0
@@ -33,9 +33,13 @@ value:
             - location:
                 gps: 13.008935, 77.644408
               type: START
+              instructions:
+                short_desc: short description of the location
+                long_desc: long description of the location
             - location:
                 gps: 12.971186, 77.586812
               type: END
+          type: SELF_PICKUP
           vehicle:
             category: AUTO_RICKSHAW
             variant: EV
@@ -43,13 +47,11 @@ value:
         - id: I1
       payments:
         - collected_by: BPP
-          id: PA1
           params:
-            transaction_id: f08966dc-4c7d-4152-9a15-1046798cc39c
             bank_account_number: xxxxxxxxxxxxxx
             bank_code: XXXXXXXX
             virtual_payment_address: 9988199772@okicic
-          status: PAID
+          status: NOT-PAID
           tags:
             - descriptor:
                 code: BUYER_FINDER_FEES
@@ -79,13 +81,10 @@ value:
                   value: New Delhi
                 - descriptor:
                     code: DELAY_INTEREST
-                  value: '5'
+                  value: '5'  
                 - descriptor:
                     code: STATIC_TERMS
-                  value: https://example-test-bap.com/static-terms.txt
-                - descriptor:
-                    code: SETTLEMENT_AMOUNT
-                  value: '144.54'
-          type: PRE-ORDER
+                  value: https://example-test-bpp.com/static-terms.txt
+          type: ON-FULFILLMENT
       provider:
         id: P1

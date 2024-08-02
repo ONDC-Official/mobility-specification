@@ -1,8 +1,8 @@
 
-summary: Return confirmed order with latest fulfillment details
+summary: Return updated order with updated agent details
 value:
   context:
-    action: on_confirm
+    action: on_status
     bap_id: example-bap.com
     bap_uri: https://example-bap.com/prod/trv10
     bpp_id: example-bpp.com
@@ -13,8 +13,8 @@ value:
         code: std:080
       country:
         code: IND
-    message_id: 8926b747-0362-4fcc-b795-0994a6287700
-    timestamp: '2023-03-23T04:48:34.53Z'
+    message_id: 5ee2001f-e612-431d-9e07-49574af60e88
+    timestamp: '2023-03-23T04:49:34.53Z'
     transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
     ttl: PT30S
     version: 2.0.0
@@ -50,7 +50,12 @@ value:
               code: RIDE_STARTED
           reason_required: true
       fulfillments:
-        - customer:
+        - agent:
+            contact:
+              phone: '9856798567'
+            person:
+              name: Jason Roy
+          customer:
             contact:
               phone: '9876556789'
             person:
@@ -58,14 +63,16 @@ value:
           id: F1
           state:
             descriptor:
-              code: RIDE_CONFIRMED
+              code: RIDE_ENROUTE_PICKUP
           stops:
-            - location:
+            - authorization:
+                token: '234234'
+                type: OTP
+                valid_to: '2023-12-10T08:05:34.294Z'
+                status: 'UNCLAIMED'
+              location:
                 gps: 13.008935, 77.644408
               type: START
-              instructions:
-                short_desc: short description of the location
-                long_desc: long description of the location
             - location:
                 gps: 12.971186, 77.586812
               type: END
@@ -87,9 +94,9 @@ value:
           vehicle:
             category: AUTO_RICKSHAW
             variant: EV
-            # make: Bajaj
-            # model: Compact RE
-            # registration: KA-01-AD-9876
+            make: Bajaj
+            model: Compact RE
+            registration: KA-01-AD-9876
       id: O1
       items:
         - descriptor:
@@ -209,7 +216,8 @@ value:
         price:
           currency: INR
           value: '146'
-        ttl: PT30S     
+        ttl: PT30S   
       status: ACTIVE
       created_at: '2023-03-23T04:48:34.53Z'
-      updated_at: '2023-03-23T04:48:34.53Z'
+      updated_at: '2023-03-23T04:49:34.53Z'
+    # update_target: order.fulfillment.agent

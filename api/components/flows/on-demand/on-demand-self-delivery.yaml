@@ -1,4 +1,4 @@
-summary: On-Demand - Assign driver post on-confirm
+summary: On-Demand - Assign driver post on-confirm(Self-Delivery)
 details: 
   - description: The illustraive flow to perform a transaction of the nature where in a buyer would like to book a mobility service form location A(gps-cordinates) to localtion B(gps-cordinates)
     mermaid: >-
@@ -90,7 +90,7 @@ steps:
             end
     reference: if any
     example:
-      $ref: "../../examples/on-demand/on_search/on_search_0.yaml" 
+      $ref: "../../examples/on-demand/on_search/on_search_2_self.yaml" 
   - summary: Buyer app selects a specific service for more details
     api: select
     details: 
@@ -107,7 +107,7 @@ steps:
               Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
     reference: if any
     example:
-      $ref: "../../examples/on-demand/select/select_0.yaml"
+      $ref: "../../examples/on-demand/select/select_1_self.yaml"
   - summary: Ride provider provides the quote for selected service
     api: on_select
     details: 
@@ -124,7 +124,7 @@ steps:
               end 
     reference: if any
     example:
-      $ref: "../../examples/on-demand/on_select/on_select_0.yaml" 
+      $ref: "../../examples/on-demand/on_select/on_select_1_self.yaml" 
   - summary: Buyer app initializes the ride request
     api: init
     details: 
@@ -142,7 +142,7 @@ steps:
       
     reference: if any
     example:
-      $ref: "../../examples/on-demand/init/init_0.yaml"
+      $ref: "../../examples/on-demand/init/init_3_self.yaml"
   - summary: Ride provider accepts/appends the terms of orders
     api: on_init
     details: 
@@ -159,7 +159,7 @@ steps:
               end  
     reference: if any
     example:
-      $ref: "../../examples/on-demand/on_init/on_init_0.yaml"
+      $ref: "../../examples/on-demand/on_init/on_init_3_self.yaml"
   - summary: Buyer app confirms the ride
     api: confirm
     details: 
@@ -176,7 +176,7 @@ steps:
               Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
     reference: if any
     example:
-      $ref: "../../examples/on-demand/confirm/confirm_0.yaml"
+      $ref: "../../examples/on-demand/confirm/confirm_3_self.yaml"
   - summary: Ride provider confirms the ride request
     api: on_confirm
     details: 
@@ -193,7 +193,7 @@ steps:
             end
     reference: if any
     example:
-      $ref: "../../examples/on-demand/on_confirm/on_confirm_1.yaml"
+      $ref: "../../examples/on-demand/on_confirm/on_confirm_4_self.yaml"
   - summary: Ride provider provides latest update on the ride (unsolicited call)
     api: on_update
     details: 
@@ -212,7 +212,28 @@ steps:
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
     reference: if any
     example:
-      $ref: "../../examples/on-demand/on_update/on_update_2.yaml"   
+      $ref: "../../examples/on-demand/on_update/on_update_3_self.yaml"  
+  - summary: Ride provider provides latest update on the ride (unsolicited call)
+    api: on_update
+    details: 
+      - description: Ride provider provides the latest update on ride details to the buyer app with fulfillment state - RIDE_STARTED
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+            Buyer Platform (BAP)->>Seller Platform (BPP): status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_update/on_update_6_ride_started_self.yaml"     
+  
+  
   - summary: Buyer app requests for tracking status
     api: track
     details:
@@ -247,88 +268,26 @@ steps:
     reference: if any
     example:
       $ref: "../../examples/on-demand/on_track/on_track_0.yaml"
-  - summary: Ride provider provides latest order status 
-    api: on_status
+  
+  - summary: Ride provider provides latest update on the ride (unsolicited call)
+    api: on_update
     details: 
-      - description: Ride provider provides the updated order status to the buyer app
+      - description: Ride provider provides the updated order updates to the buyer app & can update the quote in case of fare update
         mermaid: >-
           sequenceDiagram
             participant Buyer Platform (BAP)
             participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
             Seller Platform (BPP)->>Buyer Platform (BAP): on_update
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
             Buyer Platform (BAP)->>Seller Platform (BPP): status
             Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            rect rgb(191, 223, 255)
             Seller Platform (BPP)->>Buyer Platform (BAP): on_status
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-            end
     reference: if any
     example:
-      $ref: "../../examples/on-demand/on_status/on_status_8.yaml"
-  - summary: Ride provider provides latest order status 
-    api: on_status
-    details: 
-      - description: Ride provider provides the updated order status to the buyer app
-        mermaid: >-
-          sequenceDiagram
-            participant Buyer Platform (BAP)
-            participant Seller Platform (BPP)
-            Seller Platform (BPP)->>Buyer Platform (BAP): on_update
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-            Buyer Platform (BAP)->>Seller Platform (BPP): status
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            rect rgb(191, 223, 255)
-            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-            end
-    reference: if any
-    example:
-      $ref: "../../examples/on-demand/on_status/on_status_9.yaml"
-  # - summary: Ride provider provides latest order status 
-  #   api: on_status
-  #   details: 
-  #     - description: Ride provider provides the updated order status to the buyer app
-  #       mermaid: >-
-  #         sequenceDiagram
-  #           participant Buyer Platform (BAP)
-  #           participant Seller Platform (BPP)
-  #           Seller Platform (BPP)->>Buyer Platform (BAP): on_update
-  #           Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-  #           Buyer Platform (BAP)->>Seller Platform (BPP): status
-  #           Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-  #           rect rgb(191, 223, 255)
-  #           Seller Platform (BPP)->>Buyer Platform (BAP): on_status
-  #           Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-  #           end
-  #   reference: if any
-  #   example:
-  #     $ref: "../../examples/on-demand/on_status/on_status_9.yaml"    
-
-  - summary: Ride provider provides latest order updates 
-    api: on_status
-    details: 
-      - description: Ride provider provides the updated order status to the buyer app
-        mermaid: >-
-          sequenceDiagram
-            participant Buyer Platform (BAP)
-            participant Seller Platform (BPP)
-            Seller Platform (BPP)->>Buyer Platform (BAP): on_update
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-            Buyer Platform (BAP)->>Seller Platform (BPP): status
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            rect rgb(191, 223, 255)
-            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-            end
-    reference: if any
-    example:
-      $ref: "../../examples/on-demand/on_status/on_status_6.yaml"    
-
-
-
-
-
+      $ref: "../../examples/on-demand/on_update/on_update_4_self.yaml"
   - summary: Buyer app seeks the most recent status update
     api: status
     details: 
@@ -348,6 +307,7 @@ steps:
     reference: if any
     example:
       $ref: "../../examples/on-demand/status/status_0.yaml"                          
+  
   - summary: Ride provider provides latest order status 
     api: on_status
     details: 
@@ -366,5 +326,5 @@ steps:
             end
     reference: if any
     example:
-      $ref: "../../examples/on-demand/on_status/on_status_0.yaml"     
+      $ref: "../../examples/on-demand/on_status/on_status_7_ride_end.yaml"     
   
