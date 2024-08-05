@@ -173,6 +173,8 @@ steps:
             end
             Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
     reference: if any
     example:
       $ref: "../../examples/on-demand/confirm/confirm_0.yaml"
@@ -190,13 +192,110 @@ steps:
             Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
             end
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
     reference: if any
     example:
       $ref: "../../examples/on-demand/on_confirm/on_confirm_0.yaml"
+  
+  - summary: Ride provider provides latest order status 
+    api: on_status
+    details: 
+      - description: Ride provider provides the updated order status to the buyer app
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_status/on_status_8.yaml"
+ 
+  - summary: Buyer app requests for tracking status
+    api: track
+    details:
+      - description: Buyer app request the provider platform to provide with latest tracking status
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/track/track_0.yaml"
+  - summary: Provider platform provides latest order tracking status
+    api: on_track
+    details:
+      - description: Provider platform provides the updated order tracking status to the consumer
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_track/on_track_0.yaml"
+
+  - summary: Ride provider provides latest order status 
+    api: on_status
+    details: 
+      - description: Ride provider provides the updated order status to the buyer app
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_status/on_status_9.yaml"
+  
+  - summary: Ride provider provides latest order updates 
+    api: on_status
+    details: 
+      - description: Ride provider provides the updated order status to the buyer app
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/on-demand/on_status/on_status_6.yaml"    
+  
+  
+  
   - summary: Ride provider provides latest update on the ride (unsolicited call)
     api: on_update
     details:
-      - description: Ride provider provides the latest update on ride details to the buyer app.
+      - description: Ride provider provides the updated order updates to the buyer app & can update the quote in case of fare update
         mermaid: >-
           sequenceDiagram
             participant Buyer Platform (BAP)
@@ -250,41 +349,7 @@ steps:
   #   reference: if any
   #   example:
   #     $ref: "../../examples/on-demand/on_status/on_status_0.yaml"
-  - summary: Buyer app requests for tracking status
-    api: track
-    details:
-      - description: Buyer app request the provider platform to provide with latest tracking status
-        mermaid: >-
-          sequenceDiagram
-            participant Buyer Platform (BAP)
-            participant Seller Platform (BPP)
-            rect rgb(191, 223, 255)
-            Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            end
-            Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-    reference: if any
-    example:
-      $ref: "../../examples/on-demand/track/track_0.yaml"
-  - summary: Provider platform provides latest order tracking status
-    api: on_track
-    details:
-      - description: Provider platform provides the updated order tracking status to the consumer
-        mermaid: >-
-          sequenceDiagram
-            participant Buyer Platform (BAP)
-            participant Seller Platform (BPP)
-            Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            rect rgb(191, 223, 255)
-            Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
-            end
-    reference: if any
-    example:
-      $ref: "../../examples/on-demand/on_track/on_track_0.yaml"
-
+ 
   - summary: Buyer app seeks the most recent status update
     api: status
     details:
