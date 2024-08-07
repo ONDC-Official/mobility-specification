@@ -1,8 +1,8 @@
 
-summary: Return updated order with recomputed charges
+summary: Return confirmed order with latest fulfillment details
 value:
   context:
-    action: on_update
+    action: on_confirm
     bap_id: example-bap.com
     bap_uri: https://example-bap.com/prod/trv10
     bpp_id: example-bpp.com
@@ -14,7 +14,7 @@ value:
       country:
         code: IND
     message_id: 8926b747-0362-4fcc-b795-0994a6287700
-    timestamp: '2023-12-11T03:54:28.832Z'
+    timestamp: '2023-12-10T08:03:34.294Z'
     transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
     ttl: PT30S
     version: 2.0.1
@@ -50,26 +50,16 @@ value:
               code: RIDE_STARTED
           reason_required: true
       fulfillments:
-        - agent:
-            contact:
-              phone: '9856798567'
-            person:
-              name: Jason Roy
-          customer:
-            contact:
-              phone: '9876556789'
-            person:
-              name: Joe Adams
-          id: F1
+        - id: F1
           state:
             descriptor:
-              code: RIDE_ENDED
+              code: RIDE_CONFIRMED
           stops:
             - authorization:
                 token: '234234'
                 type: OTP
                 valid_to: '2023-12-10T08:05:34.294Z'
-                status: 'CLAIMED'
+                status: 'UNCLAIMED'
               location:
                 gps: 13.008935, 77.644408
               type: START
@@ -93,13 +83,18 @@ value:
                     code: WAYPOINTS
                     name: Waypoints
                   value: '[{"gps":"12.909982, 77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982, 77.611822"}]'
-          type: DELIVERY
+          type: SELF_PICKUP
+          customer:
+            contact:
+              phone: '9876556789'
+            person:
+              name: Joe Adams
           vehicle:
             category: AUTO_RICKSHAW
             variant: EV
-            make: Bajaj
-            model: Compact RE
-            registration: KA-01-AD-9876
+            # make: Bajaj
+            # model: Compact RE
+            # registration: KA-01-AD-9876
       id: O1
       items:
         - descriptor:
@@ -148,6 +143,17 @@ value:
                 - descriptor:
                     code: NIGHT_SHIFT_END_TIME
                   value: '05:00:00'
+            - descriptor:
+                code: INFO
+                name: General Information
+              display: true
+              list:
+                - descriptor:
+                    code: DISTANCE_TO_NEAREST_DRIVER_METER
+                  value: '661'
+                - descriptor:
+                    code: ETA_TO_NEAREST_DRIVER_MIN
+                  value: '3'
       payments:
         - collected_by: BPP
           id: PA1
@@ -208,8 +214,7 @@ value:
         price:
           currency: INR
           value: '146'
-        ttl: PT30S 
+        ttl: PT30S   
       status: ACTIVE
       created_at: '2023-12-10T08:03:34.294Z'
-      updated_at: '2023-12-11T03:54:28.832Z'
-      # update_target: order.fulfillment.agent
+      updated_at: '2023-12-10T08:03:34.294Z'

@@ -345,6 +345,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -379,6 +380,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -435,6 +437,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -470,6 +473,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -483,6 +487,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -506,6 +511,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -519,6 +525,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -542,6 +549,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -579,6 +587,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -618,6 +627,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -655,6 +665,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -692,6 +703,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -705,6 +717,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -743,6 +756,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -763,6 +777,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -1904,6 +1919,12 @@ components:
             Status of the order. Allowed values can be defined by the network
             policy
           type: string
+          enum:
+            - ACTIVE
+            - COMPLETE
+            - CANCELLED
+            - COMPLETED
+            - SOFT_CANCEL
         type:
           description: >-
             This is used to indicate the type of order being created to BPPs.
@@ -2804,8 +2825,33 @@ x-enum:
               - code: CAB
                 description: Describes the vehicle category as cab
                 reference: <PR/Issue/Discussion Links md format text
+              - code: TWO_WHEELER
+                description: Describes the vehicle category as TWO_WHEELER
+                reference: <PR/Issue/Discussion Links md format text
+            variant:
+              - code: EV
+                description: Describes the vehicle variant CAB, AUTO_RICKSHAW & TWO_WHEELER
+                reference: <PR/Issue/Discussion Links md format text
+              - code: SEDAN
+                description: Describes the vehicle variant for category type CAB
+                reference: <PR/Issue/Discussion Links md format text
+              - code: SUV
+                description: Describes the vehicle variant for category type CAB
+                reference: <PR/Issue/Discussion Links md format text
+              - code: HATCHBACK
+                description: Describes the vehicle variant for category type CAB
+                reference: <PR/Issue/Discussion Links md format text
+              - code: TWO_WHEELER
+                description: Describes the vehicle variant for category TWO_WHEELER
+                reference: <PR/Issue/Discussion Links md format text
+              - code: AUTO_RICKSHAW
+                description: Describes the vehicle variant for category AUTO_RICKSHAW
+                reference: <PR/Issue/Discussion Links md format text
           type:
             - code: DELIVERY
+              description: Describes the type of fulfillment.
+              reference: <PR/Issue/Discussion Links md format text
+            - code: SELF_PICKUP
               description: Describes the type of fulfillment.
               reference: <PR/Issue/Discussion Links md format text
           stops:
@@ -2827,6 +2873,13 @@ x-enum:
                   description: >-
                     Describes QR as an authorization mechanism used to start or
                     end the fulfillment of an order.
+                  reference: <PR/Issue/Discussion Links md format text
+              status:
+                - code: UNCLAIMED
+                  description: Describes the authorization status
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: CLAIMED
+                  description: Describes the authorization status
                   reference: <PR/Issue/Discussion Links md format text
           state: &ref_7
             descriptor:
@@ -2850,6 +2903,9 @@ x-enum:
                   description: >-
                     Describes the state when the rider has arrived at the pickup
                     location.
+                  reference: <PR/Issue/Discussion Links md format text
+                - code: RIDE_CONFIRMED
+                  description: Describes the state when the ride is confirmed.
                   reference: <PR/Issue/Discussion Links md format text
         payment: &ref_3
           status:
@@ -2943,7 +2999,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: &ref_10
+      order: &ref_11
         items: *ref_4
         fulfillments: *ref_2
         payments: *ref_3
@@ -3039,7 +3095,10 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      cancellation_reason_id:
+      cancellation_reason_id: &ref_10
+        - code: '000'
+          description: Technical cancellation(BAP/BPP)
+          reference: <PR/Issue/Discussion Links md format text
         - code: '001'
           description: Driver not moving
           reference: <PR/Issue/Discussion Links md format text
@@ -3051,6 +3110,21 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text
         - code: '004'
           description: My pickup location is incorrect
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '005'
+          description: Booked by mistake
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '011'
+          description: Seller app cannot confirm the ride as no drivers are available
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '012'
+          description: Driver does not find passenger at the location
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '013'
+          description: Driver accepted the ride mistakenly
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '014'
+          description: Unable to contact rider
           reference: <PR/Issue/Discussion Links md format text
       descriptor:
         code: *ref_5
@@ -3070,18 +3144,7 @@ x-enum:
         cancellation:
           reason:
             descriptor:
-              code:
-                - code: '011'
-                  description: >-
-                    Seller app cannot confirm the ride as no drivers are
-                    available
-                  reference: <PR/Issue/Discussion Links md format text
-                - code: '012'
-                  description: Driver does not find passenger at the location
-                  reference: <PR/Issue/Discussion Links md format text
-                - code: '013'
-                  description: Driver accepted the ride mistakenly
-                  reference: <PR/Issue/Discussion Links md format text
+              code: *ref_10
         quote: *ref_8
   update:
     context:
@@ -3092,7 +3155,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_10
+      order: *ref_11
   on_update:
     context:
       action:
@@ -3102,12 +3165,12 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_10
+      order: *ref_11
 x-tags:
   search:
     message:
       intent:
-        payment: &ref_11
+        payment: &ref_12
           tags:
             - code: BUYER_FINDER_FEES
               description: Describes the finder fees for buyer
@@ -3156,7 +3219,7 @@ x-tags:
     message:
       catalog:
         providers:
-          items: &ref_12
+          items: &ref_13
             tags:
               - code: FARE_POLICY
                 description: Details about fare for the ride
@@ -3196,12 +3259,12 @@ x-tags:
                   - code: ETA_TO_NEAREST_DRIVER_MIN
                     description: Describes the ETA to nearest driver.
                     reference: <PR/Issue/Discussion Links md format text>
-          payments: *ref_11
+          payments: *ref_12
   on_select:
     message:
       order:
-        items: *ref_12
-        fulfillments: &ref_13
+        items: *ref_13
+        fulfillments: &ref_14
           tags:
             - code: ROUTE_INFO
               description: Describes the route information.
@@ -3216,18 +3279,18 @@ x-tags:
   init:
     message:
       order:
-        payments: *ref_11
-  on_init: &ref_14
+        payments: *ref_12
+  on_init: &ref_15
     message:
       order:
-        items: *ref_12
-        payments: *ref_11
-        fulfillments: *ref_13
-  confirm: *ref_14
-  on_confirm: *ref_14
-  on_status: *ref_14
-  on_cancel: *ref_14
-  on_update: *ref_14
+        items: *ref_13
+        payments: *ref_12
+        fulfillments: *ref_14
+  confirm: *ref_15
+  on_confirm: *ref_15
+  on_status: *ref_15
+  on_cancel: *ref_15
+  on_update: *ref_15
 x-flows:
   - summary: On-Demand - Assign driver on on-confirm
     details:
@@ -3306,7 +3369,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_15
+        example: &ref_16
           summary: >-
             Search for mobility services by pickup and drop location[Seller
             Collecting]
@@ -3325,7 +3388,7 @@ x-flows:
               timestamp: '2023-12-09T13:39:56.645Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               intent:
                 fulfillment:
@@ -3376,7 +3439,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: &ref_16
+        example: &ref_17
           summary: Return a mobility catalog[Seller Collecting]
           value:
             context:
@@ -3395,7 +3458,7 @@ x-flows:
               timestamp: '2023-12-09T13:41:16.161Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               catalog:
                 descriptor:
@@ -3407,23 +3470,31 @@ x-flows:
                           - location:
                               gps: 13.008935, 77.644408
                             type: START
+                            instructions:
+                              short_desc: short description of the location
+                              long_desc: long description of the location
                           - location:
                               gps: 12.971186, 77.586812
                             type: END
                         type: DELIVERY
                         vehicle:
                           category: AUTO_RICKSHAW
+                          variant: EV
                       - id: F2
                         stops:
                           - location:
                               gps: 13.008935, 77.644408
                             type: START
+                            instructions:
+                              short_desc: short description of the location
+                              long_desc: long description of the location
                           - location:
                               gps: 12.971186, 77.586812
                             type: END
                         type: DELIVERY
                         vehicle:
                           category: CAB
+                          variant: SEDAN
                     id: P1
                     items:
                       - descriptor:
@@ -3517,7 +3588,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_17
+        example: &ref_18
           summary: Get quote for a specific product from a mobility catalog
           value:
             context:
@@ -3536,7 +3607,7 @@ x-flows:
               timestamp: '2023-12-09T13:49:01.460Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: P120S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 items:
@@ -3560,7 +3631,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_18
+        example: &ref_19
           summary: Return a quote offered by a provider
           value:
             context:
@@ -3579,7 +3650,7 @@ x-flows:
               timestamp: '2023-12-09T13:49:26.132Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 fulfillments:
@@ -3588,6 +3659,9 @@ x-flows:
                       - location:
                           gps: 13.008935, 77.644408
                         type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
                       - location:
                           gps: 12.971186, 77.586812
                         type: END
@@ -3611,6 +3685,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                 items:
                   - descriptor:
                       code: RIDE
@@ -3700,7 +3775,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_19
+        example: &ref_20
           summary: >-
             Initialize draft order and request for terms of service[Seller
             Collecting]
@@ -3721,7 +3796,7 @@ x-flows:
               timestamp: '2023-12-09T14:09:31.307Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 billing:
@@ -3742,6 +3817,7 @@ x-flows:
                         type: END
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                 items:
                   - id: I1
                 payments:
@@ -3804,7 +3880,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_20
+        example: &ref_21
           summary: Return draft order with payment terms[Seller Collecting]
           value:
             context:
@@ -3823,7 +3899,7 @@ x-flows:
               timestamp: '2023-12-09T14:11:32.859Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 cancellation_terms:
@@ -3866,6 +3942,9 @@ x-flows:
                       - location:
                           gps: 13.008935, 77.644408
                         type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
                       - location:
                           gps: 12.971186, 77.586812
                         type: END
@@ -3889,6 +3968,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                 items:
                   - descriptor:
                       code: RIDE
@@ -4024,8 +4104,10 @@ x-flows:
                 end
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_21
+        example: &ref_22
           summary: Confirm ride booking
           value:
             context:
@@ -4044,7 +4126,7 @@ x-flows:
               timestamp: '2023-12-10T04:34:48.031Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 billing:
@@ -4065,6 +4147,7 @@ x-flows:
                         type: END
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                 items:
                   - id: I1
                 payments:
@@ -4130,8 +4213,10 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_25
+        example: &ref_29
           summary: Return confirmed order with latest fulfillment details
           value:
             context:
@@ -4150,7 +4235,7 @@ x-flows:
               timestamp: '2023-12-10T08:03:34.294Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 cancellation_terms:
@@ -4201,9 +4286,14 @@ x-flows:
                       - authorization:
                           token: '234234'
                           type: OTP
+                          valid_to: '2023-12-10T08:05:34.294Z'
+                          status: UNCLAIMED
                         location:
                           gps: 13.008935, 77.644408
                         type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
                       - location:
                           gps: 12.971186, 77.586812
                         type: END
@@ -4227,6 +4317,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -4353,12 +4444,826 @@ x-flows:
                 status: ACTIVE
                 created_at: '2023-12-10T08:03:34.294Z'
                 updated_at: '2023-12-10T08:03:34.294Z'
+      - summary: Ride provider provides latest order status
+        api: on_status
+        details:
+          - description: Ride provider provides the updated order status to the buyer app
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example: &ref_25
+          summary: Return updated order with updated agent details
+          value:
+            context:
+              action: on_status
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 5ee2001f-e612-431d-9e07-49574af60e88
+              timestamp: '2023-03-23T04:49:34.53Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              order:
+                cancellation_terms:
+                  - cancellation_fee:
+                      percentage: '0'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ASSIGNED
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '30'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ENROUTE_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '50'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ARRIVED_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      percentage: '100'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_STARTED
+                    reason_required: true
+                fulfillments:
+                  - agent:
+                      contact:
+                        phone: '9856798567'
+                      person:
+                        name: Jason Roy
+                    customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
+                    id: F1
+                    state:
+                      descriptor:
+                        code: RIDE_ENROUTE_PICKUP
+                    stops:
+                      - authorization:
+                          token: '234234'
+                          type: OTP
+                          valid_to: '2023-12-10T08:05:34.294Z'
+                          status: UNCLAIMED
+                        location:
+                          gps: 13.008935, 77.644408
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
+                        type: START
+                      - location:
+                          gps: 12.971186, 77.586812
+                        type: END
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                          name: Route Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: ENCODED_POLYLINE
+                              name: Path
+                            value: _p~iF~ps|U_ulLnnqC_mqNvxq`@
+                          - descriptor:
+                              code: WAYPOINTS
+                              name: Waypoints
+                            value: >-
+                              [{"gps":"12.909982,
+                              77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
+                              77.611822"}]
+                    type: DELIVERY
+                    vehicle:
+                      category: AUTO_RICKSHAW
+                      variant: EV
+                      make: Bajaj
+                      model: Compact RE
+                      registration: KA-01-AD-9876
+                id: O1
+                items:
+                  - descriptor:
+                      code: RIDE
+                      name: Auto Ride
+                    fulfillment_ids:
+                      - F1
+                    id: I1
+                    location_ids:
+                      - L1
+                      - L3
+                    payment_ids:
+                      - PA1
+                    price:
+                      currency: INR
+                      maximum_value: '176'
+                      minimum_value: '136'
+                      value: '146'
+                    tags:
+                      - descriptor:
+                          code: FARE_POLICY
+                          name: Daytime Charges
+                        display: true
+                        list:
+                          - descriptor:
+                              code: MIN_FARE
+                            value: '30'
+                          - descriptor:
+                              code: MIN_FARE_DISTANCE_KM
+                            value: '2'
+                          - descriptor:
+                              code: PER_KM_CHARGE
+                            value: '15'
+                          - descriptor:
+                              code: PICKUP_CHARGE
+                            value: '10'
+                          - descriptor:
+                              code: WAITING_CHARGE_PER_MIN
+                            value: '2'
+                          - descriptor:
+                              code: NIGHT_CHARGE_MULTIPLIER
+                            value: '1.5'
+                          - descriptor:
+                              code: NIGHT_SHIFT_START_TIME
+                            value: '22:00:00'
+                          - descriptor:
+                              code: NIGHT_SHIFT_END_TIME
+                            value: '05:00:00'
+                      - descriptor:
+                          code: INFO
+                          name: General Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: DISTANCE_TO_NEAREST_DRIVER_METER
+                            value: '661'
+                          - descriptor:
+                              code: ETA_TO_NEAREST_DRIVER_MIN
+                            value: '3'
+                payments:
+                  - collected_by: BPP
+                    id: PA1
+                    params:
+                      bank_account_number: xxxxxxxxxxxxxx
+                      bank_code: XXXXXXXX
+                      virtual_payment_address: 9988199772@okicic
+                    status: NOT-PAID
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '5'
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT2D
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: DELIVERY
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://example-test-bpp.com/static-terms.txt
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '1.46'
+                    type: ON-FULFILLMENT
+                provider:
+                  id: P1
+                quote:
+                  breakup:
+                    - price:
+                        currency: INR
+                        value: '30'
+                      title: BASE_FARE
+                    - price:
+                        currency: INR
+                        value: '116'
+                      title: DISTANCE_FARE
+                  price:
+                    currency: INR
+                    value: '146'
+                  ttl: PT30S
+                status: ACTIVE
+                created_at: '2023-03-23T04:48:34.53Z'
+                updated_at: '2023-03-23T04:49:34.53Z'
+      - summary: Buyer app requests for tracking status
+        api: track
+        details:
+          - description: >-
+              Buyer app request the provider platform to provide with latest
+              tracking status
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example: &ref_23
+          summary: Track an active ride
+          value:
+            context:
+              action: track
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 8926b747-0362-4fcc-b795-0994a6287700
+              timestamp: '2023-03-23T04:48:53Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              order_id: O1
+      - summary: Provider platform provides latest order tracking status
+        api: on_track
+        details:
+          - description: >-
+              Provider platform provides the updated order tracking status to
+              the consumer
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+                end
+        reference: if any
+        example: &ref_24
+          summary: Return tracking information for an order
+          value:
+            context:
+              action: on_track
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: ec3dea8c-c64c-4f06-b2a0-ec1f9584d7ba
+              timestamp: '2023-03-23T05:41:09Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              tracking:
+                status: active
+                location:
+                  gps: 28.620976, 77.046732
+                  updated_at: '2023-03-23T05:41:09Z'
+      - summary: Ride provider provides latest order status
+        api: on_status
+        details:
+          - description: Ride provider provides the updated order status to the buyer app
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                
+        reference: if any
+        example: &ref_26
+          summary: Return updated order with updated agent details
+          value:
+            context:
+              action: on_status
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 94e0ac3d-7191-4a8b-b987-4f6fa79559cf
+              timestamp: '2023-03-23T04:49:34.53Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              order:
+                cancellation_terms:
+                  - cancellation_fee:
+                      percentage: '0'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ASSIGNED
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '30'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ENROUTE_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '50'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ARRIVED_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      percentage: '100'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_STARTED
+                    reason_required: true
+                fulfillments:
+                  - agent:
+                      contact:
+                        phone: '9856798567'
+                      person:
+                        name: Jason Roy
+                    customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
+                    id: F1
+                    state:
+                      descriptor:
+                        code: RIDE_ARRIVED_PICKUP
+                    stops:
+                      - authorization:
+                          token: '234234'
+                          type: OTP
+                          valid_to: '2023-12-10T08:05:34.294Z'
+                          status: UNCLAIMED
+                        location:
+                          gps: 13.008935, 77.644408
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
+                        type: START
+                      - location:
+                          gps: 12.971186, 77.586812
+                        type: END
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                          name: Route Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: ENCODED_POLYLINE
+                              name: Path
+                            value: _p~iF~ps|U_ulLnnqC_mqNvxq`@
+                          - descriptor:
+                              code: WAYPOINTS
+                              name: Waypoints
+                            value: >-
+                              [{"gps":"12.909982,
+                              77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
+                              77.611822"}]
+                    type: DELIVERY
+                    vehicle:
+                      category: AUTO_RICKSHAW
+                      variant: EV
+                      make: Bajaj
+                      model: Compact RE
+                      registration: KA-01-AD-9876
+                id: O1
+                items:
+                  - descriptor:
+                      code: RIDE
+                      name: Auto Ride
+                    fulfillment_ids:
+                      - F1
+                    id: I1
+                    location_ids:
+                      - L1
+                      - L3
+                    payment_ids:
+                      - PA1
+                    price:
+                      currency: INR
+                      maximum_value: '176'
+                      minimum_value: '136'
+                      value: '146'
+                    tags:
+                      - descriptor:
+                          code: FARE_POLICY
+                          name: Daytime Charges
+                        display: true
+                        list:
+                          - descriptor:
+                              code: MIN_FARE
+                            value: '30'
+                          - descriptor:
+                              code: MIN_FARE_DISTANCE_KM
+                            value: '2'
+                          - descriptor:
+                              code: PER_KM_CHARGE
+                            value: '15'
+                          - descriptor:
+                              code: PICKUP_CHARGE
+                            value: '10'
+                          - descriptor:
+                              code: WAITING_CHARGE_PER_MIN
+                            value: '2'
+                          - descriptor:
+                              code: NIGHT_CHARGE_MULTIPLIER
+                            value: '1.5'
+                          - descriptor:
+                              code: NIGHT_SHIFT_START_TIME
+                            value: '22:00:00'
+                          - descriptor:
+                              code: NIGHT_SHIFT_END_TIME
+                            value: '05:00:00'
+                      - descriptor:
+                          code: INFO
+                          name: General Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: DISTANCE_TO_NEAREST_DRIVER_METER
+                            value: '661'
+                          - descriptor:
+                              code: ETA_TO_NEAREST_DRIVER_MIN
+                            value: '3'
+                payments:
+                  - collected_by: BPP
+                    id: PA1
+                    params:
+                      bank_account_number: xxxxxxxxxxxxxx
+                      bank_code: XXXXXXXX
+                      virtual_payment_address: 9988199772@okicic
+                    status: NOT-PAID
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '5'
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT2D
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: DELIVERY
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://example-test-bpp.com/static-terms.txt
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '1.46'
+                    type: ON-FULFILLMENT
+                provider:
+                  id: P1
+                quote:
+                  breakup:
+                    - price:
+                        currency: INR
+                        value: '30'
+                      title: BASE_FARE
+                    - price:
+                        currency: INR
+                        value: '116'
+                      title: DISTANCE_FARE
+                  price:
+                    currency: INR
+                    value: '146'
+                  ttl: PT30S
+                status: ACTIVE
+                created_at: '2023-03-23T04:48:34.53Z'
+                updated_at: '2023-03-23T04:49:34.53Z'
+      - summary: Ride provider provides latest order updates
+        api: on_status
+        details:
+          - description: Ride provider provides the updated order status to the buyer app
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example: &ref_27
+          summary: Return updated order with updated agent details
+          value:
+            context:
+              action: on_status
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 94e0ac3d-7191-4a8b-b987-4f6fa79559cf
+              timestamp: '2023-03-23T04:49:34.53Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              order:
+                cancellation_terms:
+                  - cancellation_fee:
+                      percentage: '0'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ASSIGNED
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '30'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ENROUTE_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '50'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ARRIVED_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      percentage: '100'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_STARTED
+                    reason_required: true
+                fulfillments:
+                  - agent:
+                      contact:
+                        phone: '9856798567'
+                      person:
+                        name: Jason Roy
+                    customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
+                    id: F1
+                    state:
+                      descriptor:
+                        code: RIDE_STARTED
+                    stops:
+                      - authorization:
+                          token: '234234'
+                          type: OTP
+                          valid_to: '2023-12-10T08:05:34.294Z'
+                          status: CLAIMED
+                        location:
+                          gps: 13.008935, 77.644408
+                        type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
+                      - location:
+                          gps: 12.971186, 77.586812
+                        type: END
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                          name: Route Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: ENCODED_POLYLINE
+                              name: Path
+                            value: _p~iF~ps|U_ulLnnqC_mqNvxq`@
+                          - descriptor:
+                              code: WAYPOINTS
+                              name: Waypoints
+                            value: >-
+                              [{"gps":"12.909982,
+                              77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
+                              77.611822"}]
+                    type: DELIVERY
+                    vehicle:
+                      category: AUTO_RICKSHAW
+                      variant: EV
+                      make: Bajaj
+                      model: Compact RE
+                      registration: KA-01-AD-9876
+                id: O1
+                items:
+                  - descriptor:
+                      code: RIDE
+                      name: Auto Ride
+                    fulfillment_ids:
+                      - F1
+                    id: I1
+                    location_ids:
+                      - L1
+                      - L3
+                    payment_ids:
+                      - PA1
+                    price:
+                      currency: INR
+                      maximum_value: '176'
+                      minimum_value: '136'
+                      value: '146'
+                    tags:
+                      - descriptor:
+                          code: FARE_POLICY
+                          name: Daytime Charges
+                        display: true
+                        list:
+                          - descriptor:
+                              code: MIN_FARE
+                            value: '30'
+                          - descriptor:
+                              code: MIN_FARE_DISTANCE_KM
+                            value: '2'
+                          - descriptor:
+                              code: PER_KM_CHARGE
+                            value: '15'
+                          - descriptor:
+                              code: PICKUP_CHARGE
+                            value: '10'
+                          - descriptor:
+                              code: WAITING_CHARGE_PER_MIN
+                            value: '2'
+                          - descriptor:
+                              code: NIGHT_CHARGE_MULTIPLIER
+                            value: '1.5'
+                          - descriptor:
+                              code: NIGHT_SHIFT_START_TIME
+                            value: '22:00:00'
+                          - descriptor:
+                              code: NIGHT_SHIFT_END_TIME
+                            value: '05:00:00'
+                      - descriptor:
+                          code: INFO
+                          name: General Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: DISTANCE_TO_NEAREST_DRIVER_METER
+                            value: '661'
+                          - descriptor:
+                              code: ETA_TO_NEAREST_DRIVER_MIN
+                            value: '3'
+                payments:
+                  - collected_by: BPP
+                    id: PA1
+                    params:
+                      bank_account_number: xxxxxxxxxxxxxx
+                      bank_code: XXXXXXXX
+                      virtual_payment_address: 9988199772@okicic
+                    status: NOT-PAID
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '5'
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT2D
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: DELIVERY
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://example-test-bpp.com/static-terms.txt
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '1.46'
+                    type: ON-FULFILLMENT
+                provider:
+                  id: P1
+                quote:
+                  breakup:
+                    - price:
+                        currency: INR
+                        value: '30'
+                      title: BASE_FARE
+                    - price:
+                        currency: INR
+                        value: '116'
+                      title: DISTANCE_FARE
+                  price:
+                    currency: INR
+                    value: '146'
+                  ttl: PT30S
+                status: ACTIVE
+                created_at: '2023-03-23T04:48:34.53Z'
+                updated_at: '2023-03-23T04:49:34.53Z'
       - summary: Ride provider provides latest update on the ride (unsolicited call)
         api: on_update
         details:
           - description: >-
-              Ride provider provides the latest update on ride details to the
-              buyer app.
+              Ride provider provides the updated order updates to the buyer app
+              & can update the quote in case of fare update
             mermaid: |-
               sequenceDiagram
                 participant Buyer Platform (BAP)
@@ -4372,7 +5277,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_32
+        example: &ref_36
           summary: Return updated order with recomputed charges
           value:
             context:
@@ -4391,7 +5296,7 @@ x-flows:
               timestamp: '2023-12-11T03:54:28.832Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 cancellation_terms:
@@ -4439,9 +5344,17 @@ x-flows:
                       descriptor:
                         code: RIDE_ENDED
                     stops:
-                      - location:
+                      - authorization:
+                          token: '234234'
+                          type: OTP
+                          valid_to: '2023-12-10T08:05:34.294Z'
+                          status: CLAIMED
+                        location:
                           gps: 13.008935, 77.644408
                         type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
                       - location:
                           gps: 12.971186, 77.586812
                         type: END
@@ -4465,6 +5378,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -4577,91 +5491,9 @@ x-flows:
                     currency: INR
                     value: '146'
                   ttl: PT30S
-                status: COMPLETED
+                status: ACTIVE
                 created_at: '2023-12-10T08:03:34.294Z'
                 updated_at: '2023-12-11T03:54:28.832Z'
-      - summary: Buyer app requests for tracking status
-        api: track
-        details:
-          - description: >-
-              Buyer app request the provider platform to provide with latest
-              tracking status
-            mermaid: |-
-              sequenceDiagram
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                rect rgb(191, 223, 255)
-                Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                end
-                Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-        reference: if any
-        example: &ref_22
-          summary: Track an active ride
-          value:
-            context:
-              action: track
-              bap_id: example-bap.com
-              bap_uri: https://example-bap.com/prod/trv10
-              bpp_id: example-bpp.com
-              bpp_uri: https://example-bpp.com/prod/seller
-              domain: ONDC:TRV10
-              location:
-                city:
-                  code: std:080
-                country:
-                  code: IND
-              message_id: 8926b747-0362-4fcc-b795-0994a6287700
-              timestamp: '2023-03-23T04:48:53Z'
-              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-              ttl: PT30S
-              version: 2.0.0
-            message:
-              order_id: O1
-      - summary: Provider platform provides latest order tracking status
-        api: on_track
-        details:
-          - description: >-
-              Provider platform provides the updated order tracking status to
-              the consumer
-            mermaid: |-
-              sequenceDiagram
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                rect rgb(191, 223, 255)
-                Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
-                end
-        reference: if any
-        example: &ref_23
-          summary: Return tracking information for an order
-          value:
-            context:
-              action: on_track
-              bap_id: example-bap.com
-              bap_uri: https://example-bap.com/prod/trv10
-              bpp_id: example-bpp.com
-              bpp_uri: https://example-bpp.com/prod/seller
-              domain: ONDC:TRV10
-              location:
-                city:
-                  code: std:080
-                country:
-                  code: IND
-              message_id: ec3dea8c-c64c-4f06-b2a0-ec1f9584d7ba
-              timestamp: '2023-03-23T05:41:09Z'
-              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-              ttl: PT30S
-              version: 2.0.0
-            message:
-              tracking:
-                status: active
-                location:
-                  gps: 28.620976, 77.046732
-                  updated_at: '2023-03-23T05:41:09Z'
       - summary: Buyer app seeks the most recent status update
         api: status
         details:
@@ -4681,7 +5513,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_24
+        example: &ref_28
           summary: Get latest fulfillment status of a booking
           value:
             context:
@@ -4700,7 +5532,7 @@ x-flows:
               timestamp: '2023-03-23T04:48:53Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order_id: O1
       - summary: Ride provider provides latest order status
@@ -4739,7 +5571,7 @@ x-flows:
               timestamp: '2023-03-23T04:48:59Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 id: O1
@@ -4789,9 +5621,17 @@ x-flows:
                         code: RIDE_ENDED
                         name: Your ride has ended
                     stops:
-                      - location:
+                      - authorization:
+                          token: '234234'
+                          type: OTP
+                          valid_to: '2023-12-10T08:05:34.294Z'
+                          status: CLAIMED
+                        location:
                           gps: 13.008935, 77.644408
                         type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
                       - location:
                           gps: 12.971186, 77.586812
                         type: END
@@ -4815,6 +5655,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -4883,7 +5724,6 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                      transaction_id: f08966dc-4c7d-4152-9a15-1046798cc39c
                       amount: '146'
                     status: PAID
                     tags:
@@ -4938,7 +5778,7 @@ x-flows:
                   price:
                     currency: INR
                     value: '146'
-                  ttl: P200S
+                  ttl: PT30S
                 status: COMPLETED
                 created_at: '2023-12-10T08:03:34.294Z'
                 updated_at: '2023-12-11T03:54:28.832Z'
@@ -5019,7 +5859,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_15
+        example: *ref_16
       - summary: Get a list of all services from ride providers
         api: on_search
         details:
@@ -5040,7 +5880,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_16
+        example: *ref_17
       - summary: Buyer app selects a specific service for more details
         api: select
         details:
@@ -5060,7 +5900,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_17
+        example: *ref_18
       - summary: Ride provider provides the quote for selected service
         api: on_select
         details:
@@ -5078,7 +5918,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_18
+        example: *ref_19
       - summary: Buyer app initializes the ride request
         api: init
         details:
@@ -5096,7 +5936,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_19
+        example: *ref_20
       - summary: Ride provider accepts/appends the terms of orders
         api: on_init
         details:
@@ -5114,7 +5954,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end  
         reference: if any
-        example: *ref_20
+        example: *ref_21
       - summary: Buyer app confirms the ride
         api: confirm
         details:
@@ -5132,7 +5972,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_21
+        example: *ref_22
       - summary: Ride provider confirms the ride request
         api: on_confirm
         details:
@@ -5150,7 +5990,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_30
+        example: &ref_34
           summary: Return confirmed order with latest fulfillment details
           value:
             context:
@@ -5169,7 +6009,7 @@ x-flows:
               timestamp: '2023-03-23T04:48:34.53Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 cancellation_terms:
@@ -5215,6 +6055,9 @@ x-flows:
                       - location:
                           gps: 13.008935, 77.644408
                         type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
                       - location:
                           gps: 12.971186, 77.586812
                         type: END
@@ -5238,9 +6081,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      make: Bajaj
-                      model: Compact RE
-                      registration: KA-01-AD-9876
+                      variant: EV
                 id: O1
                 items:
                   - descriptor:
@@ -5383,7 +6224,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_33
+        example: &ref_37
           summary: Return updated order with updated agent details
           value:
             context:
@@ -5402,7 +6243,7 @@ x-flows:
               timestamp: '2023-03-23T04:49:34.53Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 cancellation_terms:
@@ -5453,6 +6294,8 @@ x-flows:
                       - authorization:
                           token: '234234'
                           type: OTP
+                          valid_to: '2023-12-10T08:05:34.294Z'
+                          status: UNCLAIMED
                         location:
                           gps: 13.008935, 77.644408
                         type: START
@@ -5479,6 +6322,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -5622,7 +6466,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_22
+        example: *ref_23
       - summary: Provider platform provides latest order tracking status
         api: on_track
         details:
@@ -5639,26 +6483,6 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
                 end
-        reference: if any
-        example: *ref_23
-      - summary: Buyer app seeks the most recent status update
-        api: status
-        details:
-          - description: >-
-              Buyer app requests the ride provider to provide the latest order
-              status
-            mermaid: |-
-              sequenceDiagram
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-                rect rgb(191, 223, 255)
-                Buyer Platform (BAP)->>Seller Platform (BPP): status
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                end
-                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example: *ref_24
       - summary: Ride provider provides latest order status
@@ -5678,7 +6502,81 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_31
+        example: *ref_25
+      - summary: Ride provider provides latest order status
+        api: on_status
+        details:
+          - description: Ride provider provides the updated order status to the buyer app
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example: *ref_26
+      - summary: Ride provider provides latest order updates
+        api: on_status
+        details:
+          - description: Ride provider provides the updated order status to the buyer app
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example: *ref_27
+      - summary: Buyer app seeks the most recent status update
+        api: status
+        details:
+          - description: >-
+              Buyer app requests the ride provider to provide the latest order
+              status
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example: *ref_28
+      - summary: Ride provider provides latest order status
+        api: on_status
+        details:
+          - description: Ride provider provides the updated order status to the buyer app
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example: &ref_35
           summary: Return order with status - Driver at pickup
           value:
             context:
@@ -5697,7 +6595,7 @@ x-flows:
               timestamp: '2023-03-23T04:48:59Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 id: O1
@@ -5747,9 +6645,17 @@ x-flows:
                         code: RIDE_ENDED
                         name: Your ride has ended
                     stops:
-                      - location:
+                      - authorization:
+                          token: '234234'
+                          type: OTP
+                          valid_to: '2023-12-10T08:05:34.294Z'
+                          status: CLAIMED
+                        location:
                           gps: 13.008935, 77.644408
                         type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
                       - location:
                           gps: 12.971186, 77.586812
                         type: END
@@ -5773,6 +6679,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -5841,7 +6748,6 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                      transaction_id: f08966dc-4c7d-4152-9a15-1046798cc39c
                       amount: '146'
                     status: PAID
                     tags:
@@ -5900,6 +6806,2147 @@ x-flows:
                 status: COMPLETED
                 created_at: '2023-03-23T04:48:34.53Z'
                 updated_at: '2023-03-23T04:49:34.53Z'
+  - summary: On-Demand - Assign driver post on-confirm(Self-Pickup)
+    details:
+      - description: >-
+          The illustraive flow to perform a transaction of the nature where in a
+          buyer would like to book a mobility service form location
+          A(gps-cordinates) to localtion B(gps-cordinates)
+        mermaid: |-
+          sequenceDiagram
+            title On-Demand Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+      - description: Ordering
+        mermaid: |-
+          sequenceDiagram
+            title Selection
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+      - description: Initializing the order
+        mermaid: |-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+      - description: Order Confirmation
+        mermaid: |-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+      - description: Fulfillment
+        mermaid: |-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK       
+    steps:
+      - summary: Buyer app search for available ride providers
+        api: search
+        details:
+          - description: >-
+              Buyer app explore ride providers to avail a mobility service from
+              Location A to Location B (GPS) over the network.
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+        reference: if any
+        example: *ref_16
+      - summary: Get a list of all services from ride providers
+        api: on_search
+        details:
+          - description: >-
+              Ride providers which is a mobility provider platform sends the
+              catalog of all services that can be used for transit from A to B
+              along with estimated fare.
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+                end
+        reference: if any
+        example:
+          summary: Return a mobility catalog[Seller Collecting]
+          value:
+            context:
+              action: on_search
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 21e54d3c-9c3b-47c1-aa3b-b0e7b20818ee
+              timestamp: '2023-12-09T13:41:16.161Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              catalog:
+                descriptor:
+                  name: Mobility Servies BPP
+                providers:
+                  - fulfillments:
+                      - id: F1
+                        stops:
+                          - location:
+                              gps: 13.008935, 77.644408
+                            type: START
+                            instructions:
+                              short_desc: short description of the location
+                              long_desc: long description of the location
+                          - location:
+                              gps: 12.971186, 77.586812
+                            type: END
+                        type: SELF_PICKUP
+                        vehicle:
+                          category: AUTO_RICKSHAW
+                          variant: EV
+                      - id: F2
+                        stops:
+                          - location:
+                              gps: 13.008935, 77.644408
+                            type: START
+                            instructions:
+                              short_desc: short description of the location
+                              long_desc: long description of the location
+                          - location:
+                              gps: 12.971186, 77.586812
+                            type: END
+                        type: SELF_PICKUP
+                        vehicle:
+                          category: CAB
+                          variant: SEDAN
+                    id: P1
+                    items:
+                      - descriptor:
+                          code: RIDE
+                          name: Auto Ride
+                        fulfillment_ids:
+                          - F1
+                        id: I1
+                        location_ids:
+                          - L1
+                          - L3
+                        price:
+                          currency: INR
+                          maximum_value: '176'
+                          minimum_value: '136'
+                          value: '146'
+                      - descriptor:
+                          code: RIDE
+                          name: CAB Economy Ride
+                        fulfillment_ids:
+                          - F2
+                        id: I2
+                        location_ids:
+                          - L2
+                          - L4
+                        price:
+                          currency: INR
+                          maximum_value: '236'
+                          minimum_value: '206'
+                          value: '206'
+                    locations:
+                      - gps: 12.916468,77.608998
+                        id: L1
+                      - gps: 12.916714,77.609298
+                        id: L2
+                      - gps: 12.916573,77.615216
+                        id: L3
+                      - gps: 12.906857,77.604456
+                        id: L4
+                    payments:
+                      - collected_by: BPP
+                        tags:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: BUYER_FINDER_FEES_PERCENTAGE
+                                value: '1'
+                          - descriptor:
+                              code: SETTLEMENT_TERMS
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: SETTLEMENT_WINDOW
+                                value: PT60M
+                              - descriptor:
+                                  code: SETTLEMENT_BASIS
+                                value: DELIVERY
+                              - descriptor:
+                                  code: SETTLEMENT_TYPE
+                                value: UPI
+                              - descriptor:
+                                  code: MANDATORY_ARBITRATION
+                                value: 'true'
+                              - descriptor:
+                                  code: COURT_JURISDICTION
+                                value: New Delhi
+                              - descriptor:
+                                  code: DELAY_INTEREST
+                                value: '5'
+                              - descriptor:
+                                  code: STATIC_TERMS
+                                value: https://example-test-bpp.com/static-terms.txt
+      - summary: Buyer app selects a specific service for more details
+        api: select
+        details:
+          - description: >-
+              The buyer app has selected a specific service and would like to
+              obtain a quotation for that service. Since the max_callbacks is
+              set to 1, the consumer platform will consider only one on_select
+              response for the quotation.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: Get quote for a specific product from a mobility catalog
+          value:
+            context:
+              action: select
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 432fdfd6-0457-47b6-9fac-80cbe5c0a75b
+              timestamp: '2023-12-09T13:49:01.460Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: P120S
+              version: 2.0.1
+            message:
+              order:
+                items:
+                  - id: I1
+                provider:
+                  id: P1
+      - summary: Ride provider provides the quote for selected service
+        api: on_select
+        details:
+          - description: >-
+              Ride provider responds with detailed information and quote for the
+              specific service that the buyer app would like to avail.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end 
+        reference: if any
+        example:
+          summary: Return a quote offered by a provider
+          value:
+            context:
+              action: on_select
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 8926b747-0362-4fcc-b795-0994a6287700
+              timestamp: '2023-12-09T13:49:26.132Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              order:
+                fulfillments:
+                  - id: F1
+                    stops:
+                      - location:
+                          gps: 13.008935, 77.644408
+                        type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
+                      - location:
+                          gps: 12.971186, 77.586812
+                        type: END
+                    type: DELIVERY
+                    vehicle:
+                      category: AUTO_RICKSHAW
+                      variant: EV
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                          name: Route Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: ENCODED_POLYLINE
+                              name: Path
+                            value: _p~iF~ps|U_ulLnnqC_mqNvxq`@
+                          - descriptor:
+                              code: WAYPOINTS
+                              name: Waypoints
+                            value: >-
+                              [{"gps":"12.909982,
+                              77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
+                              77.611822"}]
+                items:
+                  - descriptor:
+                      code: RIDE
+                      name: Auto Ride
+                    fulfillment_ids:
+                      - F1
+                    id: I1
+                    location_ids:
+                      - L1
+                      - L3
+                    price:
+                      currency: INR
+                      maximum_value: '176'
+                      minimum_value: '136'
+                      value: '146'
+                    tags:
+                      - descriptor:
+                          code: FARE_POLICY
+                          name: Daytime Charges
+                        display: true
+                        list:
+                          - descriptor:
+                              code: MIN_FARE
+                            value: '30'
+                          - descriptor:
+                              code: MIN_FARE_DISTANCE_KM
+                            value: '2'
+                          - descriptor:
+                              code: PER_KM_CHARGE
+                            value: '15'
+                          - descriptor:
+                              code: PICKUP_CHARGE
+                            value: '10'
+                          - descriptor:
+                              code: WAITING_CHARGE_PER_MIN
+                            value: '2'
+                          - descriptor:
+                              code: NIGHT_CHARGE_MULTIPLIER
+                            value: '1.5'
+                          - descriptor:
+                              code: NIGHT_SHIFT_START_TIME
+                            value: '22:00:00'
+                          - descriptor:
+                              code: NIGHT_SHIFT_END_TIME
+                            value: '05:00:00'
+                      - descriptor:
+                          code: INFO
+                          name: General Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: DISTANCE_TO_NEAREST_DRIVER_METER
+                            value: '661'
+                          - descriptor:
+                              code: ETA_TO_NEAREST_DRIVER_MIN
+                            value: '3'
+                provider:
+                  id: P1
+                quote:
+                  breakup:
+                    - price:
+                        currency: INR
+                        value: '30'
+                      title: BASE_FARE
+                    - price:
+                        currency: INR
+                        value: '116'
+                      title: DISTANCE_FARE
+                  price:
+                    currency: INR
+                    value: '146'
+                  ttl: P200s
+      - summary: Buyer app initializes the ride request
+        api: init
+        details:
+          - description: >-
+              Buyer app platform shares the terms of order and initializes the
+              request.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: >-
+            Initialize draft order and request for terms of service[Seller
+            Collecting]
+          value:
+            context:
+              action: init
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 8926b747-0362-4fcc-b795-0994a6287700
+              timestamp: '2023-12-09T14:09:31.307Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              order:
+                billing:
+                  name: Joe Adams
+                fulfillments:
+                  - customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
+                    id: F1
+                    stops:
+                      - location:
+                          gps: 13.008935, 77.644408
+                        type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
+                      - location:
+                          gps: 12.971186, 77.586812
+                        type: END
+                    type: SELF_PICKUP
+                    vehicle:
+                      category: AUTO_RICKSHAW
+                      variant: EV
+                items:
+                  - id: I1
+                payments:
+                  - collected_by: BPP
+                    params:
+                      bank_account_number: xxxxxxxxxxxxxx
+                      bank_code: XXXXXXXX
+                      virtual_payment_address: 9988199772@okicic
+                    status: NOT-PAID
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT60M
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: DELIVERY
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '5'
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://example-test-bpp.com/static-terms.txt
+                    type: ON-FULFILLMENT
+                provider:
+                  id: P1
+      - summary: Ride provider accepts/appends the terms of orders
+        api: on_init
+        details:
+          - description: >-
+              Ride provider accepts the terms of order and appends its own terms
+              and responds with the final draft.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end  
+        reference: if any
+        example:
+          summary: Return draft order with payment terms[Seller Collecting]
+          value:
+            context:
+              action: on_init
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 8926b747-0362-4fcc-b795-0994a6287700
+              timestamp: '2023-12-09T14:11:32.859Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              order:
+                cancellation_terms:
+                  - cancellation_fee:
+                      percentage: '0'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ASSIGNED
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '30'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ENROUTE_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '50'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ARRIVED_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      percentage: '100'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_STARTED
+                    reason_required: true
+                fulfillments:
+                  - id: F1
+                    customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
+                    stops:
+                      - location:
+                          gps: 13.008935, 77.644408
+                        type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
+                      - location:
+                          gps: 12.971186, 77.586812
+                        type: END
+                    type: SELF_PICKUP
+                    vehicle:
+                      category: AUTO_RICKSHAW
+                      variant: EV
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                          name: Route Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: ENCODED_POLYLINE
+                              name: Path
+                            value: _p~iF~ps|U_ulLnnqC_mqNvxq`@
+                          - descriptor:
+                              code: WAYPOINTS
+                              name: Waypoints
+                            value: >-
+                              [{"gps":"12.909982,
+                              77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
+                              77.611822"}]
+                items:
+                  - descriptor:
+                      code: RIDE
+                      name: Auto Ride
+                    fulfillment_ids:
+                      - F1
+                    id: I1
+                    location_ids:
+                      - L1
+                      - L3
+                    payment_ids:
+                      - PA1
+                    price:
+                      currency: INR
+                      maximum_value: '176'
+                      minimum_value: '136'
+                      value: '146'
+                    tags:
+                      - descriptor:
+                          code: FARE_POLICY
+                          name: Daytime Charges
+                        display: true
+                        list:
+                          - descriptor:
+                              code: MIN_FARE
+                            value: '30'
+                          - descriptor:
+                              code: MIN_FARE_DISTANCE_KM
+                            value: '2'
+                          - descriptor:
+                              code: PER_KM_CHARGE
+                            value: '15'
+                          - descriptor:
+                              code: PICKUP_CHARGE
+                            value: '10'
+                          - descriptor:
+                              code: WAITING_CHARGE_PER_MIN
+                            value: '2'
+                          - descriptor:
+                              code: NIGHT_CHARGE_MULTIPLIER
+                            value: '1.5'
+                          - descriptor:
+                              code: NIGHT_SHIFT_START_TIME
+                            value: '22:00:00'
+                          - descriptor:
+                              code: NIGHT_SHIFT_END_TIME
+                            value: '05:00:00'
+                      - descriptor:
+                          code: INFO
+                          name: General Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: DISTANCE_TO_NEAREST_DRIVER_METER
+                            value: '661'
+                          - descriptor:
+                              code: ETA_TO_NEAREST_DRIVER_MIN
+                            value: '3'
+                payments:
+                  - collected_by: BPP
+                    id: PA1
+                    params:
+                      bank_account_number: xxxxxxxxxxxxxx
+                      bank_code: XXXXXXXX
+                      virtual_payment_address: 9988199772@okicic
+                    status: NOT-PAID
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '5'
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT2D
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: DELIVERY
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://example-test-bpp.com/static-terms.txt
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '1.46'
+                    type: ON-FULFILLMENT
+                provider:
+                  id: P1
+                quote:
+                  breakup:
+                    - price:
+                        currency: INR
+                        value: '30'
+                      title: BASE_FARE
+                    - price:
+                        currency: INR
+                        value: '116'
+                      title: DISTANCE_FARE
+                  price:
+                    currency: INR
+                    value: '146'
+                  ttl: PT30S
+      - summary: Buyer app confirms the ride
+        api: confirm
+        details:
+          - description: >-
+              Buyer app confirms the booking and provides all the required
+              information for confirmation as per the terms of the order.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: Confirm ride booking
+          value:
+            context:
+              action: confirm
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              timestamp: '2023-12-10T04:34:48.031Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              order:
+                billing:
+                  name: Joe Adams
+                fulfillments:
+                  - customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
+                    id: F1
+                    stops:
+                      - location:
+                          gps: 13.008935, 77.644408
+                        type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
+                      - location:
+                          gps: 12.971186, 77.586812
+                        type: END
+                    type: SELF_PICKUP
+                    vehicle:
+                      category: AUTO_RICKSHAW
+                      variant: EV
+                items:
+                  - id: I1
+                payments:
+                  - collected_by: BPP
+                    id: PA1
+                    params:
+                      bank_account_number: xxxxxxxxxxxxxx
+                      bank_code: XXXXXXXX
+                      virtual_payment_address: 9988199772@okicic
+                    status: NOT-PAID
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT60M
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: DELIVERY
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '5'
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://example-test-bap.com/static-terms.txt
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '1.46'
+                    type: ON-FULFILLMENT
+                provider:
+                  id: P1
+      - summary: Ride provider confirms the ride request
+        api: on_confirm
+        details:
+          - description: >-
+              Ride provider confirms the ride request and provides the ride
+              details on confirmation.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example:
+          summary: Return confirmed order with latest fulfillment details
+          value:
+            context:
+              action: on_confirm
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 8926b747-0362-4fcc-b795-0994a6287700
+              timestamp: '2023-12-10T08:03:34.294Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              order:
+                cancellation_terms:
+                  - cancellation_fee:
+                      percentage: '0'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ASSIGNED
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '30'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ENROUTE_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '50'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ARRIVED_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      percentage: '100'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_STARTED
+                    reason_required: true
+                fulfillments:
+                  - id: F1
+                    state:
+                      descriptor:
+                        code: RIDE_CONFIRMED
+                    stops:
+                      - authorization:
+                          token: '234234'
+                          type: OTP
+                          valid_to: '2023-12-10T08:05:34.294Z'
+                          status: UNCLAIMED
+                        location:
+                          gps: 13.008935, 77.644408
+                        type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
+                      - location:
+                          gps: 12.971186, 77.586812
+                        type: END
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                          name: Route Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: ENCODED_POLYLINE
+                              name: Path
+                            value: _p~iF~ps|U_ulLnnqC_mqNvxq`@
+                          - descriptor:
+                              code: WAYPOINTS
+                              name: Waypoints
+                            value: >-
+                              [{"gps":"12.909982,
+                              77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
+                              77.611822"}]
+                    type: SELF_PICKUP
+                    customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
+                    vehicle:
+                      category: AUTO_RICKSHAW
+                      variant: EV
+                id: O1
+                items:
+                  - descriptor:
+                      code: RIDE
+                      name: Auto Ride
+                    fulfillment_ids:
+                      - F1
+                    id: I1
+                    location_ids:
+                      - L1
+                      - L3
+                    payment_ids:
+                      - PA1
+                    price:
+                      currency: INR
+                      maximum_value: '176'
+                      minimum_value: '136'
+                      value: '146'
+                    tags:
+                      - descriptor:
+                          code: FARE_POLICY
+                          name: Daytime Charges
+                        display: true
+                        list:
+                          - descriptor:
+                              code: MIN_FARE
+                            value: '30'
+                          - descriptor:
+                              code: MIN_FARE_DISTANCE_KM
+                            value: '2'
+                          - descriptor:
+                              code: PER_KM_CHARGE
+                            value: '15'
+                          - descriptor:
+                              code: PICKUP_CHARGE
+                            value: '10'
+                          - descriptor:
+                              code: WAITING_CHARGE_PER_MIN
+                            value: '2'
+                          - descriptor:
+                              code: NIGHT_CHARGE_MULTIPLIER
+                            value: '1.5'
+                          - descriptor:
+                              code: NIGHT_SHIFT_START_TIME
+                            value: '22:00:00'
+                          - descriptor:
+                              code: NIGHT_SHIFT_END_TIME
+                            value: '05:00:00'
+                      - descriptor:
+                          code: INFO
+                          name: General Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: DISTANCE_TO_NEAREST_DRIVER_METER
+                            value: '661'
+                          - descriptor:
+                              code: ETA_TO_NEAREST_DRIVER_MIN
+                            value: '3'
+                payments:
+                  - collected_by: BPP
+                    id: PA1
+                    params:
+                      bank_account_number: xxxxxxxxxxxxxx
+                      bank_code: XXXXXXXX
+                      virtual_payment_address: 9988199772@okicic
+                    status: NOT-PAID
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '5'
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT2D
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: DELIVERY
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://example-test-bpp.com/static-terms.txt
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '1.46'
+                    type: ON-FULFILLMENT
+                provider:
+                  id: P1
+                quote:
+                  breakup:
+                    - price:
+                        currency: INR
+                        value: '30'
+                      title: BASE_FARE
+                    - price:
+                        currency: INR
+                        value: '116'
+                      title: DISTANCE_FARE
+                  price:
+                    currency: INR
+                    value: '146'
+                  ttl: PT30S
+                status: ACTIVE
+                created_at: '2023-12-10T08:03:34.294Z'
+                updated_at: '2023-12-10T08:03:34.294Z'
+      - summary: Ride provider provides latest update on the ride (unsolicited call)
+        api: on_update
+        details:
+          - description: >-
+              Ride provider provides the latest update on ride details to the
+              buyer app.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: Return confirmed order with latest fulfillment details
+          value:
+            context:
+              action: on_update
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 8926b747-0362-4fcc-b795-0994a6287700
+              timestamp: '2023-12-10T08:03:34.294Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              order:
+                cancellation_terms:
+                  - cancellation_fee:
+                      percentage: '0'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ASSIGNED
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '30'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ENROUTE_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '50'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ARRIVED_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      percentage: '100'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_STARTED
+                    reason_required: true
+                fulfillments:
+                  - id: F1
+                    state:
+                      descriptor:
+                        code: RIDE_ASSIGNED
+                    stops:
+                      - authorization:
+                          token: '234234'
+                          type: OTP
+                          valid_to: '2023-12-10T08:05:34.294Z'
+                          status: UNCLAIMED
+                        location:
+                          gps: 13.008935, 77.644408
+                        type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
+                      - location:
+                          gps: 12.971186, 77.586812
+                        type: END
+                    agent:
+                      contact:
+                        phone: '9856798567'
+                      person:
+                        name: Jason Roy
+                    customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                          name: Route Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: ENCODED_POLYLINE
+                              name: Path
+                            value: _p~iF~ps|U_ulLnnqC_mqNvxq`@
+                          - descriptor:
+                              code: WAYPOINTS
+                              name: Waypoints
+                            value: >-
+                              [{"gps":"12.909982,
+                              77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
+                              77.611822"}]
+                    type: SELF_PICKUP
+                    vehicle:
+                      category: AUTO_RICKSHAW
+                      variant: EV
+                      make: Bajaj
+                      model: Compact RE
+                      registration: KA-01-AD-9876
+                id: O1
+                items:
+                  - descriptor:
+                      code: RIDE
+                      name: Auto Ride
+                    fulfillment_ids:
+                      - F1
+                    id: I1
+                    location_ids:
+                      - L1
+                      - L3
+                    payment_ids:
+                      - PA1
+                    price:
+                      currency: INR
+                      maximum_value: '176'
+                      minimum_value: '136'
+                      value: '146'
+                    tags:
+                      - descriptor:
+                          code: FARE_POLICY
+                          name: Daytime Charges
+                        display: true
+                        list:
+                          - descriptor:
+                              code: MIN_FARE
+                            value: '30'
+                          - descriptor:
+                              code: MIN_FARE_DISTANCE_KM
+                            value: '2'
+                          - descriptor:
+                              code: PER_KM_CHARGE
+                            value: '15'
+                          - descriptor:
+                              code: PICKUP_CHARGE
+                            value: '10'
+                          - descriptor:
+                              code: WAITING_CHARGE_PER_MIN
+                            value: '2'
+                          - descriptor:
+                              code: NIGHT_CHARGE_MULTIPLIER
+                            value: '1.5'
+                          - descriptor:
+                              code: NIGHT_SHIFT_START_TIME
+                            value: '22:00:00'
+                          - descriptor:
+                              code: NIGHT_SHIFT_END_TIME
+                            value: '05:00:00'
+                      - descriptor:
+                          code: INFO
+                          name: General Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: DISTANCE_TO_NEAREST_DRIVER_METER
+                            value: '661'
+                          - descriptor:
+                              code: ETA_TO_NEAREST_DRIVER_MIN
+                            value: '3'
+                payments:
+                  - collected_by: BPP
+                    id: PA1
+                    params:
+                      bank_account_number: xxxxxxxxxxxxxx
+                      bank_code: XXXXXXXX
+                      virtual_payment_address: 9988199772@okicic
+                    status: NOT-PAID
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '5'
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT2D
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: DELIVERY
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://example-test-bpp.com/static-terms.txt
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '1.46'
+                    type: ON-FULFILLMENT
+                provider:
+                  id: P1
+                quote:
+                  breakup:
+                    - price:
+                        currency: INR
+                        value: '30'
+                      title: BASE_FARE
+                    - price:
+                        currency: INR
+                        value: '116'
+                      title: DISTANCE_FARE
+                  price:
+                    currency: INR
+                    value: '146'
+                  ttl: PT30S
+                status: ACTIVE
+                created_at: '2023-12-10T08:03:34.294Z'
+                updated_at: '2023-12-10T08:03:34.294Z'
+      - summary: Ride provider provides latest update on the ride (unsolicited call)
+        api: on_status
+        details:
+          - description: >-
+              Ride provider provides the latest update on ride details to the
+              buyer app with fulfillment state - RIDE_STARTED
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: Return confirmed order with latest fulfillment details
+          value:
+            context:
+              action: on_status
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 8926b747-0362-4fcc-b795-0994a6287700
+              timestamp: '2023-12-10T08:03:34.294Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              order:
+                cancellation_terms:
+                  - cancellation_fee:
+                      percentage: '0'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ASSIGNED
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '30'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ENROUTE_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '50'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ARRIVED_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      percentage: '100'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_STARTED
+                    reason_required: true
+                fulfillments:
+                  - id: F1
+                    state:
+                      descriptor:
+                        code: RIDE_STARTED
+                    stops:
+                      - authorization:
+                          token: '234234'
+                          type: OTP
+                          valid_to: '2023-12-10T08:05:34.294Z'
+                          status: CLAIMED
+                        location:
+                          gps: 13.008935, 77.644408
+                        type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
+                      - location:
+                          gps: 12.971186, 77.586812
+                        type: END
+                    agent:
+                      contact:
+                        phone: '9856798567'
+                      person:
+                        name: Jason Roy
+                    customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                          name: Route Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: ENCODED_POLYLINE
+                              name: Path
+                            value: _p~iF~ps|U_ulLnnqC_mqNvxq`@
+                          - descriptor:
+                              code: WAYPOINTS
+                              name: Waypoints
+                            value: >-
+                              [{"gps":"12.909982,
+                              77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
+                              77.611822"}]
+                    type: SELF_PICKUP
+                    vehicle:
+                      category: AUTO_RICKSHAW
+                      variant: EV
+                      make: Bajaj
+                      model: Compact RE
+                      registration: KA-01-AD-9876
+                id: O1
+                items:
+                  - descriptor:
+                      code: RIDE
+                      name: Auto Ride
+                    fulfillment_ids:
+                      - F1
+                    id: I1
+                    location_ids:
+                      - L1
+                      - L3
+                    payment_ids:
+                      - PA1
+                    price:
+                      currency: INR
+                      maximum_value: '176'
+                      minimum_value: '136'
+                      value: '146'
+                    tags:
+                      - descriptor:
+                          code: FARE_POLICY
+                          name: Daytime Charges
+                        display: true
+                        list:
+                          - descriptor:
+                              code: MIN_FARE
+                            value: '30'
+                          - descriptor:
+                              code: MIN_FARE_DISTANCE_KM
+                            value: '2'
+                          - descriptor:
+                              code: PER_KM_CHARGE
+                            value: '15'
+                          - descriptor:
+                              code: PICKUP_CHARGE
+                            value: '10'
+                          - descriptor:
+                              code: WAITING_CHARGE_PER_MIN
+                            value: '2'
+                          - descriptor:
+                              code: NIGHT_CHARGE_MULTIPLIER
+                            value: '1.5'
+                          - descriptor:
+                              code: NIGHT_SHIFT_START_TIME
+                            value: '22:00:00'
+                          - descriptor:
+                              code: NIGHT_SHIFT_END_TIME
+                            value: '05:00:00'
+                      - descriptor:
+                          code: INFO
+                          name: General Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: DISTANCE_TO_NEAREST_DRIVER_METER
+                            value: '661'
+                          - descriptor:
+                              code: ETA_TO_NEAREST_DRIVER_MIN
+                            value: '3'
+                payments:
+                  - collected_by: BPP
+                    id: PA1
+                    params:
+                      bank_account_number: xxxxxxxxxxxxxx
+                      bank_code: XXXXXXXX
+                      virtual_payment_address: 9988199772@okicic
+                    status: NOT-PAID
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '5'
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT2D
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: DELIVERY
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://example-test-bpp.com/static-terms.txt
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '1.46'
+                    type: ON-FULFILLMENT
+                provider:
+                  id: P1
+                quote:
+                  breakup:
+                    - price:
+                        currency: INR
+                        value: '30'
+                      title: BASE_FARE
+                    - price:
+                        currency: INR
+                        value: '116'
+                      title: DISTANCE_FARE
+                  price:
+                    currency: INR
+                    value: '146'
+                  ttl: PT30S
+                status: ACTIVE
+                created_at: '2023-12-10T08:03:34.294Z'
+                updated_at: '2023-12-10T08:03:34.294Z'
+      - summary: Buyer app requests for tracking status
+        api: track
+        details:
+          - description: >-
+              Buyer app request the provider platform to provide with latest
+              tracking status
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example: *ref_23
+      - summary: Provider platform provides latest order tracking status
+        api: on_track
+        details:
+          - description: >-
+              Provider platform provides the updated order tracking status to
+              the consumer
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): track - Request tracking status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_track - Provide tracking status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+                end
+        reference: if any
+        example: *ref_24
+      - summary: Ride provider provides latest update on the ride (unsolicited call)
+        api: on_update
+        details:
+          - description: >-
+              Ride provider provides the updated order updates to the buyer app
+              & can update the quote in case of fare update
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: Return confirmed order with latest fulfillment details
+          value:
+            context:
+              action: on_update
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 8926b747-0362-4fcc-b795-0994a6287700
+              timestamp: '2023-12-10T08:03:34.294Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              order:
+                cancellation_terms:
+                  - cancellation_fee:
+                      percentage: '0'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ASSIGNED
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '30'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ENROUTE_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '50'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ARRIVED_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      percentage: '100'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_STARTED
+                    reason_required: true
+                fulfillments:
+                  - id: F1
+                    state:
+                      descriptor:
+                        code: RIDE_ENDED
+                    stops:
+                      - authorization:
+                          token: '234234'
+                          type: OTP
+                          valid_to: '2023-12-10T08:05:34.294Z'
+                          status: CLAIMED
+                        location:
+                          gps: 13.008935, 77.644408
+                        type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
+                      - location:
+                          gps: 12.971186, 77.586812
+                        type: END
+                    agent:
+                      contact:
+                        phone: '9856798567'
+                      person:
+                        name: Jason Roy
+                    customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                          name: Route Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: ENCODED_POLYLINE
+                              name: Path
+                            value: _p~iF~ps|U_ulLnnqC_mqNvxq`@
+                          - descriptor:
+                              code: WAYPOINTS
+                              name: Waypoints
+                            value: >-
+                              [{"gps":"12.909982,
+                              77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
+                              77.611822"}]
+                    type: SELF_PICKUP
+                    vehicle:
+                      category: AUTO_RICKSHAW
+                      variant: EV
+                      make: Bajaj
+                      model: Compact RE
+                      registration: KA-01-AD-9876
+                id: O1
+                items:
+                  - descriptor:
+                      code: RIDE
+                      name: Auto Ride
+                    fulfillment_ids:
+                      - F1
+                    id: I1
+                    location_ids:
+                      - L1
+                      - L3
+                    payment_ids:
+                      - PA1
+                    price:
+                      currency: INR
+                      maximum_value: '176'
+                      minimum_value: '136'
+                      value: '146'
+                    tags:
+                      - descriptor:
+                          code: FARE_POLICY
+                          name: Daytime Charges
+                        display: true
+                        list:
+                          - descriptor:
+                              code: MIN_FARE
+                            value: '30'
+                          - descriptor:
+                              code: MIN_FARE_DISTANCE_KM
+                            value: '2'
+                          - descriptor:
+                              code: PER_KM_CHARGE
+                            value: '15'
+                          - descriptor:
+                              code: PICKUP_CHARGE
+                            value: '10'
+                          - descriptor:
+                              code: WAITING_CHARGE_PER_MIN
+                            value: '2'
+                          - descriptor:
+                              code: NIGHT_CHARGE_MULTIPLIER
+                            value: '1.5'
+                          - descriptor:
+                              code: NIGHT_SHIFT_START_TIME
+                            value: '22:00:00'
+                          - descriptor:
+                              code: NIGHT_SHIFT_END_TIME
+                            value: '05:00:00'
+                      - descriptor:
+                          code: INFO
+                          name: General Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: DISTANCE_TO_NEAREST_DRIVER_METER
+                            value: '661'
+                          - descriptor:
+                              code: ETA_TO_NEAREST_DRIVER_MIN
+                            value: '3'
+                payments:
+                  - collected_by: BPP
+                    id: PA1
+                    params:
+                      bank_account_number: xxxxxxxxxxxxxx
+                      bank_code: XXXXXXXX
+                      virtual_payment_address: 9988199772@okicic
+                    status: NOT-PAID
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '5'
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT2D
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: DELIVERY
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://example-test-bpp.com/static-terms.txt
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '1.46'
+                    type: ON-FULFILLMENT
+                provider:
+                  id: P1
+                quote:
+                  breakup:
+                    - price:
+                        currency: INR
+                        value: '30'
+                      title: BASE_FARE
+                    - price:
+                        currency: INR
+                        value: '116'
+                      title: DISTANCE_FARE
+                  price:
+                    currency: INR
+                    value: '146'
+                  ttl: PT30S
+                status: ACTIVE
+                created_at: '2023-12-10T08:03:34.294Z'
+                updated_at: '2023-12-10T08:03:34.294Z'
+      - summary: Buyer app seeks the most recent status update
+        api: status
+        details:
+          - description: >-
+              Buyer app requests the ride provider to provide the latest order
+              status
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example: *ref_28
+      - summary: Ride provider provides latest order status
+        api: on_status
+        details:
+          - description: Ride provider provides the updated order status to the buyer app
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example:
+          summary: Return confirmed order with latest fulfillment details
+          value:
+            context:
+              action: on_status
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 8926b747-0362-4fcc-b795-0994a6287700
+              timestamp: '2023-12-10T08:03:34.294Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.1
+            message:
+              order:
+                cancellation_terms:
+                  - cancellation_fee:
+                      percentage: '0'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ASSIGNED
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '30'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ENROUTE_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      amount:
+                        currency: INR
+                        value: '50'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_ARRIVED_PICKUP
+                    reason_required: true
+                  - cancellation_fee:
+                      percentage: '100'
+                    fulfillment_state:
+                      descriptor:
+                        code: RIDE_STARTED
+                    reason_required: true
+                fulfillments:
+                  - id: F1
+                    state:
+                      descriptor:
+                        code: RIDE_ENDED
+                    stops:
+                      - authorization:
+                          token: '234234'
+                          type: OTP
+                          valid_to: '2023-12-10T08:05:34.294Z'
+                          status: CLAIMED
+                        location:
+                          gps: 13.008935, 77.644408
+                        type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
+                      - location:
+                          gps: 12.971186, 77.586812
+                        type: END
+                    agent:
+                      contact:
+                        phone: '9856798567'
+                      person:
+                        name: Jason Roy
+                    customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                          name: Route Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: ENCODED_POLYLINE
+                              name: Path
+                            value: _p~iF~ps|U_ulLnnqC_mqNvxq`@
+                          - descriptor:
+                              code: WAYPOINTS
+                              name: Waypoints
+                            value: >-
+                              [{"gps":"12.909982,
+                              77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
+                              77.611822"}]
+                    type: SELF_PICKUP
+                    vehicle:
+                      category: AUTO_RICKSHAW
+                      variant: EV
+                      make: Bajaj
+                      model: Compact RE
+                      registration: KA-01-AD-9876
+                id: O1
+                items:
+                  - descriptor:
+                      code: RIDE
+                      name: Auto Ride
+                    fulfillment_ids:
+                      - F1
+                    id: I1
+                    location_ids:
+                      - L1
+                      - L3
+                    payment_ids:
+                      - PA1
+                    price:
+                      currency: INR
+                      maximum_value: '176'
+                      minimum_value: '136'
+                      value: '146'
+                    tags:
+                      - descriptor:
+                          code: FARE_POLICY
+                          name: Daytime Charges
+                        display: true
+                        list:
+                          - descriptor:
+                              code: MIN_FARE
+                            value: '30'
+                          - descriptor:
+                              code: MIN_FARE_DISTANCE_KM
+                            value: '2'
+                          - descriptor:
+                              code: PER_KM_CHARGE
+                            value: '15'
+                          - descriptor:
+                              code: PICKUP_CHARGE
+                            value: '10'
+                          - descriptor:
+                              code: WAITING_CHARGE_PER_MIN
+                            value: '2'
+                          - descriptor:
+                              code: NIGHT_CHARGE_MULTIPLIER
+                            value: '1.5'
+                          - descriptor:
+                              code: NIGHT_SHIFT_START_TIME
+                            value: '22:00:00'
+                          - descriptor:
+                              code: NIGHT_SHIFT_END_TIME
+                            value: '05:00:00'
+                      - descriptor:
+                          code: INFO
+                          name: General Information
+                        display: true
+                        list:
+                          - descriptor:
+                              code: DISTANCE_TO_NEAREST_DRIVER_METER
+                            value: '661'
+                          - descriptor:
+                              code: ETA_TO_NEAREST_DRIVER_MIN
+                            value: '3'
+                payments:
+                  - collected_by: BPP
+                    id: PA1
+                    params:
+                      bank_account_number: xxxxxxxxxxxxxx
+                      bank_code: XXXXXXXX
+                      virtual_payment_address: 9988199772@okicic
+                    status: PAID
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '5'
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT2D
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: DELIVERY
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://example-test-bpp.com/static-terms.txt
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '1.46'
+                    type: ON-FULFILLMENT
+                provider:
+                  id: P1
+                quote:
+                  breakup:
+                    - price:
+                        currency: INR
+                        value: '30'
+                      title: BASE_FARE
+                    - price:
+                        currency: INR
+                        value: '116'
+                      title: DISTANCE_FARE
+                  price:
+                    currency: INR
+                    value: '146'
+                  ttl: PT30S
+                status: COMPLETE
+                created_at: '2023-12-10T08:03:34.294Z'
+                updated_at: '2023-12-10T08:03:34.294Z'
   - summary: On-Demand - Ride cancellation by rider
     details:
       - description: Detailed process of cancelling a ride with soft & confirm status.
@@ -5932,7 +8979,43 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
         reference: if any
+        example: *ref_29
+      - summary: Ride provider provides latest order status
+        api: on_status
+        details:
+          - description: Ride provider provides the updated order status to the buyer app
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
         example: *ref_25
+      - summary: Ride provider provides latest order status
+        api: on_status
+        details:
+          - description: Ride provider provides the updated order status to the buyer app
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example: *ref_26
       - summary: Buyer app cancels the request for ride
         api: cancel
         details:
@@ -5950,7 +9033,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_27
+        example: &ref_31
           summary: Initiates cancelling a ride with soft cancel status
           value:
             context:
@@ -5970,7 +9053,7 @@ x-flows:
               timestamp: '2023-03-23T05:15:08Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               cancellation_reason_id: '7'
               descriptor:
@@ -5996,7 +9079,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_29
+        example: &ref_33
           summary: Return current order status after soft-cancel
           value:
             context:
@@ -6014,7 +9097,7 @@ x-flows:
               message_id: 8926b747-0362-4fcc-b795-0994a6287700
               timestamp: '2023-03-23T04:48:53Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-              version: 2.0.0
+              version: 2.0.1
               ttl: PT30S
             message:
               order:
@@ -6061,7 +9144,7 @@ x-flows:
                     id: F1
                     state:
                       descriptor:
-                        code: RIDE_CONFIRMED
+                        code: RIDE_ARRIVED_PICKUP
                     stops:
                       - authorization:
                           token: '234234'
@@ -6071,6 +9154,9 @@ x-flows:
                         time:
                           duration: PT2H
                         type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
                     tags:
                       - descriptor:
                           code: ROUTE_INFO
@@ -6091,6 +9177,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -6235,7 +9322,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_28
+        example: &ref_32
           summary: Initiates cancelling a ride with confirm cancel status
           value:
             context:
@@ -6255,7 +9342,7 @@ x-flows:
               timestamp: '2023-03-23T05:15:08Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               cancellation_reason_id: '7'
               descriptor:
@@ -6279,7 +9366,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_26
+        example: &ref_30
           summary: Return current order status after confirm-cancel
           value:
             context:
@@ -6297,7 +9384,7 @@ x-flows:
               message_id: 8926b747-0362-4fcc-b795-0994a6287700
               timestamp: '2023-03-23T04:48:53Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-              version: 2.0.0
+              version: 2.0.1
               ttl: PT30S
             message:
               order:
@@ -6354,6 +9441,9 @@ x-flows:
                         time:
                           duration: PT2H
                         type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
                     tags:
                       - descriptor:
                           code: ROUTE_INFO
@@ -6374,6 +9464,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -6529,7 +9620,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel (unsolicited)
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_25
+        example: *ref_29
       - summary: Ride provider accepts the terms of cancellation
         api: on_cancel
         details:
@@ -6547,7 +9638,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_26
+        example: *ref_30
   - summary: BPP Collecting - Payment Confirmation
     details:
       - description: >-
@@ -6623,7 +9714,7 @@ x-flows:
               timestamp: '2023-03-23T04:48:53Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 billing:
@@ -6644,6 +9735,7 @@ x-flows:
                         type: END
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                 items:
                   - id: I1
                 payments:
@@ -6722,7 +9814,7 @@ x-flows:
               timestamp: '2023-12-09T14:11:32.859Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 cancellation_terms:
@@ -6764,6 +9856,9 @@ x-flows:
                     stops:
                       - location:
                           gps: 13.008935, 77.644408
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
                         type: START
                       - location:
                           gps: 12.971186, 77.586812
@@ -6788,6 +9883,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                 items:
                   - descriptor:
                       code: RIDE
@@ -6963,7 +10059,7 @@ x-flows:
               timestamp: '2023-03-23T04:48:53Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               ref_id: 870782be-6757-43f1-945c-8eeaf9536259
       - summary: Ride provider provides latest order status
@@ -6999,7 +10095,7 @@ x-flows:
               timestamp: '2023-03-23T04:48:59Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 cancellation_terms:
@@ -7036,6 +10132,9 @@ x-flows:
                     stops:
                       - location:
                           gps: 13.008935, 77.644408
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
                         type: START
                       - location:
                           gps: 12.971186, 77.586812
@@ -7060,6 +10159,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                 items:
                   - descriptor:
                       code: RIDE
@@ -7216,7 +10316,7 @@ x-flows:
               timestamp: '2023-12-10T04:34:49.031Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 billing:
@@ -7237,6 +10337,7 @@ x-flows:
                         type: END
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                 items:
                   - id: I1
                 payments:
@@ -7323,7 +10424,7 @@ x-flows:
               timestamp: '2023-12-10T04:34:52.031Z'
               transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
               ttl: PT30S
-              version: 2.0.0
+              version: 2.0.1
             message:
               order:
                 cancellation_terms:
@@ -7377,6 +10478,9 @@ x-flows:
                         location:
                           gps: 13.008935, 77.644408
                         type: START
+                        instructions:
+                          short_desc: short description of the location
+                          long_desc: long description of the location
                       - location:
                           gps: 12.971186, 77.586812
                         type: END
@@ -7400,6 +10504,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
+                      variant: EV
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -7547,7 +10652,7 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_15
+          - *ref_16
           - summary: >-
               Search for mobility services by pickup and drop location[Buyer
               Collecting]
@@ -7566,7 +10671,7 @@ x-examples:
                 timestamp: '2023-12-09T13:40:21.452Z'
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
                 ttl: PT30S
-                version: 2.0.0
+                version: 2.0.1
               message:
                 intent:
                   fulfillment:
@@ -7602,25 +10707,25 @@ x-examples:
                             value: https://example-test-bap.com/static-terms.txt
       select:
         examples:
-          - *ref_17
+          - *ref_18
       cancel:
         examples:
-          - *ref_27
-          - *ref_28
+          - *ref_31
+          - *ref_32
       confirm:
         examples:
-          - *ref_21
+          - *ref_22
       init:
         examples:
-          - *ref_19
+          - *ref_20
       on_cancel:
         examples:
-          - *ref_29
-          - *ref_26
+          - *ref_33
+          - *ref_30
       on_confirm:
         examples:
-          - *ref_25
-          - *ref_30
+          - *ref_29
+          - *ref_34
           - summary: Return confirmed order with latest fulfillment details
             value:
               context:
@@ -7639,7 +10744,7 @@ x-examples:
                 timestamp: '2023-12-10T08:03:34.294Z'
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
                 ttl: PT30S
-                version: 2.0.0
+                version: 2.0.1
               message:
                 order:
                   cancellation_terms:
@@ -7693,6 +10798,9 @@ x-examples:
                           location:
                             gps: 13.008935, 77.644408
                           type: START
+                          instructions:
+                            short_desc: short description of the location
+                            long_desc: long description of the location
                         - location:
                             gps: 12.971186, 77.586812
                           type: END
@@ -7716,6 +10824,7 @@ x-examples:
                       type: DELIVERY
                       vehicle:
                         category: AUTO_RICKSHAW
+                        variant: EV
                         make: Bajaj
                         model: Compact RE
                         registration: KA-01-AD-9876
@@ -7847,7 +10956,7 @@ x-examples:
                   updated_at: '2023-12-10T08:03:34.294Z'
       on_init:
         examples:
-          - *ref_20
+          - *ref_21
       on_rating:
         examples:
           - summary: Return acknowledgement of rating and feedback
@@ -7869,13 +10978,13 @@ x-examples:
                 timestamp: '2023-03-23T05:41:15Z'
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
                 ttl: PT30S
-                version: 2.0.0
+                version: 2.0.1
               message:
                 feedback_ack: true
                 rating_ack: true
       on_search:
         examples:
-          - *ref_16
+          - *ref_17
           - summary: Return a mobility catalog[Buyer Collecting]
             value:
               context:
@@ -7894,7 +11003,7 @@ x-examples:
                 timestamp: '2023-12-09T13:41:16.161Z'
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
                 ttl: PT30S
-                version: 2.0.0
+                version: 2.0.1
               message:
                 catalog:
                   descriptor:
@@ -7906,23 +11015,31 @@ x-examples:
                             - location:
                                 gps: 13.008935, 77.644408
                               type: START
+                              instructions:
+                                short_desc: short description of the location
+                                long_desc: long description of the location
                             - location:
                                 gps: 12.971186, 77.586812
                               type: END
                           type: DELIVERY
                           vehicle:
                             category: AUTO_RICKSHAW
+                            variant: EV
                         - id: F2
                           stops:
                             - location:
                                 gps: 13.008935, 77.644408
                               type: START
+                              instructions:
+                                short_desc: short description of the location
+                                long_desc: long description of the location
                             - location:
                                 gps: 12.971186, 77.586812
                               type: END
                           type: DELIVERY
                           vehicle:
                             category: CAB
+                            variant: SEDAN
                       id: P1
                       items:
                         - descriptor:
@@ -7994,10 +11111,10 @@ x-examples:
                                     https://example-test-bpp.com/static-terms.txt
       on_select:
         examples:
-          - *ref_18
+          - *ref_19
       on_status:
         examples:
-          - *ref_31
+          - *ref_35
           - summary: >-
               Return order with latest fulfillment status - Driver en-route to
               pickup
@@ -8018,7 +11135,7 @@ x-examples:
                 timestamp: '2023-03-23T04:48:53Z'
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
                 ttl: PT30S
-                version: 2.0.0
+                version: 2.0.1
               message:
                 order:
                   cancellation_terms:
@@ -8070,6 +11187,9 @@ x-examples:
                         - location:
                             gps: 13.008935, 77.644408
                           type: START
+                          instructions:
+                            short_desc: short description of the location
+                            long_desc: long description of the location
                         - location:
                             gps: 12.971186, 77.586812
                           type: END
@@ -8093,6 +11213,7 @@ x-examples:
                       type: DELIVERY
                       vehicle:
                         category: AUTO_RICKSHAW
+                        variant: EV
                         make: Bajaj
                         model: Compact RE
                         registration: KA-01-AD-9876
@@ -8233,7 +11354,7 @@ x-examples:
                 timestamp: '2023-03-23T04:48:53Z'
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
                 ttl: PT30S
-                version: 2.0.0
+                version: 2.0.1
               message:
                 order:
                   cancellation_terms:
@@ -8285,6 +11406,9 @@ x-examples:
                         - location:
                             gps: 13.008935, 77.644408
                           type: START
+                          instructions:
+                            short_desc: short description of the location
+                            long_desc: long description of the location
                         - location:
                             gps: 12.971186, 77.586812
                           type: END
@@ -8308,6 +11432,7 @@ x-examples:
                       type: DELIVERY
                       vehicle:
                         category: AUTO_RICKSHAW
+                        variant: EV
                         make: Bajaj
                         model: Compact RE
                         registration: KA-01-AD-9876
@@ -8448,7 +11573,7 @@ x-examples:
                 timestamp: '2023-03-23T04:48:53Z'
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
                 ttl: PT30S
-                version: 2.0.0
+                version: 2.0.1
               message:
                 order:
                   cancellation_terms:
@@ -8500,6 +11625,9 @@ x-examples:
                         - location:
                             gps: 13.008935, 77.644408
                           type: START
+                          instructions:
+                            short_desc: short description of the location
+                            long_desc: long description of the location
                         - location:
                             gps: 12.971186, 77.586812
                           type: END
@@ -8523,6 +11651,7 @@ x-examples:
                       type: DELIVERY
                       vehicle:
                         category: CAB
+                        variant: EV
                         make: Mahindra
                         model: Compact RE
                         registration: KA-01-AD-9876
@@ -8665,7 +11794,7 @@ x-examples:
                 timestamp: '2023-03-23T05:41:09Z'
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
                 ttl: PT30S
-                version: 2.0.0
+                version: 2.0.1
               message:
                 support:
                   email: support@nammayatri.in
@@ -8673,10 +11802,10 @@ x-examples:
                   url: https://support.nammayatri.com/gethelp
       on_track:
         examples:
-          - *ref_23
+          - *ref_24
       on_update:
         examples:
-          - *ref_32
+          - *ref_36
           - summary: Return updated order with updated billing details
             value:
               context:
@@ -8695,7 +11824,7 @@ x-examples:
                 timestamp: '2023-12-10T08:03:34.294Z'
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
                 ttl: PT30S
-                version: 2.0.0
+                version: 2.0.1
               message:
                 order:
                   billing:
@@ -8752,6 +11881,9 @@ x-examples:
                             type: OTP
                           location:
                             gps: 13.008935, 77.644408
+                          instructions:
+                            short_desc: short description of the location
+                            long_desc: long description of the location
                           type: START
                         - location:
                             gps: 12.971186, 77.586812
@@ -8776,6 +11908,7 @@ x-examples:
                       type: DELIVERY
                       vehicle:
                         category: AUTO_RICKSHAW
+                        variant: EV
                         make: Bajaj
                         model: Compact RE
                         registration: KA-01-AD-9876
@@ -8902,7 +12035,7 @@ x-examples:
                   status: ACTIVE
                   created_at: '2023-03-23T04:48:53Z'
                   updated_at: '2023-03-23T04:48:53Z'
-          - *ref_33
+          - *ref_37
       rating:
         examples:
           - summary: Provide a rating
@@ -8923,7 +12056,7 @@ x-examples:
                 timestamp: '2023-03-23T04:46:45Z'
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
                 ttl: PT30S
-                version: 2.0.0
+                version: 2.0.1
               message:
                 id: b0462745-f6c9-4100-bbe7-4fa3648b6b40
                 rating_category: DRIVER
@@ -8946,7 +12079,7 @@ x-examples:
                 timestamp: '2023-03-23T04:46:45Z'
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
                 ttl: PT30S
-                version: 2.0.0
+                version: 2.0.1
               message:
                 feedback_form:
                   - answer: >-
@@ -8958,7 +12091,7 @@ x-examples:
                 value: 4
       status:
         examples:
-          - *ref_24
+          - *ref_28
       support:
         examples:
           - summary: Fetch support information related to a particular order
@@ -8979,12 +12112,12 @@ x-examples:
                 timestamp: '2023-03-23T04:48:53Z'
                 transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
                 ttl: PT30S
-                version: 2.0.0
+                version: 2.0.1
               message:
                 ref_id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
       track:
         examples:
-          - *ref_22
+          - *ref_23
 x-attributes:
   on-demand:
     attribute_set:
@@ -11543,19 +14676,19 @@ x-attributes:
                   usage: AUTO_RICKSHAW
                   description: Describes vehicle category
                 make:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: Bajaj
                   description: Describes vehicle manufacturer
                 model:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: compact-re
                   description: Describes vehicle model
                 registration:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: HR-20AS-4578
