@@ -109,7 +109,41 @@ steps:
     reference: if any
     example:
       $ref: "../../examples/intercity-bus/on_search/on_search-doj.yaml"
-  - summary: Selection of a specific service
+  - summary: Selection of specific service
+    api: select
+    details: 
+      - description: The end consumer have to select the specific service and share number of required tickets
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/intercity-bus/select/select_0.yaml"
+  - summary:  Provider platform provides the seat's for selected service of bus 
+    api: on_select
+    details: 
+      - description: Provider platform responds with the service detailed information and seat's for the specific service that consumer would like to avail
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/intercity-bus/on_select/on_select_0.yaml" 
+  - summary: Selection of specific service
     api: select
     details: 
       - description: The end consumer have to select the specific service and would like to have the necesary details
@@ -125,7 +159,7 @@ steps:
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
     reference: if any
     example:
-      $ref: "../../examples/intercity-bus/select/select.yaml"
+      $ref: "../../examples/intercity-bus/select/select_1.yaml"
   - summary:  Provider platform provides the quote for selected service of bus 
     api: on_select
     details: 
@@ -139,10 +173,10 @@ steps:
             rect rgb(191, 223, 255)
             Seller Platform (BPP)->>Buyer Platform (BAP):on_select
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-            end 
+            end
     reference: if any
     example:
-      $ref: "../../examples/intercity-bus/on_select/on_select.yaml" 
+      $ref: "../../examples/intercity-bus/on_select/on_select_1.yaml" 
   - summary: Consumer platform initializes the order
     api: init
     details: 
@@ -159,7 +193,7 @@ steps:
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
     reference: if any
     example:
-      $ref: "../../examples/intercity-bus/init/init.yaml"
+      $ref: "../../examples/intercity-bus/init/init_1.yaml"
   - summary: Provider platform accepts/appends the terms of orders
     api: on_init
     details: 
@@ -176,7 +210,7 @@ steps:
             end   
     reference: if any
     example:
-      $ref: "../../examples/intercity-bus/on_init/on_init.yaml"
+      $ref: "../../examples/intercity-bus/on_init/on_init_1.yaml"
   - summary: Consumer confirms the booking and provides details.
     api: confirm
     details: 
@@ -193,7 +227,7 @@ steps:
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
     reference: if any
     example:
-      $ref: "../../examples/intercity-bus/confirm/confirm.yaml"
+      $ref: "../../examples/intercity-bus/confirm/confirm_1.yaml"
   - summary: Provider platform confirms the order
     api: on_confirm
     details: 
@@ -210,7 +244,7 @@ steps:
             end
     reference: if any
     example:
-      $ref: "../../examples/intercity-bus/on_confirm/on_confirm.yaml"
+      $ref: "../../examples/intercity-bus/on_confirm/on_confirm_1.yaml"
   # - summary: Consumer platform cancels the request
   #   api: cancel
   #   details: 
@@ -241,7 +275,7 @@ steps:
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
     reference: if any
     example:
-      $ref: "../../examples/intercity-bus/update/update.yaml"
+      $ref: "../../examples/intercity-bus/update/update_1.yaml"
   - summary: Provider platform provides latest update on the order
     api: on_update
     details: 
@@ -253,12 +287,12 @@ steps:
             Buyer Platform (BAP)->>Seller Platform (BPP): update
             Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
             rect rgb(191, 223, 255)
-            Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_update_2
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
             end
     reference: if any
     example:
-      $ref: "../../examples/intercity-bus/on_update/on_update_0.yaml"    
+      $ref: "../../examples/intercity-bus/on_update/on_update_2.yaml"    
   - summary: Consumer platform requests for latest status
     api: status
     details: 
@@ -294,4 +328,4 @@ steps:
             end 
     reference: if any
     example:
-      $ref: "../../examples/intercity-bus/on_status/on_status.yaml"    
+      $ref: "../../examples/intercity-bus/on_status/on_status_1.yaml"    
