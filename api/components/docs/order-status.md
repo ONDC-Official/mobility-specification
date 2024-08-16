@@ -1,4 +1,4 @@
-# Order Fulfillment States Documentation
+# Order Fulfillment States mapping with order statuses
 
 ## Overview
 This document describes the fulfillment states based on various order statuses and scenarios. The fulfillment states define the stages of the order journey and vary depending on the order status and the specific scenario.
