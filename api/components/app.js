@@ -390,6 +390,9 @@ const checkKeysExistence = (example, mandatoryRequiredKeys, endPoint) => {
     }
 
     if (isArray) {
+      if(keys.includes("tags")){
+        continue;
+      }
       handleIfObjectIsArray(currentKeys, currentObj, endPoint);
     }
   }
@@ -499,35 +502,68 @@ async function checkAttributes(exampleSets, attributes) {
      } 
 }
 
+async function iterateTags( examplesTag, attributesTag, example_sets) {
+
+  for (let i = 0; i < examplesTag?.length; i++) {
+
+    const exampleItem = examplesTag[i];
+
+    const attributeItem = attributesTag;
+
+    const { list } = exampleItem;
+
+    if(attributeItem.hasOwnProperty(exampleItem?.descriptor?.code)){
+
+      if (Array.isArray(list)) {
+
+        await iterateTags(list, attributeItem[exampleItem?.descriptor?.code].list, example_sets)
+
+      }
+
+    }else{
+
+      console.log("Tag not matched", exampleItem?.descriptor, 'in', example_sets);
+
+    }
+
+  }
+
+}
+
 async function comapreObjects(examples, attributes, example_sets) {
   for (const key in examples) {
-    if (key !== "tags")
-      if (
-        typeof examples[key] === "object" &&
-        typeof attributes[key] === "object"
-      ) {
-        // console.log('key',key)
-        // console.log('typeof examples[key]', typeof examples[key], typeof attributes[key])
-        if (!attributes[key]) {
-          console.log(`null value found for, ${key} in  ${example_sets}`);
-        } else if (Array.isArray(examples[key])) {
-          for (let i = 0; i < examples[key]?.length; i++) {
-            const exampleItem = examples[key][i];
-            const attributeItem = attributes[key];
-            //use if array has no keys like: category_ids
-            if (typeof exampleItem === "string" && attributeItem) {
-              //found
-            } else {
-              await comapreObjects(exampleItem, attributeItem, example_sets);
+    if (key == "tags"){
+      if (Array.isArray(examples[key])) {
+        await iterateTags(examples[key], attributes[key], example_sets);
+    }
+  }else {
+        if (
+          typeof examples[key] === "object" &&
+          typeof attributes[key] === "object"
+        ) {
+          // console.log('key',key)
+          // console.log('typeof examples[key]', typeof examples[key], typeof attributes[key])
+          if (!attributes[key]) {
+            console.log(`null value found for, ${key} in  ${example_sets}`);
+          } else if (Array.isArray(examples[key])) {
+            for (let i = 0; i < examples[key]?.length; i++) {
+              const exampleItem = examples[key][i];
+              const attributeItem = attributes[key];
+              //use if array has no keys like: category_ids
+              if (typeof exampleItem === "string" && attributeItem) {
+                //found
+              } else {
+                await comapreObjects(exampleItem, attributeItem, example_sets);
+              }
             }
+          } else {
+            await comapreObjects(examples[key], attributes[key], example_sets);
           }
-        } else {
-          await comapreObjects(examples[key], attributes[key], example_sets);
+        } else if (!attributes.hasOwnProperty(key)) {
+          console.log(`keys not found, ${key} in  ${example_sets}`);
         }
-      } else if (!attributes.hasOwnProperty(key)) {
-        console.log(`keys not found, ${key} in  ${example_sets}`);
-      }
-  }
+      } 
+    }
 }
 function cleanup() {
   try {
