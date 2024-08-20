@@ -18,6 +18,9 @@ ONDC mobility specification swagger [link](https://ondc-official.github.io/mobil
 | ------- | ------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | v1.0.0  | 14 Jun 2023  | core - 0.9.4<br />mobility - 0.8.2 | Initial mobility specification for metro use case                                                                  |
 | v2.0.0  | 20 Feb 2024  | core - 1.2.0                       | Base version of mobility for metro is completed<br />Station code based flow<br />GPS based flow<br />Cancel flow |
+| v2.0.1  | 20 Aug 2024  | core - 1.2.0<br />mobility - 0.8.2 | Base version of mobility for metro & intracity is completed<br />Station code based flow<br />GPS based flow<br />Cancel flow <br />Vehicle Based Confirmation flow|                                                                  |
+
+
 
 ## Introduction
 
@@ -39,6 +42,9 @@ This would be possible in the mobility domain by making sure all mobility apps i
 * Added TICKET_INFO tag group for ticket number
 * Added ref_id in status call
 * Added parent_stop_id for stops
+* Added timestamp for time in items.
+* Added separate fulfillment as TICKET for each ticket quantity with base fulfillment as type TRIP
+* Added PARENT_ITEM_ID as part of type TICKET fulfillment.
 
 ## Evolution
 
