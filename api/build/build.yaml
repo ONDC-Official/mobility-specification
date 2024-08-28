@@ -1923,6 +1923,12 @@ components:
             Status of the order. Allowed values can be defined by the network
             policy
           type: string
+          enum:
+            - ACTIVE
+            - COMPLETE
+            - CANCELLED
+            - COMPLETED
+            - SOFT_CANCEL
         type:
           description: >-
             This is used to indicate the type of order being created to BPPs.
@@ -3383,6 +3389,7 @@ x-flows:
                   vehicle:
                     category: BUS
                 payment:
+                  collected_by: BAP
                   tags:
                     - descriptor:
                         code: BUYER_FINDER_FEES
@@ -3757,7 +3764,7 @@ x-flows:
                                   code: OPERATION_END_TIME
                                 value: '2023-09-14T20:30:00.000Z'
                     payments:
-                      - collected_by: BPP
+                      - collected_by: BAP
                         tags:
                           - descriptor:
                               code: BUYER_FINDER_FEES
@@ -5137,6 +5144,7 @@ x-flows:
                   vehicle:
                     category: BUS
                 payment:
+                  collected_by: BAP
                   tags:
                     - descriptor:
                         code: BUYER_FINDER_FEES
@@ -5436,7 +5444,7 @@ x-flows:
                                   code: ROUTE_DIRECTION
                                 value: DOWN
                     payments:
-                      - collected_by: BPP
+                      - collected_by: BAP
                         tags:
                           - descriptor:
                               code: BUYER_FINDER_FEES
@@ -5477,15 +5485,12 @@ x-flows:
             mermaid: |-
               sequenceDiagram
                 rect rgb(191, 223, 255)
-                Buyer Platform (BAP)->>Gateway (BG): search
-                Gateway (BG) ->> Buyer Platform (BAP): ACK
-                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
-                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
-                Gateway (BG)->>Seller Platform (BPP): search
-                Seller Platform (BPP)->>Gateway (BG) : ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): search
+                Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
                 end
-                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_search
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+                
         reference: if any
         example:
           summary: Search for intra city bus service, with city and type of vehicle
@@ -5504,6 +5509,8 @@ x-flows:
               version: 2.0.1
               action: search
               bap_uri: https://api.example-bap.com/beckn/
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
               ttl: PT30S
             message:
               intent:
@@ -5520,6 +5527,7 @@ x-flows:
                   vehicle:
                     category: BUS
                 payment:
+                  collected_by: BAP
                   tags:
                     - descriptor:
                         code: BUYER_FINDER_FEES
@@ -5552,16 +5560,12 @@ x-flows:
               B(code)
             mermaid: |-
               sequenceDiagram
-                Buyer Platform (BAP)->>Gateway (BG): search
-                Gateway (BG) ->> Buyer Platform (BAP): ACK
-                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
-                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
-                Gateway (BG)->>Seller Platform (BPP): search
-                Seller Platform (BPP)->>Gateway (BG) : ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): search
+                Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
                 rect rgb(191, 223, 255)
-                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
-                Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
-                end 
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_search
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example: *ref_14
       - summary: Selection of specific service
@@ -7981,6 +7985,7 @@ x-flows:
                   vehicle:
                     category: METRO
                 payment:
+                  collected_by: BAP
                   tags:
                     - descriptor:
                         code: BUYER_FINDER_FEES
@@ -8526,14 +8531,10 @@ x-flows:
             mermaid: |-
               sequenceDiagram
                 rect rgb(191, 223, 255)
-                Buyer Platform (BAP)->>Gateway (BG): search
-                Gateway (BG) ->> Buyer Platform (BAP): ACK
-                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
-                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
-                Gateway (BG)->>Seller Platform (BPP): search
-                Seller Platform (BPP)->>Gateway (BG) : ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): search
+                Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
                 end
-                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_search
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
         example: &ref_35
@@ -8553,6 +8554,8 @@ x-flows:
               version: 2.0.1
               action: search
               bap_uri: https://api.example-bap.com/ondc/metro
+              bpp_id: api.example-bpp.com
+              bpp_uri: https://api.example-bpp.com/ondc/metro
               ttl: PT30S
             message:
               intent:
@@ -8569,6 +8572,7 @@ x-flows:
                   vehicle:
                     category: METRO
                 payment:
+                  collected_by: BAP
                   tags:
                     - descriptor:
                         code: BUYER_FINDER_FEES
@@ -8597,16 +8601,12 @@ x-flows:
               be used for transit using metro from station A to station B
             mermaid: |-
               sequenceDiagram
-                Buyer Platform (BAP)->>Gateway (BG): search
-                Gateway (BG) ->> Buyer Platform (BAP): ACK
-                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
-                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
-                Gateway (BG)->>Seller Platform (BPP): search
-                Seller Platform (BPP)->>Gateway (BG) : ACK
                 rect rgb(191, 223, 255)
-                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
-                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): search
+                Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
                 end
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_search
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
         example: &ref_21
           summary: >-
@@ -10860,6 +10860,7 @@ x-flows:
                   vehicle:
                     category: METRO
                 payment:
+                  collected_by: BAP
                   tags:
                     - descriptor:
                         code: BUYER_FINDER_FEES
@@ -22815,3 +22816,6 @@ x-sandboxui:
 x-testcasesui:
   filenames:
     - log-verification.md
+x-changeLog:
+  filenames:
+    - TRV11_2.0.1_140824

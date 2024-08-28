@@ -97,7 +97,15 @@ steps:
     api: search
     details: 
       - description: Users searches over the network to avail the intracity bus mode of transport from point A(code) to point B(code)
-        mermaid: *search
+        mermaid: >-
+          sequenceDiagram
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): search
+            Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_search
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+            
     reference: if any
     example:
       $ref: "../../examples/intra_city/search/example_2.yaml"
@@ -105,7 +113,14 @@ steps:
     api: on_search
     details: 
       - description: Provider platform sends the catalog of all the service that can be used for transit using bus service from point A(code) to point B(code)
-        mermaid: *onSearch
+        mermaid: >-
+          sequenceDiagram
+            Buyer Platform (BAP)->>Seller Platform (BPP): search
+            Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_search
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+            end
     reference: if any
     example:
       $ref: "../../examples/intra_city/on_search/example_0.yaml" 
