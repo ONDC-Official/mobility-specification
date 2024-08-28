@@ -1923,6 +1923,12 @@ components:
             Status of the order. Allowed values can be defined by the network
             policy
           type: string
+          enum:
+            - ACTIVE
+            - COMPLETE
+            - CANCELLED
+            - COMPLETED
+            - SOFT_CANCEL
         type:
           description: >-
             This is used to indicate the type of order being created to BPPs.
@@ -2817,7 +2823,7 @@ x-enum:
         fulfillment: &ref_2
           vehicle:
             category:
-              - code: SITE
+              - code: RESTAURANT
                 description: Describes the vehicle category as site
                 reference: <PR/Issue/Discussion Links md format text
           stops:
@@ -3171,6 +3177,12 @@ x-tags:
                   - code: ENTRY_ELIGIBILITY
                     description: Describes the entry eligibility
                     reference: <PR/Issue/Discussion Links md format text>
+                  - code: MIN_SEAT_NUMBER
+                    description: Describes the minimum seat number required for selection
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: MAX_SEAT_NUMBER
+                    description: Describes the maximum seat number required for selection
+                    reference: <PR/Issue/Discussion Links md format text>
         tags: *ref_10
   on_select:
     message:
@@ -3267,7 +3279,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_14
+        example: &ref_15
           summary: Search for unreserved entry pass
           value:
             context:
@@ -3299,7 +3311,7 @@ x-flows:
                       time:
                         timestamp: '2024-06-27T04:41:16.000Z'
                   vehicle:
-                    category: SITE
+                    category: RESTAURANT
                 payment:
                   collected_by: BAP
                 tags:
@@ -3340,7 +3352,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: &ref_18
+        example: &ref_23
           summary: Return a catalog for unreserved entry pass
           value:
             context:
@@ -3663,7 +3675,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_15
+        example: &ref_17
           summary: Select a an item for unreserved-entry-pass
           value:
             context:
@@ -3728,7 +3740,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_19
+        example: &ref_25
           summary: Return a selected item for unreserved-entry-pass
           value:
             context:
@@ -3989,7 +4001,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_16
+        example: &ref_19
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -4080,7 +4092,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: &ref_20
+        example: &ref_27
           summary: Return draft order for transit ticket with settlement details
           value:
             context:
@@ -4406,7 +4418,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_17
+        example: &ref_21
           summary: Confirm ticket booking
           value:
             context:
@@ -4877,7 +4889,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example:
+        example: &ref_14
           summary: Fetch the latest status of order
           value:
             context:
@@ -4917,7 +4929,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example:
+        example: &ref_29
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -5787,7 +5799,7 @@ x-flows:
                 items:
                   - id: I1
                     descriptor:
-                      name: Adult-Ticket Culture & Heritage Item
+                      name: Corporate Lunch
                       code: ENTRY_PASS
                       short_desc: Ticket for Qutab Minar
                       long_desc: This ticket grants entry to the Qutab Minar.
@@ -5810,45 +5822,9 @@ x-flows:
                       duration: P2D
                     fulfillment_ids:
                       - F1
-                    add_ons:
-                      - id: A1
-                        descriptor:
-                          name: Audio Assistance
-                        quantity:
-                          selected:
-                            count: 1
-                        price:
-                          value: '100'
-                          currency: INR
-                    tags:
-                      - descriptor:
-                          code: FARE_POLICY
-                        list:
-                          - descriptor:
-                              code: MIN_AGE
-                            value: '1'
-                          - descriptor:
-                              code: MAX_AGE
-                            value: '70'
-                          - descriptor:
-                              code: GENDER
-                            value: MALE
-                          - descriptor:
-                              code: NATIONALITY
-                            value: INDIAN
-                      - descriptor:
-                          code: INCLUSIONS
-                        list:
-                          - value: water
-                          - value: guide_tour
-                      - descriptor:
-                          code: EXCLUSIONS
-                        list:
-                          - value: out side food
-                          - value: photography
                   - id: I2
                     descriptor:
-                      name: Child-Ticket Culture & Heritage Item
+                      name: Candle Light Dinner
                       code: ENTRY_PASS
                       short_desc: Ticket for Qutab Minar
                       long_desc: This ticket grants entry to the Qutab Minar.
@@ -5871,42 +5847,6 @@ x-flows:
                       duration: P2D
                     fulfillment_ids:
                       - F1
-                    add_ons:
-                      - id: A1
-                        descriptor:
-                          name: Audio Assistance
-                        quantity:
-                          selected:
-                            count: 1
-                        price:
-                          value: '100'
-                          currency: INR
-                    tags:
-                      - descriptor:
-                          code: FARE_POLICY
-                        list:
-                          - descriptor:
-                              code: MIN_AGE
-                            value: '1'
-                          - descriptor:
-                              code: MAX_AGE
-                            value: '70'
-                          - descriptor:
-                              code: GENDER
-                            value: MALE
-                          - descriptor:
-                              code: NATIONALITY
-                            value: INDIAN
-                      - descriptor:
-                          code: INCLUSIONS
-                        list:
-                          - value: water
-                          - value: guide_tour
-                      - descriptor:
-                          code: EXCLUSIONS
-                        list:
-                          - value: out side food
-                          - value: photography
                 fulfillments:
                   - id: F1
                     type: VISIT
@@ -5931,7 +5871,7 @@ x-flows:
                           phone: +91-9999999999
                           email: john.doe@example.com
                     vehicle:
-                      category: SITE
+                      category: RESTAURANT
                 provider:
                   id: P1
                   descriptor:
@@ -5996,16 +5936,12 @@ x-flows:
                     - title: ADD_ONS
                       item:
                         id: I1
-                        add_ons:
-                          - id: A1
                       price:
                         currency: INR
                         value: '100'
                     - title: ADD_ONS
                       item:
                         id: I2
-                        add_ons:
-                          - id: A1
                       price:
                         currency: INR
                         value: '100'
@@ -6018,11 +5954,6 @@ x-flows:
                         quantity:
                           selected:
                             count: 1
-                        add_ons:
-                          - id: A1
-                            price:
-                              currency: INR
-                              value: '100'
                       price:
                         currency: INR
                         value: '450'
@@ -6035,11 +5966,6 @@ x-flows:
                         quantity:
                           selected:
                             count: 1
-                        add_ons:
-                          - id: A1
-                            price:
-                              currency: INR
-                              value: '100'
                       price:
                         currency: INR
                         value: '250'
@@ -6118,6 +6044,1435 @@ x-flows:
                       - descriptor:
                           code: SETTLEMENT_BANK_ACCOUNT_NUMBER
                         value: xxxxxxxxxxxxxx
+  - summary: Unreserved Entry Pass - Food Dining
+    details:
+      - description: >-
+          The illustrative flow to perform a transaction to create an ecosystem
+          where entry tickets/ passes can be bought and sold over the network.
+        mermaid: |-
+          sequenceDiagram
+            title Unreserved Entry Pass Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+      - description: Ordering
+        mermaid: |-
+          sequenceDiagram
+            title Selection
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+      - description: Initializing the order
+        mermaid: |-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+      - description: Order Confirmation
+        mermaid: |-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+      - description: Fulfillment
+        mermaid: |-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK      
+    reference: if any
+    steps:
+      - summary: Search for the Unreserved Entry Pass
+        api: search
+        details:
+          - description: Users searches over the network to avail the Unreserved Entry Pass
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK  
+        reference: if any
+        example: &ref_16
+          summary: Search for unreserved entry pass without timestamp(FOOD_DINING)
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV14
+              timestamp: '2024-06-26T04:41:16.000Z'
+              bap_id: api.example-bap.com
+              transaction_id: cf7bb367-c820-4bc9-9be8-f548e0bbf222
+              message_id: 5fd86e70-3465-4759-ac6c-910ab16e2db9
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/beckn/
+              ttl: PT30S
+            message:
+              intent:
+                category:
+                  descriptor:
+                    code: FOOD_DINING
+                fulfillment:
+                  stops:
+                    - type: START
+                      location:
+                        city:
+                          code: std:011
+                  vehicle:
+                    category: RESTAURANT
+                payment:
+                  collected_by: BAP
+                tags:
+                  - descriptor:
+                      code: BAP_TERMS
+                      name: BAP Terms of Engagement
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_TYPE
+                        value: percent
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P30D
+      - summary: Return a catalog of all unreserved-entry-pass services
+        api: on_search
+        details:
+          - description: Provider platform sends the catalog of all the services
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+                end 
+        reference: if any
+        example: &ref_24
+          summary: Return a catalog for unreserved entry pass(FOOD_DINING)
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV14
+              timestamp: '2024-06-26T04:43:16.000Z'
+              bap_id: api.example-bap.com
+              transaction_id: cf7bb367-c820-4bc9-9be8-f548e0bbf222
+              message_id: 5fd86e70-3465-4759-ac6c-910ab16e2db9
+              version: 2.0.0
+              action: on_search
+              bap_uri: https://api.example-bap.com/beckn/
+              ttl: PT30S
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
+            message:
+              catalog:
+                descriptor:
+                  name: Unreserved Entry Pass
+                  long_desc: Online ticket booking service
+                  images:
+                    - url: https://api.unreserved-entry-pass.com/logos/logo.ico
+                      size_type: xs
+                providers:
+                  - id: P1
+                    descriptor:
+                      name: Booking my show
+                      short_desc: Online Ticket Booking Service
+                      images:
+                        - url: >-
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
+                          size_type: xs
+                    categories:
+                      - descriptor:
+                          name: Food & Dining
+                          code: FOOD_DINING
+                        id: C1
+                    time:
+                      range:
+                        start: '2024-06-14T05:30:00.000Z'
+                        end: '2024-06-14T23:30:00.000Z'
+                    locations:
+                      - id: L1
+                        gps: 25.208412, 55.272312
+                        descriptor:
+                          name: Four Points by Sheraton
+                          short_desc: >-
+                            Four Points by Sheraton New Delhi, Airport Highway,
+                            Plot no 9, NH-8, D Block, Samalka, New Delhi, Delhi
+                            110037.
+                          additional_desc:
+                            url: >-
+                              https://api.unreserved-entry-pass.com/sites/additional-info
+                            content_type: text/plain
+                      - id: L2
+                        gps: 28.5244946, 77.1855177
+                        descriptor:
+                          name: Kathika Culture Centre, Old Delhi
+                          short_desc: >-
+                            Kathika Culture Centre, Old Delhi, 1237, Gali
+                            Khatikan, Imli Mohalla, Mohalla IMLI, Kucha Pati
+                            Ram, Sitaram Bazar, Delhi, 110006
+                          additional_desc:
+                            url: >-
+                              https://api.unreserved-entry-pass.com/sites/additional-info
+                            content_type: text/plain
+                    items:
+                      - id: I1
+                        descriptor:
+                          name: Corporate Lunch
+                          code: ENTRY_PASS
+                          short_desc: Ticket for Four Points by Sheraton
+                          long_desc: >-
+                            This ticket grants entry to the Four Points by
+                            Sheraton.
+                          images:
+                            - url: >-
+                                https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
+                              size_type: xs
+                        location_ids:
+                          - L1
+                        category_ids:
+                          - C1
+                        price:
+                          currency: INR
+                          value: '350'
+                        quantity:
+                          maximum:
+                            count: 6
+                          minimum:
+                            count: 1
+                        time:
+                          label: VALIDITY
+                          duration: P2D
+                        fulfillment_ids:
+                          - F1
+                          - F2
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: Desserts
+                            quantity:
+                              available:
+                                count: 10
+                            price:
+                              value: '100'
+                              currency: INR
+                        cancellation_terms:
+                          - external_ref:
+                              mimetype: text/html
+                              url: >-
+                                https://api.unreserved-entry-pass.com/beckn/tnc.html
+                        replacement_terms:
+                          - external_ref:
+                              mimetype: text/html
+                              url: >-
+                                https://api.unreserved-entry-pass/beckn/replacement.html
+                      - id: I2
+                        descriptor:
+                          name: Candle Light Dinner
+                          code: ENTRY_PASS
+                          short_desc: Ticket for Four Points by Sheraton
+                          long_desc: >-
+                            This ticket grants entry to the Four Points by
+                            Sheraton.
+                          images:
+                            - url: >-
+                                https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
+                              size_type: xs
+                        location_ids:
+                          - L1
+                        category_ids:
+                          - C1
+                        price:
+                          currency: INR
+                          value: '150'
+                        fulfillment_ids:
+                          - F1
+                          - F2
+                        quantity:
+                          maximum:
+                            count: 4
+                          minimum:
+                            count: 1
+                        time:
+                          label: VALIDITY
+                          duration: P2D
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: Desserts
+                            quantity:
+                              available:
+                                count: 10
+                            price:
+                              value: '100'
+                              currency: INR
+                        cancellation_terms:
+                          - external_ref:
+                              mimetype: text/html
+                              url: >-
+                                https://api.unreserved-entry-pass.com/beckn/tnc.html
+                        replacement_terms:
+                          - external_ref:
+                              mimetype: text/html
+                              url: >-
+                                https://api.unreserved-entry-pass/beckn/replacement.html
+                    payments:
+                      - collected_by: BAP
+                    fulfillments:
+                      - id: F1
+                        type: VISIT
+                        stops:
+                          - type: START
+                            time:
+                              timestamp: '2024-06-28T05:00:16.000Z'
+                          - type: END
+                            time:
+                              timestamp: '2024-06-28T07:00:16.000Z'
+                        agent:
+                          organization:
+                            contact:
+                              phone: +91-9999999999
+                              email: john.doe@example.com
+                        vehicle:
+                          category: RESTAURANT
+                      - id: F2
+                        type: VISIT
+                        stops:
+                          - type: START
+                            time:
+                              timestamp: '2024-06-28T07:00:16.000Z'
+                          - type: END
+                            time:
+                              timestamp: '2024-06-28T09:00:16.000Z'
+                        agent:
+                          organization:
+                            contact:
+                              phone: +91-9999999999
+                              email: john.doe@example.com
+                        vehicle:
+                          category: RESTAURANT
+                tags:
+                  - descriptor:
+                      code: BAP_TERMS
+                      name: BAP Terms of Engagement
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_TYPE
+                        value: percent
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P30D
+                  - descriptor:
+                      code: BPP_TERMS
+                      name: BPP Terms of Engagement
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_TYPE
+                        value: percent
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: 2.5 %
+      - summary: Selection of specific service
+        api: select
+        details:
+          - description: >-
+              The end consumer have to select the specific service and would
+              like to have the necessary details
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example: &ref_18
+          summary: Select a an item for unreserved-entry-pass
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV14
+              timestamp: '2024-06-26T04:50:16.000Z'
+              bap_id: api.example-bap.com
+              transaction_id: cf7bb367-c820-4bc9-9be8-f548e0bbf222
+              message_id: 7b355323-11aa-4be9-9648-9628618b1157
+              version: 2.0.0
+              action: select
+              bap_uri: https://api.example-bap.com/beckn/
+              ttl: PT30S
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
+            message:
+              order:
+                items:
+                  - id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                fulfillments:
+                  - id: F1
+                provider:
+                  id: P1
+      - summary: >-
+          Provider platform provides the quote for selected service of
+          unreserved-entry-pass
+        api: on_select
+        details:
+          - description: >-
+              Provider platform responds with the service detailed information
+              and quotes for the specific service that consumer would like to
+              avail
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end 
+        reference: if any
+        example: &ref_26
+          summary: Return a selected item for unreserved-entry-pass
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV14
+              timestamp: '2024-06-26T04:51:16.000Z'
+              bap_id: api.example-bap.com
+              transaction_id: cf7bb367-c820-4bc9-9be8-f548e0bbf222
+              message_id: 7b355323-11aa-4be9-9648-9628618b1157
+              version: 2.0.0
+              action: on_select
+              bap_uri: https://api.example-bap.com/beckn/
+              ttl: PT30S
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
+            message:
+              order:
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Corporate Lunch
+                      code: ENTRY_PASS
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
+                      images:
+                        - url: >-
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
+                          size_type: xs
+                    location_ids:
+                      - L1
+                    category_ids:
+                      - C1
+                    price:
+                      currency: INR
+                      value: '350'
+                    quantity:
+                      selected:
+                        count: 1
+                    time:
+                      label: VALIDITY
+                      duration: P2D
+                    fulfillment_ids:
+                      - F1
+                fulfillments:
+                  - id: F1
+                    type: VISIT
+                    stops:
+                      - type: START
+                        time:
+                          timestamp: '2024-06-28T05:00:16.000Z'
+                      - type: END
+                        time:
+                          timestamp: '2024-06-28T07:00:16.000Z'
+                    agent:
+                      organization:
+                        contact:
+                          phone: +91-9999999999
+                          email: john.doe@example.com
+                    vehicle:
+                      category: RESTAURANT
+                provider:
+                  id: P1
+                  descriptor:
+                    name: Unreserved Entry Pass
+                    images:
+                      - url: >-
+                          https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
+                        size_type: xs
+                  locations:
+                    - id: L1
+                      gps: 25.208412, 55.272312
+                      descriptor:
+                        name: Four Points by Sheraton
+                        short_desc: >-
+                          Four Points by Sheraton New Delhi, Airport Highway,
+                          Plot no 9, NH-8, D Block, Samalka, New Delhi, Delhi
+                          110037.
+                        additional_desc:
+                          url: >-
+                            https://api.unreserved-entry-pass.com/sites/additional-info
+                          content_type: text/plain
+                cancellation_terms:
+                  - external_ref:
+                      mimetype: text/html
+                      url: https://api.unreserved-entry-pass.com/beckn/tnc.html
+                replacement_terms:
+                  - external_ref:
+                      mimetype: text/html
+                      url: >-
+                        https://api.unreserved-entry-pass.com/beckn/replacement.html
+                quote:
+                  breakup:
+                    - title: BASE_FARE
+                      item:
+                        id: I1
+                        price:
+                          currency: INR
+                          value: '350'
+                        quantity:
+                          selected:
+                            count: 1
+                      price:
+                        currency: INR
+                        value: '350'
+                    - title: TAX
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: ADD_ONS
+                      item:
+                        id: I1
+                      price:
+                        currency: INR
+                        value: '100'
+                  price:
+                    currency: INR
+                    value: '700'
+      - summary: Consumer platform initializes the order
+        api: init
+        details:
+          - description: >-
+              Consumer platform shares the terms of order and initializes the
+              order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example: &ref_20
+          summary: Initialize the order by providing billing details
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV14
+              timestamp: '2024-06-26T04:52:16.000Z'
+              bap_id: api.example-bap.com
+              transaction_id: cf7bb367-c820-4bc9-9be8-f548e0bbf222
+              message_id: 764b4322-8f7c-402c-b907-80484e9ad40c
+              version: 2.0.0
+              action: init
+              bap_uri: https://api.example-bap.com/beckn/
+              ttl: PT30S
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
+            message:
+              order:
+                items:
+                  - id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                fulfillments:
+                  - id: F1
+                billing:
+                  name: John Doe
+                  email: john.doe@example.com
+                  phone: +91-9897867564
+                provider:
+                  id: P1
+                payments:
+                  - collected_by: BAP
+                    status: NOT-PAID
+                    type: PRE-ORDER
+                tags:
+                  - descriptor:
+                      code: BAP_TERMS
+                      name: BAP Terms of Engagement
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_TYPE
+                        value: percent
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P30D
+      - summary: Provider platform accepts/appends the terms of orders
+        api: on_init
+        details:
+          - description: >-
+              Provider platform accepts the terms of orders and appends its own
+              terms and responds with the final draft
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): init
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end    
+        reference: if any
+        example: &ref_28
+          summary: Return draft order for transit ticket with settlement details
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV14
+              timestamp: '2024-06-26T04:52:26.000Z'
+              bap_id: api.example-bap.com
+              transaction_id: cf7bb367-c820-4bc9-9be8-f548e0bbf222
+              message_id: 036eedaf-7af0-42b5-8764-5b00b5b55a5d
+              version: 2.0.0
+              action: on_init
+              bap_uri: https://api.example-bap.com/beckn/
+              ttl: PT30S
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
+            message:
+              order:
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Corporate Lunch
+                      code: ENTRY_PASS
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
+                      images:
+                        - url: >-
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
+                          size_type: xs
+                    location_ids:
+                      - L1
+                    category_ids:
+                      - C1
+                    price:
+                      currency: INR
+                      value: '350'
+                    quantity:
+                      selected:
+                        count: 1
+                    time:
+                      label: VALIDITY
+                      duration: P2D
+                    fulfillment_ids:
+                      - F1
+                fulfillments:
+                  - id: F1
+                    type: VISIT
+                    stops:
+                      - type: START
+                        time:
+                          timestamp: '2024-06-28T05:00:16.000Z'
+                      - type: END
+                        time:
+                          timestamp: '2024-06-28T07:00:16.000Z'
+                    agent:
+                      organization:
+                        contact:
+                          phone: +91-9999999999
+                          email: john.doe@example.com
+                    vehicle:
+                      category: RESTAURANT
+                provider:
+                  id: P1
+                  descriptor:
+                    name: Unreserved Entry Pass
+                    images:
+                      - url: >-
+                          https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
+                        size_type: xs
+                  locations:
+                    - id: L1
+                      gps: 25.208412, 55.272312
+                      descriptor:
+                        name: Four Points by Sheraton
+                        short_desc: >-
+                          Four Points by Sheraton New Delhi, Airport Highway,
+                          Plot no 9, NH-8, D Block, Samalka, New Delhi, Delhi
+                          110037.
+                        additional_desc:
+                          url: >-
+                            https://api.unreserved-entry-pass.com/sites/additional-info
+                          content_type: text/plain
+                cancellation_terms:
+                  - external_ref:
+                      mimetype: text/html
+                      url: https://api.unreserved-entry-pass.com/beckn/tnc.html
+                replacement_terms:
+                  - external_ref:
+                      mimetype: text/html
+                      url: >-
+                        https://api.unreserved-entry-pass.com/beckn/replacement.html
+                billing:
+                  name: John Doe
+                  email: john.doe@example.com
+                  phone: +91-9897867564
+                quote:
+                  breakup:
+                    - title: BASE_FARE
+                      item:
+                        id: I1
+                        price:
+                          currency: INR
+                          value: '350'
+                        quantity:
+                          selected:
+                            count: 1
+                      price:
+                        currency: INR
+                        value: '350'
+                    - title: TAX
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: ADD_ONS
+                      item:
+                        id: I1
+                      price:
+                        currency: INR
+                        value: '100'
+                  price:
+                    currency: INR
+                    value: '450'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: NOT-PAID
+                    type: PRE-ORDER
+                tags:
+                  - descriptor:
+                      code: BAP_TERMS
+                      name: BAP Terms of Engagement
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_TYPE
+                        value: percent
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P30D
+                  - descriptor:
+                      code: BPP_TERMS
+                      name: BPP Terms of Engagement
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_TYPE
+                        value: percent
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: 2.5 %
+                      - descriptor:
+                          code: SETTLEMENT_AMOUNT
+                        value: 7 INR
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: upi
+                      - descriptor:
+                          code: SETTLEMENT_BANK_CODE
+                        value: XXXXXXXX
+                      - descriptor:
+                          code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                        value: xxxxxxxxxxxxxx
+      - summary: Consumer confirms the booking and provides details.
+        api: confirm
+        details:
+          - description: >-
+              Consumer platform confirms the booking and provides all
+              information required for confirmation as per the terms of order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example: &ref_22
+          summary: Confirm ticket booking
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV14
+              timestamp: '2024-06-26T04:53:26.000Z'
+              bap_id: api.example-bap.com
+              transaction_id: cf7bb367-c820-4bc9-9be8-f548e0bbf222
+              message_id: 6d287e01-59bc-4c6d-b0ab-e07649eae6b2
+              version: 2.0.0
+              action: confirm
+              bap_uri: https://api.example-bap.com/beckn/
+              ttl: PT30S
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
+            message:
+              order:
+                items:
+                  - id: I1
+                    quantity:
+                      selected:
+                        count: 1
+                fulfillments:
+                  - id: F1
+                billing:
+                  name: John Doe
+                  email: john.doe@example.com
+                  phone: +91-9897867564
+                provider:
+                  id: P1
+                payments:
+                  - collected_by: BAP
+                    status: NOT-PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
+                      currency: INR
+                      amount: '450'
+                tags:
+                  - descriptor:
+                      code: BAP_TERMS
+                      name: BAP Terms of Engagement
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_TYPE
+                        value: percent
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P30D
+                  - descriptor:
+                      code: BPP_TERMS
+                      name: BPP Terms of Engagement
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_TYPE
+                        value: percent
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: 2.5 %
+                      - descriptor:
+                          code: SETTLEMENT_AMOUNT
+                        value: 7 INR
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: upi
+      - summary: Provider platform confirms the order
+        api: on_confirm
+        details:
+          - description: >-
+              Provider platform confirms the order and provides details of the
+              journey on confirmation
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example:
+          summary: Return confirmed ticket order with payment confirmation
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV14
+              timestamp: '2024-06-26T04:53:26.000Z'
+              bap_id: api.example-bap.com
+              transaction_id: cf7bb367-c820-4bc9-9be8-f548e0bbf222
+              message_id: 6d287e01-59bc-4c6d-b0ab-e07649eae6b2
+              version: 2.0.0
+              action: on_confirm
+              bap_uri: https://api.example-bap.com/beckn/
+              ttl: PT30S
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
+            message:
+              order:
+                id: '01'
+                status: ACTIVE
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Corporate Lunch
+                      code: ENTRY_PASS
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
+                      images:
+                        - url: >-
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
+                          size_type: xs
+                    location_ids:
+                      - L1
+                    category_ids:
+                      - C1
+                    price:
+                      currency: INR
+                      value: '350'
+                    quantity:
+                      selected:
+                        count: 1
+                    time:
+                      label: VALIDITY
+                      duration: P2D
+                    fulfillment_ids:
+                      - F1
+                fulfillments:
+                  - id: F1
+                    type: VISIT
+                    stops:
+                      - type: START
+                        time:
+                          timestamp: '2024-06-28T05:00:16.000Z'
+                        authorization:
+                          type: QR
+                          token: >-
+                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2024-06-30T05:00:16.000Z'
+                          status: UNCLAIMED
+                      - type: END
+                        time:
+                          timestamp: '2024-06-28T07:00:16.000Z'
+                    agent:
+                      organization:
+                        contact:
+                          phone: +91-9999999999
+                          email: john.doe@example.com
+                    vehicle:
+                      category: RESTAURANT
+                provider:
+                  id: P1
+                  descriptor:
+                    name: Unreserved Entry Pass
+                    images:
+                      - url: >-
+                          https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
+                        size_type: xs
+                  locations:
+                    - id: L1
+                      gps: 25.208412, 55.272312
+                      descriptor:
+                        name: Four Points by Sheraton
+                        short_desc: >-
+                          Four Points by Sheraton New Delhi, Airport Highway,
+                          Plot no 9, NH-8, D Block, Samalka, New Delhi, Delhi
+                          110037.
+                        additional_desc:
+                          url: >-
+                            https://api.unreserved-entry-pass.com/sites/additional-info
+                          content_type: text/plain
+                cancellation_terms:
+                  - external_ref:
+                      mimetype: text/html
+                      url: https://api.unreserved-entry-pass.com/beckn/tnc.html
+                replacement_terms:
+                  - external_ref:
+                      mimetype: text/html
+                      url: >-
+                        https://api.unreserved-entry-pass.com/beckn/replacement.html
+                quote:
+                  breakup:
+                    - title: BASE_FARE
+                      item:
+                        id: I1
+                        price:
+                          currency: INR
+                          value: '350'
+                        quantity:
+                          selected:
+                            count: 1
+                      price:
+                        currency: INR
+                        value: '350'
+                    - title: TAX
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: ADD_ONS
+                      item:
+                        id: I1
+                      price:
+                        currency: INR
+                        value: '100'
+                  price:
+                    currency: INR
+                    value: '450'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
+                      amount: '450'
+                      currency: INR
+                tags:
+                  - descriptor:
+                      code: BAP_TERMS
+                      name: BAP Terms of Engagement
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_TYPE
+                        value: percent
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P30D
+                  - descriptor:
+                      code: BPP_TERMS
+                      name: BPP Terms of Engagement
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_TYPE
+                        value: percent
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: 2.5 %
+                      - descriptor:
+                          code: SETTLEMENT_AMOUNT
+                        value: 7 INR
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: upi
+                      - descriptor:
+                          code: SETTLEMENT_BANK_CODE
+                        value: XXXXXXXX
+                      - descriptor:
+                          code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                        value: xxxxxxxxxxxxxx
+                created_at: '2024-06-26T04:53:26.000Z'
+                updated_at: '2024-06-26T04:53:26.000Z'
+      - summary: Consumer platform requests for latest status
+        api: status
+        details:
+          - description: >-
+              Consumer platform request the provider platform to provide with
+              latest order status.
+            mermaid: |-
+              sequenceDiagram
+                title Order Fulfillment
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+        reference: if any
+        example: *ref_14
+      - summary: Provider platform provides latest order status
+        api: on_status
+        details:
+          - description: >-
+              Provider platform provides the updated order status to the
+              consumer.
+            mermaid: |-
+              sequenceDiagram
+                title Order Fulfillment
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end 
+        reference: if any
+        example: &ref_30
+          summary: Return confirmed ticket order with payment confirmation
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV14
+              timestamp: '2024-06-26T04:53:26.000Z'
+              bap_id: api.example-bap.com
+              transaction_id: cf7bb367-c820-4bc9-9be8-f548e0bbf222
+              message_id: 6d287e01-59bc-4c6d-b0ab-e07649eae6b2
+              version: 2.0.0
+              action: on_status
+              bap_uri: https://api.example-bap.com/beckn/
+              ttl: PT30S
+              bpp_id: api.unreserved-entry-pass.com
+              bpp_uri: https://api.unreserved-entry-pass.com/beckn/
+            message:
+              order:
+                id: '01'
+                status: COMPLETE
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Corporate Lunch
+                      code: ENTRY_PASS
+                      short_desc: Ticket for Qutab Minar
+                      long_desc: This ticket grants entry to the Qutab Minar.
+                      images:
+                        - url: >-
+                            https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
+                          size_type: xs
+                    location_ids:
+                      - L1
+                    category_ids:
+                      - C1
+                    price:
+                      currency: INR
+                      value: '350'
+                    quantity:
+                      selected:
+                        count: 1
+                    time:
+                      label: VALIDITY
+                      duration: P2D
+                    fulfillment_ids:
+                      - F1
+                fulfillments:
+                  - id: F1
+                    type: VISIT
+                    stops:
+                      - type: START
+                        time:
+                          timestamp: '2024-06-28T05:00:16.000Z'
+                        authorization:
+                          type: QR
+                          token: >-
+                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2024-06-30T05:00:16.000Z'
+                          status: CLAIMED
+                      - type: END
+                        time:
+                          timestamp: '2024-06-28T07:00:16.000Z'
+                    agent:
+                      organization:
+                        contact:
+                          phone: +91-9999999999
+                          email: john.doe@example.com
+                    vehicle:
+                      category: RESTAURANT
+                provider:
+                  id: P1
+                  descriptor:
+                    name: Unreserved Entry Pass
+                    images:
+                      - url: >-
+                          https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
+                        size_type: xs
+                  locations:
+                    - id: L1
+                      gps: 25.208412, 55.272312
+                      descriptor:
+                        name: Four Points by Sheraton
+                        short_desc: >-
+                          Four Points by Sheraton New Delhi, Airport Highway,
+                          Plot no 9, NH-8, D Block, Samalka, New Delhi, Delhi
+                          110037.
+                        additional_desc:
+                          url: >-
+                            https://api.unreserved-entry-pass.com/sites/additional-info
+                          content_type: text/plain
+                cancellation_terms:
+                  - external_ref:
+                      mimetype: text/html
+                      url: https://api.unreserved-entry-pass.com/beckn/tnc.html
+                replacement_terms:
+                  - external_ref:
+                      mimetype: text/html
+                      url: >-
+                        https://api.unreserved-entry-pass.com/beckn/replacement.html
+                quote:
+                  breakup:
+                    - title: BASE_FARE
+                      item:
+                        id: I1
+                        price:
+                          currency: INR
+                          value: '350'
+                        quantity:
+                          selected:
+                            count: 1
+                      price:
+                        currency: INR
+                        value: '350'
+                    - title: TAX
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: ADD_ONS
+                      item:
+                        id: I1
+                      price:
+                        currency: INR
+                        value: '100'
+                  price:
+                    currency: INR
+                    value: '450'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
+                      amount: '450'
+                      currency: INR
+                tags:
+                  - descriptor:
+                      code: BAP_TERMS
+                      name: BAP Terms of Engagement
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_TYPE
+                        value: percent
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P30D
+                  - descriptor:
+                      code: BPP_TERMS
+                      name: BPP Terms of Engagement
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_TYPE
+                        value: percent
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://api.example-bap.com/booking/terms
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: 2.5 %
+                      - descriptor:
+                          code: SETTLEMENT_AMOUNT
+                        value: 7 INR
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: upi
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: upi
+                      - descriptor:
+                          code: SETTLEMENT_BANK_CODE
+                        value: XXXXXXXX
+                      - descriptor:
+                          code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                        value: xxxxxxxxxxxxxx
+                created_at: '2024-06-26T04:53:26.000Z'
+                updated_at: '2024-06-26T04:53:26.000Z'
 x-examples:
   unreserved-entry-pass:
     summary: Unreserved Entry Pass Use Case Specification
@@ -6185,81 +7540,43 @@ x-examples:
                         - descriptor:
                             code: SETTLEMENT_WINDOW
                           value: P30D
-          - *ref_14
-          - summary: Search for unreserved entry pass without timestamp(FOOD_DINING)
-            value:
-              context:
-                location:
-                  country:
-                    code: IND
-                  city:
-                    code: std:011
-                domain: ONDC:TRV14
-                timestamp: '2024-06-26T04:41:16.000Z'
-                bap_id: api.example-bap.com
-                transaction_id: cf7bb367-c820-4bc9-9be8-f548e0bbf222
-                message_id: 5fd86e70-3465-4759-ac6c-910ab16e2db9
-                version: 2.0.0
-                action: search
-                bap_uri: https://api.example-bap.com/beckn/
-                ttl: PT30S
-              message:
-                intent:
-                  category:
-                    descriptor:
-                      code: FOOD_DINING
-                  fulfillment:
-                    stops:
-                      - type: START
-                        location:
-                          city:
-                            code: std:011
-                    vehicle:
-                      category: SITE
-                  payment:
-                    collected_by: BAP
-                  tags:
-                    - descriptor:
-                        code: BAP_TERMS
-                        name: BAP Terms of Engagement
-                      display: false
-                      list:
-                        - descriptor:
-                            code: BUYER_FINDER_FEES_PERCENTAGE
-                          value: '1'
-                        - descriptor:
-                            code: BUYER_FINDER_FEES_TYPE
-                          value: percent
-                        - descriptor:
-                            code: STATIC_TERMS
-                          value: https://api.example-bap.com/booking/terms
-                        - descriptor:
-                            code: SETTLEMENT_BASIS
-                          value: https://api.example-bap.com/booking/terms
-                        - descriptor:
-                            code: SETTLEMENT_WINDOW
-                          value: P30D
+          - *ref_15
+          - *ref_16
       select:
         examples:
-          - *ref_15
+          - *ref_17
+          - *ref_18
       init:
         examples:
-          - *ref_16
+          - *ref_19
+          - *ref_20
       confirm:
         examples:
-          - *ref_17
+          - *ref_21
+          - *ref_22
+      status:
+        examples:
+          - *ref_14
       on_search:
         examples:
-          - *ref_18
+          - *ref_23
+          - *ref_24
       on_select:
         examples:
-          - *ref_19
+          - *ref_25
+          - *ref_26
       on_init:
         examples:
-          - *ref_20
+          - *ref_27
+          - *ref_28
       on_confirm:
         examples:
           - *ref_13
+          - *ref_13
+      on_status:
+        examples:
+          - *ref_29
+          - *ref_30
 x-attributes:
   unreserved-entry-pass:
     attribute_set:
@@ -10471,31 +11788,31 @@ x-attributes:
                     description: Describes time for fulfillments
                 authorization:
                   type:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: QR
                     description: Describes the authorization type
                   token:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: iVBORw0KGgoAAAANSUhEUg
                     description: Describes the authorization token
                   valid_to:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: '2024-06-30T05:00:16.000Z'
                     description: Describes the authorization token valid timestamp
                   status:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: UNCLAIMED
                     description: Describes the authorization token status
                   _description:
-                    required: mandatory
+                    required: optional
                     type: object
                     owner: BPP
                     usage: '--'
@@ -11596,31 +12913,31 @@ x-attributes:
                     description: Describes time for fulfillments
                 authorization:
                   type:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: QR
                     description: Describes the authorization type
                   token:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: iVBORw0KGgoAAAANSUhEUg
                     description: Describes the authorization token
                   valid_to:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: '2024-06-30T05:00:16.000Z'
                     description: Describes the authorization token valid timestamp
                   status:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: UNCLAIMED
                     description: Describes the authorization token status
                   _description:
-                    required: mandatory
+                    required: optional
                     type: object
                     owner: BPP
                     usage: '--'
