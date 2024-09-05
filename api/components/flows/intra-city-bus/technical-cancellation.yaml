@@ -17,25 +17,21 @@ details:
         Buyer Platform (BAP)-->>Seller Platform (BPP): ACK         
 reference: if any
 steps:
-  # - summary: Provider confirms the request
-  #   api: on_confirm
-  #   details: 
-  #     - description: Provider confirms the  request and provides the details on confirmation.
-  #       mermaid: >-
-  #         sequenceDiagram
-  #           participant Buyer Platform (BAP)
-  #           participant Seller Platform (BPP)
-  #           rect rgb(191, 223, 255)
-  #           Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
-  #           Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
-  #           end
-  #           Buyer Platform (BAP)->>Seller Platform (BPP): cancel
-  #           Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-  #           Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
-  #           Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
-  #   reference: if any
-  #   example:
-  #     $ref: "../../examples/intra_city/on_confirm/example_0.yaml"
+  - summary: Provider confirms the request
+    api: on_confirm
+    details: 
+      - description: Provider confirms the  request and provides the details on confirmation.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+            end 
+    reference: if any
+    example:
+      $ref: "../../examples/intra_city/on_confirm/example_0.yaml"
   # - summary: Buyer app cancels the request for ticket
   #   api: cancel
   #   details: 
@@ -75,23 +71,25 @@ steps:
   #   example:
   #     $ref: "../../examples/intra_city/on_cancel/example_technical_1.yaml"
  
-  # - summary: Buyer app confirms the cancel request for ticket
-  #   api: cancel
-  #   details: 
-  #     - description: Buyer app give the confirmation to cancel the ticket.
-  #       mermaid: >-
-  #         sequenceDiagram
-  #           participant Buyer Platform (BAP)
-  #           participant Seller Platform (BPP)
-  #           rect rgb(191, 223, 255)
-  #           Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
-  #           Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-  #           end
-  #           Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
-  #           Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-  #   reference: if any
-  #   example:
-  #     $ref: "../../examples/intra_city/cancel/example_technical_2.yaml"
+  - summary: Buyer app confirms the cancel request for ticket
+    api: cancel
+    details: 
+      - description: Buyer app give the confirmation to cancel the ticket.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/intra_city/cancel/example_technical_2.yaml"
   - summary: Provider accepts the terms of cancellation
     api: on_cancel
     details: 
@@ -100,6 +98,8 @@ steps:
           sequenceDiagram
             participant Buyer Platform (BAP)
             participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
             rect rgb(191, 223, 255)
             Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
@@ -118,6 +118,8 @@ steps:
           sequenceDiagram
             participant Buyer Platform (BAP)
             participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
             Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
             rect rgb(191, 223, 255)
