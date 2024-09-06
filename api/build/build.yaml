@@ -1039,6 +1039,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Provider'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagGroup'
         exp:
           description: Timestamp after which catalog will expire
           type: string
@@ -1925,6 +1929,8 @@ components:
             - CANCELLED
             - COMPLETED
             - SOFT_CANCEL
+            - CANCELLATION_INITIATED
+            - CANCELLATION_REJECTED
         type:
           description: >-
             This is used to indicate the type of order being created to BPPs.
@@ -3015,6 +3021,9 @@ x-enum:
                 reference: <PR/Issue/Discussion Links md format text
               - code: CANCELLATION_CHARGES
                 description: Describes the cancellation charges for a specific ride.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: REFUND
+                description: Describes the refund for a specific ride.
                 reference: <PR/Issue/Discussion Links md format text
   init:
     context:
@@ -9302,9 +9311,13 @@ x-flows:
                         currency: INR
                         value: '10'
                       title: CANCELLATION_CHARGES
+                    - price:
+                        currency: INR
+                        value: '-146'
+                      title: REFUND
                   price:
                     currency: INR
-                    value: '156'
+                    value: '10'
                   ttl: P200S
                 status: SOFT_CANCEL
       - summary: Buyer app confirms the cancel request for ride
@@ -9585,9 +9598,17 @@ x-flows:
                         currency: INR
                         value: '116'
                       title: DISTANCE_FARE
+                    - price:
+                        currency: INR
+                        value: '10'
+                      title: CANCELLATION_CHARGES
+                    - price:
+                        currency: INR
+                        value: '-146'
+                      title: REFUND
                   price:
                     currency: INR
-                    value: '146'
+                    value: '10'
                   ttl: P200S
                 status: CANCELLED
   - summary: On-Demand - Ride cancellation by driver
@@ -17331,4 +17352,4 @@ x-testcasesui:
     - log-verification.md
 x-changeLog:
   filenames:
-    - TRV10_2.0.1_050824.md
+    - TRV10_2.0.1_030924.md
