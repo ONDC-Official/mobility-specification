@@ -5809,7 +5809,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_34
+        example: &ref_36
           summary: Return a public transit catalog of fare products
           value:
             context:
@@ -8279,7 +8279,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_31
+        example: &ref_33
           summary: >-
             Search for intra city bus service mode of transit from a specific
             position
@@ -8848,7 +8848,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_33
+        example: &ref_35
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -9187,7 +9187,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_32
+        example: &ref_34
           summary: Cancel a ticket booking before the cancellation period
           value:
             context:
@@ -9489,6 +9489,11 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
+                cancellation:
+                  cancelled_by: CONSUMER
+                  reason:
+                    descriptor:
+                      code: '7'
       - summary: Buyer app confirms the cancel request for ticket
         api: cancel
         details:
@@ -9792,7 +9797,13 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
-  - summary: IntraCity - Technical Cancellation Flow
+                cancellation:
+                  cancelled_by: CONSUMER
+                  reason:
+                    descriptor:
+                      code: '7'
+                      short_desc: Cancelled by the consumer
+  - summary: IntraCity - Delayed Cancellation Flow(Successful)
     details:
       - description: Detailed process of cancelling a ticket with soft & confirm status.
         mermaid: |-
@@ -9801,13 +9812,13 @@ x-flows:
             participant Seller Platform (BPP)
             Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
-            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            # Buyer Platform (BAP)->>Seller Platform (BPP): cancel
+            # Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            # Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            # Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
             Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_update
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK         
     reference: if any
     steps:
@@ -9824,31 +9835,27 @@ x-flows:
                 rect rgb(191, 223, 255)
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
-                end
-                Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
+                end 
         reference: if any
         example: *ref_21
-      - summary: Buyer app cancels the request for ticket
+      - summary: Buyer app confirms the cancel request for ticket
         api: cancel
         details:
-          - description: Buyer app requests for cancellation of ticket.
+          - description: Buyer app give the confirmation to cancel the ticket.
             mermaid: |-
               sequenceDiagram
                 participant Buyer Platform (BAP)
                 participant Seller Platform (BPP)
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
                 rect rgb(191, 223, 255)
-                Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
                 Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
                 end
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example:
+        example: &ref_22
           summary: Cancel a ticket booking before the cancellation period
           value:
             context:
@@ -9865,35 +9872,36 @@ x-flows:
               bpp_id: api.transit-solutions.com
               bpp_uri: https://api.transit-solutions.com/beckn/
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
-              message_id: 6b85b347-749f-45ee-9874-e155b586890a
-              timestamp: '2021-03-23T12:11:40.065Z'
+              message_id: 7ced3868-9fc8-4e64-be5b-a511bf2e6161
+              timestamp: '2021-03-23T12:21:40.065Z'
               ttl: PT30S
             message:
               order_id: O1
               cancellation_reason_id: '0'
               descriptor:
                 name: Ride Cancellation
-                code: SOFT_CANCEL
-      - summary: Provider accepts/appends the terms of cancellation
+                code: CONFIRM_CANCEL
+      - summary: Provider accepts the terms of cancellation
         api: on_cancel
         details:
           - description: >-
-              Provider accepts the terms of order and appends its own terms and
-              provides with latest order update.
+              Provider accepts the terms of order and provides with latest order
+              update.
             mermaid: |-
               sequenceDiagram
                 participant Buyer Platform (BAP)
                 participant Seller Platform (BPP)
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
-                Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
                 Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
                 rect rgb(191, 223, 255)
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                 
         reference: if any
-        example:
+        example: &ref_23
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -9916,7 +9924,274 @@ x-flows:
             message:
               order:
                 id: O1
-                status: SOFT_CANCEL
+                status: CANCELLATION_INITIATED
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Single Journey Ticket
+                      code: SJT
+                      images:
+                        - url: >-
+                            https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                          size_type: xs
+                    fulfillment_ids:
+                      - F1
+                      - F5
+                      - F6
+                    price:
+                      currency: INR
+                      value: '35'
+                    quantity:
+                      selected:
+                        count: 2
+                    time:
+                      label: Validity
+                      duration: PT2D
+                      timestamp: '2021-03-23T11:01:40.065Z'
+                provider:
+                  id: P1
+                  descriptor:
+                    name: Delhi Transport Corporation
+                    images:
+                      - url: >-
+                          https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                        size_type: xs
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - type: START
+                        location:
+                          descriptor:
+                            name: kashmere gate
+                            code: KASHMERE_GATE
+                          gps: 28.666576, 77.233332
+                        id: '1'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 1
+                        location:
+                          descriptor:
+                            name: Indira Gandhi Technical Unviversity
+                            code: INDIRA_GANDHI_TECHNICAL_UNIV
+                          gps: 28.624097, 77.204991
+                        id: '2'
+                        parent_stop_id: '1'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 2
+                        location:
+                          descriptor:
+                            name: Yamuna Bazar
+                            code: YAMUNA_BAZAR
+                          gps: 28.625972,77.209917
+                        id: '3'
+                        parent_stop_id: '2'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 3
+                        location:
+                          descriptor:
+                            name: dhaula kuan
+                            code: DHAULA_KUAN
+                          gps: 28.610972,77.201717
+                        id: '4'
+                        parent_stop_id: '3'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 4
+                        location:
+                          descriptor:
+                            name: gpo
+                            code: GPO
+                          gps: 28.623097,77.209917
+                        id: '5'
+                        parent_stop_id: '4'
+                      - type: END
+                        location:
+                          descriptor:
+                            name: Greater Kailash
+                            code: GREATER_KAILASH
+                          gps: 28.548230, 77.238039
+                        id: '6'
+                        parent_stop_id: '5'
+                    vehicle:
+                      category: BUS
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                        list:
+                          - descriptor:
+                              code: ROUTE_ID
+                            value: '242'
+                          - descriptor:
+                              code: ROUTE_DIRECTION
+                            value: UP
+                  - id: F5
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: INFO
+                        list:
+                          - descriptor:
+                              code: PARENT_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 7ed21b6f
+                  - id: F6
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: INFO
+                        list:
+                          - descriptor:
+                              code: PARENT_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 5xd31b8f
+                cancellation_terms:
+                  - cancel_by:
+                      duration: PT60M
+                    cancellation_fee:
+                      percentage: '0'
+                billing:
+                  name: John Doe
+                  email: john.doe@example.com
+                  phone: +91-9897867564
+                quote:
+                  price:
+                    value: '70'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      item:
+                        id: I1
+                        price:
+                          currency: INR
+                          value: '35'
+                        quantity:
+                          selected:
+                            count: 2
+                      price:
+                        currency: INR
+                        value: '70'
+                    - title: OFFER
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: TOLL
+                      price:
+                        currency: INR
+                        value: '0'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
+                      currency: INR
+                      amount: '70'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_TYPE
+                            value: percent-annualized
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT60M
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: Delivery
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: upi
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '2.5'
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://www.abc.com/settlement-terms/
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '12505'
+                cancellation:
+                  cancelled_by: PROVIDER
+                  reason:
+                    descriptor:
+                      code: '0'
+                created_at: '2021-03-23T10:00:40.065Z'
+                updated_at: '2021-03-23T11:01:40.065Z'
+      - summary: Provider accepts the terms of cancellation
+        api: on_update
+        details:
+          - description: >-
+              Provider accepts the terms of order and provides with latest order
+              update.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end  
+        reference: if any
+        example:
+          summary: Return cancelled ticket order with cancellation charges
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV11
+              action: on_update
+              version: 2.0.1
+              bap_id: api.example-bap.com
+              bap_uri: https://api.example-bap.com/beckn/
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: a254f067-f471-4ce3-87e7-18bd80774083
+              timestamp: '2021-03-23T11:01:40.065Z'
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                status: CANCELLED
                 items:
                   - id: I1
                     descriptor:
@@ -10150,6 +10425,49 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
+                cancellation:
+                  cancelled_by: PROVIDER
+                  reason:
+                    descriptor:
+                      code: '0'
+                      short_desc: Cancelled by the provider
+                created_at: '2021-03-23T10:00:40.065Z'
+                updated_at: '2021-03-23T11:01:40.065Z'
+  - summary: IntraCity - Delayed Cancellation Flow(Rejected)
+    details:
+      - description: Detailed process of cancelling a ticket with soft & confirm status.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+            # Buyer Platform (BAP)->>Seller Platform (BPP): cancel
+            # Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            # Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            # Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK         
+    reference: if any
+    steps:
+      - summary: Provider confirms the request
+        api: on_confirm
+        details:
+          - description: >-
+              Provider confirms the  request and provides the details on
+              confirmation.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+                end  
+        reference: if any
+        example: *ref_21
       - summary: Buyer app confirms the cancel request for ticket
         api: cancel
         details:
@@ -10164,33 +10482,10 @@ x-flows:
                 end
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example:
-          summary: Cancel a ticket booking before the cancellation period
-          value:
-            context:
-              location:
-                country:
-                  code: IND
-                city:
-                  code: std:011
-              domain: ONDC:TRV11
-              action: cancel
-              version: 2.0.1
-              bap_id: api.example-bap.com
-              bap_uri: https://api.example-bap.com/beckn/
-              bpp_id: api.transit-solutions.com
-              bpp_uri: https://api.transit-solutions.com/beckn/
-              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
-              message_id: 7ced3868-9fc8-4e64-be5b-a511bf2e6161
-              timestamp: '2021-03-23T12:21:40.065Z'
-              ttl: PT30S
-            message:
-              order_id: O1
-              cancellation_reason_id: '0'
-              descriptor:
-                name: Ride Cancellation
-                code: CONFIRM_CANCEL
+        example: *ref_22
       - summary: Provider accepts the terms of cancellation
         api: on_cancel
         details:
@@ -10206,7 +10501,30 @@ x-flows:
                 rect rgb(191, 223, 255)
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-                end 
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                 
+        reference: if any
+        example: *ref_23
+      - summary: Provider accepts the terms of cancellation
+        api: on_update
+        details:
+          - description: >-
+              Provider accepts the terms of order and provides with latest order
+              update.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end  
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
@@ -10218,20 +10536,20 @@ x-flows:
                 city:
                   code: std:011
               domain: ONDC:TRV11
-              action: on_cancel
+              action: on_update
               version: 2.0.1
               bap_id: api.example-bap.com
               bap_uri: https://api.example-bap.com/beckn/
               bpp_id: api.transit-solutions.com
               bpp_uri: https://api.transit-solutions.com/beckn/
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
-              message_id: 7ced3868-9fc8-4e64-be5b-a511bf2e6161
-              timestamp: '2021-03-23T12:22:40.065Z'
+              message_id: 5298561a-1f40-429f-a3c1-665b230fbcfa
+              timestamp: '2021-03-23T11:01:40.065Z'
               ttl: PT30S
             message:
               order:
                 id: O1
-                status: CANCELLED
+                status: COMPLETED
                 items:
                   - id: I1
                     descriptor:
@@ -10343,6 +10661,12 @@ x-flows:
                           - descriptor:
                               code: PARENT_ID
                             value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 7ed21b6f
                   - id: F6
                     type: TICKET
                     tags:
@@ -10352,6 +10676,12 @@ x-flows:
                           - descriptor:
                               code: PARENT_ID
                             value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 5xd31b8f
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
@@ -10363,7 +10693,7 @@ x-flows:
                   phone: +91-9897867564
                 quote:
                   price:
-                    value: '0'
+                    value: '70'
                     currency: INR
                   breakup:
                     - title: BASE_FARE
@@ -10378,22 +10708,6 @@ x-flows:
                       price:
                         currency: INR
                         value: '70'
-                    - title: REFUND
-                      item:
-                        id: I1
-                        price:
-                          currency: INR
-                          value: '-35'
-                        quantity:
-                          selected:
-                            count: 2
-                      price:
-                        currency: INR
-                        value: '-70'
-                    - title: CANCELLATION_CHARGES
-                      price:
-                        currency: INR
-                        value: '0'
                     - title: OFFER
                       price:
                         currency: INR
@@ -10453,6 +10767,18 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '12505'
+                cancellation:
+                  cancelled_by: PROVIDER
+                  reason:
+                    descriptor:
+                      code: '0'
+                      short_desc: Cancelled by the provider
+                  additional_description:
+                    short_desc: >-
+                      Cancellation was rejected by the provider due to some
+                      reason.
+                created_at: '2021-03-23T10:00:40.065Z'
+                updated_at: '2021-03-23T11:01:40.065Z'
   - summary: IntraCity - Vehicle Based Confirmation flow
     details:
       - description: Detailed process of ticket confirmation.
@@ -11130,7 +11456,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_36
+        example: &ref_38
           summary: Search for public  transit for city and type of vehicle
           value:
             context:
@@ -11192,7 +11518,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_40
+        example: &ref_42
           summary: >-
             Return a metro catalog of available fulfillments based on search by
             city
@@ -11706,7 +12032,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_search
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_37
+        example: &ref_39
           summary: Search for public  transit via station code and vehicle type
           value:
             context:
@@ -11777,7 +12103,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): on_search
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_22
+        example: &ref_24
           summary: >-
             Return a metro catalog of fare products based on station code or gps
             based search
@@ -12182,7 +12508,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_23
+        example: &ref_25
           summary: >-
             Get a quote for a fare product selected from a public transit
             catalog
@@ -12231,7 +12557,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_24
+        example: &ref_26
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -12552,7 +12878,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_25
+        example: &ref_27
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -12642,7 +12968,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end   
         reference: if any
-        example: &ref_26
+        example: &ref_28
           summary: Return draft order for transit ticket with settlement details
           value:
             context:
@@ -13013,7 +13339,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_27
+        example: &ref_29
           summary: Confirm ticket booking
           value:
             context:
@@ -13109,7 +13435,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_28
+        example: &ref_30
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -13515,7 +13841,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_29
+        example: &ref_31
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -13555,7 +13881,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_30
+        example: &ref_32
           summary: Return transit ticket order with status - Journey Completed
           value:
             context:
@@ -13998,7 +14324,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_35
+        example: &ref_37
           summary: Search for a public mode of transit from a specific position
           value:
             context:
@@ -14071,7 +14397,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_22
+        example: *ref_24
       - summary: Selection of specific service(Optional)
         api: select
         details:
@@ -14089,7 +14415,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: *ref_23
+        example: *ref_25
       - summary: Provider platform provides the quote for selected service of metro
         api: on_select
         details:
@@ -14108,7 +14434,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: *ref_24
+        example: *ref_26
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -14126,7 +14452,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: *ref_25
+        example: *ref_27
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -14144,7 +14470,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_26
+        example: *ref_28
       - summary: Consumer confirms the
         api: confirm
         details:
@@ -14162,7 +14488,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: *ref_27
+        example: *ref_29
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -14180,7 +14506,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_28
+        example: *ref_30
       - summary: Consumer platform requests for latest status
         api: status
         details:
@@ -14198,7 +14524,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK    
         reference: if any
-        example: *ref_29
+        example: *ref_31
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -14216,7 +14542,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_30
+        example: *ref_32
   - summary: Metro - Cancel Flow
     details:
       - description: Detailed process of cancelling a ticket with soft & confirm status.
@@ -14255,7 +14581,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
         reference: if any
-        example: *ref_28
+        example: *ref_30
       - summary: Buyer app cancels the request for ticket
         api: cancel
         details:
@@ -14273,7 +14599,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_38
+        example: &ref_40
           summary: Cancel a transit ticket booking before the cancellation period
           value:
             context:
@@ -14318,7 +14644,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_41
+        example: &ref_43
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -14722,7 +15048,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_39
+        example: &ref_41
           summary: Initiates cancelling a ride with confirm cancel status
           value:
             context:
@@ -14767,7 +15093,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_42
+        example: &ref_44
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -15151,7 +15477,7 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_31
+          - *ref_33
       select:
         examples:
           - *ref_16
@@ -15163,13 +15489,13 @@ x-examples:
           - *ref_20
       cancel:
         examples:
-          - *ref_32
+          - *ref_34
       status:
         examples:
-          - *ref_33
+          - *ref_35
       on_search:
         examples:
-          - *ref_34
+          - *ref_36
       on_select:
         examples:
           - *ref_17
@@ -15198,25 +15524,25 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_35
-          - *ref_36
           - *ref_37
-      select:
-        examples:
-          - *ref_23
-      init:
-        examples:
-          - *ref_25
-      confirm:
-        examples:
-          - *ref_27
-      cancel:
-        examples:
           - *ref_38
           - *ref_39
-      status:
+      select:
+        examples:
+          - *ref_25
+      init:
+        examples:
+          - *ref_27
+      confirm:
         examples:
           - *ref_29
+      cancel:
+        examples:
+          - *ref_40
+          - *ref_41
+      status:
+        examples:
+          - *ref_31
           - summary: Get latest status of a transit ticket booking using ref_id
             value:
               context:
@@ -15263,24 +15589,24 @@ x-examples:
                 ref_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
       on_search:
         examples:
-          - *ref_40
-          - *ref_22
+          - *ref_42
+          - *ref_24
       on_select:
         examples:
-          - *ref_24
+          - *ref_26
       on_init:
         examples:
-          - *ref_26
+          - *ref_28
       on_confirm:
         examples:
-          - *ref_28
+          - *ref_30
       on_cancel:
         examples:
-          - *ref_41
-          - *ref_42
+          - *ref_43
+          - *ref_44
       on_status:
         examples:
-          - *ref_30
+          - *ref_32
       on_support:
         examples:
           - summary: Return transit ticket order with status - Journey Completed
@@ -25987,4 +26313,4 @@ x-testcasesui:
     - log-verification.md
 x-changeLog:
   filenames:
-    - TRV11_2.0.1_140824
+    - TRV11_2.0.1_040924
