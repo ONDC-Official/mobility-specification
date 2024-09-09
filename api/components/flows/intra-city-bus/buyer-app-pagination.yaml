@@ -1,0 +1,86 @@
+summary: IntraCity - Buyer App Pagination Flow(Code Based)
+details: 
+  - description: The illustrative flow to demonstrates how the buyer app can request a specific page from a previously initiated search.
+    mermaid: >-
+      sequenceDiagram
+        title Intra-city Discovery
+        Buyer Platform (BAP)->>Gateway (BG): search
+        Gateway (BG) ->> Buyer Platform (BAP): ACK
+        Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+        Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+        Gateway (BG)->>Seller Platform (BPP): search
+        Seller Platform (BPP)->>Gateway (BG) : ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+        Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+
+steps:
+  - summary: Search for all the intracity bus for a city
+    api: search
+    details: 
+      - description: Users searches over the network to avail the intracity bus mode of transport from a point(code)
+        mermaid: &search >- 
+          sequenceDiagram
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/intra_city/search/example_1.yaml"
+  - summary: Return a bus catalog of all intracity bus services from the given point(code)
+    api: on_search
+    details: 
+      - description: Provider platform sends the catalog of all the service that can be used for transit using bus service from a given point(code)
+        mermaid: &onSearch >- 
+          sequenceDiagram
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+            end 
+    reference: if any
+    example:
+      $ref: "../../examples/intra_city/on_search/example_4.yaml"
+  - summary: Search for the intracity bus from point A to point B
+    api: search
+    details: 
+      - description: Users searches over the network to avail the intracity bus mode of transport from point A(code) to point B(code)
+        mermaid: >-
+          sequenceDiagram
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): search
+            Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_search
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+            
+    reference: if any
+    example:
+      $ref: "../../examples/intra_city/search/example_3.yaml"
+  - summary: Return a bus catalog of all intracity bus services from point A(code) to point B(code)
+    api: on_search
+    details: 
+      - description: Provider platform sends the catalog of all the service that can be used for transit using bus service from point A(code) to point B(code)
+        mermaid: >-
+          sequenceDiagram
+            Buyer Platform (BAP)->>Seller Platform (BPP): search
+            Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_search
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      $ref: "../../examples/intra_city/on_search/example_3.yaml" 
+  
