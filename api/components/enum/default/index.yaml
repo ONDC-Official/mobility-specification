@@ -1,0 +1,358 @@
+search:
+  context:
+    action:
+      - code: search
+        description: Buyer app indicates the search intent
+        reference: <PR/Issue/Discussion Links md format text>
+    location: &a1
+      country:
+        code:
+          - code: IND
+            description: Represents the country
+            reference: <PR/Issue/Discussion Links md format text>
+      city:
+        code:
+          - code: std:080
+            description: Bangalore
+            reference: <PR/Issue/Discussion Links md format text>
+    domain: &a2
+      - code: ONDC:TRV10
+        description: mobility domain Ride
+        reference: <PR/Issue/Discussion Links md format text>
+  message:
+    intent:
+      fulfillment: &a3
+        vehicle:
+          category:
+            - code: AUTO_RICKSHAW
+              description: Describes the vehicle category as Auto Rickshaw
+              reference: <PR/Issue/Discussion Links md format text
+            - code: CAB
+              description: Describes the vehicle category as cab
+              reference: <PR/Issue/Discussion Links md format text
+            - code: TWO_WHEELER
+              description: Describes the vehicle category as TWO_WHEELER
+              reference: <PR/Issue/Discussion Links md format text
+          variant:
+            - code: EV
+              description: Describes the vehicle variant CAB, AUTO_RICKSHAW & TWO_WHEELER
+              reference: <PR/Issue/Discussion Links md format text
+            - code: SEDAN
+              description: Describes the vehicle variant for category type CAB
+              reference: <PR/Issue/Discussion Links md format text
+            - code: SUV
+              description: Describes the vehicle variant for category type CAB
+              reference: <PR/Issue/Discussion Links md format text
+            - code: HATCHBACK
+              description: Describes the vehicle variant for category type CAB
+              reference: <PR/Issue/Discussion Links md format text
+            - code: TWO_WHEELER
+              description: Describes the vehicle variant for category TWO_WHEELER
+              reference: <PR/Issue/Discussion Links md format text
+            - code: AUTO_RICKSHAW
+              description: Describes the vehicle variant for category AUTO_RICKSHAW
+              reference: <PR/Issue/Discussion Links md format text
+        type:
+          - code: DELIVERY
+            description: Describes the type of fulfillment.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: SELF_PICKUP
+            description: Describes the type of fulfillment.
+            reference: <PR/Issue/Discussion Links md format text
+        stops:
+          type:
+            - code: START
+              description: Describes the initial fulfillment location.
+              reference: <PR/Issue/Discussion Links md format text
+            - code: END
+              description: Describes the final fulfillment location.
+              reference: <PR/Issue/Discussion Links md format text
+          authorization:
+            type:
+              - code: OTP
+                description: Describes OTP as an authorization mechanism used to start or end
+                  the fulfillment of an order.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: QR
+                description: Describes QR as an authorization mechanism used to start or end the
+                  fulfillment of an order.
+                reference: <PR/Issue/Discussion Links md format text
+            status:
+              - code: UNCLAIMED
+                description: Describes the authorization status
+                reference: <PR/Issue/Discussion Links md format text
+              - code: CLAIMED
+                description: Describes the authorization status
+                reference: <PR/Issue/Discussion Links md format text
+        state: &a8
+          descriptor:
+            code:
+              - code: RIDE_CANCELLED
+                description: The rider has canceled the ride.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: RIDE_ENDED
+                description: Describes when the rider concludes the journey.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: RIDE_STARTED
+                description: Describes when the rider initiates the journey.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: RIDE_ASSIGNED
+                description: Describes the state when the ride is assigned.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: RIDE_ENROUTE_PICKUP
+                description: Rider en route to pickup location."
+                reference: <PR/Issue/Discussion Links md format text
+              - code: RIDE_ARRIVED_PICKUP
+                description: Describes the state when the rider has arrived at the pickup
+                  location.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: RIDE_CONFIRMED
+                description: Describes the state when the ride is confirmed.
+                reference: <PR/Issue/Discussion Links md format text
+      payment: &a4
+        status:
+          - code: NOT-PAID
+            description: NOT-PAID indicates a payment status where the payment process has
+              not been completed.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: PAID
+            description: PAID indicates a payment status where the payment process has been
+              successfully completed.
+            reference: <PR/Issue/Discussion Links md format text
+        collected_by:
+          - code: BPP
+            description: Describes when the seller app is collecting the payment.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: BAP
+            description: Describes when the buyer app is collecting the payment.
+            reference: <PR/Issue/Discussion Links md format text
+        type:
+          - code: PRE-ORDER
+            description: Payment occurs prior to order placement.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: ON-ORDER
+            description: Payment occurs on order placement.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: ON-FULFILLMENT
+            description: Payment occurs upon completion of the journey.
+            reference: <PR/Issue/Discussion Links md format text
+on_search:
+  context:
+    action:
+      - code: on_search
+        description: Seller app provides catalog based on search intent.
+        reference: <PR/Issue/Discussion Links md format text>
+    location: *a1
+    domain: *a2
+  message:
+    catalog:
+      providers:
+        items: &a5
+          descriptor:
+            code:
+              - code: RIDE
+                description: Describes the type of ride.
+                reference: <PR/Issue/Discussion Links md format text
+        fulfillments: *a3
+        payments: *a4
+select:
+  context:
+    action:
+      - code: select
+        description: Buyer app communicates selected items and quantities.
+        reference: <PR/Issue/Discussion Links md format text>
+    location: *a1
+    domain: *a2
+  message: &a7
+    order:
+      items: *a5
+      fulfillments: *a3
+      payments: *a4
+      status: &a6
+        - code: SOFT-CANCEL
+          description: Describes a soft-cancel request initiated by the buyer app, a step
+            preceding cancellation.
+          reference: <PR/Issue/Discussion Links md format text
+        - code: CONFIRM-CANCEL
+          description: Describes a confirm-cancel request initiated by the buyer app,
+            confirming the order cancellation
+          reference: <PR/Issue/Discussion Links md format text
+        - code: ACTIVE
+          description: Describes the status of the order.
+          reference: <PR/Issue/Discussion Links md format text
+        - code: COMPLETE
+          description: Describes the status of the order.
+          reference: <PR/Issue/Discussion Links md format text
+        - code: CANCELLED
+          description: Describes the status of the order.
+          reference: <PR/Issue/Discussion Links md format text
+on_select:
+  context:
+    action:
+      - code: on_select
+        description: Seller app provides serviceability info, quotes, and O2D TAT for
+          selected items.
+        reference: <PR/Issue/Discussion Links md format text>
+    location: *a1
+    domain: *a2
+  message: &a12
+    order:
+      items: *a5
+      fulfillments: *a3
+      payments: *a4
+      status: *a6
+      quote: &a9
+        breakup:
+          title:
+            - code: BASE_FARE
+              description: Describes the base fare for a specific ride.
+              reference: <PR/Issue/Discussion Links md format text
+            - code: DISTANCE_FARE
+              description: Describes the distance fare for a specific ride.
+              reference: <PR/Issue/Discussion Links md format text
+            - code: CANCELLATION_CHARGES
+              description: Describes the cancellation charges for a specific ride.
+              reference: <PR/Issue/Discussion Links md format text
+            - code: REFUND
+              description: Describes the refund for a specific ride.
+              reference: <PR/Issue/Discussion Links md format text
+init:
+  context:
+    action:
+      - code: init
+        description: Buyer and seller apps confirm terms & conditions before placing orders.
+        reference: <PR/Issue/Discussion Links md format text>
+    location: *a1
+    domain: *a2
+  message: *a7
+on_init:
+  context:
+    action:
+      - code: on_init
+        description: Buyer and seller apps agree to terms & conditions before placing
+          orders.
+        reference: <PR/Issue/Discussion Links md format text>
+    location: *a1
+    domain: *a2
+  message: &a10
+    order:
+      items: *a5
+      fulfillments: *a3
+      payments: *a4
+      cancellation_terms:
+        fulfillment_state: *a8
+      quote: *a9
+confirm:
+  context:
+    action:
+      - code: confirm
+        description: Buyer app submits orders on behalf of the buyer.
+        reference: <PR/Issue/Discussion Links md format text>
+    location: *a1
+    domain: *a2
+  message: *a7
+on_confirm:
+  context:
+    action:
+      - code: on_confirm
+        description: Seller app responds to the order with auto-acceptance, deferred
+          acceptance, or rejection.
+        reference: <PR/Issue/Discussion Links md format text>
+    location: *a1
+    domain: *a2
+  message: *a10
+status:
+  context:
+    action:
+      - code: status
+        description: Buyer app request for status of the order
+        reference: <PR/Issue/Discussion Links md format text>
+    location: *a1
+    domain: *a2
+on_status:
+  context:
+    action:
+      - code: on_status
+        description: Seller app return order with status , Driver pickup - driver drop
+        reference: <PR/Issue/Discussion Links md format text>
+    location: *a1
+    domain: *a2
+  message: *a10
+cancel:
+  context:
+    action:
+      - code: cancel
+        description: Buyer app requests order cancellation."
+        reference: <PR/Issue/Discussion Links md format text>
+    location: *a1
+    domain: *a2
+  message:
+    cancellation_reason_id: &a11
+      - code: "000"
+        description: Technical cancellation(BAP/BPP)
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "001"
+        description: Driver not moving
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "002"
+        description: Customer is unable to unable to contact driver
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "003"
+        description: Driver asked to cancel the ride
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "004"
+        description: My pickup location is incorrect
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "005"
+        description: Booked by mistake
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "011"
+        description: Seller app cannot confirm the ride as no drivers are available
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "012"
+        description: Driver does not find passenger at the location
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "013"
+        description: Driver accepted the ride mistakenly
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "014"
+        description: Unable to contact rider
+        reference: <PR/Issue/Discussion Links md format text
+    descriptor:
+      code: *a6
+on_cancel:
+  context:
+    action:
+      - code: on_cancel
+        description: Seller app specifies the cancellation status.
+        reference: <PR/Issue/Discussion Links md format text>
+    location: *a1
+    domain: *a2
+  message:
+    order:
+      items: *a5
+      fulfillments: *a3
+      payments: *a4
+      cancellation:
+        reason:
+          descriptor:
+            code: *a11
+      quote: *a9
+update:
+  context:
+    action:
+      - code: update
+        description: Buyer app requests order update."
+        reference: <PR/Issue/Discussion Links md format text>
+    location: *a1
+    domain: *a2
+  message: *a12
+on_update:
+  context:
+    action:
+      - code: on_cancel
+        description: Seller app specifies the update status.
+        reference: <PR/Issue/Discussion Links md format text>
+    location: *a1
+    domain: *a2
+  message: *a12
