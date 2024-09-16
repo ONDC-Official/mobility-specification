@@ -1,0 +1,180 @@
+summary: BPP Collecting - Payment Confirmation
+details:
+  - description:
+      The illustrative flow depicts the comprehensive process of payment
+      confirmation, showcasing the sequential steps and interactions involved in
+      a payment transaction.
+    mermaid: |-
+      sequenceDiagram
+        title Initializing Order
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): init
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - description: Order Confirmation
+    mermaid: |-
+      sequenceDiagram
+        title  Order Confirmation
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - description: Fulfillment
+    mermaid: >-
+      sequenceDiagram
+        title Order Fulfillment
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+steps:
+  - summary: Buyer app initializes the ride request
+    api: init
+    details:
+      - description:
+          Buyer app platform shares the terms of order and initializes the
+          request.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            Seller Platform (BPP) ->>  Buyer Platform (BAP) : form
+    reference: if any
+    example:
+      summary: Initialize draft order and request for terms of service[Buyer Collecting]
+      value:
+        $ref: ../../examples/on-demand/init/init_buyer_app_platform_shares_the_terms_of_order_and_initializes_the_request__1.yaml
+  - summary: Ride provider accepts/appends the terms of orders
+    api: on_init
+    details:
+      - description:
+          Ride provider accepts the terms of order and appends its own terms
+          and responds with the final draft.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+            Seller Platform (BPP) ->>  Buyer Platform (BAP) : form
+    reference: if any
+    example:
+      summary: Return draft order with payment terms[Buyer Collecting]
+      value:
+        $ref: ../../examples/on-demand/on_init/on_init_ride_provider_accepts_the_terms_of_order_and_appends_its_own_terms_and_responds_with_the_final_draft__2.yaml
+  - summary: Buyer app redirects to payment gateway page.
+    api: form
+    details:
+      - description:
+          Buyer app fetches the SIP setup form from the provider using the
+          link provided in the previous step.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP) ->>  Buyer Platform (BAP) : form
+            end
+    reference: if any
+    example:
+      value:
+        $ref: ../../examples/on-demand/forms/form_buyer_app_fetches_the_sip_setup_form_from_the_provider_using_the_link_provided_in_the_previous_step__3.html
+  - summary: Buyer app seeks the most recent status update
+    api: status
+    details:
+      - description: Buyer app requests the ride provider to provide the latest order status
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      summary: Get latest fulfillment status of a booking
+      value:
+        $ref: ../../examples/on-demand/status/status_buyer_app_requests_the_ride_provider_to_provide_the_latest_order_status_4.yaml
+  - summary: Ride provider provides latest order status
+    api: on_status
+    details:
+      - description: Ride provider provides the updated order status to the buyer app
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      summary: Return draft order with payment terms[Buyer Collecting]
+      value:
+        $ref: ../../examples/on-demand/on_status/on_status_ride_provider_provides_the_updated_order_status_to_the_buyer_app_5.yaml
+  - summary: Buyer app confirms the ride
+    api: confirm
+    details:
+      - description:
+          Buyer app confirms the booking and provides all the required
+          information for confirmation as per the terms of the order.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      summary: Confirm ride booking
+      value:
+        $ref: ../../examples/on-demand/confirm/confirm_buyer_app_confirms_the_booking_and_provides_all_the_required_information_for_confirmation_as_per_the_terms_of_the_order__6.yaml
+  - summary: Ride provider confirms the ride request
+    api: on_confirm
+    details:
+      - description:
+          Ride provider confirms the ride request and provides the ride
+          details on confirmation.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      summary: Return confirmed order with latest fulfillment details
+      value:
+        $ref: ../../examples/on-demand/on_confirm/on_confirm_ride_provider_confirms_the_ride_request_and_provides_the_ride_details_on_confirmation__7.yaml

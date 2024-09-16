@@ -1,0 +1,122 @@
+search:
+  message:
+    intent:
+      payment: &a1
+        tags:
+          - code: BUYER_FINDER_FEES
+            description: Describes the finder fees for buyer
+            reference: <PR/Issue/Discussion Links md format text>
+            list:
+              - code: BUYER_FINDER_FEES_TYPE
+                description: Buyer finder fee type
+                reference: <PR/Issue/Discussion Links md format text>
+              - code: BUYER_FINDER_FEES_PERCENTAGE
+                description: Buyer finder fee in percentage
+                reference: <PR/Issue/Discussion Links md format text>
+              - code: BUYER_FINDER_FEES_AMOUNT
+                description: Buyer finder fee in amount
+                reference: <PR/Issue/Discussion Links md format text>
+          - code: SETTLEMENT_TERMS
+            description: Describes the settlement terms
+            reference: <PR/Issue/Discussion Links md format text>
+            list:
+              - code: SETTLEMENT_WINDOW
+                description: Time window to complete settlement
+                reference: <PR/Issue/Discussion Links md format text>
+              - code: SETTLEMENT_BASIS
+                description: Basis required to complete settlement
+                reference: <PR/Issue/Discussion Links md format text>
+              - code: SETTLEMENT_TYPE
+                description: Payment method to complete settlement
+                reference: <PR/Issue/Discussion Links md format text>
+              - code: MANDATORY_ARBITRATION
+                description: Flag to denote if dispute can be resolved through arbitration
+                reference: <PR/Issue/Discussion Links md format text>
+              - code: COURT_JURISDICTION
+                description: Denotes court that will have jurisdiction for the case
+                reference: <PR/Issue/Discussion Links md format text>
+              - code: DELAY_INTEREST
+                description: Denotes interest to be paid as a delay charge
+                reference: <PR/Issue/Discussion Links md format text>
+              - code: STATIC_TERMS
+                description: Terms for settlement
+                reference: <PR/Issue/Discussion Links md format text>
+              - code: SETTLEMENT_AMOUNT
+                description: Denotes settlement amount
+                reference: <PR/Issue/Discussion Links md format text>
+on_search:
+  message:
+    catalog:
+      providers:
+        items: &a2
+          tags:
+            - code: FARE_POLICY
+              description: Details about fare for the ride
+              reference: <PR/Issue/Discussion Links md format text>
+              list:
+                - code: MIN_FARE
+                  description: Describes the minimum fare
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: MIN_FARE_DISTANCE_KM
+                  description: Describes the minimum fare per KM
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: PER_KM_CHARGE
+                  description: Describes the per km charge
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: PICKUP_CHARGE
+                  description: Describes the pickup charge
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: WAITING_CHARGE_PER_MIN
+                  description: Describes the waiting charge per minute
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: NIGHT_CHARGE_MULTIPLIER
+                  description: Describes the times need to multiply for night charge
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: NIGHT_SHIFT_START_TIME
+                  description: Describes the time when night shift starts
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: NIGHT_SHIFT_END_TIME
+                  description: Describes the time when night shift ends
+                  reference: <PR/Issue/Discussion Links md format text>
+            - code: INFO
+              description: Describes the general info about the ride
+              reference: <PR/Issue/Discussion Links md format text>
+              list:
+                - code: DISTANCE_TO_NEAREST_DRIVER_METER
+                  description: Describes the distance to nearest driver.
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: ETA_TO_NEAREST_DRIVER_MIN
+                  description: Describes the ETA to nearest driver.
+                  reference: <PR/Issue/Discussion Links md format text>
+        payments: *a1
+on_select:
+  message:
+    order:
+      items: *a2
+      fulfillments: &a3
+        tags:
+          - code: ROUTE_INFO
+            description: Describes the route information.
+            reference: <PR/Issue/Discussion Links md format text>
+            list:
+              - code: ENCODED_POLYLINE
+                description: Describes the encoded polyline value.
+                reference: <PR/Issue/Discussion Links md format text>
+              - code: WAYPOINTS
+                description: Describes the waypoints value.
+                reference: <PR/Issue/Discussion Links md format text>
+init:
+  message:
+    order:
+      payments: *a1
+on_init: &a4
+  message:
+    order:
+      items: *a2
+      payments: *a1
+      fulfillments: *a3
+confirm: *a4
+on_confirm: *a4
+on_status: *a4
+on_cancel: *a4
+on_update: *a4

@@ -1,0 +1,52 @@
+summary: On-Demand - Ride cancellation by driver
+details:
+  - description: Detailed process of cancelling a ride with soft & confirm status.
+    mermaid: |-
+      sequenceDiagram
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel (unsolicited)
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK         
+steps:
+  - summary: Ride provider confirms the ride request
+    api: on_confirm
+    details:
+      - description: Ride provider confirms the ride request and provides the ride
+          details on confirmation.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel (unsolicited)
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      summary: Return confirmed order with latest fulfillment details
+      value:
+        $ref: ../../examples/on-demand/on_confirm/Return_confirmed_order_with_latest_fulfillment_details___X10.yaml
+  - summary: Ride provider accepts the terms of cancellation
+    api: on_cancel
+    details:
+      - description: Ride provider accepts the terms of order and provides with latest
+          order update.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel (unsolicited)
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end 
+    reference: if any
+    example:
+      summary: Return current order status after confirm-cancel
+      value:
+        $ref: ../../examples/on-demand/on_cancel/Return_current_order_status_after_confirm-cancel___X9.yaml
