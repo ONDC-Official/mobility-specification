@@ -11,10 +11,10 @@ context:
     country:
       code: IND
   message_id: 8926b747-0362-4fcc-b795-0994a6287700
-  timestamp: '2023-03-23T04:48:53Z'
+  timestamp: '2023-03-23T04:48:34.53Z'
   transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-  version: 2.0.1
   ttl: PT30S
+  version: 2.0.1
 message:
   order:
     cancellation_terms:
@@ -47,12 +47,7 @@ message:
             code: RIDE_STARTED
         reason_required: true
     fulfillments:
-      - agent:
-          contact:
-            phone: '9856798567'
-          person:
-            name: Jason Roy
-        customer:
+      - customer:
           contact:
             phone: '9876556789'
           person:
@@ -62,17 +57,15 @@ message:
           descriptor:
             code: RIDE_CANCELLED
         stops:
-          - authorization:
-              token: '234234'
-              type: OTP
-            location:
+          - location:
               gps: 13.008935, 77.644408
-            time:
-              duration: PT2H
             type: START
             instructions:
               short_desc: short description of the location
               long_desc: long description of the location
+          - location:
+              gps: 12.971186, 77.586812
+            type: END
         tags:
           - descriptor:
               code: ROUTE_INFO
@@ -94,14 +87,11 @@ message:
         vehicle:
           category: AUTO_RICKSHAW
           variant: EV
-          make: Bajaj
-          model: Compact RE
-          registration: KA-01-AD-9876
     id: O1
     items:
       - descriptor:
           code: RIDE
-          name: CAB Ride
+          name: Auto Ride
         fulfillment_ids:
           - F1
         id: I1
@@ -113,7 +103,7 @@ message:
         price:
           currency: INR
           maximum_value: '176'
-          minimum_value: '156'
+          minimum_value: '136'
           value: '146'
         tags:
           - descriptor:
@@ -157,7 +147,7 @@ message:
                   code: ETA_TO_NEAREST_DRIVER_MIN
                 value: '3'
     payments:
-      - collected_by: BAP
+      - collected_by: BPP
         id: PA1
         params:
           bank_account_number: xxxxxxxxxxxxxx
@@ -177,14 +167,17 @@ message:
             display: false
             list:
               - descriptor:
-                  code: SETTLEMENT_WINDOW
-                value: PT60M
-              - descriptor:
-                  code: SETTLEMENT_BASIS
-                value: Delivery
+                  code: DELAY_INTEREST
+                value: '5'
               - descriptor:
                   code: SETTLEMENT_TYPE
                 value: UPI
+              - descriptor:
+                  code: SETTLEMENT_WINDOW
+                value: PT2D
+              - descriptor:
+                  code: SETTLEMENT_BASIS
+                value: DELIVERY
               - descriptor:
                   code: MANDATORY_ARBITRATION
                 value: 'true'
@@ -192,14 +185,11 @@ message:
                   code: COURT_JURISDICTION
                 value: New Delhi
               - descriptor:
-                  code: DELAY_INTEREST
-                value: '2.5'
-              - descriptor:
                   code: STATIC_TERMS
-                value: https://www.icicibank.com/personal-banking/loans/personal-loan
+                value: https://example-test-bpp.com/static-terms.txt
               - descriptor:
                   code: SETTLEMENT_AMOUNT
-                value: '85'
+                value: '1.46'
         type: ON-FULFILLMENT
     provider:
       id: P1
@@ -213,16 +203,10 @@ message:
             currency: INR
             value: '116'
           title: DISTANCE_FARE
-        - price:
-            currency: INR
-            value: '10'
-          title: CANCELLATION_CHARGES
-        - price:
-            currency: INR
-            value: '-146'
-          title: REFUND
       price:
         currency: INR
-        value: '10'
-      ttl: P200S
+        value: '146'
+      ttl: PT30S
     status: CANCELLED
+    created_at: '2023-03-23T04:48:34.53Z'
+    updated_at: '2023-03-23T04:48:34.53Z'
