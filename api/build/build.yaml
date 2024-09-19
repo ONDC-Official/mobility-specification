@@ -1923,6 +1923,14 @@ components:
             Status of the order. Allowed values can be defined by the network
             policy
           type: string
+          enum:
+            - ACTIVE
+            - COMPLETE
+            - CANCELLED
+            - COMPLETED
+            - SOFT_CANCEL
+            - CANCELLATION_INITIATED
+            - CANCELLATION_REJECTED
         type:
           description: >-
             This is used to indicate the type of order being created to BPPs.
@@ -3161,11 +3169,23 @@ x-tags:
                 - code: SETTLEMENT_AMOUNT
                   description: Denotes settlement amount
                   reference: <PR/Issue/Discussion Links md format text>
+        tags:
+          - code: PAGINATION
+            description: Describes the pagination values.
+            reference: <PR/Issue/Discussion Links md format text>
+            list:
+              - &ref_11
+                code: PAGINATION_ID
+                description: Describes pagination ID.
+                reference: <PR/Issue/Discussion Links md format text>
+              - code: REQUESTED_PAGE_NUMBER
+                description: Describes the requested page number.
+                reference: <PR/Issue/Discussion Links md format text>
   on_search:
     message:
       catalog:
         providers:
-          items: &ref_12
+          items: &ref_13
             tags:
               - code: GENERAL_INFO
                 description: General information about airlines
@@ -3193,7 +3213,7 @@ x-tags:
                   - code: BASE_FARE
                     description: Describes the base fare component
                     reference: <PR/Issue/Discussion Links md format text>
-          fulfillments: &ref_11
+          fulfillments: &ref_12
             tags:
               - code: SEAT_GRID
                 description: Seat details to identify specifics of seat
@@ -3284,16 +3304,28 @@ x-tags:
                     description: Describes the sequence of the multiple fulfillments
                     reference: <PR/Issue/Discussion Links md format text>
           payments: *ref_10
+        tags:
+          - code: PAGINATION
+            description: Describes the pagination values.
+            reference: <PR/Issue/Discussion Links md format text>
+            list:
+              - *ref_11
+              - code: CURRENT_PAGE_NUMBER
+                description: Describes the current page number.
+                reference: <PR/Issue/Discussion Links md format text>
+              - code: MAX_PAGE_NUMBER
+                description: Describes the maximum number of pages.
+                reference: <PR/Issue/Discussion Links md format text>
   select:
     message:
       order:
-        fulfillments: *ref_11
+        fulfillments: *ref_12
   on_select:
     message:
       order:
-        fulfillments: *ref_11
-        items: *ref_12
-        provider: &ref_13
+        fulfillments: *ref_12
+        items: *ref_13
+        provider: &ref_14
           tags:
             - code: FARE_TYPE
               description: Details about type of fare for the ride
@@ -3316,7 +3348,7 @@ x-tags:
                     Describes the special type of fare for armed doctors &
                     nurses
                   reference: <PR/Issue/Discussion Links md format text>
-        quote: &ref_14
+        quote: &ref_15
           breakup:
             item:
               tags:
@@ -3330,24 +3362,24 @@ x-tags:
     message:
       order:
         payments: *ref_10
-  on_init: &ref_15
+  on_init: &ref_16
     message:
       order:
-        fulfillments: *ref_11
-        items: *ref_12
-        provider: *ref_13
+        fulfillments: *ref_12
+        items: *ref_13
+        provider: *ref_14
         payments: *ref_10
-        quote: *ref_14
-  on_confirm: *ref_15
+        quote: *ref_15
+  on_confirm: *ref_16
   on_status:
     message:
       order:
-        fulfillments: *ref_11
-        items: *ref_12
-  on_cancel: *ref_15
-  on_update: *ref_15
+        fulfillments: *ref_12
+        items: *ref_13
+  on_cancel: *ref_16
+  on_update: *ref_16
 x-flows:
-  - summary: Airlines - Code Based Flow
+  - summary: Airlines - Seller App Pagination Flow
     details:
       - description: >-
           The illustrative flow to perform a transaction of the nature where in
@@ -3364,46 +3396,6 @@ x-flows:
             Seller Platform (BPP)->>Gateway (BG) : ACK
             Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
             Buyer Platform (BAP)->>Seller Platform (BPP): ACK
-      - description: Ordering
-        mermaid: |-
-          sequenceDiagram
-            title Selection
-            participant Buyer Platform (BAP)
-            participant Seller Platform (BPP)
-            Buyer Platform (BAP)->>Seller Platform (BPP): select
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-      - description: Initializing the order
-        mermaid: |-
-          sequenceDiagram
-            title Initializing Order
-            participant Buyer Platform (BAP)
-            participant Seller Platform (BPP)
-            Buyer Platform (BAP)->>Seller Platform (BPP): init
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
-      - description: Order Confirmation
-        mermaid: |-
-          sequenceDiagram
-            title  Order Confirmation
-            participant Buyer Platform (BAP)
-            participant Seller Platform (BPP)
-            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
-      - description: Fulfillment
-        mermaid: |-
-          sequenceDiagram
-            title Order Fulfillment
-            participant Buyer Platform (BAP)
-            participant Seller Platform (BPP)
-            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK      
     reference: if any
     steps:
       - summary: Search for the flight by start and end airport code
@@ -3425,7 +3417,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_16
+        example: &ref_17
           summary: Search for airline services by standard airport codes
           value:
             context:
@@ -3517,7 +3509,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_21
+        example: &ref_22
           summary: Return services available for provided start and end code
           value:
             context:
@@ -4339,6 +4331,3643 @@ x-flows:
                               - descriptor:
                                   code: STATIC_TERMS
                                 value: https://api.example-bpp.com/booking/terms
+                tags:
+                  - descriptor:
+                      code: PAGINATION
+                      name: Pagination
+                    display: true
+                    list:
+                      - descriptor:
+                          code: PAGINATION_ID
+                        value: P1
+                      - descriptor:
+                          code: CURRENT_PAGE_NUMBER
+                        value: '1'
+                      - descriptor:
+                          code: MAX_PAGE_NUMBER
+                        value: '3'
+      - summary: >-
+          Return an airline catalog of all flights services from one airport to
+          another
+        api: on_search
+        details:
+          - description: >-
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example:
+          summary: Return services available for provided start and end code
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV12
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: beb0deea-8bdb-406e-86e1-d4d11b6e1c0f
+              version: 2.0.0
+              action: on_search
+              bap_uri: https://api.example-bap.com/pilot/bap/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bpp/v1
+              ttl: PT30S
+            message:
+              catalog:
+                descriptor:
+                  name: ABC Fights Services Solutions
+                  images:
+                    - url: https://abc-AIRLINE.in/logos/logo.ico
+                      size_type: xs
+                providers:
+                  - id: P1
+                    descriptor:
+                      name: ABC Operator Fights Services
+                      images:
+                        - url: https://operator1.com/logos/logo.ico
+                          size_type: xs
+                    categories:
+                      - id: C1
+                        descriptor:
+                          name: Economy
+                          code: ECONOMY
+                      - id: C2
+                        descriptor:
+                          name: Premium Economy
+                          code: PREMIUM_ECONOMY
+                      - id: C3
+                        descriptor:
+                          name: Business
+                          code: BUSINESS
+                      - id: C4
+                        descriptor:
+                          name: First Class
+                          code: FIRST_CLASS
+                    items:
+                      - id: I1
+                        descriptor:
+                          name: Adult
+                          code: ADULT_TICKET
+                        price:
+                          currency: INR
+                          value: '9280'
+                        quantity:
+                          selected:
+                            count: 3
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F1
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '9280'
+                      - id: I2
+                        descriptor:
+                          name: Child
+                          code: CHILD_TICKET
+                        price:
+                          currency: INR
+                          value: '4280'
+                        quantity:
+                          selected:
+                            count: 1
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F1
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '4280'
+                      - id: I3
+                        descriptor:
+                          name: Adult
+                          code: ADULT_TICKET
+                        price:
+                          currency: INR
+                          value: '9280'
+                        quantity:
+                          selected:
+                            count: 3
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F2
+                          - F3
+                          - F4
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '9280'
+                      - id: I4
+                        descriptor:
+                          name: Child
+                          code: CHILD_TICKET
+                        price:
+                          currency: INR
+                          value: '4280'
+                        quantity:
+                          selected:
+                            count: 1
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F2
+                          - F3
+                          - F4
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '9280'
+                    fulfillments:
+                      - id: F1
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E284'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F2
+                        type: CONNECT
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: LAYOVER
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              range:
+                                start: '2024-12-26T15:00:00Z'
+                                end: '2024-12-27T05:05:00Z'
+                              duration: PT14H5M
+                          - id: S3
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E281'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: FULFILLMENT_SEQUENCE
+                                value: F3, F4
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F3
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-17T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E286'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: PARENT_ID
+                                value: F2
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F4
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-19T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-21T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E287'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: PARENT_ID
+                                value: F2
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                    payments:
+                      - tags:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: BUYER_FINDER_FEES_PERCENTAGE
+                                value: '1'
+                          - descriptor:
+                              code: SETTLEMENT_TERMS
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: SETTLEMENT_WINDOW
+                                value: PT30D
+                              - descriptor:
+                                  code: SETTLEMENT_BASIS
+                                value: INVOICE_RECEIPT
+                              - descriptor:
+                                  code: MANDATORY_ARBITRATION
+                                value: 'TRUE'
+                              - descriptor:
+                                  code: COURT_JURISDICTION
+                                value: New Delhi
+                              - descriptor:
+                                  code: STATIC_TERMS
+                                value: https://api.example-bpp.com/booking/terms
+                tags:
+                  - descriptor:
+                      code: PAGINATION
+                      name: Pagination
+                    display: true
+                    list:
+                      - descriptor:
+                          code: PAGINATION_ID
+                        value: P1
+                      - descriptor:
+                          code: CURRENT_PAGE_NUMBER
+                        value: '2'
+                      - descriptor:
+                          code: MAX_PAGE_NUMBER
+                        value: '3'
+      - summary: >-
+          Return an airline catalog of all flights services from one airport to
+          another
+        api: on_search
+        details:
+          - description: >-
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example:
+          summary: Return services available for provided start and end code
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV12
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 62695c0c-fae6-49ed-bce7-43afd5d7893a
+              version: 2.0.0
+              action: on_search
+              bap_uri: https://api.example-bap.com/pilot/bap/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bpp/v1
+              ttl: PT30S
+            message:
+              catalog:
+                descriptor:
+                  name: ABC Fights Services Solutions
+                  images:
+                    - url: https://abc-AIRLINE.in/logos/logo.ico
+                      size_type: xs
+                providers:
+                  - id: P1
+                    descriptor:
+                      name: ABC Operator Fights Services
+                      images:
+                        - url: https://operator1.com/logos/logo.ico
+                          size_type: xs
+                    categories:
+                      - id: C1
+                        descriptor:
+                          name: Economy
+                          code: ECONOMY
+                      - id: C2
+                        descriptor:
+                          name: Premium Economy
+                          code: PREMIUM_ECONOMY
+                      - id: C3
+                        descriptor:
+                          name: Business
+                          code: BUSINESS
+                      - id: C4
+                        descriptor:
+                          name: First Class
+                          code: FIRST_CLASS
+                    items:
+                      - id: I1
+                        descriptor:
+                          name: Adult
+                          code: ADULT_TICKET
+                        price:
+                          currency: INR
+                          value: '9280'
+                        quantity:
+                          selected:
+                            count: 3
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F1
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '9280'
+                      - id: I2
+                        descriptor:
+                          name: Child
+                          code: CHILD_TICKET
+                        price:
+                          currency: INR
+                          value: '4280'
+                        quantity:
+                          selected:
+                            count: 1
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F1
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '4280'
+                      - id: I3
+                        descriptor:
+                          name: Adult
+                          code: ADULT_TICKET
+                        price:
+                          currency: INR
+                          value: '9280'
+                        quantity:
+                          selected:
+                            count: 3
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F2
+                          - F3
+                          - F4
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '9280'
+                      - id: I4
+                        descriptor:
+                          name: Child
+                          code: CHILD_TICKET
+                        price:
+                          currency: INR
+                          value: '4280'
+                        quantity:
+                          selected:
+                            count: 1
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F2
+                          - F3
+                          - F4
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '9280'
+                    fulfillments:
+                      - id: F1
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E284'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F2
+                        type: CONNECT
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: LAYOVER
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              range:
+                                start: '2024-12-26T15:00:00Z'
+                                end: '2024-12-27T05:05:00Z'
+                              duration: PT14H5M
+                          - id: S3
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E281'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: FULFILLMENT_SEQUENCE
+                                value: F3, F4
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F3
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-17T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E286'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: PARENT_ID
+                                value: F2
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F4
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-19T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-21T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E287'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: PARENT_ID
+                                value: F2
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                    payments:
+                      - tags:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: BUYER_FINDER_FEES_PERCENTAGE
+                                value: '1'
+                          - descriptor:
+                              code: SETTLEMENT_TERMS
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: SETTLEMENT_WINDOW
+                                value: PT30D
+                              - descriptor:
+                                  code: SETTLEMENT_BASIS
+                                value: INVOICE_RECEIPT
+                              - descriptor:
+                                  code: MANDATORY_ARBITRATION
+                                value: 'TRUE'
+                              - descriptor:
+                                  code: COURT_JURISDICTION
+                                value: New Delhi
+                              - descriptor:
+                                  code: STATIC_TERMS
+                                value: https://api.example-bpp.com/booking/terms
+                tags:
+                  - descriptor:
+                      code: PAGINATION
+                      name: Pagination
+                    display: true
+                    list:
+                      - descriptor:
+                          code: PAGINATION_ID
+                        value: P1
+                      - descriptor:
+                          code: CURRENT_PAGE_NUMBER
+                        value: '3'
+                      - descriptor:
+                          code: MAX_PAGE_NUMBER
+                        value: '3'
+  - summary: Airlines - Buyer App Pagination Flow
+    details:
+      - description: >-
+          The illustrative flow to perform a transaction of the nature where in
+          a buyer would like to book an airlines service form airport A to
+          airport B
+        mermaid: |-
+          sequenceDiagram
+            title Airline Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+    reference: if any
+    steps:
+      - summary: Search for the flight by start and end airport code
+        api: search
+        details:
+          - description: >-
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+        reference: if any
+        example: *ref_17
+      - summary: >-
+          Return an airline catalog of all flights services from one airport to
+          another
+        api: on_search
+        details:
+          - description: >-
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example:
+          summary: Return services available for provided start and end code
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV12
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 7381c78e-1eb4-47bb-96b4-ac2fce74e565
+              version: 2.0.0
+              action: on_search
+              bap_uri: https://api.example-bap.com/pilot/bap/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bpp/v1
+              ttl: PT30S
+            message:
+              catalog:
+                descriptor:
+                  name: ABC Fights Services Solutions
+                  images:
+                    - url: https://abc-AIRLINE.in/logos/logo.ico
+                      size_type: xs
+                providers:
+                  - id: P1
+                    descriptor:
+                      name: ABC Operator Fights Services
+                      images:
+                        - url: https://operator1.com/logos/logo.ico
+                          size_type: xs
+                    categories:
+                      - id: C1
+                        descriptor:
+                          name: Economy
+                          code: ECONOMY
+                      - id: C2
+                        descriptor:
+                          name: Premium Economy
+                          code: PREMIUM_ECONOMY
+                      - id: C3
+                        descriptor:
+                          name: Business
+                          code: BUSINESS
+                      - id: C4
+                        descriptor:
+                          name: First Class
+                          code: FIRST_CLASS
+                    items:
+                      - id: I1
+                        descriptor:
+                          name: Adult
+                          code: ADULT_TICKET
+                        price:
+                          currency: INR
+                          value: '9280'
+                        quantity:
+                          selected:
+                            count: 3
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F1
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '9280'
+                      - id: I2
+                        descriptor:
+                          name: Child
+                          code: CHILD_TICKET
+                        price:
+                          currency: INR
+                          value: '4280'
+                        quantity:
+                          selected:
+                            count: 1
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F1
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '4280'
+                      - id: I3
+                        descriptor:
+                          name: Adult
+                          code: ADULT_TICKET
+                        price:
+                          currency: INR
+                          value: '9280'
+                        quantity:
+                          selected:
+                            count: 3
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F2
+                          - F3
+                          - F4
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '9280'
+                      - id: I4
+                        descriptor:
+                          name: Child
+                          code: CHILD_TICKET
+                        price:
+                          currency: INR
+                          value: '4280'
+                        quantity:
+                          selected:
+                            count: 1
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F2
+                          - F3
+                          - F4
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '9280'
+                    fulfillments:
+                      - id: F1
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E284'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F2
+                        type: CONNECT
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: LAYOVER
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              range:
+                                start: '2024-12-26T15:00:00Z'
+                                end: '2024-12-27T05:05:00Z'
+                              duration: PT14H5M
+                          - id: S3
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E281'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: FULFILLMENT_SEQUENCE
+                                value: F3, F4
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F3
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-17T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E286'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: PARENT_ID
+                                value: F2
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F4
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-19T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-21T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E287'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: PARENT_ID
+                                value: F2
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                    payments:
+                      - tags:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: BUYER_FINDER_FEES_PERCENTAGE
+                                value: '1'
+                          - descriptor:
+                              code: SETTLEMENT_TERMS
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: SETTLEMENT_WINDOW
+                                value: PT30D
+                              - descriptor:
+                                  code: SETTLEMENT_BASIS
+                                value: INVOICE_RECEIPT
+                              - descriptor:
+                                  code: MANDATORY_ARBITRATION
+                                value: 'TRUE'
+                              - descriptor:
+                                  code: COURT_JURISDICTION
+                                value: New Delhi
+                              - descriptor:
+                                  code: STATIC_TERMS
+                                value: https://api.example-bpp.com/booking/terms
+                tags:
+                  - descriptor:
+                      code: PAGINATION
+                      name: Pagination
+                    display: true
+                    list:
+                      - descriptor:
+                          code: PAGINATION_ID
+                        value: P1
+                      - descriptor:
+                          code: CURRENT_PAGE_NUMBER
+                        value: '1'
+                      - descriptor:
+                          code: MAX_PAGE_NUMBER
+                        value: '10'
+      - summary: Search for the flight by start and end airport code
+        api: search
+        details:
+          - description: >-
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): search
+                Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_search
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: Search for airline services by standard airport codes
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV12
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 9e9f8ee8-c98d-41dc-894f-db39564f7456
+              version: 2.0.0
+              action: search
+              bap_uri: https://api.example-bap.com/pilot/bap/v1
+              ttl: PT30S
+            message:
+              intent:
+                category:
+                  descriptor:
+                    code: ECONOMY
+                fulfillment:
+                  stops:
+                    - type: START
+                      location:
+                        descriptor:
+                          code: DEL
+                      time:
+                        label: Date Of Journey
+                        timestamp: '2023-10-15T00:32:19.000Z'
+                    - type: END
+                      location:
+                        descriptor:
+                          code: BLR
+                  vehicle:
+                    category: AIRLINE
+                provider:
+                  items:
+                    - descriptor:
+                        name: Adult
+                        code: ADULT_TICKET
+                      quantity:
+                        selected:
+                          count: 3
+                    - descriptor:
+                        name: Child
+                        code: CHILD_TICKET
+                      quantity:
+                        selected:
+                          count: 2
+                payment:
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+                    - descriptor:
+                        code: SETTLEMENT_TERMS
+                      display: false
+                      list:
+                        - descriptor:
+                            code: DELAY_INTEREST
+                          value: '2.5'
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://api.example-bap.com/booking/terms
+                tags:
+                  - descriptor:
+                      code: PAGINATION
+                      name: Pagination
+                    display: true
+                    list:
+                      - descriptor:
+                          code: PAGINATION_ID
+                        value: P1
+                      - descriptor:
+                          code: REQUESTED_PAGE_NUMBER
+                        value: '2'
+      - summary: Search for the flight by start and end airport code
+        api: on_search
+        details:
+          - description: >-
+              Users searches over the network to avail the airline mode of
+              transport from one airport to another
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Seller Platform (BPP): search
+                Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_search
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example:
+          summary: Return services available for provided start and end code
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV12
+              timestamp: '2023-03-23T04:41:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 9e9f8ee8-c98d-41dc-894f-db39564f7456
+              version: 2.0.0
+              action: on_search
+              bap_uri: https://api.example-bap.com/pilot/bap/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bpp/v1
+              ttl: PT30S
+            message:
+              catalog:
+                descriptor:
+                  name: ABC Fights Services Solutions
+                  images:
+                    - url: https://abc-AIRLINE.in/logos/logo.ico
+                      size_type: xs
+                providers:
+                  - id: P1
+                    descriptor:
+                      name: ABC Operator Fights Services
+                      images:
+                        - url: https://operator1.com/logos/logo.ico
+                          size_type: xs
+                    categories:
+                      - id: C1
+                        descriptor:
+                          name: Economy
+                          code: ECONOMY
+                      - id: C2
+                        descriptor:
+                          name: Premium Economy
+                          code: PREMIUM_ECONOMY
+                      - id: C3
+                        descriptor:
+                          name: Business
+                          code: BUSINESS
+                      - id: C4
+                        descriptor:
+                          name: First Class
+                          code: FIRST_CLASS
+                    items:
+                      - id: I1
+                        descriptor:
+                          name: Adult
+                          code: ADULT_TICKET
+                        price:
+                          currency: INR
+                          value: '9280'
+                        quantity:
+                          selected:
+                            count: 3
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F1
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '9280'
+                      - id: I2
+                        descriptor:
+                          name: Child
+                          code: CHILD_TICKET
+                        price:
+                          currency: INR
+                          value: '4280'
+                        quantity:
+                          selected:
+                            count: 1
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F1
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '4280'
+                      - id: I3
+                        descriptor:
+                          name: Adult
+                          code: ADULT_TICKET
+                        price:
+                          currency: INR
+                          value: '9280'
+                        quantity:
+                          selected:
+                            count: 3
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F2
+                          - F3
+                          - F4
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '9280'
+                      - id: I4
+                        descriptor:
+                          name: Child
+                          code: CHILD_TICKET
+                        price:
+                          currency: INR
+                          value: '4280'
+                        quantity:
+                          selected:
+                            count: 1
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F2
+                          - F3
+                          - F4
+                        time:
+                          label: JOURNEY_TIME
+                          duration: PT16H30M
+                        refund_terms:
+                          - refund_eligible: true
+                        cancellation_terms:
+                          - external_ref:
+                              url: >-
+                                https://api.example-bpp.com/pilot/bpp/v1/cancellation_terms.pdf
+                              mimetype: application/pdf
+                        add_ons:
+                          - id: A1
+                            descriptor:
+                              name: meals
+                              code: MEALS
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '300'
+                          - id: A2
+                            descriptor:
+                              name: Delayed and Lost Baggage Protection
+                              code: BAGGAGE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A3
+                            descriptor:
+                              name: Fast Forward
+                              code: FAST_FORWARD
+                              short_desc: >-
+                                Get priority check-in & baggage handling
+                                services to save time.
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '200'
+                          - id: A4
+                            descriptor:
+                              name: Travel Assistance
+                              code: TRAVEL_ASSISTANCE
+                            quantity:
+                              available:
+                                count: 1
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A7
+                            descriptor:
+                              name: Free Cancellation
+                              code: FREE_CANCELLATION
+                            price:
+                              currency: INR
+                              value: '500'
+                          - id: A8
+                            descriptor:
+                              name: Free Date Changes
+                              code: FREE_DATE_CHANGE
+                            price:
+                              currency: INR
+                              value: '200'
+                        tags:
+                          - descriptor:
+                              code: FARE_TYPE
+                              name: Fare Type
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: REGULAR
+                              - descriptor:
+                                  code: STUDENT
+                              - descriptor:
+                                  code: SENIOR_CITIZEN
+                              - descriptor:
+                                  code: ARMED_FORCES
+                              - descriptor:
+                                  code: DOCTORS_NURSES
+                          - descriptor:
+                              code: GENERAL_INFO
+                              name: General Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: CABIN_BAGGAGE
+                                  name: Cabin Baggage
+                                  short_desc: Allowed limit for cabin baggage
+                                value: 7 KG
+                              - descriptor:
+                                  code: CHECK_IN_BAGGAGE
+                                  name: Check-in Baggage
+                                  short_desc: Allowed limit for checkin baggage
+                                value: 15 KG
+                              - descriptor:
+                                  code: PROHIBITED_ITEMS
+                                  name: Prohibited Items
+                                value: list of items
+                          - descriptor:
+                              code: FARE_BREAK_UP
+                              name: Break up
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: TAX
+                                  name: GST
+                                value: '62'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Fuel Charge
+                                value: '0'
+                              - descriptor:
+                                  code: OTHER_CHARGES
+                                  name: Surcharge
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: cess
+                                value: '0'
+                              - descriptor:
+                                  code: TAX
+                                  name: Fuel Tax
+                                value: '0'
+                              - descriptor:
+                                  code: BASE_FARE
+                                  name: Base Fare
+                                value: '9280'
+                    fulfillments:
+                      - id: F1
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E284'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F2
+                        type: CONNECT
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: LAYOVER
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              range:
+                                start: '2024-12-26T15:00:00Z'
+                                end: '2024-12-27T05:05:00Z'
+                              duration: PT14H5M
+                          - id: S3
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E281'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: FULFILLMENT_SEQUENCE
+                                value: F3, F4
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F3
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Delhi
+                                code: DEL
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-15T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-17T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E286'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: PARENT_ID
+                                value: F2
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                      - id: F4
+                        type: TRIP
+                        stops:
+                          - id: S1
+                            type: START
+                            location:
+                              descriptor:
+                                name: Mumbai
+                                code: BOM
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-19T20:00:00.000Z'
+                          - id: S2
+                            type: END
+                            location:
+                              descriptor:
+                                name: Bengaluru
+                                code: BLR
+                            time:
+                              label: DATE_TIME
+                              timestamp: '2023-10-21T20:00:00.000Z'
+                        vehicle:
+                          category: AIRLINE
+                          code: '6E287'
+                        tags:
+                          - descriptor:
+                              code: INFO
+                              name: Info
+                            display: true
+                            list:
+                              - descriptor:
+                                  code: PARENT_ID
+                                value: F2
+                              - descriptor:
+                                  code: OPERATED_BY
+                                value: AirIndia
+                    payments:
+                      - tags:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: BUYER_FINDER_FEES_PERCENTAGE
+                                value: '1'
+                          - descriptor:
+                              code: SETTLEMENT_TERMS
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: SETTLEMENT_WINDOW
+                                value: PT30D
+                              - descriptor:
+                                  code: SETTLEMENT_BASIS
+                                value: INVOICE_RECEIPT
+                              - descriptor:
+                                  code: MANDATORY_ARBITRATION
+                                value: 'TRUE'
+                              - descriptor:
+                                  code: COURT_JURISDICTION
+                                value: New Delhi
+                              - descriptor:
+                                  code: STATIC_TERMS
+                                value: https://api.example-bpp.com/booking/terms
+                tags:
+                  - descriptor:
+                      code: PAGINATION
+                      name: Pagination
+                    display: true
+                    list:
+                      - descriptor:
+                          code: PAGINATION_ID
+                        value: P1
+                      - descriptor:
+                          code: CURRENT_PAGE_NUMBER
+                        value: '2'
+                      - descriptor:
+                          code: MAX_PAGE_NUMBER
+                        value: '10'
+  - summary: Airlines - Purchase Journey(Code Based Flow)
+    details:
+      - description: >-
+          The illustrative flow to perform a transaction of the nature where in
+          a buyer would like to book an airlines service form airport A to
+          airport B
+        mermaid: |-
+          sequenceDiagram
+            title Airline Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+      - description: Ordering
+        mermaid: |-
+          sequenceDiagram
+            title Selection
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+      - description: Initializing the order
+        mermaid: |-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+      - description: Order Confirmation
+        mermaid: |-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+      - description: Fulfillment
+        mermaid: |-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK      
+    reference: if any
+    steps:
       - summary: Selection of specific service
         api: select
         details:
@@ -4357,7 +7986,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_17
+        example: &ref_18
           summary: Get Quote of a selected item
           value:
             context:
@@ -4444,7 +8073,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_22
+        example: &ref_23
           summary: Get Quote of a selected item
           value:
             context:
@@ -5321,7 +8950,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_23
+        example: &ref_24
           summary: Get Quote of a selected item
           value:
             context:
@@ -6122,7 +9751,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_18
+        example: &ref_19
           summary: Initialize draft order and request for terms of service
           value:
             context:
@@ -6294,7 +9923,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: &ref_24
+        example: &ref_25
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -7195,7 +10824,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_19
+        example: &ref_20
           summary: Confirm ticket booking
           value:
             context:
@@ -7372,7 +11001,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_25
+        example: &ref_26
           summary: Confirm ticket booking
           value:
             context:
@@ -8287,7 +11916,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_20
+        example: &ref_21
           summary: Cancel a transit ticket booking before the cancellation period
           value:
             context:
@@ -8325,7 +11954,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_26
+        example: &ref_27
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -9191,16 +12820,16 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_16
+          - *ref_17
       select:
         examples:
-          - *ref_17
+          - *ref_18
       init:
         examples:
-          - *ref_18
+          - *ref_19
       confirm:
         examples:
-          - *ref_19
+          - *ref_20
       update:
         examples:
           - summary: Update customer details
@@ -9241,20 +12870,20 @@ x-examples:
                             email: joeadams@yahoo.com
       cancel:
         examples:
-          - *ref_20
+          - *ref_21
       on_search:
         examples:
-          - *ref_21
+          - *ref_22
       on_select:
         examples:
-          - *ref_22
           - *ref_23
+          - *ref_24
       on_init:
         examples:
-          - *ref_24
+          - *ref_25
       on_confirm:
         examples:
-          - *ref_25
+          - *ref_26
       on_update:
         examples:
           - summary: Return updated order with customer details
@@ -9582,7 +13211,7 @@ x-examples:
                       url: https://abcoperator.com/booking/O1.pdf
       on_cancel:
         examples:
-          - *ref_26
+          - *ref_27
 x-attributes:
   airline:
     attribute_set:
