@@ -1,0 +1,289 @@
+summary: IntraCity - GPS Based Flow
+details: &details
+  - &details_0
+    description: The illustrative flow to perform a transaction of the nature where
+      a buyer would like to book a intracity bus service from location
+      A(gps-cordinates) to localtion B(gps-cordinates)
+    mermaid: >-
+      sequenceDiagram
+        title Intra-city Discovery
+        Buyer Platform (BAP)->>Gateway (BG): search
+        Gateway (BG) ->> Buyer Platform (BAP): ACK
+        Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+        Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+        Gateway (BG)->>Seller Platform (BPP): search
+        Seller Platform (BPP)->>Gateway (BG) : ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+        Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+  - &details_1
+    description: Ordering
+    mermaid: |-
+      sequenceDiagram
+        title Selection
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): select
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - &details_2
+    description: Initializing the order
+    mermaid: |-
+      sequenceDiagram
+        title Initializing Order
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): init
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+  - &details_3
+    description: Order Confirmation
+    mermaid: |-
+      sequenceDiagram
+        title  Order Confirmation
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+  - &details_4
+    description: Fulfillment
+    mermaid: >-
+      sequenceDiagram
+        title Order Fulfillment
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK      
+steps: &steps
+  - &steps_0
+    summary: Search for the intracity bus from point A(gps) to point B(gps)
+    api: search
+    details: &steps_0_details
+      - &steps_0_details_0
+        description: Users searches over the network to avail the intracity bus mode of
+          transport from point A(gps) to point B(gps)
+        mermaid: >-
+          sequenceDiagram
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK  
+    reference: if any
+    example: &steps_0_example
+      summary: Search for intra city bus service mode of transit from a specific
+        position
+      value: &steps_0_example_value
+        $ref: ../../examples/intracity-bus/search/Search_for_intra_city_bus_service_mode_of_transit_from_a_specific_position_1.yaml
+  - &steps_1
+    summary: Return a bus catalog of all intracity bus services from point A(gps) to
+      point B(gps)
+    api: on_search
+    details: &steps_1_details
+      - &steps_1_details_0
+        description: Provider platform sends the catalog of all the service that can be
+          used for transit using bus service from point A(gps) to point B(gps)
+        mermaid: >-
+          sequenceDiagram
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+            end 
+    reference: if any
+    example: &steps_1_example
+      summary: Return a public transit catalog of fare products
+      value: &steps_1_example_value
+        $ref: ../../examples/intracity-bus/on_search/Return_a_public_transit_catalog_of_fare_products_19.yaml
+  - &steps_2
+    summary: Selection of specific service
+    api: select
+    details: &steps_2_details
+      - &steps_2_details_0
+        description: The end consumer have to select the specific service and would like
+          to have the necessary details
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example: &steps_2_example
+      summary: Get a quote for a fare product selected from a intra city bus service
+        catalog
+      value: &steps_2_example_value
+        $ref: ../../examples/intracity-bus/select/Get_a_quote_for_a_fare_product_selected_from_a_intra_city_bus_service_catalog_5.yaml
+  - &steps_3
+    summary: Provider platform provides the quote for selected service of intracity bus
+    api: on_select
+    details: &steps_3_details
+      - &steps_3_details_0
+        description: Provider platform responds with the service detailed information
+          and quotes for the specific service that consumer would like to avail
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end 
+    reference: if any
+    example: &steps_3_example
+      summary: Return a quote offered by a public transit service provider
+      value: &steps_3_example_value
+        $ref: ../../examples/intracity-bus/on_select/Return_a_quote_offered_by_a_public_transit_service_provider_26.yaml
+  - &steps_4
+    summary: Consumer platform initializes the order
+    api: init
+    details: &steps_4_details
+      - &steps_4_details_0
+        description: Consumer platform shares the terms of order and initializes the order
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example: &steps_4_example
+      summary: Initialize the order by providing billing details
+      value: &steps_4_example_value
+        $ref: ../../examples/intracity-bus/init/Initialize_the_order_by_providing_billing_details_7.yaml
+  - &steps_5
+    summary: Provider platform accepts/appends the terms of orders
+    api: on_init
+    details: &steps_5_details
+      - &steps_5_details_0
+        description: Provider platform accepts the terms of orders and appends its own
+          terms and responds with the final draft
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end    
+    reference: if any
+    example: &steps_5_example
+      summary: Return draft order for transit ticket with settlement via payment link
+      value: &steps_5_example_value
+        $ref: ../../examples/intracity-bus/on_init/Return_draft_order_for_transit_ticket_with_settlement_via_payment_link_28.yaml
+  - &steps_6
+    summary: Consumer confirms the booking and provides details.
+    api: confirm
+    details: &steps_6_details
+      - &steps_6_details_0
+        description: Consumer platform confirms the booking and provides all information
+          required for confirmation as per the terms of order
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example: &steps_6_example
+      summary: Confirm ticket booking
+      value: &steps_6_example_value
+        $ref: ../../examples/intracity-bus/confirm/Confirm_ticket_booking_9.yaml
+  - &steps_7
+    summary: Provider platform confirms the order
+    api: on_confirm
+    details: &steps_7_details
+      - &steps_7_details_0
+        description: Provider platform confirms the order and provides details of the
+          journey on confirmation
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example: &steps_7_example
+      summary: Return confirmed ticket order with payment confirmation
+      value: &steps_7_example_value
+        $ref: ../../examples/intracity-bus/on_confirm/Return_confirmed_ticket_order_with_payment_confirmation_30.yaml
+  - &steps_8
+    summary: Consumer platform requests for latest status
+    api: status
+    details: &steps_8_details
+      - &steps_8_details_0
+        description: Consumer platform request the provider platform to provide with
+          latest order status.
+        mermaid: >-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+    reference: if any
+    example: &steps_8_example
+      summary: Get latest status of a transit ticket booking
+      value: &steps_8_example_value
+        $ref: ../../examples/intracity-bus/status/Get_latest_status_of_a_transit_ticket_booking_16.yaml
+  - &steps_9
+    summary: Provider platform provides latest order status
+    api: on_status
+    details: &steps_9_details
+      - &steps_9_details_0
+        description: Provider platform provides the updated order status to the consumer.
+        mermaid: >-
+          sequenceDiagram
+            title Order Fulfillment
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end 
+    reference: if any
+    example: &steps_9_example
+      summary: Provider platform provides latest order status
+      value: &steps_9_example_value
+        $ref: ../../examples/intracity-bus/on_status/Provider_platform_provides_latest_order_status_36.yaml
