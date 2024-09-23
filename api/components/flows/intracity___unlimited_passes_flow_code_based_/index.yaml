@@ -1,0 +1,195 @@
+summary: IntraCity - Unlimited Passes Flow(Code Based)
+details: &details
+  - &details_0
+    description: The illustraive flow to perform a transaction of the nature where
+      in a buyer would like to book a bus service(intracity) form location
+      A(code) to localtion B(code)
+    mermaid: >-
+      sequenceDiagram
+        title Intra-city Discovery
+        Buyer Platform (BAP)->>Gateway (BG): search
+        Gateway (BG) ->> Buyer Platform (BAP): ACK
+        Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+        Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+        Gateway (BG)->>Seller Platform (BPP): search
+        Seller Platform (BPP)->>Gateway (BG) : ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+        Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+  - &details_1
+    description: Ordering
+    mermaid: |-
+      sequenceDiagram
+        title Selection
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): select
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - &details_2
+    description: Initializing the order
+    mermaid: |-
+      sequenceDiagram
+        title Initializing Order
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): init
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+  - &details_3
+    description: Order Confirmation
+    mermaid: |-
+      sequenceDiagram
+        title  Order Confirmation
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+  - &details_4
+    description: Fulfillment
+    mermaid: >-
+      sequenceDiagram
+        title Order Fulfillment
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK      
+    reference: if any
+steps: &steps
+  - &steps_0
+    summary: Selection of specific service
+    api: select
+    details: &steps_0_details
+      - &steps_0_details_0
+        description: The end consumer have to select the specific service and would like
+          to have the necessary details
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example: &steps_0_example
+      summary: Get a quote for a fare product selected from a intra city bus service
+        catalog
+      value: &steps_0_example_value
+        $ref: ../../examples/intracity-bus/select/Get_a_quote_for_a_fare_product_selected_from_a_intra_city_bus_service_catalog_6.yaml
+  - &steps_1
+    summary: Provider platform provides the quote for selected service of intracity bus
+    api: on_select
+    details: &steps_1_details
+      - &steps_1_details_0
+        description: Provider platform responds with the service detailed information
+          and quotes for the specific service that consumer would like to avail
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end 
+    reference: if any
+    example: &steps_1_example
+      summary: Return a quote offered by a public transit service provider
+      value: &steps_1_example_value
+        $ref: ../../examples/intracity-bus/on_select/Return_a_quote_offered_by_a_public_transit_service_provider_27.yaml
+  - &steps_2
+    summary: Consumer platform initializes the order
+    api: init
+    details: &steps_2_details
+      - &steps_2_details_0
+        description: Consumer platform shares the terms of order and initializes the order
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example: &steps_2_example
+      summary: Initialize the order by providing billing details
+      value: &steps_2_example_value
+        $ref: ../../examples/intracity-bus/init/Initialize_the_order_by_providing_billing_details_8.yaml
+  - &steps_3
+    summary: Provider platform accepts/appends the terms of orders
+    api: on_init
+    details: &steps_3_details
+      - &steps_3_details_0
+        description: Provider platform accepts the terms of orders and appends its own
+          terms and responds with the final draft
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): init
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end 
+    reference: if any
+    example: &steps_3_example
+      summary: Return draft order for transit ticket with settlement via payment link
+      value: &steps_3_example_value
+        $ref: ../../examples/intracity-bus/on_init/Return_draft_order_for_transit_ticket_with_settlement_via_payment_link_29.yaml
+  - &steps_4
+    summary: Consumer confirms the booking and provides details.
+    api: confirm
+    details: &steps_4_details
+      - &steps_4_details_0
+        description: Consumer platform confirms the booking and provides all information
+          required for confirmation as per the terms of order
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example: &steps_4_example
+      summary: Confirm ticket booking
+      value: &steps_4_example_value
+        $ref: ../../examples/intracity-bus/confirm/Confirm_ticket_booking_10.yaml
+  - &steps_5
+    summary: Provider platform confirms the order
+    api: on_confirm
+    details: &steps_5_details
+      - &steps_5_details_0
+        description: Provider platform confirms the order and provides details of the
+          journey on confirmation
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example: &steps_5_example
+      summary: Return confirmed ticket order with payment confirmation
+      value: &steps_5_example_value
+        $ref: ../../examples/intracity-bus/on_confirm/Return_confirmed_ticket_order_with_payment_confirmation_31.yaml
