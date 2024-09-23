@@ -1,0 +1,1591 @@
+search: &search
+  context: &search_context
+    location: &search_context_location
+      country: &search_context_location_country
+        code: &search_context_location_country_code
+          required: MANDATORY
+          type: string
+          owner: BAP
+          usage: IND
+          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
+        _description: &search_context_location_country__description
+          required: MANDATORY
+          type: object
+          owner: BAP
+          usage: --
+          description: This attribute defines the country of location where the
+            transaction is meant to be completed.
+      city: &search_context_location_city
+        code: &search_context_location_city_code
+          required: MANDATORY
+          type: string
+          owner: BAP
+          usage: "*"
+          description: Describes the city code this location is, or is located within
+        _description: &search_context_location_city__description
+          required: MANDATORY
+          type: object
+          owner: BAP
+          usage: --
+          description: This attribute defines the city of location where the transaction
+            is meant to be completed.
+      _description: &search_context_location__description
+        required: MANDATORY
+        type: object
+        owner: BAP
+        usage: --
+        description: This attribute defines the location where the transaction is meant
+          to be completed.
+    domain: &search_context_domain
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: ONDC:FIS13
+      description: Describes domain code that is relevant to this transaction context
+    timestamp: &search_context_timestamp
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: 2023-03-23T04:41:16Z
+      description: Describes tme of request generation in RFC3339 format
+    bap_id: &search_context_bap_id
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: fis.test.bap.io
+      description: Describes subscriber ID of the BAP
+    transaction_id: &search_context_transaction_id
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: 6743e9e2
+      description: Describes  a unique value which persists across all API calls
+    message_id: &search_context_message_id
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: 13ba8018f176
+      description: Describes a unique value which persists during a request / callback
+        cycle.
+    version: &search_context_version
+      required: MANDATORY
+      type: integer
+      owner: BAP
+      usage: 2.0.0
+      description: Describes the version of transaction protocol being used by the sender.
+    action: &search_context_action
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: search
+      description: Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri: &search_context_bap_uri
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: https://fis.test.bap.io/
+      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
+    ttl: &search_context_ttl
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: PT30S
+      description: Describes the duration in ISO8601 format after timestamp for which
+        this message holds valid
+    bpp_id: &search_context_bpp_id
+      required: OPTIONAL
+      type: string
+      owner: BPP
+      usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri: &search_context_bpp_uri
+      required: OPTIONAL
+      type: string
+      owner: BPP
+      usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+  message: &search_message
+    intent: &search_message_intent
+      fulfillment: &search_message_intent_fulfillment
+        stops: &search_message_intent_fulfillment_stops
+          type: &search_message_intent_fulfillment_stops_type
+            required: OPTIONAL
+            type: string
+            owner: BAP
+            usage: START
+            description: A logical point in space and time during the fulfillment of an
+              order.
+          location: &search_message_intent_fulfillment_stops_location
+            gps: &search_message_intent_fulfillment_stops_location_gps
+              required: OPTIONAL
+              type: string
+              owner: BAP
+              usage: 28.666576, 77.233332
+              description: Describes a GPS coordinate
+            descriptor: &search_message_intent_fulfillment_stops_location_descriptor
+              code: &search_message_intent_fulfillment_stops_location_descriptor_code
+                required: OPTIONAL
+                type: string
+                owner: BAP
+                usage: KASHMERE_GATE
+                description: Physical description of code.
+              _description: &search_message_intent_fulfillment_stops_location_descriptor__description
+                required: OPTIONAL
+                type: object
+                owner: BAP
+                usage: --
+                description: Describes the info about the location descriptor.
+            _description: &search_message_intent_fulfillment_stops_location__description
+              required: OPTIONAL
+              type: object
+              owner: BAP
+              usage: --
+              description: Describes the info about the fulfillment location.
+          _description: &search_message_intent_fulfillment_stops__description
+            required: OPTIONAL
+            type: object
+            owner: BAP
+            usage: --
+            description: Describes the info about the fulfillment stops.
+        vehicle: &search_message_intent_fulfillment_vehicle
+          category: &search_message_intent_fulfillment_vehicle_category
+            required: MANDATORY
+            type: string
+            owner: BAP
+            usage: BUS
+            description: Describes category of a vehicle
+          _description: &search_message_intent_fulfillment_vehicle__description
+            required: MANDATORY
+            type: object
+            owner: BAP
+            usage: --
+            description: Describes the info about the vechicle.
+        _description: &search_message_intent_fulfillment__description
+          required: OPTIONAL
+          type: object
+          owner: BAP
+          usage: --
+          description: Describes the info about the fulfillments.
+      payment: &search_message_intent_payment
+        tags: &search_message_intent_payment_tags
+          BUYER_FINDER_FEES: &search_message_intent_payment_tags_BUYER_FINDER_FEES
+            required: MANDATORY
+            type: string
+            owner: BAP
+            usage: --
+            description: Describes Buyer finder fee
+            list: &search_message_intent_payment_tags_BUYER_FINDER_FEES_list
+              BUYER_FINDER_FEES_TYPE: &search_message_intent_payment_tags_BUYER_FINDER_FEES_list_BUYER_FINDER_FEES_TYPE
+                required: MANDATORY
+                type: string
+                owner: BAP
+                usage: --
+                description: Describes Buyer finder fee type
+              BUYER_FINDER_FEES_PERCENTAGE: &search_message_intent_payment_tags_BUYER_FINDER_FEES_list_BUYER_FINDER_FEES_PERCENTAGE
+                required: MANDATORY
+                type: string
+                owner: BAP
+                usage: --
+                description: Describes Buyer finder fee percentage
+          SETTLEMENT_TERMS: &search_message_intent_payment_tags_SETTLEMENT_TERMS
+            required: MANDATORY
+            type: string
+            owner: BAP
+            usage: --
+            description: Describes settlement terms
+            list: &search_message_intent_payment_tags_SETTLEMENT_TERMS_list
+              SETTLEMENT_WINDOW: &search_message_intent_payment_tags_SETTLEMENT_TERMS_list_SETTLEMENT_WINDOW
+                required: MANDATORY
+                type: string
+                owner: BAP
+                usage: --
+                description: Describes settlement window
+              SETTLEMENT_BASIS: &search_message_intent_payment_tags_SETTLEMENT_TERMS_list_SETTLEMENT_BASIS
+                required: MANDATORY
+                type: string
+                owner: BAP
+                usage: --
+                description: Describes settlement basis
+              DELAY_INTEREST: &search_message_intent_payment_tags_SETTLEMENT_TERMS_list_DELAY_INTEREST
+                required: MANDATORY
+                type: string
+                owner: BAP
+                usage: --
+                description: Describes delay interest
+              STATIC_TERMS: &search_message_intent_payment_tags_SETTLEMENT_TERMS_list_STATIC_TERMS
+                required: MANDATORY
+                type: string
+                owner: BAP
+                usage: --
+                description: Describes static terms
+      _description: &search_message_intent__description
+        required: MANDATORY
+        type: object
+        owner: BPP
+        usage: --
+        description: Describes the intent
+on_search: &on_search
+  context: &on_search_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &on_search_context_action
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: on_search
+      description: Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri: *search_context_bap_uri
+    ttl: *search_context_ttl
+    bpp_id: &on_search_context_bpp_id
+      required: MANDATORY
+      type: string
+      owner: BPP
+      usage: fis.test.bpp.io
+      description: Describes subscriber ID of the BPP
+    bpp_uri: &on_search_context_bpp_uri
+      required: MANDATORY
+      type: string
+      owner: BPP
+      usage: https://fis.test.bpp.io/
+      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
+  message: &on_search_message
+    catalog: &on_search_message_catalog
+      descriptor: &on_search_message_catalog_descriptor
+        name: &on_search_message_catalog_descriptor_name
+          required: MANDATORY
+          type: string
+          owner: BPP
+          usage: Transit Solutions
+          description: Physical description of something.
+        images: &on_search_message_catalog_descriptor_images
+          url: &on_search_message_catalog_descriptor_images_url
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: https://transitsolutions.in/logos/logo.ico
+            description: URL to the image. This can be a data url or an remote url
+          size_type: &on_search_message_catalog_descriptor_images_size_type
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: xs
+            description: Size type of URL image
+          _description: &on_search_message_catalog_descriptor_images__description
+            required: OPTIONAL
+            type: object
+            owner: BPP
+            usage: --
+            description: Describes the images's description.
+        _description: &on_search_message_catalog_descriptor__description
+          required: MANDATORY
+          type: object
+          owner: BPP
+          usage: --
+          description: Describes the catalog's descriptor.
+      providers: &on_search_message_catalog_providers
+        id: &on_search_message_catalog_providers_id
+          required: MANDATORY
+          type: string
+          owner: BPP
+          usage: I1
+          description: Id of the provider
+        descriptor: &on_search_message_catalog_providers_descriptor
+          name: &on_search_message_catalog_providers_descriptor_name
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: Delhi Transport Corporation
+            description: Physical description of something.
+          images: &on_search_message_catalog_providers_descriptor_images
+            url: &on_search_message_catalog_providers_descriptor_images_url
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+              description: URL to the image. This can be a data url or an remote url
+            size_type: *on_search_message_catalog_descriptor_images_size_type
+            _description: &on_search_message_catalog_providers_descriptor_images__description
+              required: OPTIONAL
+              type: object
+              owner: BPP
+              usage: --
+              description: URL to the image. This can be a data url or an remote url
+          _description: &on_search_message_catalog_providers_descriptor__description
+            required: OPTIONAL
+            type: object
+            owner: BPP
+            usage: --
+            description: Describes the provider's description.
+        fulfillments: &on_search_message_catalog_providers_fulfillments
+          id: &on_search_message_catalog_providers_fulfillments_id
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: F1
+            description: Unique reference ID to the fulfillment of an order
+          type: &on_search_message_catalog_providers_fulfillments_type
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: F1
+            description: "A code that describes the mode of fulfillment. This is typically
+              set when there are multiple ways an order can be fulfilled. "
+          stops: &on_search_message_catalog_providers_fulfillments_stops
+            type: &on_search_message_catalog_providers_fulfillments_stops_type
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: INTERMEDIATE_STOP
+              description: The type of stop. Allowed values of this property can be defined by
+                the network policy.
+            instructions: &on_search_message_catalog_providers_fulfillments_stops_instructions
+              name: &on_search_message_catalog_providers_fulfillments_stops_instructions_name
+                required: OPTIONAL
+                type: string
+                owner: BPP
+                usage: Stop 1
+                description: Instructions name that need to be followed at the stop
+              _description: &on_search_message_catalog_providers_fulfillments_stops_instructions__description
+                required: OPTIONAL
+                type: object
+                owner: BPP
+                usage: --
+                description: Describes stops instruction description
+            location: &on_search_message_catalog_providers_fulfillments_stops_location
+              descriptor: &on_search_message_catalog_providers_fulfillments_stops_location_descriptor
+                code: &on_search_message_catalog_providers_fulfillments_stops_location_descriptor_code
+                  required: OPTIONAL
+                  type: string
+                  owner: BPP
+                  usage: INDIRA_GANDHI_TECHNICAL_UNIV
+                  description: Physical description of something.
+                name: &on_search_message_catalog_providers_fulfillments_stops_location_descriptor_name
+                  required: OPTIONAL
+                  type: string
+                  owner: BPP
+                  usage: Indira Gandhi Technical Unviversity
+                  description: Physical description of something.
+                _description: &on_search_message_catalog_providers_fulfillments_stops_location_descriptor__description
+                  required: OPTIONAL
+                  type: object
+                  owner: BAP/BPP
+                  usage: --
+                  description: Describes the description of location.
+              gps: &on_search_message_catalog_providers_fulfillments_stops_location_gps
+                required: OPTIONAL
+                type: string
+                owner: BPP
+                usage: 28.624097, 77.204991
+                description: The GPS co-ordinates of this location.
+              _description: &on_search_message_catalog_providers_fulfillments_stops_location__description
+                required: OPTIONAL
+                type: object
+                owner: BAP/BPP
+                usage: --
+                description: Describes the location of stops.
+            id: &on_search_message_catalog_providers_fulfillments_stops_id
+              required: MANDATORY
+              type: string
+              owner: BPP
+              usage: 2
+              description: Unique reference ID for individual stop
+            parent_stop_id: &on_search_message_catalog_providers_fulfillments_stops_parent_stop_id
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: 1
+              description: Unique ID for referencing parent stop
+            _description: &on_search_message_catalog_providers_fulfillments_stops__description
+              required: MANDATORY
+              type: object
+              owner: BAP/BPP
+              usage: --
+              description: Describes the fulfillments stops.
+          vehicle: &on_search_message_catalog_providers_fulfillments_vehicle
+            category: &on_search_message_catalog_providers_fulfillments_vehicle_category
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: BUS
+              description: Describes category of a vehicle
+            _description: &on_search_message_catalog_providers_fulfillments_vehicle__description
+              required: OPTIONAL
+              type: object
+              owner: BAP
+              usage: --
+              description: Describes category of a vehicle
+          tags: &on_search_message_catalog_providers_fulfillments_tags
+            ROUTE_INFO: &on_search_message_catalog_providers_fulfillments_tags_ROUTE_INFO
+              required: MANDATORY
+              type: string
+              owner: BPP
+              usage: --
+              description: Describes route info
+              ROUTE_ID: &on_search_message_catalog_providers_fulfillments_tags_ROUTE_INFO_ROUTE_ID
+                required: MANDATORY
+                type: string
+                owner: BPP
+                usage: --
+                description: Describes route id
+              ROUTE_DIRECTION: &on_search_message_catalog_providers_fulfillments_tags_ROUTE_INFO_ROUTE_DIRECTION
+                required: MANDATORY
+                type: string
+                owner: BPP
+                usage: --
+                description: Describes route direction
+              OPERATIONAL_START_TIME: &on_search_message_catalog_providers_fulfillments_tags_ROUTE_INFO_OPERATIONAL_START_TIME
+                required: OPTIONAL
+                type: string
+                owner: BPP
+                usage: --
+                description: Describes route operational times
+              OPERATIONAL_END_TIME: &on_search_message_catalog_providers_fulfillments_tags_ROUTE_INFO_OPERATIONAL_END_TIME
+                required: OPTIONAL
+                type: string
+                owner: BPP
+                usage: --
+                description: Describes route operational end times
+          _description: &on_search_message_catalog_providers_fulfillments__description
+            required: MANDATORY
+            type: object
+            owner: BPP
+            usage: --
+            description: Unique reference ID to the fulfillment of an order
+        items: &on_search_message_catalog_providers_items
+          id: &on_search_message_catalog_providers_items_id
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: I1
+            description: ID of the item.
+          descriptor: &on_search_message_catalog_providers_items_descriptor
+            code: &on_search_message_catalog_providers_items_descriptor_code
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: SJT
+              description: Physical description of something.
+            name: &on_search_message_catalog_providers_items_descriptor_name
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: Single Journey Ticket
+              description: Physical description of something.
+            images: *on_search_message_catalog_providers_descriptor_images
+            _description: &on_search_message_catalog_providers_items_descriptor__description
+              required: OPTIONAL
+              type: object
+              owner: BAP/BPP
+              usage: --
+              description: Describes the items description.
+          price: &on_search_message_catalog_providers_items_price
+            currency: &on_search_message_catalog_providers_items_price_currency
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: INR
+              description: Describes the price of a product or service
+            value: &on_search_message_catalog_providers_items_price_value
+              required: OPTIONAL
+              type: integer
+              owner: BPP
+              usage: 35
+              description: Describes the currency of a product or service
+            _description: &on_search_message_catalog_providers_items_price__description
+              required: OPTIONAL
+              type: object
+              owner: BPP
+              usage: --
+              description: Describes the price of an item.
+          quantity: &on_search_message_catalog_providers_items_quantity
+            maximum: &on_search_message_catalog_providers_items_quantity_maximum
+              count: &on_search_message_catalog_providers_items_quantity_maximum_count
+                required: OPTIONAL
+                type: integer
+                owner: BPP
+                usage: 6
+                description: This represents the maximum quantity allowed for purchase of the
+                  item
+              _description: &on_search_message_catalog_providers_items_quantity_maximum__description
+                required: OPTIONAL
+                type: object
+                owner: BPP
+                usage: --
+                description: Describes the maximum quantity of an item.
+            minimum: &on_search_message_catalog_providers_items_quantity_minimum
+              count: &on_search_message_catalog_providers_items_quantity_minimum_count
+                required: OPTIONAL
+                type: integer
+                owner: BPP
+                usage: 1
+                description: This represents the minimum quantity allowed for purchase of the
+                  item
+              _description: &on_search_message_catalog_providers_items_quantity_minimum__description
+                required: OPTIONAL
+                type: object
+                owner: BPP
+                usage: --
+                description: Describes the minimum quantity of an item.
+            _description: &on_search_message_catalog_providers_items_quantity__description
+              required: OPTIONAL
+              type: object
+              owner: BPP
+              usage: --
+              description: Describes the quantity info of an item.
+          fulfillment_ids: &on_search_message_catalog_providers_items_fulfillment_ids
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: F1
+            description: Unique reference ID to the fulfillment of an order
+          time: &on_search_message_catalog_providers_items_time
+            duration: &on_search_message_catalog_providers_items_time_duration
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: PT2D
+              description: Time duration for servicibility
+            label: &on_search_message_catalog_providers_items_time_label
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: Validity
+              description: label for time
+            _description: &on_search_message_catalog_providers_items_time__description
+              required: OPTIONAL
+              type: object
+              owner: BPP
+              usage: --
+              description: Time duration for servicibility
+          tags: &on_search_message_catalog_providers_items_tags
+            FARE_POLICY: &on_search_message_catalog_providers_items_tags_FARE_POLICY
+              required: MANDATORY
+              type: string
+              owner: BPP
+              usage: --
+              description: Describes fair policy
+              list: &on_search_message_catalog_providers_items_tags_FARE_POLICY_list
+                RESTRICTED_PERSON: &on_search_message_catalog_providers_items_tags_FARE_POLICY_list_RESTRICTED_PERSON
+                  required: MANDATORY
+                  type: string
+                  owner: BPP
+                  usage: --
+                  description: Describes fair policy tags
+                RESTRICTION_PROOF: *on_search_message_catalog_providers_items_tags_FARE_POLICY_list_RESTRICTED_PERSON
+          _description: &on_search_message_catalog_providers_items__description
+            required: OPTIONAL
+            type: object
+            owner: BAP/BPP
+            usage: --
+            description: Describes a product or a service offered to the end consumer by the
+              provider. In the mobility sector, it can represent a fare product
+              like one way journey. In the logistics sector, it can represent
+              the delivery service offering. In the retail domain it can
+              represent a product like a grocery item.
+        payments: &on_search_message_catalog_providers_payments
+          tags: &on_search_message_catalog_providers_payments_tags
+            BUYER_FINDER_FEES: *search_message_intent_payment_tags_BUYER_FINDER_FEES
+            SETTLEMENT_TERMS: &on_search_message_catalog_providers_payments_tags_SETTLEMENT_TERMS
+              required: MANDATORY
+              type: string
+              owner: BAP
+              usage: --
+              description: Describes settlement terms
+              list: &on_search_message_catalog_providers_payments_tags_SETTLEMENT_TERMS_list
+                SETTLEMENT_WINDOW: *search_message_intent_payment_tags_SETTLEMENT_TERMS_list_SETTLEMENT_WINDOW
+                SETTLEMENT_BASIS: *search_message_intent_payment_tags_SETTLEMENT_TERMS_list_SETTLEMENT_BASIS
+                DELAY_INTEREST: *search_message_intent_payment_tags_SETTLEMENT_TERMS_list_DELAY_INTEREST
+                STATIC_TERMS: *search_message_intent_payment_tags_SETTLEMENT_TERMS_list_STATIC_TERMS
+                MANDATORY_ARBITRATION: &on_search_message_catalog_providers_payments_tags_SETTLEMENT_TERMS_list_MANDATORY_ARBITRATION
+                  required: MANDATORY
+                  type: string
+                  owner: BPP
+                  usage: --
+                  description: Describes mandatory arbitration
+                COURT_JURISDICTION: &on_search_message_catalog_providers_payments_tags_SETTLEMENT_TERMS_list_COURT_JURISDICTION
+                  required: MANDATORY
+                  type: string
+                  owner: BPP
+                  usage: --
+                  description: Describes court jurisdiction
+        _description: &on_search_message_catalog_providers__description
+          required: MANDATORY
+          type: object
+          owner: BPP
+          usage: --
+          description: Describes the provider's description.
+      _description: &on_search_message_catalog__description
+        required: MANDATORY
+        type: object
+        owner: BPP
+        usage: --
+        description: Describes the catalog's description.
+select: &select
+  context: &select_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &select_context_action
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: select
+      description: Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri: *search_context_bap_uri
+    ttl: *search_context_ttl
+    bpp_id: *on_search_context_bpp_id
+    bpp_uri: *on_search_context_bpp_uri
+  message: &select_message
+    order: &select_message_order
+      items: &select_message_order_items
+        id: &select_message_order_items_id
+          required: MANDATORY
+          type: string
+          owner: BPP
+          usage: I1
+          description: "Human-readable ID of the order. "
+        quantity: &select_message_order_items_quantity
+          selected: &select_message_order_items_quantity_selected
+            count: &select_message_order_items_quantity_selected_count
+              required: MANDATORY
+              type: integer
+              owner: BAP
+              usage: 2
+              description: This represents the quantity selected for purchase of the item
+            _description: &select_message_order_items_quantity_selected__description
+              required: MANDATORY
+              type: object
+              owner: BAP
+              usage: --
+              description: Describes items selected quantity
+          _description: &select_message_order_items_quantity__description
+            required: MANDATORY
+            type: object
+            owner: BAP/BPP
+            usage: --
+            description: Describes items quantity
+        _description: &select_message_order_items__description
+          required: MANDATORY
+          type: object
+          owner: BAP/BPP
+          usage: --
+          description: Describes the item details
+      provider: &select_message_order_provider
+        id: &select_message_order_provider_id
+          required: MANDATORY
+          type: string
+          owner: BPP
+          usage: P1
+          description: Id of the provider
+        _description: &select_message_order_provider__description
+          required: MANDATORY
+          type: object
+          owner: BPP
+          usage: P1
+          description: Id of the provider
+      _description: &select_message_order__description
+        required: MANDATORY
+        type: object
+        owner: BAP/BPP
+        usage: --
+        description: Describes the order details
+on_select: &on_select
+  context: &on_select_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &on_select_context_action
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: on_select
+      description: Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri: *search_context_bap_uri
+    ttl: *search_context_ttl
+    bpp_id: *on_search_context_bpp_id
+    bpp_uri: *on_search_context_bpp_uri
+  message: &on_select_message
+    order: &on_select_message_order
+      items: &on_select_message_order_items
+        id: &on_select_message_order_items_id
+          required: MANDATORY
+          type: string
+          owner: BPP
+          usage: I1
+          description: ID of the item.
+        descriptor: &on_select_message_order_items_descriptor
+          name: &on_select_message_order_items_descriptor_name
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: Single Journey Ticket
+            description: Physical description of something.
+          code: &on_select_message_order_items_descriptor_code
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: SJT
+            description: Physical description of something.
+          images: *on_search_message_catalog_providers_descriptor_images
+          _description: &on_select_message_order_items_descriptor__description
+            required: MANDATORY
+            type: object
+            owner: BPP
+            usage: --
+            description: Describes the descriptor for provider
+        price: &on_select_message_order_items_price
+          currency: &on_select_message_order_items_price_currency
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: INR
+            description: Price of the selected item.
+          value: &on_select_message_order_items_price_value
+            required: MANDATORY
+            type: integer
+            owner: BPP
+            usage: 35
+            description: Describes a numerical value in decimal form
+          _description: &on_select_message_order_items_price__description
+            required: MANDATORY
+            type: object
+            owner: BPP
+            usage: --
+            description: Describes items price details
+        quantity: &on_select_message_order_items_quantity
+          selected: &on_select_message_order_items_quantity_selected
+            count: *select_message_order_items_quantity_selected_count
+            _description: &on_select_message_order_items_quantity_selected__description
+              required: MANDATORY
+              type: object
+              owner: BAP
+              usage: --
+              description: Describes selected quantity details
+          _description: &on_select_message_order_items_quantity__description
+            required: MANDATORY
+            type: object
+            owner: BAP/BPP
+            usage: --
+            description: Describes quantity details
+        fulfillment_ids: *on_search_message_catalog_providers_fulfillments_id
+        time: &on_select_message_order_items_time
+          label: &on_select_message_order_items_time_label
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: Validity
+            description: Time duration for servicibility
+          duration: &on_select_message_order_items_time_duration
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: PT2D
+            description: label for time
+          _description: &on_select_message_order_items_time__description
+            required: MANDATORY
+            type: object
+            owner: BPP
+            usage: --
+            description: Describes items time details
+        _description: *select_message_order_items__description
+      provider: &on_select_message_order_provider
+        id: *select_message_order_provider_id
+        descriptor: &on_select_message_order_provider_descriptor
+          name: *on_search_message_catalog_providers_descriptor_name
+          images: &on_select_message_order_provider_descriptor_images
+            url: *on_search_message_catalog_providers_descriptor_images_url
+            _decription: *on_search_message_catalog_providers_descriptor_images__description
+          _decription: &on_select_message_order_provider_descriptor__decription
+            required: OPTIONAL
+            type: object
+            owner: BPP
+            usage: --
+            description: Describes provider descriptor
+        _description: &on_select_message_order_provider__description
+          required: MANDATORY
+          type: object
+          owner: BPP
+          usage: --
+          description: Id of the provider
+      fulfillments: &on_select_message_order_fulfillments
+        id: *on_search_message_catalog_providers_fulfillments_id
+        stops: &on_select_message_order_fulfillments_stops
+          type: *on_search_message_catalog_providers_fulfillments_stops_type
+          instructions: &on_select_message_order_fulfillments_stops_instructions
+            name: &on_select_message_order_fulfillments_stops_instructions_name
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: Stop 1
+              description: Physical description of something.
+            _description: *on_search_message_catalog_providers_fulfillments_stops_instructions__description
+          location: &on_select_message_order_fulfillments_stops_location
+            descriptor: &on_select_message_order_fulfillments_stops_location_descriptor
+              name: *on_search_message_catalog_providers_fulfillments_stops_location_descriptor_name
+              code: *on_search_message_catalog_providers_fulfillments_stops_location_descriptor_code
+              _description: &on_select_message_order_fulfillments_stops_location_descriptor__description
+                required: MANDATORY
+                type: object
+                owner: BAP/BPP
+                usage: --
+                description: Describes the description of location.
+            gps: &on_select_message_order_fulfillments_stops_location_gps
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: 28.624097, 77.204991
+              description: Describes a GPS coordinate
+            _description: &on_select_message_order_fulfillments_stops_location__description
+              required: MANDATORY
+              type: object
+              owner: BAP/BPP
+              usage: --
+              description: Describes the location of stops.
+          id: &on_select_message_order_fulfillments_stops_id
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: 2
+            description: Unique reference ID for individual stop
+          parent_stop_id: *on_search_message_catalog_providers_fulfillments_stops_parent_stop_id
+          _description: &on_select_message_order_fulfillments_stops__description
+            required: MANDATORY
+            type: object
+            owner: BAP/BPP
+            usage: --
+            description: Describes stops details
+        vehicle: &on_select_message_order_fulfillments_vehicle
+          category: &on_select_message_order_fulfillments_vehicle_category
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: BUS
+            description: Describes vehicle category
+          _description: &on_select_message_order_fulfillments_vehicle__description
+            required: MANDATORY
+            type: object
+            owner: BAP/BPP
+            usage: --
+            description: Describes the vehicle type.
+        tags: &on_select_message_order_fulfillments_tags
+          ROUTE_INFO: &on_select_message_order_fulfillments_tags_ROUTE_INFO
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: --
+            description: Describes route info
+            ROUTE_ID: *on_search_message_catalog_providers_fulfillments_tags_ROUTE_INFO_ROUTE_ID
+            ROUTE_DIRECTION: *on_search_message_catalog_providers_fulfillments_tags_ROUTE_INFO_ROUTE_DIRECTION
+        _description: &on_select_message_order_fulfillments__description
+          required: MANDATORY
+          type: object
+          owner: BAP/BPP
+          usage: --
+          description: Describes fulfilments details
+      quote: &on_select_message_order_quote
+        price: &on_select_message_order_quote_price
+          value: &on_select_message_order_quote_price_value
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: 70
+            description: Describes the price of a product or service
+          currency: &on_select_message_order_quote_price_currency
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: INR
+            description: Describes the currency of a product or service
+          _description: &on_select_message_order_quote_price__description
+            required: MANDATORY
+            type: object
+            owner: BPP
+            usage: --
+            description: "Describes quotes price "
+        breakup: &on_select_message_order_quote_breakup
+          title: &on_select_message_order_quote_breakup_title
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: Base Fare
+            description: false
+          item: &on_select_message_order_quote_breakup_item
+            id: &on_select_message_order_quote_breakup_item_id
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: I1
+              description: false
+            _description: &on_select_message_order_quote_breakup_item__description
+              required: MANDATORY
+              type: object
+              owner: BPP
+              usage: --
+              description: Describes the item for quote.
+          price: &on_select_message_order_quote_breakup_price
+            currency: &on_select_message_order_quote_breakup_price_currency
+              required: MANDATORY
+              type: string
+              owner: BPP
+              usage: INR
+              description: false
+            value: &on_select_message_order_quote_breakup_price_value
+              required: MANDATORY
+              type: string
+              owner: BPP
+              usage: 35
+              description: false
+            _description: &on_select_message_order_quote_breakup_price__description
+              required: MANDATORY
+              type: object
+              owner: BPP
+              usage: --
+              description: Describes price description
+          _description: &on_select_message_order_quote_breakup__description
+            required: MANDATORY
+            type: object
+            owner: BPP
+            usage: --
+            description: Describes breakup details
+        _description: &on_select_message_order_quote__description
+          required: MANDATORY
+          type: object
+          owner: BPP
+          usage: --
+          description: Describes orders quote
+      _description: *select_message_order__description
+init: &init
+  context: &init_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &init_context_action
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: init
+      description: Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri: *search_context_bap_uri
+    ttl: *search_context_ttl
+    bpp_id: *on_search_context_bpp_id
+    bpp_uri: *on_search_context_bpp_uri
+  message: &init_message
+    order: &init_message_order
+      items: &init_message_order_items
+        id: *on_select_message_order_items_id
+        quantity: *select_message_order_items_quantity
+        _description: *select_message_order_items__description
+      provider: &init_message_order_provider
+        id: *select_message_order_provider_id
+        _description: *on_select_message_order_provider__description
+      billing: &init_message_order_billing
+        name: &init_message_order_billing_name
+          required: OPTIONAL
+          type: string
+          owner: BAP
+          usage: John Doe
+          description: Name of the billable entity
+        email: &init_message_order_billing_email
+          required: OPTIONAL
+          type: string
+          owner: BAP
+          usage: john.doe@example.com
+          description: Email address where the bill is sent to
+        phone: &init_message_order_billing_phone
+          required: OPTIONAL
+          type: string
+          owner: BAP
+          usage: 9897867564
+          description: Phone number of the billable entity
+        _description: &init_message_order_billing__description
+          required: OPTIONAL
+          type: object
+          owner: BAP
+          usage: --
+          description: Describes the billing details
+      payments: &init_message_order_payments
+        collected_by: &init_message_order_payments_collected_by
+          required: MANDATORY
+          type: string
+          owner: BAP
+          usage: BAP
+          description: "This field indicates who is the collector of payment. "
+        status: &init_message_order_payments_status
+          required: MANDATORY
+          type: string
+          owner: BAP
+          usage: NOT-PAID
+          description: Payment status
+        type: &init_message_order_payments_type
+          required: MANDATORY
+          type: string
+          owner: BAP
+          usage: PRE-ORDER
+          description: Payment Type
+        tags: &init_message_order_payments_tags
+          BUYER_FINDER_FEES: *search_message_intent_payment_tags_BUYER_FINDER_FEES
+          SETTLEMENT_TERMS: &init_message_order_payments_tags_SETTLEMENT_TERMS
+            required: MANDATORY
+            type: string
+            owner: BAP
+            usage: --
+            description: Describes settlement terms
+            list: &init_message_order_payments_tags_SETTLEMENT_TERMS_list
+              SETTLEMENT_WINDOW: *search_message_intent_payment_tags_SETTLEMENT_TERMS_list_SETTLEMENT_WINDOW
+              SETTLEMENT_BASIS: *search_message_intent_payment_tags_SETTLEMENT_TERMS_list_SETTLEMENT_BASIS
+              DELAY_INTEREST: *search_message_intent_payment_tags_SETTLEMENT_TERMS_list_DELAY_INTEREST
+              STATIC_TERMS: *search_message_intent_payment_tags_SETTLEMENT_TERMS_list_STATIC_TERMS
+              SETTLEMENT_AMOUNT: &init_message_order_payments_tags_SETTLEMENT_TERMS_list_SETTLEMENT_AMOUNT
+                required: MANDATORY
+                type: string
+                owner: BAP
+                usage: --
+                description: Describes settlement amount to counter-party
+              SETTLEMENT_TYPE: &init_message_order_payments_tags_SETTLEMENT_TERMS_list_SETTLEMENT_TYPE
+                required: MANDATORY
+                type: string
+                owner: BAP
+                usage: --
+                description: Describes settlement type
+        _description: &init_message_order_payments__description
+          required: MANDATORY
+          type: object
+          owner: BAP
+          usage: --
+          description: Describes payment details
+      _description: *select_message_order__description
+on_init: &on_init
+  context: &on_init_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &on_init_context_action
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: on_init
+      description: Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri: *search_context_bap_uri
+    ttl: *search_context_ttl
+    bpp_id: *on_search_context_bpp_id
+    bpp_uri: *on_search_context_bpp_uri
+  message: &on_init_message
+    order: &on_init_message_order
+      items: *on_select_message_order_items
+      provider: &on_init_message_order_provider
+        id: *select_message_order_provider_id
+        descriptor: &on_init_message_order_provider_descriptor
+          name: &on_init_message_order_provider_descriptor_name
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: Delhi Metro Rail Limited
+            description: Physical description of something.
+          images: &on_init_message_order_provider_descriptor_images
+            url: &on_init_message_order_provider_descriptor_images_url
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: https://delhimetrorail.com/logos/logo.ico
+              description: URL to the image. This can be a data url or an remote url
+            _decription: *on_search_message_catalog_providers_descriptor_images__description
+          _decription: *on_select_message_order_provider_descriptor__decription
+        _description: *on_select_message_order_provider__description
+      fulfillments: &on_init_message_order_fulfillments
+        id: *on_search_message_catalog_providers_fulfillments_id
+        stops: &on_init_message_order_fulfillments_stops
+          type: *on_search_message_catalog_providers_fulfillments_stops_type
+          instructions: *on_select_message_order_fulfillments_stops_instructions
+          location: &on_init_message_order_fulfillments_stops_location
+            descriptor: &on_init_message_order_fulfillments_stops_location_descriptor
+              name: &on_init_message_order_fulfillments_stops_location_descriptor_name
+                required: OPTIONAL
+                type: string
+                owner: BPP
+                usage: kashmere gate
+                description: Physical description of something.
+              code: &on_init_message_order_fulfillments_stops_location_descriptor_code
+                required: OPTIONAL
+                type: string
+                owner: BPP
+                usage: KASHMERE_GATE
+                description: Physical description of something.
+              _description: *on_select_message_order_fulfillments_stops_location_descriptor__description
+            gps: &on_init_message_order_fulfillments_stops_location_gps
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: 28.666576, 77.233332
+              description: Describes a GPS coordinate
+            _description: *on_select_message_order_fulfillments_stops_location__description
+          id: *on_select_message_order_fulfillments_stops_id
+          parent_stop_id: *on_search_message_catalog_providers_fulfillments_stops_parent_stop_id
+          _description: *on_select_message_order_fulfillments_stops__description
+        vehicle: *on_select_message_order_fulfillments_vehicle
+        tags: *on_select_message_order_fulfillments_tags
+        _description: *on_select_message_order_fulfillments__description
+      billing: &on_init_message_order_billing
+        name: *init_message_order_billing_name
+        email: *init_message_order_billing_email
+        phone: &on_init_message_order_billing_phone
+          required: OPTIONAL
+          type: integer
+          owner: BAP
+          usage: 9897867564
+          description: Phone number of the billable entity
+        _description: *init_message_order_billing__description
+      quote: &on_init_message_order_quote
+        price: &on_init_message_order_quote_price
+          value: &on_init_message_order_quote_price_value
+            required: MANDATORY
+            type: integer
+            owner: BPP
+            usage: 70
+            description: Describes the price of a product or service
+          currency: *on_select_message_order_quote_price_currency
+          _description: *on_select_message_order_quote_price__description
+        breakup: &on_init_message_order_quote_breakup
+          title: &on_init_message_order_quote_breakup_title
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: Base Fare
+            description: Breakup title of the total quoted price
+          item: &on_init_message_order_quote_breakup_item
+            id: *on_search_message_catalog_providers_items_id
+            _description: *on_select_message_order_quote_breakup_item__description
+          price: &on_init_message_order_quote_breakup_price
+            currency: &on_init_message_order_quote_breakup_price_currency
+              required: MANDATORY
+              type: string
+              owner: BPP
+              usage: INR
+              description: Describes the price of a product or service
+            value: &on_init_message_order_quote_breakup_price_value
+              required: MANDATORY
+              type: integer
+              owner: BPP
+              usage: 35
+              description: Describes the currency to be paid in of a product or service
+            _description: *on_select_message_order_quote_breakup_price__description
+          _description: *on_select_message_order_quote_breakup__description
+        _description: *on_select_message_order_quote__description
+      payments: &on_init_message_order_payments
+        id: &on_init_message_order_payments_id
+          required: MANDATORY
+          type: string
+          owner: BPP
+          usage: PA1
+          description: ID of the payment term that can be referred at an item or an order
+            level in a catalog
+        collected_by: *init_message_order_payments_collected_by
+        status: &on_init_message_order_payments_status
+          required: MANDATORY
+          type: string
+          owner: BAP
+          usage: NOT-PAID
+          description: Payment Status
+        type: &on_init_message_order_payments_type
+          required: MANDATORY
+          type: string
+          owner: BAP
+          usage: PRE-ORDER
+          description: Payment type
+        params: &on_init_message_order_payments_params
+          bank_code: &on_init_message_order_payments_params_bank_code
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: XXXXXXXX
+            description: Bank code associated with payment activity
+          bank_account_number: &on_init_message_order_payments_params_bank_account_number
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: xxxxxxxxxxxxxx
+            description: Bank account number associated with payment activity
+          virtual_payment_address: &on_init_message_order_payments_params_virtual_payment_address
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: 9988199772@okicici
+            description: Virtual payment address associated with payment activity
+          _description: &on_init_message_order_payments_params__description
+            required: OPTIONAL
+            type: object
+            owner: BPP
+            usage: --
+            description: Describes the payment params
+        tags: *init_message_order_payments_tags
+        _description: *init_message_order_payments__description
+      cancellation_terms: &on_init_message_order_cancellation_terms
+        cancel_by: &on_init_message_order_cancellation_terms_cancel_by
+          duration: &on_init_message_order_cancellation_terms_cancel_by_duration
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: PT60M
+            description: Duration for cancellation of order
+          _description: &on_init_message_order_cancellation_terms_cancel_by__description
+            required: OPTIONAL
+            type: object
+            owner: BPP
+            usage: --
+            description: Describes the cancel by
+        cancellation_fee: &on_init_message_order_cancellation_terms_cancellation_fee
+          percentage: &on_init_message_order_cancellation_terms_cancellation_fee_percentage
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: false
+            description: Fee Percentage for cancellation
+          _description: &on_init_message_order_cancellation_terms_cancellation_fee__description
+            required: OPTIONAL
+            type: object
+            owner: BPP
+            usage: --
+            description: Describes the cancellation fee
+        _description: &on_init_message_order_cancellation_terms__description
+          required: OPTIONAL
+          type: object
+          owner: BPP
+          usage: --
+          description: Describes the cancellation terms
+      _description: *select_message_order__description
+confirm: &confirm
+  context: &confirm_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &confirm_context_action
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: confirm
+      description: Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri: *search_context_bap_uri
+    ttl: *search_context_ttl
+    bpp_id: *on_search_context_bpp_id
+    bpp_uri: *on_search_context_bpp_uri
+  message: &confirm_message
+    order: &confirm_message_order
+      items: *init_message_order_items
+      provider: *init_message_order_provider
+      billing: *on_init_message_order_billing
+      payments: &confirm_message_order_payments
+        id: *on_init_message_order_payments_id
+        collected_by: *init_message_order_payments_collected_by
+        status: *init_message_order_payments_status
+        type: *init_message_order_payments_type
+        params: &confirm_message_order_payments_params
+          transaction_id: &confirm_message_order_payments_params_transaction_id
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: XXXXXXXX
+            description: The reference transaction ID associated with a payment activity
+          currency: &confirm_message_order_payments_params_currency
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: xxxxxxxxxxxxxx
+            description: Describes currency value in string form
+          amount: &confirm_message_order_payments_params_amount
+            required: MANDATORY
+            type: integer
+            owner: BPP
+            usage: 9988199772@okicic
+            description: Describes a numerical value in decimal form
+          _description: &confirm_message_order_payments_params__description
+            required: MANDATORY
+            type: object
+            owner: BPP
+            usage: --
+            description: The reference transaction ID associated with a payment activity
+        tags: *init_message_order_payments_tags
+        _description: *init_message_order_payments__description
+      _description: *select_message_order__description
+on_confirm: &on_confirm
+  context: &on_confirm_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &on_confirm_context_action
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: on_confirm
+      description: Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri: *search_context_bap_uri
+    ttl: *search_context_ttl
+    bpp_id: *on_search_context_bpp_id
+    bpp_uri: *on_search_context_bpp_uri
+  message: &on_confirm_message
+    order: &on_confirm_message_order
+      id: &on_confirm_message_order_id
+        required: MANDATORY
+        type: string
+        owner: BAP
+        usage: O1
+        description: "Human-readable ID of the order. "
+      items: &on_confirm_message_order_items
+        id: *on_select_message_order_items_id
+        descriptor: *on_select_message_order_items_descriptor
+        price: *on_select_message_order_items_price
+        quantity: *on_select_message_order_items_quantity
+        fulfillment_ids: *on_search_message_catalog_providers_fulfillments_id
+        time: &on_confirm_message_order_items_time
+          label: *on_select_message_order_items_time_label
+          duration: &on_confirm_message_order_items_time_duration
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: "PT2D "
+            description: label for time
+          _description: *on_select_message_order_items_time__description
+        _description: *select_message_order_items__description
+      provider: *on_init_message_order_provider
+      fulfillments: &on_confirm_message_order_fulfillments
+        id: *on_search_message_catalog_providers_fulfillments_id
+        stops: &on_confirm_message_order_fulfillments_stops
+          type: &on_confirm_message_order_fulfillments_stops_type
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: START
+            description: The type of stop. Allowed values of this property can be defined by
+              the network policy.
+          instructions: *on_select_message_order_fulfillments_stops_instructions
+          location: *on_init_message_order_fulfillments_stops_location
+          authorization: &on_confirm_message_order_fulfillments_stops_authorization
+            type: &on_confirm_message_order_fulfillments_stops_authorization_type
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: QR
+              description: Describes type of Authorization
+            token: &on_confirm_message_order_fulfillments_stops_authorization_token
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+              description: Describes authorization token
+            valid_to: &on_confirm_message_order_fulfillments_stops_authorization_valid_to
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: 2021-03-23T23:59:59.999Z
+              description: Describes validity for authorization token
+            _description: &on_confirm_message_order_fulfillments_stops_authorization__description
+              required: MANDATORY
+              type: object
+              owner: BPP
+              usage: --
+              description: Describes type of Authorization
+          id: *on_select_message_order_fulfillments_stops_id
+          parent_stop_id: *on_search_message_catalog_providers_fulfillments_stops_parent_stop_id
+          _description: *on_select_message_order_fulfillments_stops__description
+        vehicle: *on_select_message_order_fulfillments_vehicle
+        tags: *on_select_message_order_fulfillments_tags
+        _description: *on_select_message_order_fulfillments__description
+      billing: *on_init_message_order_billing
+      quote: *on_init_message_order_quote
+      payments: &on_confirm_message_order_payments
+        id: *on_init_message_order_payments_id
+        collected_by: *init_message_order_payments_collected_by
+        status: *on_init_message_order_payments_status
+        type: *on_init_message_order_payments_type
+        params: &on_confirm_message_order_payments_params
+          transaction_id: &on_confirm_message_order_payments_params_transaction_id
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
+            description: The reference transaction ID associated with a payment activity
+          currency: &on_confirm_message_order_payments_params_currency
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: INR
+            description: Describes currency value in string form
+          amount: &on_confirm_message_order_payments_params_amount
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: 70
+            description: Describes a numerical value in decimal form
+          bank_code: *on_init_message_order_payments_params_bank_code
+          bank_account_number: *on_init_message_order_payments_params_bank_account_number
+          virtual_payment_address: &on_confirm_message_order_payments_params_virtual_payment_address
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: 9988199772@okicic
+            description: Virtual payment address associated with payment activity
+          _description: *on_init_message_order_payments_params__description
+        tags: *init_message_order_payments_tags
+        _description: *init_message_order_payments__description
+      cancellation_terms: &on_confirm_message_order_cancellation_terms
+        cancel_by: &on_confirm_message_order_cancellation_terms_cancel_by
+          duration: &on_confirm_message_order_cancellation_terms_cancel_by_duration
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: PT60M
+            description: Duration for cancellation of order
+          _description: *on_init_message_order_cancellation_terms_cancel_by__description
+        cancellation_fee: &on_confirm_message_order_cancellation_terms_cancellation_fee
+          percentage: &on_confirm_message_order_cancellation_terms_cancellation_fee_percentage
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: false
+            description: Fee Percentage for cancellation
+          _description: *on_init_message_order_cancellation_terms_cancellation_fee__description
+        _description: *on_init_message_order_cancellation_terms__description
+      _description: *select_message_order__description
+status: &status {}
+on_status: &on_status
+  context: &on_status_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &on_status_context_action
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: on_status
+      description: Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri: *search_context_bap_uri
+    ttl: *search_context_ttl
+    bpp_id: *on_search_context_bpp_id
+    bpp_uri: *on_search_context_bpp_uri
+  message: &on_status_message
+    order: &on_status_message_order
+      id: *on_confirm_message_order_id
+      status: &on_status_message_order_status
+        required: MANDATORY
+        type: string
+        owner: BPP
+        usage: COMPLETE
+        description: Current status of the order.
+      items: *on_select_message_order_items
+      provider: *on_init_message_order_provider
+      fulfillments: *on_confirm_message_order_fulfillments
+      billing: &on_status_message_order_billing
+        name: *init_message_order_billing_name
+        email: &on_status_message_order_billing_email
+          required: OPTIONAL
+          type: string
+          owner: BAP
+          usage: john_doe@example.com
+          description: Email address where the bill is sent to
+        phone: *on_init_message_order_billing_phone
+        _description: *init_message_order_billing__description
+      quote: *on_init_message_order_quote
+      payments: &on_status_message_order_payments
+        id: *on_init_message_order_payments_id
+        collected_by: *init_message_order_payments_collected_by
+        status: *on_init_message_order_payments_status
+        type: *on_init_message_order_payments_type
+        params: &on_status_message_order_payments_params
+          transaction_id: *on_confirm_message_order_payments_params_transaction_id
+          currency: *on_confirm_message_order_payments_params_currency
+          amount: *on_confirm_message_order_payments_params_amount
+          bank_code: &on_status_message_order_payments_params_bank_code
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: XXXXXXXX
+            description: Bank code associated with payment activity
+          bank_account_number: &on_status_message_order_payments_params_bank_account_number
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: xxxxxxxxxxxxxx
+            description: Bank account number associated with payment activity
+          virtual_payment_address: &on_status_message_order_payments_params_virtual_payment_address
+            required: MANDATORY
+            type: string
+            owner: BPP
+            usage: 9988199772@okicic
+            description: Virtual payment address associated with payment activity
+          _description: *on_init_message_order_payments_params__description
+        tags: *init_message_order_payments_tags
+        _description: *init_message_order_payments__description
+      cancellation_terms: *on_confirm_message_order_cancellation_terms
+      _description: *select_message_order__description
+update: *status
+on_update: &on_update
+  context: &on_update_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &on_update_context_action
+      required: MANDATORY
+      type: string
+      owner: BAP
+      usage: on_update
+      description: Describes the Beckn protocol method being called by the sender and
+        executed at the receiver.
+    bap_uri: *search_context_bap_uri
+    ttl: *search_context_ttl
+    bpp_id: *on_search_context_bpp_id
+    bpp_uri: *on_search_context_bpp_uri
+  message: &on_update_message
+    order: &on_update_message_order
+      id: *on_confirm_message_order_id
+      items: *on_select_message_order_items
+      provider: *on_init_message_order_provider
+      fulfillments: *on_confirm_message_order_fulfillments
+      billing: *on_status_message_order_billing
+      quote: *on_init_message_order_quote
+      payments: *on_confirm_message_order_payments
+      cancellation_terms: *on_confirm_message_order_cancellation_terms
+      _description: *select_message_order__description
