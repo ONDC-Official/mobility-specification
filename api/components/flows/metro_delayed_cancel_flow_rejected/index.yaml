@@ -1,0 +1,119 @@
+summary: Metro - Delayed Cancellation Flow(rejected)
+details: &details
+  - &details_0
+    description: Detailed process of cancelling a ticket with soft & confirm status.
+    mermaid: |-
+      sequenceDiagram
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+        # Buyer Platform (BAP)->>Seller Platform (BPP): cancel
+        # Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        # Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+        # Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK         
+steps: &steps
+  - &steps_0
+    summary: Provider confirms the request
+    reference: if any
+    api: on_confirm
+    example: &steps_0_example
+      value: &steps_0_example_value
+        $ref: ../../examples/metro/on_confirm/Return_confirmed_ticket_order_with_payment_confirmation_56.yaml
+    details: &steps_0_details
+      - &steps_0_details_0
+        description: Provider confirms the  request and provides the details on
+          confirmation.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+            end  
+  - &steps_1
+    summary: Buyer app confirms the cancel request for ticket
+    reference: if any
+    api: cancel
+    example: &steps_1_example
+      value: &steps_1_example_value
+        $ref: ../../examples/metro/cancel/request_cancel.yaml
+    details: &steps_1_details
+      - &steps_1_details_0
+        description: Buyer app give the confirmation to cancel the ticket.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - &steps_2
+    summary: Provider accepts the terms of cancellation
+    reference: if any
+    api: on_cancel
+    example: &steps_2_example
+      value: &steps_2_example_value
+        $ref: ../../examples/metro/on_cancel/confirm_cancel_request.yaml
+    details: &steps_2_details
+      - &steps_2_details_0
+        description: Provider accepts the terms of order and provides with latest order
+          update.
+        mermaid: "sequenceDiagram
+
+          \  participant Buyer Platform (BAP)
+
+          \  participant Seller Platform (BPP)
+
+          \  Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with
+          confirm_cancel request
+
+          \  Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+
+          \  rect rgb(191, 223, 255)
+
+          \  Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+
+          \  Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+
+          \  end
+
+          \  Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+
+          \  Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+
+          \   "
+  - &steps_3
+    summary: Provider accepts the terms of cancellation
+    reference: if any
+    api: on_update
+    example: &steps_3_example
+      value: &steps_3_example_value
+        $ref: ../../examples/metro/on_update/reject_cancel_request.yaml
+    details: &steps_3_details
+      - &steps_3_details_0
+        description: Provider accepts the terms of order and provides with latest order
+          update.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end  
+references: if any
