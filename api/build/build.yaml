@@ -345,7 +345,6 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -380,7 +379,6 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -437,7 +435,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -473,7 +470,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -487,7 +483,6 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -511,7 +506,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -525,7 +519,6 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -549,7 +542,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -587,7 +579,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -627,7 +618,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -665,7 +655,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -703,7 +692,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -717,7 +705,6 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -756,7 +743,6 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -777,7 +763,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -1039,10 +1024,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Provider'
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/TagGroup'
         exp:
           description: Timestamp after which catalog will expire
           type: string
@@ -1923,14 +1904,6 @@ components:
             Status of the order. Allowed values can be defined by the network
             policy
           type: string
-          enum:
-            - ACTIVE
-            - COMPLETE
-            - CANCELLED
-            - COMPLETED
-            - SOFT_CANCEL
-            - CANCELLATION_INITIATED
-            - CANCELLATION_REJECTED
         type:
           description: >-
             This is used to indicate the type of order being created to BPPs.
@@ -2990,21 +2963,6 @@ x-enum:
       order:
         items: *ref_3
         fulfillments: *ref_2
-        status:
-          - code: SOFT_CANCEL
-            description: >-
-              Describes a soft-cancel request initiated by the buyer app, a step
-              preceding cancellation.
-            reference: <PR/Issue/Discussion Links md format text
-          - code: ACTIVE
-            description: Describes the status of the order.
-            reference: <PR/Issue/Discussion Links md format text
-          - code: COMPLETE
-            description: Describes the status of the order.
-            reference: <PR/Issue/Discussion Links md format text
-          - code: CANCELLED
-            description: Describes the status of the order.
-            reference: <PR/Issue/Discussion Links md format text
         quote: &ref_6
           breakup:
             title:
@@ -3055,7 +3013,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: &ref_7
+    message: &ref_8
       order:
         items: *ref_3
         fulfillments: *ref_2
@@ -3069,7 +3027,12 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_7
+    message:
+      order:
+        items: *ref_3
+        fulfillments: *ref_2
+        payments: *ref_5
+        quote: *ref_6
   on_confirm:
     context:
       action:
@@ -3080,7 +3043,30 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_7
+    message: &ref_7
+      order:
+        items: *ref_3
+        fulfillments: *ref_2
+        payments: *ref_5
+        quote: *ref_6
+        status:
+          - code: SOFT_CANCEL
+            description: >-
+              Describes a soft-cancel request initiated by the buyer app, a step
+              preceding cancellation.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: ACTIVE
+            description: Describes the status of the order.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: COMPLETE
+            description: Describes the status of the order.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: CANCELLED
+            description: Describes the status of the order.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: CANCEL_INITIATED
+            description: Describes if the cancel has been initiated.
+            reference: <PR/Issue/Discussion Links md format text
   status:
     context:
       action:
@@ -3136,7 +3122,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_7
+    message: *ref_8
   on_update:
     context:
       action:
@@ -3150,7 +3136,7 @@ x-tags:
   search:
     message:
       intent:
-        payment: &ref_8
+        payment: &ref_9
           tags:
             - code: BUYER_FINDER_FEES
               description: Describes the finder fees for buyer
@@ -3200,7 +3186,7 @@ x-tags:
             description: Describes the pagination values.
             reference: <PR/Issue/Discussion Links md format text>
             list:
-              - &ref_9
+              - &ref_10
                 code: PAGINATION_ID
                 description: Describes pagination ID.
                 reference: <PR/Issue/Discussion Links md format text>
@@ -3211,7 +3197,7 @@ x-tags:
     message:
       catalog:
         providers:
-          items: &ref_11
+          items: &ref_12
             tags:
               - code: FARE_POLICY
                 description: Details about fare for the ride
@@ -3223,7 +3209,7 @@ x-tags:
                   - code: RESTRICTION_PROOF
                     description: Describes the proof needed for restriction
                     reference: <PR/Issue/Discussion Links md format text>
-          fulfillments: &ref_10
+          fulfillments: &ref_11
             tags:
               - code: ROUTE_INFO
                 description: Describes the information about the route
@@ -3259,7 +3245,7 @@ x-tags:
                   - code: PARENT_ITEM_ID
                     description: Describes the parent item id for fulfillments
                     reference: <PR/Issue/Discussion Links md format text>
-          payments: *ref_8
+          payments: *ref_9
           tags:
             - code: SCHEDULED_INFO
               description: Describes the schdedule information.
@@ -3273,7 +3259,7 @@ x-tags:
             description: Describes the pagination values.
             reference: <PR/Issue/Discussion Links md format text>
             list:
-              - *ref_9
+              - *ref_10
               - code: CURRENT_PAGE_NUMBER
                 description: Describes the current page number.
                 reference: <PR/Issue/Discussion Links md format text>
@@ -3283,26 +3269,26 @@ x-tags:
   select:
     message:
       order:
-        fulfillments: *ref_10
-  on_select: &ref_13
+        fulfillments: *ref_11
+  on_select: &ref_14
     message:
       order:
-        fulfillments: *ref_10
-        items: *ref_11
+        fulfillments: *ref_11
+        items: *ref_12
   init:
     message:
       order:
-        payments: *ref_8
-  on_init: &ref_12
+        payments: *ref_9
+  on_init: &ref_13
     message:
       order:
-        fulfillments: *ref_10
-        items: *ref_11
-        payments: *ref_8
-  on_confirm: *ref_12
-  on_status: *ref_12
-  on_cancel: *ref_12
-  on_update: *ref_13
+        fulfillments: *ref_11
+        items: *ref_12
+        payments: *ref_9
+  on_confirm: *ref_13
+  on_status: *ref_13
+  on_cancel: *ref_13
+  on_update: *ref_14
 x-flows:
   - summary: IntraCity - Buyer App Pagination Flow(Code Based)
     details:
@@ -3342,7 +3328,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for intra city bus service, with city and type of vehicle
-          value: &ref_23
+          value: &ref_24
             context:
               location:
                 country:
@@ -3409,7 +3395,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a public transit catalog of all routes in serverd
-          value: &ref_48
+          value: &ref_49
             context:
               location:
                 country:
@@ -3775,7 +3761,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for intra city bus service, with city and type of vehicle
-          value: &ref_57
+          value: &ref_58
             context:
               location:
                 country:
@@ -3851,7 +3837,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a public transit catalog of all routes in serverd
-          value: &ref_47
+          value: &ref_48
             context:
               location:
                 country:
@@ -4234,7 +4220,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_14
+          value: &ref_15
             context:
               location:
                 country:
@@ -4510,7 +4496,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a ticket booking before the cancellation period
-          value: &ref_15
+          value: &ref_16
             context:
               location:
                 country:
@@ -4556,7 +4542,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_16
+          value: &ref_17
             context:
               location:
                 country:
@@ -4823,7 +4809,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_53
+          value: &ref_54
             context:
               location:
                 country:
@@ -5109,7 +5095,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_14
+          value: *ref_15
       - summary: Buyer app confirms the cancel request for ticket
         api: cancel
         details:
@@ -5129,7 +5115,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a ticket booking before the cancellation period
-          value: *ref_15
+          value: *ref_16
       - summary: Provider accepts the terms of cancellation
         api: on_cancel
         details:
@@ -5152,7 +5138,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: *ref_16
+          value: *ref_17
       - summary: Provider accepts the terms of cancellation
         api: on_update
         details:
@@ -5174,7 +5160,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_52
+          value: &ref_53
             context:
               location:
                 country:
@@ -5518,7 +5504,7 @@ x-flows:
           summary: >-
             Search for intra city bus service mode of transit from a specific
             position
-          value: &ref_58
+          value: &ref_59
             context:
               location:
                 country:
@@ -5593,7 +5579,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a public transit catalog of fare products
-          value: &ref_17
+          value: &ref_18
             context:
               location:
                 country:
@@ -5975,7 +5961,7 @@ x-flows:
           summary: >-
             Get a quote for a fare product selected from a intra city bus
             service catalog
-          value: &ref_18
+          value: &ref_19
             context:
               location:
                 country:
@@ -6024,7 +6010,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a public transit service provider
-          value: &ref_19
+          value: &ref_20
             context:
               location:
                 country:
@@ -6208,7 +6194,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: &ref_20
+          value: &ref_21
             context:
               location:
                 country:
@@ -6303,7 +6289,7 @@ x-flows:
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
-          value: &ref_21
+          value: &ref_22
             context:
               location:
                 country:
@@ -6544,7 +6530,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_22
+          value: &ref_23
             context:
               location:
                 country:
@@ -6642,7 +6628,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_14
+          value: *ref_15
       - summary: Consumer platform requests for latest status
         api: status
         details:
@@ -6663,7 +6649,7 @@ x-flows:
         reference: if any
         example:
           summary: Get latest status of a transit ticket booking
-          value: &ref_60
+          value: &ref_61
             context:
               location:
                 country:
@@ -6703,7 +6689,7 @@ x-flows:
         reference: if any
         example:
           summary: Provider platform provides latest order status
-          value: &ref_51
+          value: &ref_52
             context:
               location:
                 country:
@@ -7021,7 +7007,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for intra city bus service, with city and type of vehicle
-          value: &ref_56
+          value: &ref_57
             context:
               location:
                 country:
@@ -7096,7 +7082,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a public transit catalog of fare products
-          value: *ref_17
+          value: *ref_18
       - summary: Selection of specific service
         api: select
         details:
@@ -7118,7 +7104,7 @@ x-flows:
           summary: >-
             Get a quote for a fare product selected from a intra city bus
             service catalog
-          value: *ref_18
+          value: *ref_19
       - summary: >-
           Provider platform provides the quote for selected service of intracity
           bus
@@ -7141,7 +7127,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a public transit service provider
-          value: *ref_19
+          value: *ref_20
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -7161,7 +7147,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: *ref_20
+          value: *ref_21
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -7183,7 +7169,7 @@ x-flows:
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
-          value: *ref_21
+          value: *ref_22
       - summary: Consumer confirms the booking and provides details.
         api: confirm
         details:
@@ -7203,7 +7189,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: *ref_22
+          value: *ref_23
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -7223,7 +7209,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_14
+          value: *ref_15
       - summary: Consumer platform updates the ride details
         api: update
         details:
@@ -7233,7 +7219,7 @@ x-flows:
         reference: if any
         example:
           summary: Update customer details for inter-city bus service
-          value: &ref_61
+          value: &ref_62
             context:
               location:
                 country:
@@ -7266,7 +7252,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_54
+          value: &ref_55
             context:
               location:
                 country:
@@ -7545,12 +7531,12 @@ x-flows:
         reference: if any
         example:
           summary: Search for intra city bus service, with city and type of vehicle
-          value: *ref_23
+          value: *ref_24
       - summary: >-
           Return a bus catalog of all intracity bus services from the given
           point(code)
         api: on_search
-        details: &ref_24
+        details: &ref_25
           - description: >-
               Provider platform sends the catalog of all the service that can be
               used for transit using bus service from a given point(code)
@@ -7569,7 +7555,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a public transit catalog of all routes in serverd
-          value: &ref_45
+          value: &ref_46
             context:
               location:
                 country:
@@ -7921,11 +7907,11 @@ x-flows:
           Return a bus catalog of all intracity bus services from the given
           point(code)
         api: on_search
-        details: *ref_24
+        details: *ref_25
         reference: if any
         example:
           summary: Return a public transit catalog of all routes in serverd
-          value: &ref_46
+          value: &ref_47
             context:
               location:
                 country:
@@ -8277,11 +8263,11 @@ x-flows:
           Return a bus catalog of all intracity bus services from the given
           point(code)
         api: on_search
-        details: *ref_24
+        details: *ref_25
         reference: if any
         example:
           summary: Return a public transit catalog of all routes in serverd
-          value: &ref_49
+          value: &ref_50
             context:
               location:
                 country:
@@ -8709,7 +8695,7 @@ x-flows:
           summary: >-
             Get a quote for a fare product selected from a intra city bus
             service catalog
-          value: &ref_59
+          value: &ref_60
             context:
               location:
                 country:
@@ -8758,7 +8744,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a public transit service provider
-          value: &ref_50
+          value: &ref_51
             context:
               location:
                 country:
@@ -8879,7 +8865,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: &ref_39
+          value: &ref_40
             context:
               location:
                 country:
@@ -8974,7 +8960,7 @@ x-flows:
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
-          value: &ref_44
+          value: &ref_45
             context:
               location:
                 country:
@@ -9152,7 +9138,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_38
+          value: &ref_39
             context:
               location:
                 country:
@@ -9250,7 +9236,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_42
+          value: &ref_43
             context:
               location:
                 country:
@@ -9469,7 +9455,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_14
+          value: *ref_15
       - summary: Buyer app cancels the request for ticket
         api: cancel
         details:
@@ -9489,7 +9475,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a ticket booking before the cancellation period
-          value: &ref_36
+          value: &ref_37
             context:
               location:
                 country:
@@ -9534,7 +9520,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_40
+          value: &ref_41
             context:
               location:
                 country:
@@ -9811,7 +9797,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a ticket booking before the cancellation period
-          value: &ref_37
+          value: &ref_38
             context:
               location:
                 country:
@@ -9854,7 +9840,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_41
+          value: &ref_42
             context:
               location:
                 country:
@@ -10139,7 +10125,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_43
+          value: &ref_44
             context:
               location:
                 country:
@@ -10400,7 +10386,7 @@ x-flows:
         reference: if any
         example:
           summary: Update vehicle details for intra-city bus service
-          value: &ref_62
+          value: &ref_63
             context:
               location:
                 country:
@@ -10448,7 +10434,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_55
+          value: &ref_56
             context:
               location:
                 country:
@@ -10741,7 +10727,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_25
+          value: &ref_26
             context:
               location:
                 country:
@@ -11151,7 +11137,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a transit ticket booking before the cancellation period
-          value: &ref_63
+          value: &ref_64
             context:
               location:
                 country:
@@ -11196,7 +11182,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_65
+          value: &ref_66
             context:
               location:
                 country:
@@ -11589,7 +11575,7 @@ x-flows:
         reference: if any
         example:
           summary: Initiates cancelling a ride with confirm cancel status
-          value: &ref_64
+          value: &ref_65
             context:
               action: cancel
               bap_id: https://api.beckn.juspay.in/pilot/bap/cab/v1
@@ -11634,7 +11620,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_66
+          value: &ref_67
             context:
               location:
                 country:
@@ -12093,7 +12079,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for a public mode of transit from a specific position
-          value: &ref_68
+          value: &ref_69
             context:
               location:
                 country:
@@ -12168,7 +12154,7 @@ x-flows:
           summary: >-
             Return a metro catalog of fare products based on station code or gps
             based search
-          value: &ref_26
+          value: &ref_27
             context:
               location:
                 country:
@@ -12573,7 +12559,7 @@ x-flows:
           summary: >-
             Get a quote for a fare product selected from a public transit
             catalog
-          value: &ref_27
+          value: &ref_28
             context:
               location:
                 country:
@@ -12620,7 +12606,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a public transit service provider
-          value: &ref_28
+          value: &ref_29
             context:
               location:
                 country:
@@ -12950,7 +12936,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: &ref_29
+          value: &ref_30
             context:
               location:
                 country:
@@ -13034,7 +13020,7 @@ x-flows:
         reference: if any
         example:
           summary: Return draft order for transit ticket with settlement details
-          value: &ref_30
+          value: &ref_31
             context:
               location:
                 country:
@@ -13409,7 +13395,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_31
+          value: &ref_32
             context:
               location:
                 country:
@@ -13504,7 +13490,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_25
+          value: *ref_26
       - summary: Consumer platform requests for latest status
         api: status
         details:
@@ -13524,7 +13510,7 @@ x-flows:
         reference: if any
         example:
           summary: Get latest status of a transit ticket booking
-          value: &ref_32
+          value: &ref_33
             context:
               location:
                 country:
@@ -13563,7 +13549,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: &ref_33
+          value: &ref_34
             context:
               location:
                 country:
@@ -14015,7 +14001,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for public  transit for city and type of vehicle
-          value: &ref_69
+          value: &ref_70
             context:
               location:
                 country:
@@ -14079,7 +14065,7 @@ x-flows:
           summary: >-
             Return a metro catalog of available fulfillments based on search by
             city
-          value: &ref_67
+          value: &ref_68
             context:
               location:
                 country:
@@ -14591,7 +14577,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for public  transit via station code and vehicle type
-          value: &ref_70
+          value: &ref_71
             context:
               location:
                 country:
@@ -14664,7 +14650,7 @@ x-flows:
           summary: >-
             Return a metro catalog of fare products based on station code or gps
             based search
-          value: *ref_26
+          value: *ref_27
       - summary: Selection of specific service(Optional)
         api: select
         details:
@@ -14686,7 +14672,7 @@ x-flows:
           summary: >-
             Get a quote for a fare product selected from a public transit
             catalog
-          value: *ref_27
+          value: *ref_28
       - summary: Provider platform provides the quote for selected service of metro
         api: on_select
         details:
@@ -14707,7 +14693,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a public transit service provider
-          value: *ref_28
+          value: *ref_29
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -14728,7 +14714,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: *ref_29
+          value: *ref_30
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -14749,7 +14735,7 @@ x-flows:
         reference: if any
         example:
           summary: Return draft order for transit ticket with settlement details
-          value: *ref_30
+          value: *ref_31
       - summary: Consumer confirms the
         api: confirm
         details:
@@ -14770,7 +14756,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: *ref_31
+          value: *ref_32
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -14791,7 +14777,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_25
+          value: *ref_26
       - summary: Consumer platform requests for latest status
         api: status
         details:
@@ -14812,7 +14798,7 @@ x-flows:
         reference: if any
         example:
           summary: Get latest status of a transit ticket booking
-          value: *ref_32
+          value: *ref_33
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -14833,7 +14819,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: *ref_33
+          value: *ref_34
   - summary: Metro - Delayed Cancellation Flow(rejected)
     details:
       - description: Detailed process of cancelling a ticket with soft & confirm status.
@@ -14856,7 +14842,7 @@ x-flows:
         reference: if any
         api: on_confirm
         example:
-          value: *ref_25
+          value: *ref_26
         details:
           - description: >-
               Provider confirms the  request and provides the details on
@@ -14873,7 +14859,7 @@ x-flows:
         reference: if any
         api: cancel
         example:
-          value: &ref_34
+          value: &ref_35
             context:
               location:
                 country:
@@ -14915,7 +14901,7 @@ x-flows:
         reference: if any
         api: on_cancel
         example:
-          value: &ref_35
+          value: &ref_36
             context:
               location:
                 country:
@@ -15330,7 +15316,7 @@ x-flows:
         reference: if any
         api: on_update
         example:
-          value: &ref_71
+          value: &ref_72
             context:
               location:
                 country:
@@ -15770,7 +15756,7 @@ x-flows:
         reference: if any
         api: on_confirm
         example:
-          value: *ref_25
+          value: *ref_26
         details:
           - description: >-
               Provider confirms the  request and provides the details on
@@ -15787,7 +15773,7 @@ x-flows:
         reference: if any
         api: cancel
         example:
-          value: *ref_34
+          value: *ref_35
         details:
           - description: Buyer app give the confirmation to cancel the ticket.
             mermaid: |-
@@ -15806,7 +15792,7 @@ x-flows:
         reference: if any
         api: on_cancel
         example:
-          value: *ref_35
+          value: *ref_36
         details:
           - description: >-
               Provider accepts the terms of order and provides with latest order
@@ -15828,7 +15814,7 @@ x-flows:
         reference: if any
         api: on_update
         example:
-          value: &ref_72
+          value: &ref_73
             context:
               location:
                 country:
@@ -16270,9 +16256,9 @@ x-examples:
       cancel:
         examples:
           - summary: Cancel_a_ticket_booking_before_the_cancellation_period_11
-            value: *ref_36
-          - summary: Cancel_a_ticket_booking_before_the_cancellation_period_12
             value: *ref_37
+          - summary: Cancel_a_ticket_booking_before_the_cancellation_period_12
+            value: *ref_38
           - summary: Cancel_a_ticket_booking_before_the_cancellation_period_13
             value:
               context:
@@ -16299,7 +16285,7 @@ x-examples:
                   name: Ride Cancellation
                   code: SOFT_CANCEL
           - summary: Cancel_a_ticket_booking_before_the_cancellation_period_14
-            value: *ref_15
+            value: *ref_16
           - summary: Cancel_a_ticket_booking_before_the_cancellation_period_15
             value:
               context:
@@ -16327,53 +16313,53 @@ x-examples:
       confirm:
         examples:
           - summary: Confirm_ticket_booking_10
-            value: *ref_38
+            value: *ref_39
           - summary: Confirm_ticket_booking_9
-            value: *ref_22
+            value: *ref_23
       init:
         examples:
           - summary: Initialize_the_order_by_providing_billing_details_7
-            value: *ref_20
+            value: *ref_21
           - summary: Initialize_the_order_by_providing_billing_details_8
-            value: *ref_39
+            value: *ref_40
       on_cancel:
         examples:
           - summary: Return_cancelled_ticket_order_with_cancellation_charges_33
-            value: *ref_40
-          - summary: Return_cancelled_ticket_order_with_cancellation_charges_34
             value: *ref_41
+          - summary: Return_cancelled_ticket_order_with_cancellation_charges_34
+            value: *ref_42
           - summary: Return_cancelled_ticket_order_with_cancellation_charges_35
-            value: *ref_16
+            value: *ref_17
       on_confirm:
         examples:
           - summary: Return_confirmed_ticket_order_with_payment_confirmation_30
-            value: *ref_14
+            value: *ref_15
           - summary: Return_confirmed_ticket_order_with_payment_confirmation_31
-            value: *ref_42
-          - summary: Return_confirmed_ticket_order_with_payment_confirmation_32
             value: *ref_43
+          - summary: Return_confirmed_ticket_order_with_payment_confirmation_32
+            value: *ref_44
       on_init:
         examples:
           - summary: >-
               Return_draft_order_for_transit_ticket_with_settlement_via_payment_link_28
-            value: *ref_21
+            value: *ref_22
           - summary: >-
               Return_draft_order_for_transit_ticket_with_settlement_via_payment_link_29
-            value: *ref_44
+            value: *ref_45
       on_search:
         examples:
           - summary: Return_a_public_transit_catalog_of_all_routes_in_serverd_21
-            value: *ref_45
-          - summary: Return_a_public_transit_catalog_of_all_routes_in_serverd_22
             value: *ref_46
-          - summary: Return_a_public_transit_catalog_of_all_routes_in_serverd_23
+          - summary: Return_a_public_transit_catalog_of_all_routes_in_serverd_22
             value: *ref_47
-          - summary: Return_a_public_transit_catalog_of_all_routes_in_serverd_24
+          - summary: Return_a_public_transit_catalog_of_all_routes_in_serverd_23
             value: *ref_48
-          - summary: Return_a_public_transit_catalog_of_all_routes_in_serverd_25
+          - summary: Return_a_public_transit_catalog_of_all_routes_in_serverd_24
             value: *ref_49
+          - summary: Return_a_public_transit_catalog_of_all_routes_in_serverd_25
+            value: *ref_50
           - summary: Return_a_public_transit_catalog_of_fare_products_19
-            value: *ref_17
+            value: *ref_18
           - summary: Return_a_public_transit_catalog_of_fare_products_20
             value:
               context:
@@ -16739,52 +16725,52 @@ x-examples:
       on_select:
         examples:
           - summary: Return_a_quote_offered_by_a_public_transit_service_provider_26
-            value: *ref_19
+            value: *ref_20
           - summary: Return_a_quote_offered_by_a_public_transit_service_provider_27
-            value: *ref_50
+            value: *ref_51
       on_status:
         examples:
           - summary: Provider_platform_provides_latest_order_status_36
-            value: *ref_51
+            value: *ref_52
       on_update:
         examples:
           - summary: Return_cancelled_ticket_order_with_cancellation_charges_39
-            value: *ref_52
-          - summary: Return_cancelled_ticket_order_with_cancellation_charges_40
             value: *ref_53
-          - summary: Return_confirmed_ticket_order_with_payment_confirmation_37
+          - summary: Return_cancelled_ticket_order_with_cancellation_charges_40
             value: *ref_54
-          - summary: Return_confirmed_ticket_order_with_payment_confirmation_38
+          - summary: Return_confirmed_ticket_order_with_payment_confirmation_37
             value: *ref_55
+          - summary: Return_confirmed_ticket_order_with_payment_confirmation_38
+            value: *ref_56
       search:
         examples:
           - summary: Search_for_intra_city_bus_service,_with_city_and_type_of_vehicle_2
-            value: *ref_23
+            value: *ref_24
           - summary: Search_for_intra_city_bus_service,_with_city_and_type_of_vehicle_3
-            value: *ref_56
-          - summary: Search_for_intra_city_bus_service,_with_city_and_type_of_vehicle_4
             value: *ref_57
+          - summary: Search_for_intra_city_bus_service,_with_city_and_type_of_vehicle_4
+            value: *ref_58
           - summary: >-
               Search_for_intra_city_bus_service_mode_of_transit_from_a_specific_position_1
-            value: *ref_58
+            value: *ref_59
       select:
         examples:
           - summary: >-
               Get_a_quote_for_a_fare_product_selected_from_a_intra_city_bus_service_catalog_5
-            value: *ref_18
+            value: *ref_19
           - summary: >-
               Get_a_quote_for_a_fare_product_selected_from_a_intra_city_bus_service_catalog_6
-            value: *ref_59
+            value: *ref_60
       status:
         examples:
           - summary: Get_latest_status_of_a_transit_ticket_booking_16
-            value: *ref_60
+            value: *ref_61
       update:
         examples:
           - summary: Update_customer_details_for_inter-city_bus_service_17
-            value: *ref_61
-          - summary: Update_vehicle_details_for_intra-city_bus_service_18
             value: *ref_62
+          - summary: Update_vehicle_details_for_intra-city_bus_service_18
+            value: *ref_63
   metro:
     summary: Metro Use Case Specification
     description: >-
@@ -16805,53 +16791,53 @@ x-examples:
       cancel:
         examples:
           - summary: Cancel_a_transit_ticket_booking_before_the_cancellation_period_47
-            value: *ref_63
-          - summary: Initiates_cancelling_a_ride_with_confirm_cancel_status_48
             value: *ref_64
+          - summary: Initiates_cancelling_a_ride_with_confirm_cancel_status_48
+            value: *ref_65
           - summary: request_cancel
             description: TBD
-            value: *ref_34
+            value: *ref_35
       confirm:
         examples:
           - summary: Confirm_ticket_booking_46
-            value: *ref_31
+            value: *ref_32
       init:
         examples:
           - summary: Initialize_the_order_by_providing_billing_details_45
-            value: *ref_29
+            value: *ref_30
       on_cancel:
         examples:
           - summary: Return_cancelled_ticket_order_with_cancellation_charges_57
-            value: *ref_65
-          - summary: Return_cancelled_ticket_order_with_cancellation_charges_58
             value: *ref_66
+          - summary: Return_cancelled_ticket_order_with_cancellation_charges_58
+            value: *ref_67
           - summary: confirm_cancel_request
             description: TBD
-            value: *ref_35
+            value: *ref_36
       on_confirm:
         examples:
           - summary: Return_confirmed_ticket_order_with_payment_confirmation_56
-            value: *ref_25
+            value: *ref_26
       on_init:
         examples:
           - summary: Return_draft_order_for_transit_ticket_with_settlement_details_55
-            value: *ref_30
+            value: *ref_31
       on_search:
         examples:
           - summary: >-
               Return_a_metro_catalog_of_available_fulfillments_based_on_search_by_city_52
-            value: *ref_67
+            value: *ref_68
           - summary: >-
               Return_a_metro_catalog_of_fare_products_based_on_station_code_or_gps_based_search_53
-            value: *ref_26
+            value: *ref_27
       on_select:
         examples:
           - summary: Return_a_quote_offered_by_a_public_transit_service_provider_54
-            value: *ref_28
+            value: *ref_29
       on_status:
         examples:
           - summary: Return_transit_ticket_order_with_status_-_Journey_Completed_59
-            value: *ref_33
+            value: *ref_34
       on_support:
         examples:
           - summary: Return_transit_ticket_order_with_status_-_Journey_Completed_60
@@ -16881,20 +16867,20 @@ x-examples:
       search:
         examples:
           - summary: Search_for_a_public_mode_of_transit_from_a_specific_position_41
-            value: *ref_68
-          - summary: Search_for_public__transit_for_city_and_type_of_vehicle_42
             value: *ref_69
-          - summary: Search_for_public__transit_via_station_code_and_vehicle_type_43
+          - summary: Search_for_public__transit_for_city_and_type_of_vehicle_42
             value: *ref_70
+          - summary: Search_for_public__transit_via_station_code_and_vehicle_type_43
+            value: *ref_71
       select:
         examples:
           - summary: >-
               Get_a_quote_for_a_fare_product_selected_from_a_public_transit_catalog_44
-            value: *ref_27
+            value: *ref_28
       status:
         examples:
           - summary: Get_latest_status_of_a_transit_ticket_booking_49
-            value: *ref_32
+            value: *ref_33
           - summary: Get_latest_status_of_a_transit_ticket_booking_using_ref_id_50
             value:
               context:
@@ -16943,16 +16929,16 @@ x-examples:
         examples:
           - summary: reject_cancel_request
             description: TBD
-            value: *ref_71
+            value: *ref_72
           - summary: accep_cancel_request
             description: TBD
-            value: *ref_72
+            value: *ref_73
 x-attributes:
   intracity-bus:
     attribute_set:
       search:
         context:
-          location: &ref_73
+          location: &ref_74
             country:
               code:
                 required: MANDATORY
@@ -16991,31 +16977,31 @@ x-attributes:
               description: >-
                 This attribute defines the location where the transaction is
                 meant to be completed.
-          domain: &ref_74
+          domain: &ref_75
             required: MANDATORY
             type: string
             owner: BAP
             usage: ONDC:FIS13
             description: Describes domain code that is relevant to this transaction context
-          timestamp: &ref_75
+          timestamp: &ref_76
             required: MANDATORY
             type: string
             owner: BAP
             usage: 2023-03-23T04:41:16.000Z
             description: Describes tme of request generation in RFC3339 format
-          bap_id: &ref_76
+          bap_id: &ref_77
             required: MANDATORY
             type: string
             owner: BAP
             usage: fis.test.bap.io
             description: Describes subscriber ID of the BAP
-          transaction_id: &ref_77
+          transaction_id: &ref_78
             required: MANDATORY
             type: string
             owner: BAP
             usage: 6743e9e2
             description: Describes  a unique value which persists across all API calls
-          message_id: &ref_78
+          message_id: &ref_79
             required: MANDATORY
             type: string
             owner: BAP
@@ -17023,7 +17009,7 @@ x-attributes:
             description: >-
               Describes a unique value which persists during a request /
               callback cycle.
-          version: &ref_79
+          version: &ref_80
             required: MANDATORY
             type: integer
             owner: BAP
@@ -17039,7 +17025,7 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: &ref_80
+          bap_uri: &ref_81
             required: MANDATORY
             type: string
             owner: BAP
@@ -17047,7 +17033,7 @@ x-attributes:
             description: >-
               Describes subscriber URL of the BAP for accepting callbacks from
               BPPs.
-          ttl: &ref_81
+          ttl: &ref_82
             required: MANDATORY
             type: string
             owner: BAP
@@ -17132,7 +17118,7 @@ x-attributes:
                 description: Describes the info about the fulfillments.
             payment:
               tags:
-                BUYER_FINDER_FEES: &ref_85
+                BUYER_FINDER_FEES: &ref_86
                   required: MANDATORY
                   type: string
                   owner: BAP
@@ -17158,25 +17144,25 @@ x-attributes:
                   usage: '--'
                   description: Describes settlement terms
                   list:
-                    SETTLEMENT_WINDOW: &ref_86
+                    SETTLEMENT_WINDOW: &ref_87
                       required: MANDATORY
                       type: string
                       owner: BAP
                       usage: '--'
                       description: Describes settlement window
-                    SETTLEMENT_BASIS: &ref_87
+                    SETTLEMENT_BASIS: &ref_88
                       required: MANDATORY
                       type: string
                       owner: BAP
                       usage: '--'
                       description: Describes settlement basis
-                    DELAY_INTEREST: &ref_88
+                    DELAY_INTEREST: &ref_89
                       required: MANDATORY
                       type: string
                       owner: BAP
                       usage: '--'
                       description: Describes delay interest
-                    STATIC_TERMS: &ref_89
+                    STATIC_TERMS: &ref_90
                       required: MANDATORY
                       type: string
                       owner: BAP
@@ -17190,13 +17176,13 @@ x-attributes:
               description: Describes the intent
       on_search:
         context:
-          location: *ref_73
-          domain: *ref_74
-          timestamp: *ref_75
-          bap_id: *ref_76
-          transaction_id: *ref_77
-          message_id: *ref_78
-          version: *ref_79
+          location: *ref_74
+          domain: *ref_75
+          timestamp: *ref_76
+          bap_id: *ref_77
+          transaction_id: *ref_78
+          message_id: *ref_79
+          version: *ref_80
           action:
             required: MANDATORY
             type: string
@@ -17205,15 +17191,15 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_80
-          ttl: *ref_81
-          bpp_id: &ref_90
+          bap_uri: *ref_81
+          ttl: *ref_82
+          bpp_id: &ref_91
             required: MANDATORY
             type: string
             owner: BPP
             usage: fis.test.bpp.io
             description: Describes subscriber ID of the BPP
-          bpp_uri: &ref_91
+          bpp_uri: &ref_92
             required: MANDATORY
             type: string
             owner: BPP
@@ -17235,7 +17221,7 @@ x-attributes:
                   owner: BPP
                   usage: https://transitsolutions.in/logos/logo.ico
                   description: URL to the image. This can be a data url or an remote url
-                size_type: &ref_82
+                size_type: &ref_83
                   required: OPTIONAL
                   type: string
                   owner: BPP
@@ -17261,22 +17247,22 @@ x-attributes:
                 usage: I1
                 description: Id of the provider
               descriptor:
-                name: &ref_96
+                name: &ref_97
                   required: MANDATORY
                   type: string
                   owner: BPP
                   usage: Delhi Transport Corporation
                   description: Physical description of something.
-                images: &ref_83
-                  url: &ref_97
+                images: &ref_84
+                  url: &ref_98
                     required: OPTIONAL
                     type: string
                     owner: BPP
                     usage: >-
                       https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
                     description: URL to the image. This can be a data url or an remote url
-                  size_type: *ref_82
-                  _description: &ref_98
+                  size_type: *ref_83
+                  _description: &ref_99
                     required: OPTIONAL
                     type: object
                     owner: BPP
@@ -17289,7 +17275,7 @@ x-attributes:
                   usage: '--'
                   description: Describes the provider's description.
               fulfillments:
-                id: &ref_93
+                id: &ref_94
                   required: MANDATORY
                   type: string
                   owner: BPP
@@ -17305,7 +17291,7 @@ x-attributes:
                     typically set when there are multiple ways an order can be
                     fulfilled. 
                 stops:
-                  type: &ref_99
+                  type: &ref_100
                     required: OPTIONAL
                     type: string
                     owner: BPP
@@ -17320,7 +17306,7 @@ x-attributes:
                       owner: BPP
                       usage: Stop 1
                       description: Instructions name that need to be followed at the stop
-                    _description: &ref_100
+                    _description: &ref_101
                       required: OPTIONAL
                       type: object
                       owner: BPP
@@ -17328,13 +17314,13 @@ x-attributes:
                       description: Describes stops instruction description
                   location:
                     descriptor:
-                      code: &ref_102
+                      code: &ref_103
                         required: OPTIONAL
                         type: string
                         owner: BPP
                         usage: INDIRA_GANDHI_TECHNICAL_UNIV
                         description: Physical description of something.
-                      name: &ref_101
+                      name: &ref_102
                         required: OPTIONAL
                         type: string
                         owner: BPP
@@ -17364,7 +17350,7 @@ x-attributes:
                     owner: BPP
                     usage: 2
                     description: Unique reference ID for individual stop
-                  parent_stop_id: &ref_103
+                  parent_stop_id: &ref_104
                     required: OPTIONAL
                     type: string
                     owner: BPP
@@ -17396,13 +17382,13 @@ x-attributes:
                     owner: BPP
                     usage: '--'
                     description: Describes route info
-                    ROUTE_ID: &ref_104
+                    ROUTE_ID: &ref_105
                       required: MANDATORY
                       type: string
                       owner: BPP
                       usage: '--'
                       description: Describes route id
-                    ROUTE_DIRECTION: &ref_105
+                    ROUTE_DIRECTION: &ref_106
                       required: MANDATORY
                       type: string
                       owner: BPP
@@ -17427,7 +17413,7 @@ x-attributes:
                   usage: '--'
                   description: Unique reference ID to the fulfillment of an order
               items:
-                id: &ref_125
+                id: &ref_126
                   required: OPTIONAL
                   type: string
                   owner: BPP
@@ -17446,7 +17432,7 @@ x-attributes:
                     owner: BPP
                     usage: Single Journey Ticket
                     description: Physical description of something.
-                  images: *ref_83
+                  images: *ref_84
                   _description:
                     required: OPTIONAL
                     type: object
@@ -17542,13 +17528,13 @@ x-attributes:
                     usage: '--'
                     description: Describes fair policy
                     list:
-                      RESTRICTED_PERSON: &ref_84
+                      RESTRICTED_PERSON: &ref_85
                         required: MANDATORY
                         type: string
                         owner: BPP
                         usage: '--'
                         description: Describes fair policy tags
-                      RESTRICTION_PROOF: *ref_84
+                      RESTRICTION_PROOF: *ref_85
                 _description:
                   required: OPTIONAL
                   type: object
@@ -17563,7 +17549,7 @@ x-attributes:
                     item.
               payments:
                 tags:
-                  BUYER_FINDER_FEES: *ref_85
+                  BUYER_FINDER_FEES: *ref_86
                   SETTLEMENT_TERMS:
                     required: MANDATORY
                     type: string
@@ -17571,10 +17557,10 @@ x-attributes:
                     usage: '--'
                     description: Describes settlement terms
                     list:
-                      SETTLEMENT_WINDOW: *ref_86
-                      SETTLEMENT_BASIS: *ref_87
-                      DELAY_INTEREST: *ref_88
-                      STATIC_TERMS: *ref_89
+                      SETTLEMENT_WINDOW: *ref_87
+                      SETTLEMENT_BASIS: *ref_88
+                      DELAY_INTEREST: *ref_89
+                      STATIC_TERMS: *ref_90
                       MANDATORY_ARBITRATION:
                         required: MANDATORY
                         type: string
@@ -17601,13 +17587,13 @@ x-attributes:
               description: Describes the catalog's description.
       select:
         context:
-          location: *ref_73
-          domain: *ref_74
-          timestamp: *ref_75
-          bap_id: *ref_76
-          transaction_id: *ref_77
-          message_id: *ref_78
-          version: *ref_79
+          location: *ref_74
+          domain: *ref_75
+          timestamp: *ref_76
+          bap_id: *ref_77
+          transaction_id: *ref_78
+          message_id: *ref_79
+          version: *ref_80
           action:
             required: MANDATORY
             type: string
@@ -17616,10 +17602,10 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_80
-          ttl: *ref_81
-          bpp_id: *ref_90
-          bpp_uri: *ref_91
+          bap_uri: *ref_81
+          ttl: *ref_82
+          bpp_id: *ref_91
+          bpp_uri: *ref_92
         message:
           order:
             items:
@@ -17629,9 +17615,9 @@ x-attributes:
                 owner: BPP
                 usage: I1
                 description: 'Human-readable ID of the order. '
-              quantity: &ref_108
+              quantity: &ref_109
                 selected:
-                  count: &ref_92
+                  count: &ref_93
                     required: MANDATORY
                     type: integer
                     owner: BAP
@@ -17651,14 +17637,14 @@ x-attributes:
                   owner: BAP/BPP
                   usage: '--'
                   description: Describes items quantity
-              _description: &ref_94
+              _description: &ref_95
                 required: MANDATORY
                 type: object
                 owner: BAP/BPP
                 usage: '--'
                 description: Describes the item details
             provider:
-              id: &ref_95
+              id: &ref_96
                 required: MANDATORY
                 type: string
                 owner: BPP
@@ -17670,7 +17656,7 @@ x-attributes:
                 owner: BPP
                 usage: P1
                 description: Id of the provider
-            _description: &ref_106
+            _description: &ref_107
               required: MANDATORY
               type: object
               owner: BAP/BPP
@@ -17678,13 +17664,13 @@ x-attributes:
               description: Describes the order details
       on_select:
         context:
-          location: *ref_73
-          domain: *ref_74
-          timestamp: *ref_75
-          bap_id: *ref_76
-          transaction_id: *ref_77
-          message_id: *ref_78
-          version: *ref_79
+          location: *ref_74
+          domain: *ref_75
+          timestamp: *ref_76
+          bap_id: *ref_77
+          transaction_id: *ref_78
+          message_id: *ref_79
+          version: *ref_80
           action:
             required: MANDATORY
             type: string
@@ -17693,20 +17679,20 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_80
-          ttl: *ref_81
-          bpp_id: *ref_90
-          bpp_uri: *ref_91
+          bap_uri: *ref_81
+          ttl: *ref_82
+          bpp_id: *ref_91
+          bpp_uri: *ref_92
         message:
           order:
-            items: &ref_110
-              id: &ref_107
+            items: &ref_111
+              id: &ref_108
                 required: MANDATORY
                 type: string
                 owner: BPP
                 usage: I1
                 description: ID of the item.
-              descriptor: &ref_139
+              descriptor: &ref_140
                 name:
                   required: MANDATORY
                   type: string
@@ -17719,14 +17705,14 @@ x-attributes:
                   owner: BPP
                   usage: SJT
                   description: Physical description of something.
-                images: *ref_83
+                images: *ref_84
                 _description:
                   required: MANDATORY
                   type: object
                   owner: BPP
                   usage: '--'
                   description: Describes the descriptor for provider
-              price: &ref_140
+              price: &ref_141
                 currency:
                   required: MANDATORY
                   type: string
@@ -17745,9 +17731,9 @@ x-attributes:
                   owner: BPP
                   usage: '--'
                   description: Describes items price details
-              quantity: &ref_141
+              quantity: &ref_142
                 selected:
-                  count: *ref_92
+                  count: *ref_93
                   _description:
                     required: MANDATORY
                     type: object
@@ -17760,9 +17746,9 @@ x-attributes:
                   owner: BAP/BPP
                   usage: '--'
                   description: Describes quantity details
-              fulfillment_ids: *ref_93
+              fulfillment_ids: *ref_94
               time:
-                label: &ref_142
+                label: &ref_143
                   required: MANDATORY
                   type: string
                   owner: BPP
@@ -17774,49 +17760,49 @@ x-attributes:
                   owner: BPP
                   usage: PT2D
                   description: label for time
-                _description: &ref_143
+                _description: &ref_144
                   required: MANDATORY
                   type: object
                   owner: BPP
                   usage: '--'
                   description: Describes items time details
-              _description: *ref_94
+              _description: *ref_95
             provider:
-              id: *ref_95
+              id: *ref_96
               descriptor:
-                name: *ref_96
+                name: *ref_97
                 images:
-                  url: *ref_97
-                  _decription: *ref_98
-                _decription: &ref_111
+                  url: *ref_98
+                  _decription: *ref_99
+                _decription: &ref_112
                   required: OPTIONAL
                   type: object
                   owner: BPP
                   usage: '--'
                   description: Describes provider descriptor
-              _description: &ref_109
+              _description: &ref_110
                 required: MANDATORY
                 type: object
                 owner: BPP
                 usage: '--'
                 description: Id of the provider
             fulfillments:
-              id: *ref_93
+              id: *ref_94
               stops:
-                type: *ref_99
-                instructions: &ref_112
+                type: *ref_100
+                instructions: &ref_113
                   name:
                     required: OPTIONAL
                     type: string
                     owner: BPP
                     usage: Stop 1
                     description: Physical description of something.
-                  _description: *ref_100
+                  _description: *ref_101
                 location:
                   descriptor:
-                    name: *ref_101
-                    code: *ref_102
-                    _description: &ref_113
+                    name: *ref_102
+                    code: *ref_103
+                    _description: &ref_114
                       required: MANDATORY
                       type: object
                       owner: BAP/BPP
@@ -17828,26 +17814,26 @@ x-attributes:
                     owner: BPP
                     usage: 28.624097, 77.204991
                     description: Describes a GPS coordinate
-                  _description: &ref_114
+                  _description: &ref_115
                     required: MANDATORY
                     type: object
                     owner: BAP/BPP
                     usage: '--'
                     description: Describes the location of stops.
-                id: &ref_115
+                id: &ref_116
                   required: OPTIONAL
                   type: string
                   owner: BPP
                   usage: 2
                   description: Unique reference ID for individual stop
-                parent_stop_id: *ref_103
-                _description: &ref_116
+                parent_stop_id: *ref_104
+                _description: &ref_117
                   required: MANDATORY
                   type: object
                   owner: BAP/BPP
                   usage: '--'
                   description: Describes stops details
-              vehicle: &ref_117
+              vehicle: &ref_118
                 category:
                   required: OPTIONAL
                   type: string
@@ -17860,16 +17846,16 @@ x-attributes:
                   owner: BAP/BPP
                   usage: '--'
                   description: Describes the vehicle type.
-              tags: &ref_118
+              tags: &ref_119
                 ROUTE_INFO:
                   required: MANDATORY
                   type: string
                   owner: BPP
                   usage: '--'
                   description: Describes route info
-                  ROUTE_ID: *ref_104
-                  ROUTE_DIRECTION: *ref_105
-              _description: &ref_119
+                  ROUTE_ID: *ref_105
+                  ROUTE_DIRECTION: *ref_106
+              _description: &ref_120
                 required: MANDATORY
                 type: object
                 owner: BAP/BPP
@@ -17883,13 +17869,13 @@ x-attributes:
                   owner: BPP
                   usage: 70
                   description: Describes the price of a product or service
-                currency: &ref_123
+                currency: &ref_124
                   required: MANDATORY
                   type: string
                   owner: BPP
                   usage: INR
                   description: Describes the currency of a product or service
-                _description: &ref_124
+                _description: &ref_125
                   required: MANDATORY
                   type: object
                   owner: BPP
@@ -17909,7 +17895,7 @@ x-attributes:
                     owner: BPP
                     usage: I1
                     description: false
-                  _description: &ref_126
+                  _description: &ref_127
                     required: MANDATORY
                     type: object
                     owner: BPP
@@ -17928,34 +17914,34 @@ x-attributes:
                     owner: BPP
                     usage: 35
                     description: false
-                  _description: &ref_127
+                  _description: &ref_128
                     required: MANDATORY
                     type: object
                     owner: BPP
                     usage: '--'
                     description: Describes price description
-                _description: &ref_128
+                _description: &ref_129
                   required: MANDATORY
                   type: object
                   owner: BPP
                   usage: '--'
                   description: Describes breakup details
-              _description: &ref_129
+              _description: &ref_130
                 required: MANDATORY
                 type: object
                 owner: BPP
                 usage: '--'
                 description: Describes orders quote
-            _description: *ref_106
+            _description: *ref_107
       init:
         context:
-          location: *ref_73
-          domain: *ref_74
-          timestamp: *ref_75
-          bap_id: *ref_76
-          transaction_id: *ref_77
-          message_id: *ref_78
-          version: *ref_79
+          location: *ref_74
+          domain: *ref_75
+          timestamp: *ref_76
+          bap_id: *ref_77
+          transaction_id: *ref_78
+          message_id: *ref_79
+          version: *ref_80
           action:
             required: MANDATORY
             type: string
@@ -17964,27 +17950,27 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_80
-          ttl: *ref_81
-          bpp_id: *ref_90
-          bpp_uri: *ref_91
+          bap_uri: *ref_81
+          ttl: *ref_82
+          bpp_id: *ref_91
+          bpp_uri: *ref_92
         message:
           order:
-            items: &ref_133
-              id: *ref_107
-              quantity: *ref_108
-              _description: *ref_94
-            provider: &ref_134
-              id: *ref_95
-              _description: *ref_109
+            items: &ref_134
+              id: *ref_108
+              quantity: *ref_109
+              _description: *ref_95
+            provider: &ref_135
+              id: *ref_96
+              _description: *ref_110
             billing:
-              name: &ref_120
+              name: &ref_121
                 required: OPTIONAL
                 type: string
                 owner: BAP
                 usage: John Doe
                 description: Name of the billable entity
-              email: &ref_121
+              email: &ref_122
                 required: OPTIONAL
                 type: string
                 owner: BAP
@@ -17996,33 +17982,33 @@ x-attributes:
                 owner: BAP
                 usage: 9897867564
                 description: Phone number of the billable entity
-              _description: &ref_122
+              _description: &ref_123
                 required: OPTIONAL
                 type: object
                 owner: BAP
                 usage: '--'
                 description: Describes the billing details
             payments:
-              collected_by: &ref_130
+              collected_by: &ref_131
                 required: MANDATORY
                 type: string
                 owner: BAP
                 usage: BAP
                 description: 'This field indicates who is the collector of payment. '
-              status: &ref_137
+              status: &ref_138
                 required: MANDATORY
                 type: string
                 owner: BAP
                 usage: NOT-PAID
                 description: Payment status
-              type: &ref_138
+              type: &ref_139
                 required: MANDATORY
                 type: string
                 owner: BAP
                 usage: PRE-ORDER
                 description: Payment Type
-              tags: &ref_131
-                BUYER_FINDER_FEES: *ref_85
+              tags: &ref_132
+                BUYER_FINDER_FEES: *ref_86
                 SETTLEMENT_TERMS:
                   required: MANDATORY
                   type: string
@@ -18030,10 +18016,10 @@ x-attributes:
                   usage: '--'
                   description: Describes settlement terms
                   list:
-                    SETTLEMENT_WINDOW: *ref_86
-                    SETTLEMENT_BASIS: *ref_87
-                    DELAY_INTEREST: *ref_88
-                    STATIC_TERMS: *ref_89
+                    SETTLEMENT_WINDOW: *ref_87
+                    SETTLEMENT_BASIS: *ref_88
+                    DELAY_INTEREST: *ref_89
+                    STATIC_TERMS: *ref_90
                     SETTLEMENT_AMOUNT:
                       required: MANDATORY
                       type: string
@@ -18046,22 +18032,22 @@ x-attributes:
                       owner: BAP
                       usage: '--'
                       description: Describes settlement type
-              _description: &ref_132
+              _description: &ref_133
                 required: MANDATORY
                 type: object
                 owner: BAP
                 usage: '--'
                 description: Describes payment details
-            _description: *ref_106
+            _description: *ref_107
       on_init:
         context:
-          location: *ref_73
-          domain: *ref_74
-          timestamp: *ref_75
-          bap_id: *ref_76
-          transaction_id: *ref_77
-          message_id: *ref_78
-          version: *ref_79
+          location: *ref_74
+          domain: *ref_75
+          timestamp: *ref_76
+          bap_id: *ref_77
+          transaction_id: *ref_78
+          message_id: *ref_79
+          version: *ref_80
           action:
             required: MANDATORY
             type: string
@@ -18070,15 +18056,15 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_80
-          ttl: *ref_81
-          bpp_id: *ref_90
-          bpp_uri: *ref_91
+          bap_uri: *ref_81
+          ttl: *ref_82
+          bpp_id: *ref_91
+          bpp_uri: *ref_92
         message:
           order:
-            items: *ref_110
-            provider: &ref_144
-              id: *ref_95
+            items: *ref_111
+            provider: &ref_145
+              id: *ref_96
               descriptor:
                 name:
                   required: MANDATORY
@@ -18093,15 +18079,15 @@ x-attributes:
                     owner: BPP
                     usage: https://delhimetrorail.com/logos/logo.ico
                     description: URL to the image. This can be a data url or an remote url
-                  _decription: *ref_98
-                _decription: *ref_111
-              _description: *ref_109
+                  _decription: *ref_99
+                _decription: *ref_112
+              _description: *ref_110
             fulfillments:
-              id: *ref_93
+              id: *ref_94
               stops:
-                type: *ref_99
-                instructions: *ref_112
-                location: &ref_145
+                type: *ref_100
+                instructions: *ref_113
+                location: &ref_146
                   descriptor:
                     name:
                       required: OPTIONAL
@@ -18115,31 +18101,31 @@ x-attributes:
                       owner: BPP
                       usage: KASHMERE_GATE
                       description: Physical description of something.
-                    _description: *ref_113
+                    _description: *ref_114
                   gps:
                     required: OPTIONAL
                     type: string
                     owner: BPP
                     usage: 28.666576, 77.233332
                     description: Describes a GPS coordinate
-                  _description: *ref_114
-                id: *ref_115
-                parent_stop_id: *ref_103
-                _description: *ref_116
-              vehicle: *ref_117
-              tags: *ref_118
-              _description: *ref_119
-            billing: &ref_135
-              name: *ref_120
-              email: *ref_121
-              phone: &ref_157
+                  _description: *ref_115
+                id: *ref_116
+                parent_stop_id: *ref_104
+                _description: *ref_117
+              vehicle: *ref_118
+              tags: *ref_119
+              _description: *ref_120
+            billing: &ref_136
+              name: *ref_121
+              email: *ref_122
+              phone: &ref_158
                 required: OPTIONAL
                 type: integer
                 owner: BAP
                 usage: 9897867564
                 description: Phone number of the billable entity
-              _description: *ref_122
-            quote: &ref_146
+              _description: *ref_123
+            quote: &ref_147
               price:
                 value:
                   required: MANDATORY
@@ -18147,8 +18133,8 @@ x-attributes:
                   owner: BPP
                   usage: 70
                   description: Describes the price of a product or service
-                currency: *ref_123
-                _description: *ref_124
+                currency: *ref_124
+                _description: *ref_125
               breakup:
                 title:
                   required: MANDATORY
@@ -18157,8 +18143,8 @@ x-attributes:
                   usage: Base Fare
                   description: Breakup title of the total quoted price
                 item:
-                  id: *ref_125
-                  _description: *ref_126
+                  id: *ref_126
+                  _description: *ref_127
                 price:
                   currency:
                     required: MANDATORY
@@ -18174,11 +18160,11 @@ x-attributes:
                     description: >-
                       Describes the currency to be paid in of a product or
                       service
-                  _description: *ref_127
-                _description: *ref_128
-              _description: *ref_129
+                  _description: *ref_128
+                _description: *ref_129
+              _description: *ref_130
             payments:
-              id: &ref_136
+              id: &ref_137
                 required: MANDATORY
                 type: string
                 owner: BPP
@@ -18186,27 +18172,27 @@ x-attributes:
                 description: >-
                   ID of the payment term that can be referred at an item or an
                   order level in a catalog
-              collected_by: *ref_130
-              status: &ref_147
+              collected_by: *ref_131
+              status: &ref_148
                 required: MANDATORY
                 type: string
                 owner: BAP
                 usage: NOT-PAID
                 description: Payment Status
-              type: &ref_148
+              type: &ref_149
                 required: MANDATORY
                 type: string
                 owner: BAP
                 usage: PRE-ORDER
                 description: Payment type
               params:
-                bank_code: &ref_149
+                bank_code: &ref_150
                   required: OPTIONAL
                   type: string
                   owner: BPP
                   usage: XXXXXXXX
                   description: Bank code associated with payment activity
-                bank_account_number: &ref_150
+                bank_account_number: &ref_151
                   required: OPTIONAL
                   type: string
                   owner: BPP
@@ -18218,14 +18204,14 @@ x-attributes:
                   owner: BPP
                   usage: 9988199772@okicici
                   description: Virtual payment address associated with payment activity
-                _description: &ref_151
+                _description: &ref_152
                   required: OPTIONAL
                   type: object
                   owner: BPP
                   usage: '--'
                   description: Describes the payment params
-              tags: *ref_131
-              _description: *ref_132
+              tags: *ref_132
+              _description: *ref_133
             cancellation_terms:
               cancel_by:
                 duration:
@@ -18234,7 +18220,7 @@ x-attributes:
                   owner: BPP
                   usage: PT60M
                   description: Duration for cancellation of order
-                _description: &ref_152
+                _description: &ref_153
                   required: OPTIONAL
                   type: object
                   owner: BPP
@@ -18247,28 +18233,28 @@ x-attributes:
                   owner: BPP
                   usage: false
                   description: Fee Percentage for cancellation
-                _description: &ref_153
+                _description: &ref_154
                   required: OPTIONAL
                   type: object
                   owner: BPP
                   usage: '--'
                   description: Describes the cancellation fee
-              _description: &ref_154
+              _description: &ref_155
                 required: OPTIONAL
                 type: object
                 owner: BPP
                 usage: '--'
                 description: Describes the cancellation terms
-            _description: *ref_106
+            _description: *ref_107
       confirm:
         context:
-          location: *ref_73
-          domain: *ref_74
-          timestamp: *ref_75
-          bap_id: *ref_76
-          transaction_id: *ref_77
-          message_id: *ref_78
-          version: *ref_79
+          location: *ref_74
+          domain: *ref_75
+          timestamp: *ref_76
+          bap_id: *ref_77
+          transaction_id: *ref_78
+          message_id: *ref_79
+          version: *ref_80
           action:
             required: MANDATORY
             type: string
@@ -18277,20 +18263,20 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_80
-          ttl: *ref_81
-          bpp_id: *ref_90
-          bpp_uri: *ref_91
+          bap_uri: *ref_81
+          ttl: *ref_82
+          bpp_id: *ref_91
+          bpp_uri: *ref_92
         message:
           order:
-            items: *ref_133
-            provider: *ref_134
-            billing: *ref_135
+            items: *ref_134
+            provider: *ref_135
+            billing: *ref_136
             payments:
-              id: *ref_136
-              collected_by: *ref_130
-              status: *ref_137
-              type: *ref_138
+              id: *ref_137
+              collected_by: *ref_131
+              status: *ref_138
+              type: *ref_139
               params:
                 transaction_id:
                   required: MANDATORY
@@ -18320,18 +18306,18 @@ x-attributes:
                   description: >-
                     The reference transaction ID associated with a payment
                     activity
-              tags: *ref_131
-              _description: *ref_132
-            _description: *ref_106
+              tags: *ref_132
+              _description: *ref_133
+            _description: *ref_107
       on_confirm:
         context:
-          location: *ref_73
-          domain: *ref_74
-          timestamp: *ref_75
-          bap_id: *ref_76
-          transaction_id: *ref_77
-          message_id: *ref_78
-          version: *ref_79
+          location: *ref_74
+          domain: *ref_75
+          timestamp: *ref_76
+          bap_id: *ref_77
+          transaction_id: *ref_78
+          message_id: *ref_79
+          version: *ref_80
           action:
             required: MANDATORY
             type: string
@@ -18340,37 +18326,37 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_80
-          ttl: *ref_81
-          bpp_id: *ref_90
-          bpp_uri: *ref_91
+          bap_uri: *ref_81
+          ttl: *ref_82
+          bpp_id: *ref_91
+          bpp_uri: *ref_92
         message:
           order:
-            id: &ref_155
+            id: &ref_156
               required: MANDATORY
               type: string
               owner: BAP
               usage: O1
               description: 'Human-readable ID of the order. '
             items:
-              id: *ref_107
-              descriptor: *ref_139
-              price: *ref_140
-              quantity: *ref_141
-              fulfillment_ids: *ref_93
+              id: *ref_108
+              descriptor: *ref_140
+              price: *ref_141
+              quantity: *ref_142
+              fulfillment_ids: *ref_94
               time:
-                label: *ref_142
+                label: *ref_143
                 duration:
                   required: MANDATORY
                   type: string
                   owner: BPP
                   usage: 'PT2D '
                   description: label for time
-                _description: *ref_143
-              _description: *ref_94
-            provider: *ref_144
-            fulfillments: &ref_156
-              id: *ref_93
+                _description: *ref_144
+              _description: *ref_95
+            provider: *ref_145
+            fulfillments: &ref_157
+              id: *ref_94
               stops:
                 type:
                   required: OPTIONAL
@@ -18380,8 +18366,8 @@ x-attributes:
                   description: >-
                     The type of stop. Allowed values of this property can be
                     defined by the network policy.
-                instructions: *ref_112
-                location: *ref_145
+                instructions: *ref_113
+                location: *ref_146
                 authorization:
                   type:
                     required: OPTIONAL
@@ -18408,21 +18394,21 @@ x-attributes:
                     owner: BPP
                     usage: '--'
                     description: Describes type of Authorization
-                id: *ref_115
-                parent_stop_id: *ref_103
-                _description: *ref_116
-              vehicle: *ref_117
-              tags: *ref_118
-              _description: *ref_119
-            billing: *ref_135
-            quote: *ref_146
-            payments: &ref_164
-              id: *ref_136
-              collected_by: *ref_130
-              status: *ref_147
-              type: *ref_148
+                id: *ref_116
+                parent_stop_id: *ref_104
+                _description: *ref_117
+              vehicle: *ref_118
+              tags: *ref_119
+              _description: *ref_120
+            billing: *ref_136
+            quote: *ref_147
+            payments: &ref_165
+              id: *ref_137
+              collected_by: *ref_131
+              status: *ref_148
+              type: *ref_149
               params:
-                transaction_id: &ref_158
+                transaction_id: &ref_159
                   required: MANDATORY
                   type: string
                   owner: BPP
@@ -18430,30 +18416,30 @@ x-attributes:
                   description: >-
                     The reference transaction ID associated with a payment
                     activity
-                currency: &ref_159
+                currency: &ref_160
                   required: MANDATORY
                   type: string
                   owner: BPP
                   usage: INR
                   description: Describes currency value in string form
-                amount: &ref_160
+                amount: &ref_161
                   required: MANDATORY
                   type: string
                   owner: BPP
                   usage: 70
                   description: Describes a numerical value in decimal form
-                bank_code: *ref_149
-                bank_account_number: *ref_150
+                bank_code: *ref_150
+                bank_account_number: *ref_151
                 virtual_payment_address:
                   required: OPTIONAL
                   type: string
                   owner: BPP
                   usage: 9988199772@okicic
                   description: Virtual payment address associated with payment activity
-                _description: *ref_151
-              tags: *ref_131
-              _description: *ref_132
-            cancellation_terms: &ref_161
+                _description: *ref_152
+              tags: *ref_132
+              _description: *ref_133
+            cancellation_terms: &ref_162
               cancel_by:
                 duration:
                   required: MANDATORY
@@ -18461,7 +18447,7 @@ x-attributes:
                   owner: BPP
                   usage: PT60M
                   description: Duration for cancellation of order
-                _description: *ref_152
+                _description: *ref_153
               cancellation_fee:
                 percentage:
                   required: MANDATORY
@@ -18469,19 +18455,19 @@ x-attributes:
                   owner: BPP
                   usage: false
                   description: Fee Percentage for cancellation
-                _description: *ref_153
-              _description: *ref_154
-            _description: *ref_106
-      status: &ref_162 {}
+                _description: *ref_154
+              _description: *ref_155
+            _description: *ref_107
+      status: &ref_163 {}
       on_status:
         context:
-          location: *ref_73
-          domain: *ref_74
-          timestamp: *ref_75
-          bap_id: *ref_76
-          transaction_id: *ref_77
-          message_id: *ref_78
-          version: *ref_79
+          location: *ref_74
+          domain: *ref_75
+          timestamp: *ref_76
+          bap_id: *ref_77
+          transaction_id: *ref_78
+          message_id: *ref_79
+          version: *ref_80
           action:
             required: MANDATORY
             type: string
@@ -18490,42 +18476,42 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_80
-          ttl: *ref_81
-          bpp_id: *ref_90
-          bpp_uri: *ref_91
+          bap_uri: *ref_81
+          ttl: *ref_82
+          bpp_id: *ref_91
+          bpp_uri: *ref_92
         message:
           order:
-            id: *ref_155
+            id: *ref_156
             status:
               required: MANDATORY
               type: string
               owner: BPP
               usage: COMPLETE
               description: Current status of the order.
-            items: *ref_110
-            provider: *ref_144
-            fulfillments: *ref_156
-            billing: &ref_163
-              name: *ref_120
+            items: *ref_111
+            provider: *ref_145
+            fulfillments: *ref_157
+            billing: &ref_164
+              name: *ref_121
               email:
                 required: OPTIONAL
                 type: string
                 owner: BAP
                 usage: john_doe@example.com
                 description: Email address where the bill is sent to
-              phone: *ref_157
-              _description: *ref_122
-            quote: *ref_146
+              phone: *ref_158
+              _description: *ref_123
+            quote: *ref_147
             payments:
-              id: *ref_136
-              collected_by: *ref_130
-              status: *ref_147
-              type: *ref_148
+              id: *ref_137
+              collected_by: *ref_131
+              status: *ref_148
+              type: *ref_149
               params:
-                transaction_id: *ref_158
-                currency: *ref_159
-                amount: *ref_160
+                transaction_id: *ref_159
+                currency: *ref_160
+                amount: *ref_161
                 bank_code:
                   required: MANDATORY
                   type: string
@@ -18544,21 +18530,21 @@ x-attributes:
                   owner: BPP
                   usage: 9988199772@okicic
                   description: Virtual payment address associated with payment activity
-                _description: *ref_151
-              tags: *ref_131
-              _description: *ref_132
-            cancellation_terms: *ref_161
-            _description: *ref_106
-      update: *ref_162
+                _description: *ref_152
+              tags: *ref_132
+              _description: *ref_133
+            cancellation_terms: *ref_162
+            _description: *ref_107
+      update: *ref_163
       on_update:
         context:
-          location: *ref_73
-          domain: *ref_74
-          timestamp: *ref_75
-          bap_id: *ref_76
-          transaction_id: *ref_77
-          message_id: *ref_78
-          version: *ref_79
+          location: *ref_74
+          domain: *ref_75
+          timestamp: *ref_76
+          bap_id: *ref_77
+          transaction_id: *ref_78
+          message_id: *ref_79
+          version: *ref_80
           action:
             required: MANDATORY
             type: string
@@ -18567,21 +18553,21 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_80
-          ttl: *ref_81
-          bpp_id: *ref_90
-          bpp_uri: *ref_91
+          bap_uri: *ref_81
+          ttl: *ref_82
+          bpp_id: *ref_91
+          bpp_uri: *ref_92
         message:
           order:
-            id: *ref_155
-            items: *ref_110
-            provider: *ref_144
-            fulfillments: *ref_156
-            billing: *ref_163
-            quote: *ref_146
-            payments: *ref_164
-            cancellation_terms: *ref_161
-            _description: *ref_106
+            id: *ref_156
+            items: *ref_111
+            provider: *ref_145
+            fulfillments: *ref_157
+            billing: *ref_164
+            quote: *ref_147
+            payments: *ref_165
+            cancellation_terms: *ref_162
+            _description: *ref_107
   metro:
     attribute_set:
       search:
