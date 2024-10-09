@@ -1,0 +1,87 @@
+summary: Airlines - Seller App Pagination Flow
+details: &details
+  - &details_0
+    description: The illustrative flow to perform a transaction of the nature where
+      in a buyer would like to book an airlines service form airport A to
+      airport B
+    mermaid: >-
+      sequenceDiagram
+        title Airline Discovery
+        Buyer Platform (BAP)->>Gateway (BG): search
+        Gateway (BG) ->> Buyer Platform (BAP): ACK
+        Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+        Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+        Gateway (BG)->>Seller Platform (BPP): search
+        Seller Platform (BPP)->>Gateway (BG) : ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+        Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+steps: &steps
+  - &steps_0
+    summary: Search for the flight by start and end airport code
+    api: search
+    details: &steps_0_details
+      - &steps_0_details_0
+        description: Users searches over the network to avail the airline mode of
+          transport from one airport to another
+        mermaid: >-
+          sequenceDiagram
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+    reference: if any
+    example: &steps_0_example
+      summary: Search for airline services by standard airport codes
+      value: &steps_0_example_value
+        $ref: ../../examples/airline/search/Search_for_airline_services_by_standard_airport_codes.yaml
+  - &steps_1
+    summary: Return an airline catalog of all flights services from one airport to
+      another
+    api: on_search
+    details: &steps_1_details
+      - &steps_1_details_0
+        description: Users searches over the network to avail the airline mode of
+          transport from one airport to another
+        mermaid: >-
+          sequenceDiagram
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example: &steps_1_example
+      summary: Return services available for provided start and end code
+      value: &steps_1_example_value
+        $ref: ../../examples/airline/on_search/Return_services_available_for_provided_start_and_end_code.yaml
+  - &steps_2
+    summary: Return an airline catalog of all flights services from one airport to
+      another
+    api: on_search
+    details: *steps_1_details
+    reference: if any
+    example: &steps_2_example
+      summary: Return services available for provided start and end code
+      value: &steps_2_example_value
+        $ref: ../../examples/airline/on_search/Return_services_available_for_provided_start_and_end_code_2.yaml
+  - &steps_3
+    summary: Return an airline catalog of all flights services from one airport to
+      another
+    api: on_search
+    details: *steps_1_details
+    reference: if any
+    example: &steps_3_example
+      summary: Return services available for provided start and end code
+      value: &steps_3_example_value
+        $ref: ../../examples/airline/on_search/Return_services_available_for_provided_start_and_end_code_3.yaml
