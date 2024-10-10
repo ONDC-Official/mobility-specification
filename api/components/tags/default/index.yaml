@@ -1,0 +1,104 @@
+search: &search
+  message: &search_message
+    intent: &search_message_intent
+      - &search_message_intent_0
+        code: BAP_TERMS
+        description: Details about fare for the ride
+        reference: <PR/Issue/Discussion Links md format text>
+        list: &search_message_intent_0_list
+          - &search_message_intent_0_list_0
+            code: BUYER_FINDER_FEES_TYPE
+            description: Buyer finder fee type
+            reference: <PR/Issue/Discussion Links md format text>
+          - &search_message_intent_0_list_1
+            code: BUYER_FINDER_FEES_PERCENTAGE
+            description: Buyer finder fee in percentage
+            reference: <PR/Issue/Discussion Links md format text>
+          - &search_message_intent_0_list_2
+            code: BUYER_FINDER_FEES_AMOUNT
+            description: Buyer finder fee in amount
+            reference: <PR/Issue/Discussion Links md format text
+          - &search_message_intent_0_list_3
+            code: SETTLEMENT_WINDOW
+            description: Time window to complete settlement
+            reference: <PR/Issue/Discussion Links md format text>
+          - &search_message_intent_0_list_4
+            code: SETTLEMENT_BASIS
+            description: Basis required to complete settlement
+            reference: <PR/Issue/Discussion Links md format text>
+          - &search_message_intent_0_list_5
+            code: SETTLEMENT_TYPE
+            description: Payment method to complete settlement
+            reference: <PR/Issue/Discussion Links md format text>
+          - &search_message_intent_0_list_6
+            code: DELAY_INTEREST
+            description: Denotes interest to be paid as a delay charge
+            reference: <PR/Issue/Discussion Links md format text>
+          - &search_message_intent_0_list_7
+            code: STATIC_TERMS
+            description: Terms for settlement
+            reference: <PR/Issue/Discussion Links md format text>
+          - &search_message_intent_0_list_8
+            code: SETTLEMENT_AMOUNT
+            description: Denotes settlement amount
+            reference: <PR/Issue/Discussion Links md format text>
+          - &search_message_intent_0_list_9
+            code: SETTLEMENT_BANK_CODE
+            description: Denotes settlement bank code
+            reference: <PR/Issue/Discussion Links md format text>
+          - &search_message_intent_0_list_10
+            code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+            description: Denotes settlement bank account number
+            reference: <PR/Issue/Discussion Links md format text>
+      - &search_message_intent_1
+        code: BPP_TERMS
+        description: Details about fare for the ride
+        reference: <PR/Issue/Discussion Links md format text>
+        list: *search_message_intent_0_list
+on_search: &on_search
+  message: &on_search_message
+    catalog: &on_search_message_catalog
+      providers: &on_search_message_catalog_providers
+        items: &on_search_message_catalog_providers_items
+          tags: &on_search_message_catalog_providers_items_tags
+            - &on_search_message_catalog_providers_items_tags_0
+              code: FARE_POLICY
+              description: Details about fare for the ride
+              reference: <PR/Issue/Discussion Links md format text>
+              list: &on_search_message_catalog_providers_items_tags_0_list
+                - &on_search_message_catalog_providers_items_tags_0_list_0
+                  code: MIN_AGE
+                  description: Describes min age
+                  reference: <PR/Issue/Discussion Links md format text>
+                - &on_search_message_catalog_providers_items_tags_0_list_1
+                  code: MAX_AGE
+                  description: Describes max age
+                  reference: <PR/Issue/Discussion Links md format text>
+                - &on_search_message_catalog_providers_items_tags_0_list_2
+                  code: GENDER
+                  description: Describes the gender
+                  reference: <PR/Issue/Discussion Links md format text>
+                - &on_search_message_catalog_providers_items_tags_0_list_3
+                  code: NATIONALITY
+                  description: Describes the nationality
+                  reference: <PR/Issue/Discussion Links md format text>
+                - &on_search_message_catalog_providers_items_tags_0_list_4
+                  code: ENTRY_ELIGIBILITY
+                  description: Describes the entry eligibility
+                  reference: <PR/Issue/Discussion Links md format text>
+      tags: *search_message_intent
+on_select: &on_select
+  message: &on_select_message
+    order: *on_search_message_catalog_providers
+init: &init
+  message: &init_message
+    order: &init_message_order
+      tags: *search_message_intent
+on_init: &on_init
+  message: &on_init_message
+    order: &on_init_message_order
+      items: *on_search_message_catalog_providers_items
+      tags: *search_message_intent
+confirm: *init
+on_confirm: *on_init
+on_status: *on_init
