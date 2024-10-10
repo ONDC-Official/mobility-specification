@@ -1,306 +1,217 @@
-search:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
+search: &search
+  context: &search_context
+    location: &search_context_location
+      country: &search_context_location_country
+        code: &search_context_location_country_code
+          required: MANDATORY
           type: string
           owner: BAP
           usage: IND
           description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
+      city: &search_context_location_city
+        code: &search_context_location_city_code
+          required: MANDATORY
           type: string
           owner: BAP
           usage: std:080
           description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
+    domain: &search_context_domain
+      required: MANDATORY
       type: string
       owner: BAP
       usage: ONDC:TRV13
       description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
+    timestamp: &search_context_timestamp
+      required: MANDATORY
       type: string
       owner: BAP
-      usage: "2023-03-23T04:41:16Z"
+      usage: 2023-03-23T04:41:16Z
       description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
+    bap_id: &search_context_bap_id
+      required: MANDATORY
       type: string
       owner: BAP
       usage: ondc.hotelbap.com
       description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
+    transaction_id: &search_context_transaction_id
+      required: MANDATORY
       type: string
       owner: BAP
       usage: 6743e9e2
       description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
+    message_id: &search_context_message_id
+      required: MANDATORY
       type: string
       owner: BAP
       usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
+      description: Describes a unique value which persists during a request / callback
         cycle.
-    version:
-      required: mandatory
+    version: &search_context_version
+      required: MANDATORY
       type: integer
       owner: BAP
       usage: 2.0.0
       description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
+    action: &search_context_action
+      required: MANDATORY
       type: string
       owner: BAP
       usage: search
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
+      description: Describes the Beckn protocol method being called by the sender and
         executed at the receiver.
-    bap_uri:
-      required: mandatory
+    bap_uri: &search_context_bap_uri
+      required: MANDATORY
       type: string
       owner: BAP
       usage: https://ondc.hotelbap.com/
       description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    ttl:
-      required: mandatory
+    ttl: &search_context_ttl
+      required: MANDATORY
       type: string
       owner: BAP
       usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    intent:
-      category:
-        descriptor:
-          code:
-            required: mandatory
+      description: Describes the duration in ISO8601 format after timestamp for which
+        this message holds valid
+  message: &search_message
+    intent: &search_message_intent
+      category: &search_message_intent_category
+        descriptor: &search_message_intent_category_descriptor
+          code: &search_message_intent_category_descriptor_code
+            required: MANDATORY
             type: string
             owner: BAP
             usage: HOTEL
             description: Describes the category code for search's intent.
-        time:
-          label:
-            required: optional
+        time: &search_message_intent_category_time
+          label: &search_message_intent_category_time_label
+            required: OPTIONAL
             type: string
             owner: BAP
             usage: AVAILABLE
             description: Describes the category code for search's intent.
-          range:
-            start:
-              required: optional
+          range: &search_message_intent_category_time_range
+            start: &search_message_intent_category_time_range_start
+              required: OPTIONAL
               type: string
               owner: BAP
-              usage: "2023-12-25T00:00:00.000Z"
+              usage: 2023-12-25T00:00:00.000Z
               description: Describes the category code for search's intent.
-            end:
-              required: optional
+            end: &search_message_intent_category_time_range_end
+              required: OPTIONAL
               type: string
               owner: BAP
-              usage: "2023-12-27T00:00:00.000Z"
+              usage: 2023-12-27T00:00:00.000Z
               description: Describes the category code for search's intent.
-      fulfillment:
-        stops:
-          type:
-            required: optional
+      fulfillment: &search_message_intent_fulfillment
+        stops: &search_message_intent_fulfillment_stops
+          type: &search_message_intent_fulfillment_stops_type
+            required: OPTIONAL
             type: string
             owner: BAP
             usage: END
-            description: >-
-              The type of stop. Allowed values of this property can be defined
-              by the network policy.
-          location:
-            gps:
-              required: optional
+            description: The type of stop. Allowed values of this property can be defined by
+              the network policy.
+          location: &search_message_intent_fulfillment_stops_location
+            gps: &search_message_intent_fulfillment_stops_location_gps
+              required: OPTIONAL
               type: string
               owner: BAP
               usage: 12.8273599836184
               description: The GPS co-ordinates of this location.
-            area_code:
-              required: optional
+            area_code: &search_message_intent_fulfillment_stops_location_area_code
+              required: OPTIONAL
               type: string
               owner: BAP
               usage: 560100
               description: Describes the area code of the location.
-
-      provider:
-        time:
-          label:
-            required: optional
-            type: string
-            owner: BAP
-            usage: AVAILABLE
-            description: Describes the category code for search's intent.
-          range:
-            start:
-              required: optional
-              type: string
-              owner: BAP
-              usage: "2023-12-25T00:00:00.000Z"
-              description: Describes the category code for search's intent.
-            end:
-              required: optional
-              type: string
-              owner: BAP
-              usage: "2023-12-27T00:00:00.000Z"
-              description: Describes the category code for search's intent.
-        id:
-          required: optional
+      provider: &search_message_intent_provider
+        time: *search_message_intent_category_time
+        id: &search_message_intent_provider_id
+          required: OPTIONAL
           type: string
           owner: BAP
           usage: ondc-hotel-provider1
           description: Describes the provider id.
-on_search:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: IND
-          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: std:080
-          description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ONDC:TRV13
-      description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: "2023-03-23T04:41:16Z"
-      description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ondc.hotelbap.com
-      description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 6743e9e2
-      description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
-        cycle.
-    version:
-      required: mandatory
-      type: integer
-      owner: BAP
-      usage: 2.0.0
-      description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: search
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
-        executed at the receiver.
-    bap_uri:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: https://ondc.hotelbap.com/
-      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    bpp_uri:
-      required: mandatory
+on_search: &on_search
+  context: &on_search_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: *search_context_action
+    bap_uri: *search_context_bap_uri
+    bpp_uri: &on_search_context_bpp_uri
+      required: MANDATORY
       type: string
       owner: BPP
       usage: " https://ondc.hotelbpp.com/"
       description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-    bpp_id:
-      required: mandatory
+    bpp_id: &on_search_context_bpp_id
+      required: MANDATORY
       type: string
       owner: BPP
       usage: ondc.hotelbpp.com
       description: Describes subscriber ID of the BPP
-    ttl:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    catalog:
-      descriptor:
-        name:
-          required: Mandatory
+    ttl: *search_context_ttl
+  message: &on_search_message
+    catalog: &on_search_message_catalog
+      descriptor: &on_search_message_catalog_descriptor
+        name: &on_search_message_catalog_descriptor_name
+          required: OPTIONAL
           type: string
           owner: BPP
           usage: ONDC Hotel Groups
           description: Describes the catalogs name.
-        code:
-          required: Mandatory
+        code: &on_search_message_catalog_descriptor_code
+          required: OPTIONAL
           type: string
           owner: BPP
           usage: BPP Code
           description: Describes the catalogs code.
-        short_desc:
-          required: optional
+        short_desc: &on_search_message_catalog_descriptor_short_desc
+          required: OPTIONAL
           type: string
           owner: BPP
           usage: Hotel BPP ONDC
           description: Describes the catalogs short description.
-        long_desc:
-          required: optional
+        long_desc: &on_search_message_catalog_descriptor_long_desc
+          required: OPTIONAL
           type: string
           owner: BPP
           usage: ONDC Hotel Groups is a Hotel Aggregator
           description: Describes the catalogs long description.
-        images:
-          url:
-            required: optional
+        images: &on_search_message_catalog_descriptor_images
+          url: &on_search_message_catalog_descriptor_images_url
+            required: OPTIONAL
             type: string
             owner: BPP
             usage: https://remote-image.ondc.hotelbpp.com
             description: Describes the image URL for catalog.
-      providers:
-        id:
-          required: Mandatory
+      providers: &on_search_message_catalog_providers
+        id: &on_search_message_catalog_providers_id
+          required: MANDATORY
           type: string
           owner: BPP
           usage: P1
           description: Describes the unique id of provider
-        descriptor:
-          name:
-            required: Mandatory
+        descriptor: &on_search_message_catalog_providers_descriptor
+          name: &on_search_message_catalog_providers_descriptor_name
+            required: OPTIONAL
             type: string
             owner: BPP
             usage: ONDC Hotel Provider ABC
             description: Describes the name of the provider.
-          short_desc:
-            required: Optional
+          short_desc: &on_search_message_catalog_providers_descriptor_short_desc
+            required: OPTIONAL
             type: string
             owner: BPP
             usage: Hotel ABC ONDC is a renowned hotel provider in India
             description: Describes the short description of the provider.
-          long_desc:
-            required: Optional
+          long_desc: &on_search_message_catalog_providers_descriptor_long_desc
+            required: OPTIONAL
             type: string
             owner: BPP
             usage: >-
@@ -308,41 +219,41 @@ on_search:
               variety
                             of on-site amenities
             description: Describes the long description of the provider.
-          images:
-            url:
-              required: optional
+          images: &on_search_message_catalog_providers_descriptor_images
+            url: &on_search_message_catalog_providers_descriptor_images_url
+              required: OPTIONAL
               type: string
               owner: BPP
               usage: https://remote-image-ABC.ondc.hotelbpp.com
               description: URL to the image. This can be a data url or an remote url
-        locations:
-          id:
-            required: Mandatory
+        locations: &on_search_message_catalog_providers_locations
+          id: &on_search_message_catalog_providers_locations_id
+            required: OPTIONAL
             type: string
             owner: BPP
             usage: L1
             description: Describes the serviceable location of the provider.
-          descriptor:
-            name:
-              required: optional
+          descriptor: &on_search_message_catalog_providers_locations_descriptor
+            name: &on_search_message_catalog_providers_locations_descriptor_name
+              required: OPTIONAL
               type: string
               owner: BPP
               usage: ONDC Hotel H1
               description: Describes the name of location.
-            code:
-              required: optional
+            code: &on_search_message_catalog_providers_locations_descriptor_code
+              required: OPTIONAL
               type: string
               owner: BPP
               usage: Hotel:5
               description: Describes the code of location.
-            short_desc:
-              required: optional
+            short_desc: &on_search_message_catalog_providers_locations_descriptor_short_desc
+              required: OPTIONAL
               type: string
               owner: BPP
               usage: Hotel ABC ONDC is a renowned hotel in India
               description: Describes the short description of location.
-            long_desc:
-              required: optional
+            long_desc: &on_search_message_catalog_providers_locations_descriptor_long_desc
+              required: OPTIONAL
               type: string
               owner: BPP
               usage: >-
@@ -350,3147 +261,929 @@ on_search:
                 on-site
                  amenities
               description: Describes the long description of location.
-            images:
-              url:
-                required: optional
+            images: &on_search_message_catalog_providers_locations_descriptor_images
+              url: &on_search_message_catalog_providers_locations_descriptor_images_url
+                required: OPTIONAL
                 type: string
                 owner: BPP
                 usage: https://remote-image-H1-1.ondc.hotelbpp.com
                 description: URL to the image. This can be a data url or an remote url
-          gps:
-            required: Mandatory
+          gps: &on_search_message_catalog_providers_locations_gps
+            required: OPTIONAL
             type: string
             owner: BPP
             usage: 12.889849
             description: Describes the gps co-ordinates of the location.
-          address:
-            required: Mandatory
+          address: &on_search_message_catalog_providers_locations_address
+            required: OPTIONAL
             type: string
             owner: BPP
             usage: M.Hosahalli
             description: Describes the address of the location.
-          city:
-            name:
-              required: Mandatory
+          city: &on_search_message_catalog_providers_locations_city
+            name: &on_search_message_catalog_providers_locations_city_name
+              required: OPTIONAL
               type: string
               owner: BPP
               usage: Bangalore
               description: Describes the city's name of the location.
-          state:
-            name:
-              required: Mandatory
+          state: &on_search_message_catalog_providers_locations_state
+            name: &on_search_message_catalog_providers_locations_state_name
+              required: OPTIONAL
               type: string
               owner: BPP
               usage: Karnataka
               description: Describes the state's name of the location.
-          area_code:
-            required: Mandatory
+          area_code: &on_search_message_catalog_providers_locations_area_code
+            required: OPTIONAL
             type: string
             owner: BPP
             usage: 563139
             description: Describes the area code of the location.
-        payments:
-          id:
-            required: Mandatory
+        payments: &on_search_message_catalog_providers_payments
+          id: &on_search_message_catalog_providers_payments_id
+            required: OPTIONAL
             type: string
             owner: BPP
             usage: pymnt-1
             description: Describes the payment ID.
-          type:
-            required: Mandatory
+          type: &on_search_message_catalog_providers_payments_type
+            required: OPTIONAL
             type: string
             owner: BPP
             usage: PRE-ORDER
             description: Describes the payment type.
-        items:
-          id:
-            required: Mandatory
+        items: &on_search_message_catalog_providers_items
+          id: &on_search_message_catalog_providers_items_id
+            required: MANDATORY
             type: string
             owner: BPP
             usage: Accommodation-1
             description: Describes the item ID.
-          time:
-            label:
-              required: Mandatory
+          time: &on_search_message_catalog_providers_items_time
+            label: &on_search_message_catalog_providers_items_time_label
+              required: MANDATORY
               type: string
               owner: BPP
               usage: ENABLE
               description: Describes the time's label.
-            timestamp:
-              required: Mandatory
+            timestamp: &on_search_message_catalog_providers_items_time_timestamp
+              required: MANDATORY
               type: string
               owner: BPP
-              usage: "2023-12-20T05:28:04.300Z"
+              usage: 2023-12-20T05:28:04.300Z
               description: Describes the timestamp.
-          descriptor:
-            code:
-              required: Mandatory
+          descriptor: &on_search_message_catalog_providers_items_descriptor
+            code: &on_search_message_catalog_providers_items_descriptor_code
+              required: MANDATORY
               type: string
               owner: BPP
               usage: DELUXE
               description: Describes the code for a particular item.
-            name:
-              required: Mandatory
+            name: &on_search_message_catalog_providers_items_descriptor_name
+              required: MANDATORY
               type: string
               owner: BPP
               usage: Deluxe Room
               description: Describes the name for a particular item.
-            additional_desc:
-              url:
-                required: optional
+            additional_desc: &on_search_message_catalog_providers_items_descriptor_additional_desc
+              url: &on_search_message_catalog_providers_items_descriptor_additional_desc_url
+                required: OPTIONAL
                 type: string
                 owner: BPP
                 usage: https://remote-image-Acc-1-details.ondc.hotelbpp.com
                 description: Describes the additional description for a particular item.
-              content_type:
-                required: optional
+              content_type: &on_search_message_catalog_providers_items_descriptor_additional_desc_content_type
+                required: OPTIONAL
                 type: string
                 owner: BPP
                 usage: application/json
                 description: Describes the content type for a particular item.
-            images:
-              url:
-                required: optional
+            images: &on_search_message_catalog_providers_items_descriptor_images
+              url: &on_search_message_catalog_providers_items_descriptor_images_url
+                required: OPTIONAL
                 type: string
                 owner: BPP
                 usage: https://remote-image-Acc-1-1.ondc.hotelbpp.com
                 description: Describes the image URL for item.
-          price:
-            currency:
-              required: Mandatory
+          price: &on_search_message_catalog_providers_items_price
+            currency: &on_search_message_catalog_providers_items_price_currency
+              required: MANDATORY
               type: string
               owner: BPP
               usage: INR
               description: Describes the price of a product or service
-            value:
-              required: Mandatory
+            value: &on_search_message_catalog_providers_items_price_value
+              required: MANDATORY
               type: string
               owner: BPP
               usage: 2000
               description: Describes the currency of a product or service
-            maximum_value:
-              required: Mandatory
+            maximum_value: &on_search_message_catalog_providers_items_price_maximum_value
+              required: MANDATORY
               type: string
               owner: BPP
               usage: 3000
               description: Describes the maximum value of a product or service
-          quantity:
-            available:
-              count:
-                required: Mandatory
+          quantity: &on_search_message_catalog_providers_items_quantity
+            available: &on_search_message_catalog_providers_items_quantity_available
+              count: &on_search_message_catalog_providers_items_quantity_available_count
+                required: MANDATORY
                 type: integer
                 owner: BPP
                 usage: 12
                 description: Describes the available count value of a product or service
-            maximum:
-              count:
-                required: Mandatory
+            maximum: &on_search_message_catalog_providers_items_quantity_maximum
+              count: &on_search_message_catalog_providers_items_quantity_maximum_count
+                required: MANDATORY
                 type: integer
                 owner: BPP
                 usage: 12
                 description: Describes the maximum count value of a product or service
-          location_ids:
-            required: Mandatory
+          location_ids: &on_search_message_catalog_providers_items_location_ids
+            required: MANDATORY
             type: string
             owner: BPP
             usage: L1
             description: Describes the location id of a product or service
-          payment_ids:
-            required: Mandatory
+          payment_ids: &on_search_message_catalog_providers_items_payment_ids
+            required: MANDATORY
             type: string
             owner: BPP
             usage: pymnt-1
             description: Describes the payment id of a product or service
-          add_ons:
-            id:
-              required: Mandatory
+          add_ons: &on_search_message_catalog_providers_items_add_ons
+            id: &on_search_message_catalog_providers_items_add_ons_id
+              required: MANDATORY
               type: string
               owner: BPP
               usage: B&B
               description: Describes the add_ons id.
-            descriptor:
-              name:
-                required: Mandatory
+            descriptor: &on_search_message_catalog_providers_items_add_ons_descriptor
+              name: &on_search_message_catalog_providers_items_add_ons_descriptor_name
+                required: MANDATORY
                 type: string
                 owner: BPP
                 usage: Breakfast Included
                 description: Describes the descriptior name.
-            price:
-              currency:
-                required: Mandatory
+            price: &on_search_message_catalog_providers_items_add_ons_price
+              currency: &on_search_message_catalog_providers_items_add_ons_price_currency
+                required: MANDATORY
                 type: string
                 owner: BPP
                 usage: INR
                 description: Describes the price's currency.
-              value:
-                required: Mandatory
+              value: &on_search_message_catalog_providers_items_add_ons_price_value
+                required: MANDATORY
                 type: string
                 owner: BPP
                 usage: 200
                 description: Describes the price's value.
-              maximum_value:
-                required: Mandatory
+              maximum_value: &on_search_message_catalog_providers_items_add_ons_price_maximum_value
+                required: MANDATORY
                 type: string
                 owner: BPP
                 usage: 300
                 description: Describes the price's maximum value.
-select:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: IND
-          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: std:080
-          description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ONDC:TRV13
-      description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: "2023-03-23T04:41:16Z"
-      description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ondc.hotelbap.com
-      description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 6743e9e2
-      description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
-        cycle.
-    version:
-      required: mandatory
-      type: integer
-      owner: BAP
-      usage: 2.0.0
-      description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
+select: &select
+  context: &select_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &select_context_action
+      required: MANDATORY
       type: string
       owner: BAP
       usage: select
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
+      description: Describes the Beckn protocol method being called by the sender and
         executed at the receiver.
-    bap_uri:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: https://ondc.hotelbap.com/
-      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    bpp_uri:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: " https://ondc.hotelbpp.com/"
-      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-    bpp_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: ondc.hotelbpp.com
-      description: Describes subscriber ID of the BPP
-    ttl:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    order:
-      provider:
-        id:
-          required: Mandatory
+    bap_uri: *search_context_bap_uri
+    bpp_uri: *on_search_context_bpp_uri
+    bpp_id: *on_search_context_bpp_id
+    ttl: *search_context_ttl
+  message: &select_message
+    order: &select_message_order
+      provider: &select_message_order_provider
+        id: &select_message_order_provider_id
+          required: MANDATORY
           type: string
           owner: BPP
           usage: P1
           description: Describes the provider ID.
-        time:
-          label:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: ENABLE
-            description: Describes the time's label.
-          range:
-            start:
-              required: Mandatory
+        time: &select_message_order_provider_time
+          label: *on_search_message_catalog_providers_items_time_label
+          range: &select_message_order_provider_time_range
+            start: &select_message_order_provider_time_range_start
+              required: MANDATORY
               type: string
               owner: BAP
-              usage: "2023-12-25T00:00:00.000Z"
+              usage: 2023-12-25T00:00:00.000Z
               description: Describes the category code for search's intent.
-            end:
-              required: Mandatory
+            end: &select_message_order_provider_time_range_end
+              required: MANDATORY
               type: string
               owner: BAP
-              usage: "2023-12-27T00:00:00.000Z"
+              usage: 2023-12-27T00:00:00.000Z
               description: Describes the category code for search's intent.
-      items:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: Accommodation-1
-          description: Describes the item ID.
-        location_ids:
-          required: Mandatory
+      items: &select_message_order_items
+        id: *on_search_message_catalog_providers_items_id
+        location_ids: &select_message_order_items_location_ids
+          required: MANDATORY
           type: string
           owner: BPP
           usage: L1
           description: Describes the location ID.
-        quantity:
-          selected:
-            count:
-              required: Mandatory
+        quantity: &select_message_order_items_quantity
+          selected: &select_message_order_items_quantity_selected
+            count: &select_message_order_items_quantity_selected_count
+              required: MANDATORY
               type: string
               owner: BAP
               usage: 1
               description: Describes quantity count of the selected item.
-        add_ons:
-          id:
-            required: Mandatory
+        add_ons: &select_message_order_items_add_ons
+          id: &select_message_order_items_add_ons_id
+            required: MANDATORY
             type: string
             owner: BPP
             usage: full-board
             description: Describes add_ons id the selected item.
-on_select:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: IND
-          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: std:080
-          description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ONDC:TRV13
-      description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: "2023-03-23T04:41:16Z"
-      description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ondc.hotelbap.com
-      description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 6743e9e2
-      description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
-        cycle.
-    version:
-      required: mandatory
-      type: integer
-      owner: BAP
-      usage: 2.0.0
-      description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
+on_select: &on_select
+  context: &on_select_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &on_select_context_action
+      required: MANDATORY
       type: string
       owner: BAP
       usage: on_select
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
+      description: Describes the Beckn protocol method being called by the sender and
         executed at the receiver.
-    bap_uri:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: https://ondc.hotelbap.com/
-      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    bpp_uri:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: " https://ondc.hotelbpp.com/"
-      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-    bpp_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: ondc.hotelbpp.com
-      description: Describes subscriber ID of the BPP
-    ttl:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    order:
-      provider:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: P1
-          description: Describes the provider ID.
-      items:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: Accommodation-1
-          description: Describes the item ID.
-        add_ons:
-          id:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: full-board
-            description: Describes add_ons id the selected item.
-      quote:
-        price:
-          currency:
-            required: Mandatory
+    bap_uri: *search_context_bap_uri
+    bpp_uri: *on_search_context_bpp_uri
+    bpp_id: *on_search_context_bpp_id
+    ttl: *search_context_ttl
+  message: &on_select_message
+    order: &on_select_message_order
+      provider: &on_select_message_order_provider
+        id: *select_message_order_provider_id
+      items: &on_select_message_order_items
+        id: *on_search_message_catalog_providers_items_id
+        add_ons: *select_message_order_items_add_ons
+      quote: &on_select_message_order_quote
+        price: &on_select_message_order_quote_price
+          currency: &on_select_message_order_quote_price_currency
+            required: MANDATORY
             type: string
             owner: BPP
             usage: INR
             description: Describes currency type of the price
-          value:
-            required: Mandatory
+          value: &on_select_message_order_quote_price_value
+            required: MANDATORY
             type: string
             owner: BPP
             usage: 3025
             description: Describes price value.
-        breakup:
-          item:
-            id:
-              required: optional
+        breakup: &on_select_message_order_quote_breakup
+          item: &on_select_message_order_quote_breakup_item
+            id: &on_select_message_order_quote_breakup_item_id
+              required: OPTIONAL
               type: string
               owner: BPP
               usage: 3025
               description: Describes price value.
-            quantity:
-              selected:
-                count:
-                  required: optional
+            quantity: &on_select_message_order_quote_breakup_item_quantity
+              selected: &on_select_message_order_quote_breakup_item_quantity_selected
+                count: &on_select_message_order_quote_breakup_item_quantity_selected_count
+                  required: OPTIONAL
                   type: string
                   owner: BPP
                   usage: 1
                   description: Describes the selected count for breakup.
-            price:
-              currency:
-                required: optional
+            price: &on_select_message_order_quote_breakup_item_price
+              currency: &on_select_message_order_quote_breakup_item_price_currency
+                required: OPTIONAL
                 type: string
                 owner: BPP
                 usage: INR
                 description: Describes the breakup price.
-              value:
-                required: optional
+              value: &on_select_message_order_quote_breakup_item_price_value
+                required: OPTIONAL
                 type: string
                 owner: BPP
                 usage: 2000
                 description: Describes the breakup currency.
-            add_ons:
-              id:
-                required: optional
+            add_ons: &on_select_message_order_quote_breakup_item_add_ons
+              id: &on_select_message_order_quote_breakup_item_add_ons_id
+                required: OPTIONAL
                 type: string
                 owner: BPP
                 usage: full-board
                 description: Describes the add_ons id
-              price:
-                currency:
-                  required: optional
+              price: &on_select_message_order_quote_breakup_item_add_ons_price
+                currency: &on_select_message_order_quote_breakup_item_add_ons_price_currency
+                  required: OPTIONAL
                   type: string
                   owner: BPP
                   usage: INR
                   description: Describes the currency for add_on
-                value:
-                  required: optional
+                value: &on_select_message_order_quote_breakup_item_add_ons_price_value
+                  required: OPTIONAL
                   type: string
                   owner: BPP
                   usage: 500
                   description: Describes the price for add_on
-          title:
-            required: Mandatory
+          title: &on_select_message_order_quote_breakup_title
+            required: MANDATORY
             type: string
             owner: BPP
             usage: Deluxe Room accommodation with all meals included
             description: Describes the title for breakup.
-          price:
-            currency:
-              required: Mandatory
+          price: &on_select_message_order_quote_breakup_price
+            currency: &on_select_message_order_quote_breakup_price_currency
+              required: MANDATORY
               type: string
               owner: BPP
               usage: INR
               description: Describes the currency for breakup
-            value:
-              required: Mandatory
+            value: &on_select_message_order_quote_breakup_price_value
+              required: MANDATORY
               type: string
               owner: BPP
               usage: 2500
               description: Describes the price for breakup
-      payments:
-        id:
-          required: Mandatory
+      payments: &on_select_message_order_payments
+        id: &on_select_message_order_payments_id
+          required: MANDATORY
           type: string
           owner: BPP
           usage: " pymnt-1"
           description: Describes the payment id.
-        type:
-          required: Mandatory
+        type: &on_select_message_order_payments_type
+          required: MANDATORY
           type: string
           owner: BPP
           usage: PRE-ORDER
           description: Describes the payment type.
-init:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: IND
-          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: std:080
-          description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ONDC:TRV13
-      description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: "2023-03-23T04:41:16Z"
-      description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ondc.hotelbap.com
-      description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 6743e9e2
-      description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
-        cycle.
-    version:
-      required: mandatory
-      type: integer
-      owner: BAP
-      usage: 2.0.0
-      description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
+init: &init
+  context: &init_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &init_context_action
+      required: MANDATORY
       type: string
       owner: BAP
       usage: init
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
+      description: Describes the Beckn protocol method being called by the sender and
         executed at the receiver.
-    bap_uri:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: https://ondc.hotelbap.com/
-      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    bpp_uri:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: " https://ondc.hotelbpp.com/"
-      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-    bpp_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: ondc.hotelbpp.com
-      description: Describes subscriber ID of the BPP
-    ttl:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    order:
-      provider:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: P1
-          description: Describes the provider ID.
-      items:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: Accommodation-1
-          description: Describes the item ID.
-        location_ids:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: L1
-          description: Describes the location ID.
-        quantity:
-          selected:
-            count:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 1
-              description: Describes quantity count of the selected item.
-        add_ons:
-          id:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: full-board
-            description: Describes add_ons id the selected item.
-      payments:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: " pymnt-1"
-          description: Describes the payment id.
-        type:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: PRE-ORDER
-          description: Describes the payment type.
-        status:
-          required: optional
+    bap_uri: *search_context_bap_uri
+    bpp_uri: *on_search_context_bpp_uri
+    bpp_id: *on_search_context_bpp_id
+    ttl: *search_context_ttl
+  message: &init_message
+    order: &init_message_order
+      provider: *on_select_message_order_provider
+      items: *select_message_order_items
+      payments: &init_message_order_payments
+        id: *on_select_message_order_payments_id
+        type: *on_select_message_order_payments_type
+        status: &init_message_order_payments_status
+          required: OPTIONAL
           type: string
           owner: BAP
           usage: NOT-PAID
           description: Describes the payment status.
-        collected_by:
-          required: optional
+        collected_by: &init_message_order_payments_collected_by
+          required: OPTIONAL
           type: string
           owner: BAP
           usage: BAP
           description: Describes the payment's collection mode.
-        params:
-          bank_account_number:
-            required: optional
+        params: &init_message_order_payments_params
+          bank_account_number: &init_message_order_payments_params_bank_account_number
+            required: OPTIONAL
             type: string
             owner: BAP
             usage: 12421I24
             description: Describes the bank account number.
-          virtual_payment_address:
-            required: optional
+          virtual_payment_address: &init_message_order_payments_params_virtual_payment_address
+            required: OPTIONAL
             type: string
             owner: BAP
             usage: sds@okicic.in
             description: Describes the virtual payment address.
-      billing:
-        name:
-          required: Mandatory
+      billing: &init_message_order_billing
+        name: &init_message_order_billing_name
+          required: MANDATORY
           type: string
           owner: BAP
           usage: Sandeep S
           description: Describes the billing name.
-        address:
-          required: Mandatory
+        address: &init_message_order_billing_address
+          required: MANDATORY
           type: string
           owner: BAP
           usage: Dwarka, Delhi-110075
           description: Describes the billing address.
-        state:
-          name:
-            required: Mandatory
+        state: &init_message_order_billing_state
+          name: &init_message_order_billing_state_name
+            required: MANDATORY
             type: string
             owner: BAP
             usage: Delhi
             description: Describes the billing's state name.
-        city:
-          name:
-            required: Mandatory
+        city: &init_message_order_billing_city
+          name: &init_message_order_billing_city_name
+            required: MANDATORY
             type: string
             owner: BAP
             usage: Delhi
             description: Describes the billing city name.
-        organization:
-          descriptor:
-            name:
-              required: Mandatory
+        organization: &init_message_order_billing_organization
+          descriptor: &init_message_order_billing_organization_descriptor
+            name: &init_message_order_billing_organization_descriptor_name
+              required: MANDATORY
               type: string
               owner: BAP
               usage: ONDC
               description: Describes the organization name.
-          address:
-            required: Mandatory
+          address: &init_message_order_billing_organization_address
+            required: MANDATORY
             type: string
             owner: BAP
             usage: ONDC, Delhi-110049
             description: Describes the organization address.
-        email:
-          required: Mandatory
+        email: &init_message_order_billing_email
+          required: MANDATORY
           type: string
           owner: BAP
           usage: email@ondc.org
           description: Describes the billing email.
-        phone:
-          required: Mandatory
+        phone: &init_message_order_billing_phone
+          required: MANDATORY
           type: string
           owner: BAP
           usage: ONDC, Delhi-110049
           description: Describes the billing phone.
-        tax_id:
-          required: Mandatory
+        tax_id: &init_message_order_billing_tax_id
+          required: MANDATORY
           type: string
           owner: BAP
           usage: GSTIN1234567890
           description: Describes the tax id.
-      fulfillments:
-        id:
-          required: Mandatory
+      fulfillments: &init_message_order_fulfillments
+        id: &init_message_order_fulfillments_id
+          required: MANDATORY
           type: string
           owner: BAP
           usage: customer-1
           description: Describes the fulfillments id.
-        customer:
-          person:
-            name:
-              required: Mandatory
+        customer: &init_message_order_fulfillments_customer
+          person: &init_message_order_fulfillments_customer_person
+            name: &init_message_order_fulfillments_customer_person_name
+              required: MANDATORY
               type: string
               owner: BAP
               usage: Sandeep S
               description: Describes the customer name for fulfillments.
-            age:
-              required: Mandatory
+            age: &init_message_order_fulfillments_customer_person_age
+              required: MANDATORY
               type: string
               owner: BAP
               usage: 25
               description: Describes the customer age for fulfillments.
-            gender:
-              required: Mandatory
+            gender: &init_message_order_fulfillments_customer_person_gender
+              required: MANDATORY
               type: string
               owner: BAP
               usage: M
               description: Describes the customer gender for fulfillments.
-            dob:
-              required: Mandatory
+            dob: &init_message_order_fulfillments_customer_person_dob
+              required: MANDATORY
               type: string
               owner: BAP
               usage: 45280
               description: Describes the customer age for fulfillments.
-            creds:
-              id:
-                required: optional
+            creds: &init_message_order_fulfillments_customer_person_creds
+              id: &init_message_order_fulfillments_customer_person_creds_id
+                required: OPTIONAL
                 type: string
                 owner: BAP
                 usage: AADHAAR_NO_123
                 description: Describes the customer credentials for fulfillments.
-              type:
-                required: optional
+              type: &init_message_order_fulfillments_customer_person_creds_type
+                required: OPTIONAL
                 type: string
                 owner: BAP
                 usage: AADHAAR
                 description: Describes the customer credentials type for fulfillments.
-          contact:
-            phone:
-              required: mandatory
+          contact: &init_message_order_fulfillments_customer_contact
+            phone: &init_message_order_fulfillments_customer_contact_phone
+              required: MANDATORY
               type: string
               owner: BAP
               usage: 1704380085
               description: Describes the customer contact number for fulfillments.
-            email:
-              required: mandatory
+            email: &init_message_order_fulfillments_customer_contact_email
+              required: MANDATORY
               type: string
               owner: BAP
               usage: 1704380085
               description: Describes the customer email for fulfillments.
-on_init:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: IND
-          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: std:080
-          description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ONDC:TRV13
-      description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: "2023-03-23T04:41:16Z"
-      description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ondc.hotelbap.com
-      description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 6743e9e2
-      description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
-        cycle.
-    version:
-      required: mandatory
-      type: integer
-      owner: BAP
-      usage: 2.0.0
-      description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
+on_init: &on_init
+  context: &on_init_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &on_init_context_action
+      required: MANDATORY
       type: string
       owner: BAP
       usage: on_init
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
+      description: Describes the Beckn protocol method being called by the sender and
         executed at the receiver.
-    bap_uri:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: https://ondc.hotelbap.com/
-      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    bpp_uri:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: " https://ondc.hotelbpp.com/"
-      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-    bpp_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: ondc.hotelbpp.com
-      description: Describes subscriber ID of the BPP
-    ttl:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    order:
-      provider:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: P1
-          description: Describes the provider ID.
-      items:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: Accommodation-1
-          description: Describes the item ID.
-        add_ons:
-          id:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: full-board
-            description: Describes add_ons id the selected item.
-        quantity:
-          selected:
-            count:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 1
-              description: Describes quantity count of the selected item.
-      quote:
-        price:
-          currency:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: INR
-            description: Describes currency type of the price
-          value:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: 3025
-            description: Describes price value.
-        breakup:
-          item:
-            id:
-              required: optional
-              type: string
-              owner: BPP
-              usage: 3025
-              description: Describes price value.
-            quantity:
-              selected:
-                count:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: 1
-                  description: Describes the selected count for breakup.
-            price:
-              currency:
-                required: optional
-                type: string
-                owner: BPP
-                usage: INR
-                description: Describes the breakup price.
-              value:
-                required: optional
-                type: string
-                owner: BPP
-                usage: 2000
-                description: Describes the breakup currency.
-            add_ons:
-              id:
-                required: optional
-                type: string
-                owner: BPP
-                usage: full-board
-                description: Describes the add_ons id
-              price:
-                currency:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: INR
-                  description: Describes the currency for add_on
-                value:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: 500
-                  description: Describes the price for add_on
-          title:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: Deluxe Room accommodation with all meals included
-            description: Describes the title for breakup.
-          price:
-            currency:
-              required: Mandatory
-              type: string
-              owner: BPP
-              usage: INR
-              description: Describes the currency for breakup
-            value:
-              required: Mandatory
-              type: string
-              owner: BPP
-              usage: 2500
-              description: Describes the price for breakup
-      payments:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: " pymnt-1"
-          description: Describes the payment id.
-        type:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: PRE-ORDER
-          description: Describes the payment type.
-        status:
-          required: Mandatory
+    bap_uri: *search_context_bap_uri
+    bpp_uri: *on_search_context_bpp_uri
+    bpp_id: *on_search_context_bpp_id
+    ttl: *search_context_ttl
+  message: &on_init_message
+    order: &on_init_message_order
+      provider: *on_select_message_order_provider
+      items: &on_init_message_order_items
+        id: *on_search_message_catalog_providers_items_id
+        add_ons: *select_message_order_items_add_ons
+        quantity: *select_message_order_items_quantity
+      quote: *on_select_message_order_quote
+      payments: &on_init_message_order_payments
+        id: *on_select_message_order_payments_id
+        type: *on_select_message_order_payments_type
+        status: &on_init_message_order_payments_status
+          required: MANDATORY
           type: string
           owner: BAP
           usage: NOT-PAID
           description: Describes the payment status.
-        collected_by:
-          required: optional
-          type: string
-          owner: BAP
-          usage: BAP
-          description: Describes the payment's collection mode.
-        params:
-          bank_account_number:
-            required: optional
-            type: string
-            owner: BAP
-            usage: 12421I24
-            description: Describes the bank account number.
-          virtual_payment_address:
-            required: optional
-            type: string
-            owner: BAP
-            usage: sds@okicic.in
-            description: Describes the virtual payment address.
-      billing:
-        name:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: Sandeep S
-          description: Describes the billing name.
-        address:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: Dwarka, Delhi-110075
-          description: Describes the billing address.
-        state:
-          name:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: Delhi
-            description: Describes the billing's state name.
-        city:
-          name:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: Delhi
-            description: Describes the billing city name.
-        organization:
-          descriptor:
-            name:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: ONDC
-              description: Describes the organization name.
-          address:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: ONDC, Delhi-110049
-            description: Describes the organization address.
-        email:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: email@ondc.org
-          description: Describes the billing email.
-        phone:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: ONDC, Delhi-110049
-          description: Describes the billing phone.
-        tax_id:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: GSTIN1234567890
-          description: Describes the tax id.
-      fulfillments:
-        id:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: customer-1
-          description: Describes the fulfillments id.
-        customer:
-          person:
-            name:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: Sandeep S
-              description: Describes the customer name for fulfillments.
-            age:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 25
-              description: Describes the customer age for fulfillments.
-            gender:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: M
-              description: Describes the customer gender for fulfillments.
-            dob:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 45280
-              description: Describes the customer age for fulfillments.
-            creds:
-              id:
-                required: optional
-                type: string
-                owner: BAP
-                usage: AADHAAR_NO_123
-                description: Describes the customer credentials for fulfillments.
-              type:
-                required: optional
-                type: string
-                owner: BAP
-                usage: AADHAAR
-                description: Describes the customer credentials type for fulfillments.
-          contact:
-            phone:
-              required: mandatory
-              type: string
-              owner: BAP
-              usage: 1704380085
-              description: Describes the customer contact number for fulfillments.
-            email:
-              required: mandatory
-              type: string
-              owner: BAP
-              usage: 1704380085
-              description: Describes the customer email for fulfillments.
-confirm:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: IND
-          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: std:080
-          description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ONDC:TRV13
-      description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: "2023-03-23T04:41:16Z"
-      description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ondc.hotelbap.com
-      description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 6743e9e2
-      description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
-        cycle.
-    version:
-      required: mandatory
-      type: integer
-      owner: BAP
-      usage: 2.0.0
-      description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
+        collected_by: *init_message_order_payments_collected_by
+        params: *init_message_order_payments_params
+      billing: *init_message_order_billing
+      fulfillments: *init_message_order_fulfillments
+confirm: &confirm
+  context: &confirm_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &confirm_context_action
+      required: MANDATORY
       type: string
       owner: BAP
       usage: confirm
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
+      description: Describes the Beckn protocol method being called by the sender and
         executed at the receiver.
-    bap_uri:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: https://ondc.hotelbap.com/
-      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    bpp_uri:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: " https://ondc.hotelbpp.com/"
-      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-    bpp_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: ondc.hotelbpp.com
-      description: Describes subscriber ID of the BPP
-    ttl:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    order:
-      provider:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: P1
-          description: Describes the provider ID.
-      items:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: Accommodation-1
-          description: Describes the item ID.
-        location_ids:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: L1
-          description: Describes the location ID.
-        quantity:
-          selected:
-            count:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 1
-              description: Describes quantity count of the selected item.
-        add_ons:
-          id:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: full-board
-            description: Describes add_ons id the selected item.
-      payments:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: " pymnt-1"
-          description: Describes the payment id.
-        type:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: PRE-ORDER
-          description: Describes the payment type.
-        status:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: NOT-PAID
-          description: Describes the payment status.
-        collected_by:
-          required: optional
-          type: string
-          owner: BAP
-          usage: BAP
-          description: Describes the payment's collection mode.
-        params:
-          bank_account_number:
-            required: optional
-            type: string
-            owner: BAP
-            usage: 12421I24
-            description: Describes the bank account number.
-          virtual_payment_address:
-            required: optional
-            type: string
-            owner: BAP
-            usage: sds@okicic.in
-            description: Describes the virtual payment address.
-          currency:
-            required: optional
+    bap_uri: *search_context_bap_uri
+    bpp_uri: *on_search_context_bpp_uri
+    bpp_id: *on_search_context_bpp_id
+    ttl: *search_context_ttl
+  message: &confirm_message
+    order: &confirm_message_order
+      provider: *on_select_message_order_provider
+      items: *select_message_order_items
+      payments: &confirm_message_order_payments
+        id: *on_select_message_order_payments_id
+        type: *on_select_message_order_payments_type
+        status: *on_init_message_order_payments_status
+        collected_by: *init_message_order_payments_collected_by
+        params: &confirm_message_order_payments_params
+          bank_account_number: *init_message_order_payments_params_bank_account_number
+          virtual_payment_address: *init_message_order_payments_params_virtual_payment_address
+          currency: &confirm_message_order_payments_params_currency
+            required: OPTIONAL
             type: string
             owner: BAP
             usage: INR
             description: Describes the currency.
-          amount:
-            required: optional
+          amount: &confirm_message_order_payments_params_amount
+            required: OPTIONAL
             type: string
             owner: BAP
             usage: INR
             description: Describes the amount.
-          transaction_id:
-            required: optional
+          transaction_id: &confirm_message_order_payments_params_transaction_id
+            required: OPTIONAL
             type: string
             owner: BAP
             usage: INR
             description: Describes the transaction id.
-      billing:
-        name:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: Sandeep S
-          description: Describes the billing name.
-        address:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: Dwarka, Delhi-110075
-          description: Describes the billing address.
-        state:
-          name:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: Delhi
-            description: Describes the billing's state name.
-        city:
-          name:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: Delhi
-            description: Describes the billing city name.
-        organization:
-          descriptor:
-            name:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: ONDC
-              description: Describes the organization name.
-          address:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: ONDC, Delhi-110049
-            description: Describes the organization address.
-        email:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: email@ondc.org
-          description: Describes the billing email.
-        phone:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: ONDC, Delhi-110049
-          description: Describes the billing phone.
-        tax_id:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: GSTIN1234567890
-          description: Describes the tax id.
-      fulfillments:
-        id:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: customer-1
-          description: Describes the fulfillments id.
-        customer:
-          person:
-            name:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: Sandeep S
-              description: Describes the customer name for fulfillments.
-            age:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 25
-              description: Describes the customer age for fulfillments.
-            gender:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: M
-              description: Describes the customer gender for fulfillments.
-            dob:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 45280
-              description: Describes the customer age for fulfillments.
-            creds:
-              id:
-                required: optional
-                type: string
-                owner: BAP
-                usage: AADHAAR_NO_123
-                description: Describes the customer credentials for fulfillments.
-              type:
-                required: optional
-                type: string
-                owner: BAP
-                usage: AADHAAR
-                description: Describes the customer credentials type for fulfillments.
-          contact:
-            phone:
-              required: mandatory
-              type: string
-              owner: BAP
-              usage: 1704380085
-              description: Describes the customer contact number for fulfillments.
-            email:
-              required: mandatory
-              type: string
-              owner: BAP
-              usage: 1704380085
-              description: Describes the customer email for fulfillments.
-on_confirm:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: IND
-          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: std:080
-          description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ONDC:TRV13
-      description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: "2023-03-23T04:41:16Z"
-      description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ondc.hotelbap.com
-      description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 6743e9e2
-      description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
-        cycle.
-    version:
-      required: mandatory
-      type: integer
-      owner: BAP
-      usage: 2.0.0
-      description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
+      billing: *init_message_order_billing
+      fulfillments: *init_message_order_fulfillments
+on_confirm: &on_confirm
+  context: &on_confirm_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &on_confirm_context_action
+      required: MANDATORY
       type: string
       owner: BAP
       usage: on_confirm
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
+      description: Describes the Beckn protocol method being called by the sender and
         executed at the receiver.
-    bap_uri:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: https://ondc.hotelbap.com/
-      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    bpp_uri:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: " https://ondc.hotelbpp.com/"
-      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-    bpp_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: ondc.hotelbpp.com
-      description: Describes subscriber ID of the BPP
-    ttl:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    order:
-      id:
-        required: mandatory
+    bap_uri: *search_context_bap_uri
+    bpp_uri: *on_search_context_bpp_uri
+    bpp_id: *on_search_context_bpp_id
+    ttl: *search_context_ttl
+  message: &on_confirm_message
+    order: &on_confirm_message_order
+      id: &on_confirm_message_order_id
+        required: MANDATORY
         type: string
         owner: BPP
         usage: O1
         description: Describes the order ID.
-      status:
-        required: mandatory
+      status: &on_confirm_message_order_status
+        required: MANDATORY
         type: string
         owner: BPP
         usage: ACTIVE
         description: Describes the order status.
-      provider:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: P1
-          description: Describes the provider ID.
-      items:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: Accommodation-1
-          description: Describes the item ID.
-        add_ons:
-          id:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: full-board
-            description: Describes add_ons id the selected item.
-        quantity:
-          selected:
-            count:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 1
-              description: Describes quantity count of the selected item.
-      quote:
-        price:
-          currency:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: INR
-            description: Describes currency type of the price
-          value:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: 3025
-            description: Describes price value.
-        breakup:
-          item:
-            id:
-              required: optional
-              type: string
-              owner: BPP
-              usage: 3025
-              description: Describes price value.
-            quantity:
-              selected:
-                count:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: 1
-                  description: Describes the selected count for breakup.
-            price:
-              currency:
-                required: optional
-                type: string
-                owner: BPP
-                usage: INR
-                description: Describes the breakup price.
-              value:
-                required: optional
-                type: string
-                owner: BPP
-                usage: 2000
-                description: Describes the breakup currency.
-            add_ons:
-              id:
-                required: optional
-                type: string
-                owner: BPP
-                usage: full-board
-                description: Describes the add_ons id
-              price:
-                currency:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: INR
-                  description: Describes the currency for add_on
-                value:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: 500
-                  description: Describes the price for add_on
-          title:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: Deluxe Room accommodation with all meals included
-            description: Describes the title for breakup.
-          price:
-            currency:
-              required: Mandatory
-              type: string
-              owner: BPP
-              usage: INR
-              description: Describes the currency for breakup
-            value:
-              required: Mandatory
-              type: string
-              owner: BPP
-              usage: 2500
-              description: Describes the price for breakup
-      payments:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: " pymnt-1"
-          description: Describes the payment id.
-        type:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: PRE-ORDER
-          description: Describes the payment type.
-        status:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: NOT-PAID
-          description: Describes the payment status.
-        collected_by:
-          required: optional
-          type: string
-          owner: BAP
-          usage: BAP
-          description: Describes the payment's collection mode.
-        params:
-          bank_account_number:
-            required: optional
-            type: string
-            owner: BAP
-            usage: 12421I24
-            description: Describes the bank account number.
-          virtual_payment_address:
-            required: optional
-            type: string
-            owner: BAP
-            usage: sds@okicic.in
-            description: Describes the virtual payment address.
-          currency:
-            required: optional
-            type: string
-            owner: BAP
-            usage: INR
-            description: Describes the currency.
-          amount:
-            required: optional
-            type: string
-            owner: BAP
-            usage: INR
-            description: Describes the amount.
-          transaction_id:
-            required: optional
-            type: string
-            owner: BAP
-            usage: INR
-            description: Describes the transaction id.
-      billing:
-        name:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: Sandeep S
-          description: Describes the billing name.
-        address:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: Dwarka, Delhi-110075
-          description: Describes the billing address.
-        state:
-          name:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: Delhi
-            description: Describes the billing's state name.
-        city:
-          name:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: Delhi
-            description: Describes the billing city name.
-        organization:
-          descriptor:
-            name:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: ONDC
-              description: Describes the organization name.
-          address:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: ONDC, Delhi-110049
-            description: Describes the organization address.
-        email:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: email@ondc.org
-          description: Describes the billing email.
-        phone:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: ONDC, Delhi-110049
-          description: Describes the billing phone.
-        tax_id:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: GSTIN1234567890
-          description: Describes the tax id.
-      fulfillments:
-        id:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: customer-1
-          description: Describes the fulfillments id.
-        customer:
-          person:
-            name:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: Sandeep S
-              description: Describes the customer name for fulfillments.
-            age:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 25
-              description: Describes the customer age for fulfillments.
-            gender:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: M
-              description: Describes the customer gender for fulfillments.
-            dob:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 45280
-              description: Describes the customer age for fulfillments.
-            creds:
-              id:
-                required: optional
-                type: string
-                owner: BAP
-                usage: AADHAAR_NO_123
-                description: Describes the customer credentials for fulfillments.
-              type:
-                required: optional
-                type: string
-                owner: BAP
-                usage: AADHAAR
-                description: Describes the customer credentials type for fulfillments.
-          contact:
-            phone:
-              required: mandatory
-              type: string
-              owner: BAP
-              usage: 1704380085
-              description: Describes the customer contact number for fulfillments.
-            email:
-              required: mandatory
-              type: string
-              owner: BAP
-              usage: 1704380085
-              description: Describes the customer email for fulfillments.
-      updated_at:
-        required: mandatory
+      provider: *on_select_message_order_provider
+      items: *on_init_message_order_items
+      quote: *on_select_message_order_quote
+      payments: *confirm_message_order_payments
+      billing: *init_message_order_billing
+      fulfillments: *init_message_order_fulfillments
+      updated_at: &on_confirm_message_order_updated_at
+        required: MANDATORY
         type: string
         owner: BPP
-        usage: "2023-12-20T05:28:04.413Z"
+        usage: 2023-12-20T05:28:04.413Z
         description: Describes the order updated at value.
-status:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: IND
-          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: std:080
-          description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ONDC:TRV13
-      description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: "2023-03-23T04:41:16Z"
-      description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ondc.hotelbap.com
-      description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 6743e9e2
-      description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
-        cycle.
-    version:
-      required: mandatory
-      type: integer
-      owner: BAP
-      usage: 2.0.0
-      description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
+status: &status
+  context: &status_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &status_context_action
+      required: MANDATORY
       type: string
       owner: BAP
       usage: status
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
+      description: Describes the Beckn protocol method being called by the sender and
         executed at the receiver.
-    bap_uri:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: https://ondc.hotelbap.com/
-      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    bpp_uri:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: " https://ondc.hotelbpp.com/"
-      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-    bpp_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: ondc.hotelbpp.com
-      description: Describes subscriber ID of the BPP
-    ttl:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    order_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: O1
-      description: Describes the order ID.
-on_status:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: IND
-          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: std:080
-          description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ONDC:TRV13
-      description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: "2023-03-23T04:41:16Z"
-      description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ondc.hotelbap.com
-      description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 6743e9e2
-      description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
-        cycle.
-    version:
-      required: mandatory
-      type: integer
-      owner: BAP
-      usage: 2.0.0
-      description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
+    bap_uri: *search_context_bap_uri
+    bpp_uri: *on_search_context_bpp_uri
+    bpp_id: *on_search_context_bpp_id
+    ttl: *search_context_ttl
+  message: &status_message
+    order_id: *on_confirm_message_order_id
+on_status: &on_status
+  context: &on_status_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &on_status_context_action
+      required: MANDATORY
       type: string
       owner: BAP
       usage: on_status
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
+      description: Describes the Beckn protocol method being called by the sender and
         executed at the receiver.
-    bap_uri:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: https://ondc.hotelbap.com/
-      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    bpp_uri:
-      required: mandatory
+    bap_uri: *search_context_bap_uri
+    bpp_uri: &on_status_context_bpp_uri
+      required: MANDATORY
       type: string
       owner: BPP
       usage: https://ondc.hotelbpp.com/
       description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-    bpp_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: ondc.hotelbpp.com
-      description: Describes subscriber ID of the BPP
-    ttl:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    order:
-      id:
-        required: mandatory
-        type: string
-        owner: BPP
-        usage: O1
-        description: Describes the order ID.
-      status:
-        required: mandatory
+    bpp_id: *on_search_context_bpp_id
+    ttl: *search_context_ttl
+  message: &on_status_message
+    order: &on_status_message_order
+      id: *on_confirm_message_order_id
+      status: &on_status_message_order_status
+        required: MANDATORY
         type: string
         owner: BPP
         usage: COMPLETED
         description: Describes the order status.
-      provider:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: P1
-          description: Describes the provider ID.
-      items:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: Accommodation-1
-          description: Describes the item ID.
-        add_ons:
-          id:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: full-board
-            description: Describes add_ons id the selected item.
-        quantity:
-          selected:
-            count:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 1
-              description: Describes quantity count of the selected item.
-      quote:
-        price:
-          currency:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: INR
-            description: Describes currency type of the price
-          value:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: 3025
-            description: Describes price value.
-        breakup:
-          item:
-            id:
-              required: optional
-              type: string
-              owner: BPP
-              usage: 3025
-              description: Describes price value.
-            quantity:
-              selected:
-                count:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: 1
-                  description: Describes the selected count for breakup.
-            price:
-              currency:
-                required: optional
-                type: string
-                owner: BPP
-                usage: INR
-                description: Describes the breakup price.
-              value:
-                required: optional
-                type: string
-                owner: BPP
-                usage: 2000
-                description: Describes the breakup currency.
-            add_ons:
-              id:
-                required: optional
-                type: string
-                owner: BPP
-                usage: full-board
-                description: Describes the add_ons id
-              price:
-                currency:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: INR
-                  description: Describes the currency for add_on
-                value:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: 500
-                  description: Describes the price for add_on
-          title:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: Deluxe Room accommodation with all meals included
-            description: Describes the title for breakup.
-          price:
-            currency:
-              required: Mandatory
-              type: string
-              owner: BPP
-              usage: INR
-              description: Describes the currency for breakup
-            value:
-              required: Mandatory
-              type: string
-              owner: BPP
-              usage: 2500
-              description: Describes the price for breakup
-      payments:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: " pymnt-1"
-          description: Describes the payment id.
-        type:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: PRE-ORDER
-          description: Describes the payment type.
-        status:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: NOT-PAID
-          description: Describes the payment status.
-        collected_by:
-          required: optional
-          type: string
-          owner: BAP
-          usage: BAP
-          description: Describes the payment's collection mode.
-        params:
-          bank_account_number:
-            required: optional
-            type: string
-            owner: BAP
-            usage: 12421I24
-            description: Describes the bank account number.
-          virtual_payment_address:
-            required: optional
-            type: string
-            owner: BAP
-            usage: sds@okicic.in
-            description: Describes the virtual payment address.
-          currency:
-            required: optional
-            type: string
-            owner: BAP
-            usage: INR
-            description: Describes the currency.
-          amount:
-            required: optional
-            type: string
-            owner: BAP
-            usage: INR
-            description: Describes the amount.
-          transaction_id:
-            required: optional
-            type: string
-            owner: BAP
-            usage: INR
-            description: Describes the transaction id.
-      billing:
-        name:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: Sandeep S
-          description: Describes the billing name.
-        address:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: Dwarka, Delhi-110075
-          description: Describes the billing address.
-        state:
-          name:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: Delhi
-            description: Describes the billing's state name.
-        city:
-          name:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: Delhi
-            description: Describes the billing city name.
-        organization:
-          descriptor:
-            name:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: ONDC
-              description: Describes the organization name.
-          address:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: ONDC, Delhi-110049
-            description: Describes the organization address.
-        email:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: email@ondc.org
-          description: Describes the billing email.
-        phone:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: ONDC, Delhi-110049
-          description: Describes the billing phone.
-        tax_id:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: GSTIN1234567890
-          description: Describes the tax id.
-      fulfillments:
-        id:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: customer-1
-          description: Describes the fulfillments id.
-        customer:
-          person:
-            name:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: Sandeep S
-              description: Describes the customer name for fulfillments.
-            age:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 25
-              description: Describes the customer age for fulfillments.
-            gender:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: M
-              description: Describes the customer gender for fulfillments.
-            dob:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 45280
-              description: Describes the customer age for fulfillments.
-            creds:
-              id:
-                required: optional
-                type: string
-                owner: BAP
-                usage: AADHAAR_NO_123
-                description: Describes the customer credentials for fulfillments.
-              type:
-                required: optional
-                type: string
-                owner: BAP
-                usage: AADHAAR
-                description: Describes the customer credentials type for fulfillments.
-          contact:
-            phone:
-              required: mandatory
-              type: string
-              owner: BAP
-              usage: 1704380085
-              description: Describes the customer contact number for fulfillments.
-            email:
-              required: mandatory
-              type: string
-              owner: BAP
-              usage: 1704380085
-              description: Describes the customer email for fulfillments.
-      updated_at:
-        required: mandatory
-        type: string
-        owner: BPP
-        usage: "2023-12-20T05:28:04.413Z"
-        description: Describes the order updated at value.
-      documents:
-        descriptor:
-          code:
-            required: mandatory
+      provider: *on_select_message_order_provider
+      items: *on_init_message_order_items
+      quote: *on_select_message_order_quote
+      payments: *confirm_message_order_payments
+      billing: *init_message_order_billing
+      fulfillments: *init_message_order_fulfillments
+      updated_at: *on_confirm_message_order_updated_at
+      documents: &on_status_message_order_documents
+        descriptor: &on_status_message_order_documents_descriptor
+          code: &on_status_message_order_documents_descriptor_code
+            required: MANDATORY
             type: string
             owner: BPP
             usage: BOOKING_CONFIRMATION
             description: Describes the order documents code.
-        url:
-          required: mandatory
+        url: &on_status_message_order_documents_url
+          required: MANDATORY
           type: string
           owner: BPP
           usage: https://confirmation-O1.ondc.hotelbpp.com
           description: Describes the URL of the document
-update:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: IND
-          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: std:080
-          description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ONDC:TRV13
-      description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: "2023-03-23T04:41:16Z"
-      description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ondc.hotelbap.com
-      description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 6743e9e2
-      description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
-        cycle.
-    version:
-      required: mandatory
-      type: integer
-      owner: BAP
-      usage: 2.0.0
-      description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
+update: &update
+  context: &update_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &update_context_action
+      required: MANDATORY
       type: string
       owner: BAP
       usage: update
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
+      description: Describes the Beckn protocol method being called by the sender and
         executed at the receiver.
-    bap_uri:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: https://ondc.hotelbap.com/
-      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    bpp_uri:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: " https://ondc.hotelbpp.com/"
-      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-    bpp_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: ondc.hotelbpp.com
-      description: Describes subscriber ID of the BPP
-    ttl:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    update_target:
-      required: mandatory
+    bap_uri: *search_context_bap_uri
+    bpp_uri: *on_search_context_bpp_uri
+    bpp_id: *on_search_context_bpp_id
+    ttl: *search_context_ttl
+  message: &update_message
+    update_target: &update_message_update_target
+      required: MANDATORY
       type: string
       owner: BPP
       usage: fulfillment
       description: Describes the entity which will be updated.
-    order:
-      billing:
-        address:
-          required: optional
+    order: &update_message_order
+      billing: &update_message_order_billing
+        address: &update_message_order_billing_address
+          required: OPTIONAL
           type: string
           owner: BAP
           usage: Dwarka, Delhi-110076
           description: Describes the billing address.
-      id:
-        required: mandatory
-        type: string
-        owner: BPP
-        usage: O1
-        description: Describes the order ID.
-on_update:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: IND
-          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: std:080
-          description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ONDC:TRV13
-      description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: "2023-03-23T04:41:16Z"
-      description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ondc.hotelbap.com
-      description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 6743e9e2
-      description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
-        cycle.
-    version:
-      required: mandatory
-      type: integer
-      owner: BAP
-      usage: 2.0.0
-      description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
+      id: *on_confirm_message_order_id
+on_update: &on_update
+  context: &on_update_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &on_update_context_action
+      required: MANDATORY
       type: string
       owner: BAP
       usage: on_update
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
+      description: Describes the Beckn protocol method being called by the sender and
         executed at the receiver.
-    bap_uri:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: https://ondc.hotelbap.com/
-      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    bpp_uri:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: https://ondc.hotelbpp.com/
-      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-    bpp_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: ondc.hotelbpp.com
-      description: Describes subscriber ID of the BPP
-    ttl:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    order:
-      id:
-        required: mandatory
-        type: string
-        owner: BPP
-        usage: O1
-        description: Describes the order ID.
-      status:
-        required: mandatory
-        type: string
-        owner: BPP
-        usage: COMPLETED
-        description: Describes the order status.
-      provider:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: P1
-          description: Describes the provider ID.
-      items:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: Accommodation-1
-          description: Describes the item ID.
-        add_ons:
-          id:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: full-board
-            description: Describes add_ons id the selected item.
-        quantity:
-          selected:
-            count:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 1
-              description: Describes quantity count of the selected item.
-      quote:
-        price:
-          currency:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: INR
-            description: Describes currency type of the price
-          value:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: 3025
-            description: Describes price value.
-        breakup:
-          item:
-            id:
-              required: optional
-              type: string
-              owner: BPP
-              usage: 3025
-              description: Describes price value.
-            quantity:
-              selected:
-                count:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: 1
-                  description: Describes the selected count for breakup.
-            price:
-              currency:
-                required: optional
-                type: string
-                owner: BPP
-                usage: INR
-                description: Describes the breakup price.
-              value:
-                required: optional
-                type: string
-                owner: BPP
-                usage: 2000
-                description: Describes the breakup currency.
-            add_ons:
-              id:
-                required: optional
-                type: string
-                owner: BPP
-                usage: full-board
-                description: Describes the add_ons id
-              price:
-                currency:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: INR
-                  description: Describes the currency for add_on
-                value:
-                  required: optional
-                  type: string
-                  owner: BPP
-                  usage: 500
-                  description: Describes the price for add_on
-          title:
-            required: Mandatory
-            type: string
-            owner: BPP
-            usage: Deluxe Room accommodation with all meals included
-            description: Describes the title for breakup.
-          price:
-            currency:
-              required: Mandatory
-              type: string
-              owner: BPP
-              usage: INR
-              description: Describes the currency for breakup
-            value:
-              required: Mandatory
-              type: string
-              owner: BPP
-              usage: 2500
-              description: Describes the price for breakup
-      payments:
-        id:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: " pymnt-1"
-          description: Describes the payment id.
-        type:
-          required: Mandatory
-          type: string
-          owner: BPP
-          usage: PRE-ORDER
-          description: Describes the payment type.
-        status:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: NOT-PAID
-          description: Describes the payment status.
-        collected_by:
-          required: optional
-          type: string
-          owner: BAP
-          usage: BAP
-          description: Describes the payment's collection mode.
-        params:
-          bank_account_number:
-            required: optional
-            type: string
-            owner: BAP
-            usage: 12421I24
-            description: Describes the bank account number.
-          virtual_payment_address:
-            required: optional
-            type: string
-            owner: BAP
-            usage: sds@okicic.in
-            description: Describes the virtual payment address.
-          currency:
-            required: optional
-            type: string
-            owner: BAP
-            usage: INR
-            description: Describes the currency.
-          amount:
-            required: optional
-            type: string
-            owner: BAP
-            usage: INR
-            description: Describes the amount.
-          transaction_id:
-            required: optional
-            type: string
-            owner: BAP
-            usage: INR
-            description: Describes the transaction id.
-      billing:
-        name:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: Sandeep S
-          description: Describes the billing name.
-        address:
-          required: Mandatory
+    bap_uri: *search_context_bap_uri
+    bpp_uri: *on_status_context_bpp_uri
+    bpp_id: *on_search_context_bpp_id
+    ttl: *search_context_ttl
+  message: &on_update_message
+    order: &on_update_message_order
+      id: *on_confirm_message_order_id
+      status: *on_status_message_order_status
+      provider: *on_select_message_order_provider
+      items: *on_init_message_order_items
+      quote: *on_select_message_order_quote
+      payments: *confirm_message_order_payments
+      billing: &on_update_message_order_billing
+        name: *init_message_order_billing_name
+        address: &on_update_message_order_billing_address
+          required: MANDATORY
           type: string
           owner: BAP
           usage: Dwarka, Delhi-110076
           description: Describes the billing address.
-        state:
-          name:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: Delhi
-            description: Describes the billing's state name.
-        city:
-          name:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: Delhi
-            description: Describes the billing city name.
-        organization:
-          descriptor:
-            name:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: ONDC
-              description: Describes the organization name.
-          address:
-            required: Mandatory
-            type: string
-            owner: BAP
-            usage: ONDC, Delhi-110049
-            description: Describes the organization address.
-        email:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: email@ondc.org
-          description: Describes the billing email.
-        phone:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: ONDC, Delhi-110049
-          description: Describes the billing phone.
-        tax_id:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: GSTIN1234567890
-          description: Describes the tax id.
-      fulfillments:
-        id:
-          required: Mandatory
-          type: string
-          owner: BAP
-          usage: customer-1
-          description: Describes the fulfillments id.
-        customer:
-          person:
-            name:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: Sandeep S
-              description: Describes the customer name for fulfillments.
-            age:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 25
-              description: Describes the customer age for fulfillments.
-            gender:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: M
-              description: Describes the customer gender for fulfillments.
-            dob:
-              required: Mandatory
-              type: string
-              owner: BAP
-              usage: 45280
-              description: Describes the customer age for fulfillments.
-            creds:
-              id:
-                required: optional
-                type: string
-                owner: BAP
-                usage: AADHAAR_NO_123
-                description: Describes the customer credentials for fulfillments.
-              type:
-                required: optional
-                type: string
-                owner: BAP
-                usage: AADHAAR
-                description: Describes the customer credentials type for fulfillments.
-          contact:
-            phone:
-              required: mandatory
-              type: string
-              owner: BAP
-              usage: 1704380085
-              description: Describes the customer contact number for fulfillments.
-            email:
-              required: mandatory
-              type: string
-              owner: BAP
-              usage: 1704380085
-              description: Describes the customer email for fulfillments.
-      updated_at:
-        required: mandatory
-        type: string
-        owner: BPP
-        usage: "2023-12-20T05:28:04.413Z"
-        description: Describes the order updated at value.
-      documents:
-        descriptor:
-          code:
-            required: mandatory
-            type: string
-            owner: BPP
-            usage: BOOKING_CONFIRMATION
-            description: Describes the order documents code.
-        url:
-          required: mandatory
-          type: string
-          owner: BPP
-          usage: https://confirmation-O1.ondc.hotelbpp.com
-          description: Describes the URL of the document
-cancel:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: IND
-          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: std:080
-          description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ONDC:TRV13
-      description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: "2023-03-23T04:41:16Z"
-      description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ondc.hotelbap.com
-      description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 6743e9e2
-      description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
-        cycle.
-    version:
-      required: mandatory
-      type: integer
-      owner: BAP
-      usage: 2.0.0
-      description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
+        state: *init_message_order_billing_state
+        city: *init_message_order_billing_city
+        organization: *init_message_order_billing_organization
+        email: *init_message_order_billing_email
+        phone: *init_message_order_billing_phone
+        tax_id: *init_message_order_billing_tax_id
+      fulfillments: *init_message_order_fulfillments
+      updated_at: *on_confirm_message_order_updated_at
+      documents: *on_status_message_order_documents
+cancel: &cancel
+  context: &cancel_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &cancel_context_action
+      required: MANDATORY
       type: string
       owner: BAP
       usage: cancel
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
+      description: Describes the Beckn protocol method being called by the sender and
         executed at the receiver.
-    bap_uri:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: https://ondc.hotelbap.com/
-      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    bpp_uri:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: " https://ondc.hotelbpp.com/"
-      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-    bpp_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: ondc.hotelbpp.com
-      description: Describes subscriber ID of the BPP
-    ttl:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    order_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: O1
-      description: Describes the order ID.
-    cancellation_reason_id:
-      required: mandatory
+    bap_uri: *search_context_bap_uri
+    bpp_uri: *on_search_context_bpp_uri
+    bpp_id: *on_search_context_bpp_id
+    ttl: *search_context_ttl
+  message: &cancel_message
+    order_id: *on_confirm_message_order_id
+    cancellation_reason_id: &cancel_message_cancellation_reason_id
+      required: MANDATORY
       type: string
       owner: BAP
       usage: 1
       description: Describes the cancellation reason id.
-    descriptor:
-      short_desc:
-        required: optional
+    descriptor: &cancel_message_descriptor
+      short_desc: &cancel_message_descriptor_short_desc
+        required: OPTIONAL
         type: string
         owner: BAP
         usage: No more required
         description: Describes the short description.
-      long_desc:
-        required: optional
+      long_desc: &cancel_message_descriptor_long_desc
+        required: OPTIONAL
         type: string
         owner: BAP
         usage: Hotel available at lower price
         description: Describes the long description.
-on_cancel:
-  context:
-    location:
-      country:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: IND
-          description: Describes country code as per ISO 3166-1 and ISO 3166-2 format
-      city:
-        code:
-          required: mandatory
-          type: string
-          owner: BAP
-          usage: std:080
-          description: Describes the city code this location is, or is located within
-    domain:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ONDC:TRV13
-      description: Describes domain code that is relevant to this transaction context
-    timestamp:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: "2023-03-23T04:41:16Z"
-      description: Describes tme of request generation in RFC3339 format
-    bap_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: ondc.hotelbap.com
-      description: Describes subscriber ID of the BAP
-    transaction_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 6743e9e2
-      description: Describes  a unique value which persists across all API calls
-    message_id:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: 13ba8018f176
-      description: >-
-        Describes a unique value which persists during a request / callback
-        cycle.
-    version:
-      required: mandatory
-      type: integer
-      owner: BAP
-      usage: 2.0.0
-      description: Describes the version of transaction protocol being used by the sender.
-    action:
-      required: mandatory
+on_cancel: &on_cancel
+  context: &on_cancel_context
+    location: *search_context_location
+    domain: *search_context_domain
+    timestamp: *search_context_timestamp
+    bap_id: *search_context_bap_id
+    transaction_id: *search_context_transaction_id
+    message_id: *search_context_message_id
+    version: *search_context_version
+    action: &on_cancel_context_action
+      required: MANDATORY
       type: string
       owner: BAP
       usage: on_cancel
-      description: >-
-        Describes the Beckn protocol method being called by the sender and
+      description: Describes the Beckn protocol method being called by the sender and
         executed at the receiver.
-    bap_uri:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: https://ondc.hotelbap.com/
-      description: Describes subscriber URL of the BAP for accepting callbacks from BPPs.
-    bpp_uri:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: " https://ondc.hotelbpp.com/"
-      description: Describes subscriber URL of the BPP for accepting calls from BAPs.
-    bpp_id:
-      required: mandatory
-      type: string
-      owner: BPP
-      usage: ondc.hotelbpp.com
-      description: Describes subscriber ID of the BPP
-    ttl:
-      required: mandatory
-      type: string
-      owner: BAP
-      usage: PT30S
-      description: >-
-        Describes the duration in ISO8601 format after timestamp for which this
-        message holds valid
-  message:
-    order:
-      id:
-        required: mandatory
-        type: string
-        owner: BPP
-        usage: O1
-        description: Describes the order ID.
-      status:
-        required: mandatory
+    bap_uri: *search_context_bap_uri
+    bpp_uri: *on_search_context_bpp_uri
+    bpp_id: *on_search_context_bpp_id
+    ttl: *search_context_ttl
+  message: &on_cancel_message
+    order: &on_cancel_message_order
+      id: *on_confirm_message_order_id
+      status: &on_cancel_message_order_status
+        required: MANDATORY
         type: string
         owner: BPP
         usage: CANCELLED
         description: Describes the order status.
-      cancellation:
-        cancelled_by:
-          required: mandatory
+      cancellation: &on_cancel_message_order_cancellation
+        cancelled_by: &on_cancel_message_order_cancellation_cancelled_by
+          required: MANDATORY
           type: string
           owner: BPP
           usage: CONSUMER
           description: Describes the order cancelled by entity.
-        reason:
-          id:
-            required: mandatory
+        reason: &on_cancel_message_order_cancellation_reason
+          id: &on_cancel_message_order_cancellation_reason_id
+            required: MANDATORY
             type: string
             owner: BAP
             usage: 1
             description: Describes the order cancellation reason id.
-          descriptor:
-            short_desc:
-              required: optional
-              type: string
-              owner: BAP
-              usage: No more required
-              description: Describes the short description.
-            long_desc:
-              required: optional
-              type: string
-              owner: BAP
-              usage: Hotel available at lower price
-              description: Describes the long description.
-      updated_at:
-        required: mandatory
-        type: string
-        owner: BPP
-        usage: "2023-12-20T05:28:04.413Z"
-        description: Describes the order updated at value.
+          descriptor: *cancel_message_descriptor
+      updated_at: *on_confirm_message_order_updated_at
