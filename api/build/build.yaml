@@ -2694,6 +2694,14 @@ components:
           type: string
         energy_type:
           type: string
+          enum:
+            - ELECTRIC
+            - PETROL
+            - DIESEL
+            - HYDROGEN
+            - BIOFUELS
+            - CNG
+            - LPG
         registration:
           type: string
         wheels_count:
@@ -2808,9 +2816,6 @@ x-enum:
                 description: Describes the vehicle category as TWO_WHEELER
                 reference: <PR/Issue/Discussion Links md format text
             variant:
-              - code: EV
-                description: Describes the vehicle variant CAB, AUTO_RICKSHAW & TWO_WHEELER
-                reference: <PR/Issue/Discussion Links md format text
               - code: SEDAN
                 description: Describes the vehicle variant for category type CAB
                 reference: <PR/Issue/Discussion Links md format text
@@ -2860,7 +2865,7 @@ x-enum:
                 - code: CLAIMED
                   description: Describes the authorization status
                   reference: <PR/Issue/Discussion Links md format text
-          state: &ref_7
+          state: &ref_6
             descriptor:
               code:
                 - code: RIDE_CANCELLED
@@ -2942,31 +2947,11 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: &ref_6
+    message: &ref_5
       order:
         items: *ref_4
         fulfillments: *ref_2
         payments: *ref_3
-        status: &ref_5
-          - code: SOFT-CANCEL
-            description: >-
-              Describes a soft-cancel request initiated by the buyer app, a step
-              preceding cancellation.
-            reference: <PR/Issue/Discussion Links md format text
-          - code: CONFIRM-CANCEL
-            description: >-
-              Describes a confirm-cancel request initiated by the buyer app,
-              confirming the order cancellation
-            reference: <PR/Issue/Discussion Links md format text
-          - code: ACTIVE
-            description: Describes the status of the order.
-            reference: <PR/Issue/Discussion Links md format text
-          - code: COMPLETE
-            description: Describes the status of the order.
-            reference: <PR/Issue/Discussion Links md format text
-          - code: CANCELLED
-            description: Describes the status of the order.
-            reference: <PR/Issue/Discussion Links md format text
   on_select:
     context:
       action:
@@ -2982,8 +2967,7 @@ x-enum:
         items: *ref_4
         fulfillments: *ref_2
         payments: *ref_3
-        status: *ref_5
-        quote: &ref_8
+        quote: &ref_7
           breakup:
             title:
               - code: BASE_FARE
@@ -2998,6 +2982,24 @@ x-enum:
               - code: REFUND
                 description: Describes the refund for a specific ride.
                 reference: <PR/Issue/Discussion Links md format text
+              - code: TOLL_CHARGES
+                description: Describes the toll charges for the specific ride.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: PARKING_CHARGES
+                description: Describes the parking charges for the specific ride.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: TAX
+                description: Describes the tax for a specific ride.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: WAITING_CHARGES
+                description: Describes the waiting charges for a specific ride.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: DRIVER_BATA
+                description: Describes the driver bata for a specific ride.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: NIGHT_CHARGES
+                description: Describes the night charges for a specific ride.
+                reference: <PR/Issue/Discussion Links md format text
   init:
     context:
       action:
@@ -3008,7 +3010,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_6
+    message: *ref_5
   on_init:
     context:
       action:
@@ -3019,14 +3021,14 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: &ref_9
+    message:
       order:
         items: *ref_4
         fulfillments: *ref_2
         payments: *ref_3
         cancellation_terms:
-          fulfillment_state: *ref_7
-        quote: *ref_8
+          fulfillment_state: *ref_6
+        quote: *ref_7
   confirm:
     context:
       action:
@@ -3035,7 +3037,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_6
+    message: *ref_5
   on_confirm:
     context:
       action:
@@ -3046,7 +3048,34 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_9
+    message: &ref_8
+      order:
+        items: *ref_4
+        fulfillments: *ref_2
+        payments: *ref_3
+        cancellation_terms:
+          fulfillment_state: *ref_6
+        quote: *ref_7
+        status: &ref_9
+          - code: SOFT_CANCEL
+            description: >-
+              Describes a soft cancel request initiated by the buyer app, a step
+              preceding cancellation.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: CONFIRM_CANCEL
+            description: >-
+              Describes a confirm cancel request initiated by the buyer app,
+              confirming the order cancellation
+            reference: <PR/Issue/Discussion Links md format text
+          - code: ACTIVE
+            description: Describes the status of the order.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: COMPLETE
+            description: Describes the status of the order.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: CANCELLED
+            description: Describes the status of the order.
+            reference: <PR/Issue/Discussion Links md format text
   status:
     context:
       action:
@@ -3063,7 +3092,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_9
+    message: *ref_8
   cancel:
     context:
       action:
@@ -3105,7 +3134,7 @@ x-enum:
           description: Unable to contact rider
           reference: <PR/Issue/Discussion Links md format text
       descriptor:
-        code: *ref_5
+        code: *ref_9
   on_cancel:
     context:
       action:
@@ -3123,7 +3152,8 @@ x-enum:
           reason:
             descriptor:
               code: *ref_10
-        quote: *ref_8
+        quote: *ref_7
+        status: *ref_9
   update:
     context:
       action:
@@ -3141,7 +3171,13 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_11
+    message:
+      order:
+        items: *ref_4
+        fulfillments: *ref_2
+        payments: *ref_3
+        status: *ref_9
+        quote: *ref_7
 x-tags:
   search:
     message:
@@ -3364,7 +3400,7 @@ x-flows:
                         type: END
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                 items:
                   - id: I1
                 payments:
@@ -3512,7 +3548,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                 items:
                   - descriptor:
                       code: RIDE
@@ -3788,7 +3824,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                 items:
                   - descriptor:
                       code: RIDE
@@ -3966,7 +4002,7 @@ x-flows:
                         type: END
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                 items:
                   - id: I1
                 payments:
@@ -4133,7 +4169,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -4449,7 +4485,7 @@ x-flows:
                         type: DELIVERY
                         vehicle:
                           category: AUTO_RICKSHAW
-                          variant: EV
+                          variant: AUTO_RICKSHAW
                       - id: F2
                         stops:
                           - location:
@@ -4655,7 +4691,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                 items:
                   - descriptor:
                       code: RIDE
@@ -4787,7 +4823,7 @@ x-flows:
                         type: END
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                 items:
                   - id: I1
                 payments:
@@ -4938,7 +4974,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                 items:
                   - descriptor:
                       code: RIDE
@@ -5117,7 +5153,7 @@ x-flows:
                         type: END
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                 items:
                   - id: I1
                 payments:
@@ -5287,7 +5323,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -5532,7 +5568,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -5858,7 +5894,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -6101,7 +6137,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -6348,7 +6384,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -6625,7 +6661,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -7069,7 +7105,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                 id: O1
                 items:
                   - descriptor:
@@ -7310,7 +7346,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -7640,7 +7676,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -7909,7 +7945,7 @@ x-flows:
                         type: SELF_PICKUP
                         vehicle:
                           category: AUTO_RICKSHAW
-                          variant: EV
+                          variant: AUTO_RICKSHAW
                       - id: F2
                         stops:
                           - location:
@@ -8075,7 +8111,7 @@ x-flows:
                     type: SELF_PICKUP
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                     tags:
                       - descriptor:
                           code: ROUTE_INFO
@@ -8228,7 +8264,7 @@ x-flows:
                     type: SELF_PICKUP
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                 items:
                   - id: I1
                 payments:
@@ -8362,7 +8398,7 @@ x-flows:
                     type: SELF_PICKUP
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                     tags:
                       - descriptor:
                           code: ROUTE_INFO
@@ -8560,7 +8596,7 @@ x-flows:
                     type: SELF_PICKUP
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                 items:
                   - id: I1
                 payments:
@@ -8723,7 +8759,7 @@ x-flows:
                         name: Joe Adams
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                 id: O1
                 items:
                   - descriptor:
@@ -8967,7 +9003,7 @@ x-flows:
                     type: SELF_PICKUP
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -9214,7 +9250,7 @@ x-flows:
                     type: SELF_PICKUP
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -9501,7 +9537,7 @@ x-flows:
                     type: SELF_PICKUP
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -9768,7 +9804,7 @@ x-flows:
                     type: SELF_PICKUP
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -10042,7 +10078,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -10398,7 +10434,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                       make: Bajaj
                       model: Compact RE
                       registration: KA-01-AD-9876
@@ -10883,7 +10919,7 @@ x-flows:
                     type: DELIVERY
                     vehicle:
                       category: AUTO_RICKSHAW
-                      variant: EV
+                      variant: AUTO_RICKSHAW
                 id: O1
                 items:
                   - descriptor:
@@ -11189,7 +11225,7 @@ x-examples:
                       type: DELIVERY
                       vehicle:
                         category: AUTO_RICKSHAW
-                        variant: EV
+                        variant: AUTO_RICKSHAW
                         make: Bajaj
                         model: Compact RE
                         registration: KA-01-AD-9876
@@ -11408,7 +11444,7 @@ x-examples:
                           type: DELIVERY
                           vehicle:
                             category: AUTO_RICKSHAW
-                            variant: EV
+                            variant: AUTO_RICKSHAW
                         - id: F2
                           stops:
                             - location:
@@ -11606,7 +11642,7 @@ x-examples:
                       type: DELIVERY
                       vehicle:
                         category: AUTO_RICKSHAW
-                        variant: EV
+                        variant: AUTO_RICKSHAW
                         make: Bajaj
                         model: Compact RE
                         registration: KA-01-AD-9876
@@ -11825,7 +11861,7 @@ x-examples:
                       type: DELIVERY
                       vehicle:
                         category: CAB
-                        variant: EV
+                        variant: AUTO_RICKSHAW
                         make: Mahindra
                         model: Compact RE
                         registration: KA-01-AD-9876
@@ -12044,7 +12080,7 @@ x-examples:
                       type: DELIVERY
                       vehicle:
                         category: AUTO_RICKSHAW
-                        variant: EV
+                        variant: AUTO_RICKSHAW
                         make: Bajaj
                         model: Compact RE
                         registration: KA-01-AD-9876
@@ -12335,7 +12371,7 @@ x-examples:
                       type: DELIVERY
                       vehicle:
                         category: AUTO_RICKSHAW
-                        variant: EV
+                        variant: AUTO_RICKSHAW
                         make: Bajaj
                         model: Compact RE
                         registration: KA-01-AD-9876
