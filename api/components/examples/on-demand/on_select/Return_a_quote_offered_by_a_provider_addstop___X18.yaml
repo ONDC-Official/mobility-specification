@@ -1,5 +1,5 @@
 context:
-  action: on_init
+  action: on_select
   bap_id: example-bap.com
   bap_uri: https://example-bap.com/prod/trv10
   bpp_id: example-bpp.com
@@ -11,58 +11,32 @@ context:
     country:
       code: IND
   message_id: 8926b747-0362-4fcc-b795-0994a6287700
-  timestamp: '2023-12-09T14:11:32.859Z'
+  timestamp: '2023-12-09T13:49:26.132Z'
   transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
   ttl: PT30S
   version: 2.0.1
 message:
   order:
-    cancellation_terms:
-      - cancellation_fee:
-          percentage: '0'
-        fulfillment_state:
-          descriptor:
-            code: RIDE_ASSIGNED
-        reason_required: true
-      - cancellation_fee:
-          amount:
-            currency: INR
-            value: '30'
-        fulfillment_state:
-          descriptor:
-            code: RIDE_ENROUTE_PICKUP
-        reason_required: true
-      - cancellation_fee:
-          amount:
-            currency: INR
-            value: '50'
-        fulfillment_state:
-          descriptor:
-            code: RIDE_ARRIVED_PICKUP
-        reason_required: true
-      - cancellation_fee:
-          percentage: '100'
-        fulfillment_state:
-          descriptor:
-            code: RIDE_STARTED
-        reason_required: true
     fulfillments:
       - id: F1
-        customer:
-          contact:
-            phone: '9876556789'
-          person:
-            name: Joe Adams
         stops:
-          - location:
-              gps: 13.008935, 77.644408
-            type: START
-            instructions:
-              short_desc: short description of the location
-              long_desc: long description of the location
-          - location:
-              gps: 12.971186, 77.586812
-            type: END
+              - location:
+                  gps: 13.008935, 77.644408
+                type: START
+                instructions:
+                  short_desc: short description of the location
+                  long_desc: long description of the location
+                id: "1"
+              - location:
+                  gps: 12.981224, 77.615816
+                type: INTERMEDIATE_STOP
+                id: "2"
+                parent_stop_id: "1"
+              - location:
+                  gps: 12.971186, 77.586812
+                type: END
+                id: "3"
+                parent_stop_id: "2"
         tags:
           - descriptor:
               code: ROUTE_INFO
@@ -94,8 +68,6 @@ message:
         location_ids:
           - L1
           - L3
-        payment_ids:
-          - PA1
         price:
           currency: INR
           maximum_value: '176'
@@ -142,51 +114,6 @@ message:
               - descriptor:
                   code: ETA_TO_NEAREST_DRIVER_MIN
                 value: '3'
-    payments:
-      - collected_by: BPP
-        id: PA1
-        params:
-          bank_account_number: xxxxxxxxxxxxxx
-          bank_code: XXXXXXXX
-          virtual_payment_address: 9988199772@okicic
-        status: NOT-PAID
-        tags:
-          - descriptor:
-              code: BUYER_FINDER_FEES
-            display: false
-            list:
-              - descriptor:
-                  code: BUYER_FINDER_FEES_PERCENTAGE
-                value: '1'
-          - descriptor:
-              code: SETTLEMENT_TERMS
-            display: false
-            list:
-              - descriptor:
-                  code: DELAY_INTEREST
-                value: '5'
-              - descriptor:
-                  code: SETTLEMENT_TYPE
-                value: UPI
-              - descriptor:
-                  code: SETTLEMENT_WINDOW
-                value: PT2D
-              - descriptor:
-                  code: SETTLEMENT_BASIS
-                value: DELIVERY
-              - descriptor:
-                  code: MANDATORY_ARBITRATION
-                value: 'true'
-              - descriptor:
-                  code: COURT_JURISDICTION
-                value: New Delhi
-              - descriptor:
-                  code: STATIC_TERMS
-                value: https://example-test-bpp.com/static-terms.txt
-              - descriptor:
-                  code: SETTLEMENT_AMOUNT
-                value: '1.46'
-        type: ON-FULFILLMENT
     provider:
       id: P1
     quote:
@@ -202,4 +129,4 @@ message:
       price:
         currency: INR
         value: '146'
-      ttl: PT30S
+      ttl: P200s

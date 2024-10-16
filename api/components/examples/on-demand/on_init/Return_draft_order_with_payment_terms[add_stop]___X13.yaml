@@ -1,5 +1,5 @@
 context:
-  action: on_update
+  action: on_init
   bap_id: example-bap.com
   bap_uri: https://example-bap.com/prod/trv10
   bpp_id: example-bpp.com
@@ -11,7 +11,7 @@ context:
     country:
       code: IND
   message_id: 8926b747-0362-4fcc-b795-0994a6287700
-  timestamp: '2023-12-10T08:03:34.294Z'
+  timestamp: '2023-12-09T14:11:32.859Z'
   transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
   ttl: PT30S
   version: 2.0.1
@@ -48,34 +48,29 @@ message:
         reason_required: true
     fulfillments:
       - id: F1
-        state:
-          descriptor:
-            code: RIDE_ASSIGNED
-        stops:
-          - authorization:
-              token: '234234'
-              type: OTP
-              valid_to: '2023-12-10T08:05:34.294Z'
-              status: UNCLAIMED
-            location:
-              gps: 13.008935, 77.644408
-            type: START
-            instructions:
-              short_desc: short description of the location
-              long_desc: long description of the location
-          - location:
-              gps: 12.971186, 77.586812
-            type: END
-        agent:
-          contact:
-            phone: '9856798567'
-          person:
-            name: Jason Roy
         customer:
           contact:
             phone: '9876556789'
           person:
             name: Joe Adams
+        stops:
+              - location:
+                  gps: 13.008935, 77.644408
+                type: START
+                instructions:
+                  short_desc: short description of the location
+                  long_desc: long description of the location
+                id: "1"
+              - location:
+                  gps: 12.981224, 77.615816
+                type: INTERMEDIATE_STOP
+                id: "2"
+                parent_stop_id: "1"
+              - location:
+                  gps: 12.971186, 77.586812
+                type: END
+                id: "3"
+                parent_stop_id: "2"
         tags:
           - descriptor:
               code: ROUTE_INFO
@@ -93,14 +88,10 @@ message:
                   [{"gps":"12.909982,
                   77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                   77.611822"}]
-        type: SELF_PICKUP
+        type: DELIVERY
         vehicle:
           category: AUTO_RICKSHAW
           variant: AUTO_RICKSHAW
-          make: Bajaj
-          model: Compact RE
-          registration: KA-01-AD-9876
-    id: O1
     items:
       - descriptor:
           code: RIDE
@@ -220,6 +211,3 @@ message:
         currency: INR
         value: '146'
       ttl: PT30S
-    status: ACTIVE
-    created_at: '2023-12-10T08:03:34.294Z'
-    updated_at: '2023-12-10T08:03:34.294Z'

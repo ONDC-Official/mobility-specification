@@ -1,0 +1,121 @@
+summary: On-Demand - Update Stop
+details:
+  - description:
+      The illustraive flow to perform a transaction of the nature where
+      in a buyer would like to book a mobility service form location
+      A(gps-cordinates) to localtion B(gps-cordinates)
+    mermaid: >-
+      sequenceDiagram
+        title On-Demand Discovery
+        Buyer Platform (BAP)->>Gateway (BG): search
+        Gateway (BG) ->> Buyer Platform (BAP): ACK
+        Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+        Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+        Gateway (BG)->>Seller Platform (BPP): search
+        Seller Platform (BPP)->>Gateway (BG) : ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+        Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+  - description: Ordering
+    mermaid: |-
+      sequenceDiagram
+        title Selection
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): select
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - description: Initializing the order
+    mermaid: |-
+      sequenceDiagram
+        title Initializing Order
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): init
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - description: Order Confirmation
+    mermaid: |-
+      sequenceDiagram
+        title  Order Confirmation
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - description: Fulfillment
+    mermaid: >-
+      sequenceDiagram
+        title Order Fulfillment
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+steps:
+  - summary: Ride provider confirms the ride request
+    api: on_confirm
+    details:
+      - description:
+          Ride provider confirms the ride request and provides the ride
+          details on confirmation.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      summary: Return confirmed order with latest fulfillment details
+      value:
+        $ref: ../../examples/on-demand/on_confirm/Return_confirmed_order_with_latest_fulfillment_details_addstop___X11.yaml
+  - summary: Buyer app requests for update of stop
+    api: update
+    details:
+      - description:
+          Buyer app request the provider platform to update the stop
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): update - With fulfillment id
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_update - Provide updated stops
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      summary: Update an active ride
+      value:
+        $ref: ../../examples/on-demand/update/update_stop.yaml
+  - summary: Provider platform confirms with on_update request
+    api: on_update
+    details:
+      - description:
+          Provider platform provides the updated order details 
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): update - update stops
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_update - Provide updated stops
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+            end
+    reference: if any
+    example:
+      summary: Return tracking information for an order
+      value:
+        $ref: ../../examples/on-demand/on_update/Return_updated_order_with_recomputed_charges_updatestop___X26.yaml

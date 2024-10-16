@@ -34,9 +34,6 @@ search:
               description: Describes the vehicle category as TWO_WHEELER
               reference: <PR/Issue/Discussion Links md format text
           variant:
-            - code: EV
-              description: Describes the vehicle variant CAB, AUTO_RICKSHAW & TWO_WHEELER
-              reference: <PR/Issue/Discussion Links md format text
             - code: SEDAN
               description: Describes the vehicle variant for category type CAB
               reference: <PR/Issue/Discussion Links md format text
@@ -52,6 +49,29 @@ search:
             - code: AUTO_RICKSHAW
               description: Describes the vehicle variant for category AUTO_RICKSHAW
               reference: <PR/Issue/Discussion Links md format text
+          energy_type: 
+            - code: ELECTRIC
+              description: Describes the vehicle energy_type as Electric
+              reference: <PR/Issue/Discussion Links md format text
+            - code: PETRO
+              description: Describes the vehicle energy_type as Petrol
+              reference: <PR/Issue/Discussion Links md format text
+            - code: DIESEL
+              description: Describes the vehicle energy_type as Diesel
+              reference: <PR/Issue/Discussion Links md format text
+            - code: HYDROGEN
+              description: Describes the vehicle energy_type as Hydrogen
+              reference: <PR/Issue/Discussion Links md format text
+            - code: BIOFUELS
+              description: Describes the vehicle energy_type as Biofuels
+              reference: <PR/Issue/Discussion Links md format text
+            - code: CNG
+              description: Describes the vehicle energy_type as CNG
+              reference: <PR/Issue/Discussion Links md format text
+            - code: LPG
+              description: Describes the vehicle energy_type as LPG
+              reference: <PR/Issue/Discussion Links md format text
+
         type:
           - code: DELIVERY
             description: Describes the type of fulfillment.
@@ -168,24 +188,6 @@ select:
       items: *a5
       fulfillments: *a3
       payments: *a4
-      status: &a6
-        - code: SOFT-CANCEL
-          description: Describes a soft-cancel request initiated by the buyer app, a step
-            preceding cancellation.
-          reference: <PR/Issue/Discussion Links md format text
-        - code: CONFIRM-CANCEL
-          description: Describes a confirm-cancel request initiated by the buyer app,
-            confirming the order cancellation
-          reference: <PR/Issue/Discussion Links md format text
-        - code: ACTIVE
-          description: Describes the status of the order.
-          reference: <PR/Issue/Discussion Links md format text
-        - code: COMPLETE
-          description: Describes the status of the order.
-          reference: <PR/Issue/Discussion Links md format text
-        - code: CANCELLED
-          description: Describes the status of the order.
-          reference: <PR/Issue/Discussion Links md format text
 on_select:
   context:
     action:
@@ -200,7 +202,6 @@ on_select:
       items: *a5
       fulfillments: *a3
       payments: *a4
-      status: *a6
       quote: &a9
         breakup:
           title:
@@ -216,6 +217,25 @@ on_select:
             - code: REFUND
               description: Describes the refund for a specific ride.
               reference: <PR/Issue/Discussion Links md format text
+            - code: TOLL_CHARGES
+              description: Describes the toll charges for the specific ride.
+              reference: <PR/Issue/Discussion Links md format text
+            - code: PARKING_CHARGES
+              description: Describes the parking charges for the specific ride.
+              reference: <PR/Issue/Discussion Links md format text
+            - code: TAX
+              description: Describes the tax for a specific ride.
+              reference: <PR/Issue/Discussion Links md format text
+            - code: WAITING_CHARGES
+              description: Describes the waiting charges for a specific ride.
+              reference: <PR/Issue/Discussion Links md format text
+            - code: DRIVER_BATA
+              description: Describes the driver bata for a specific ride.
+              reference: <PR/Issue/Discussion Links md format text
+            - code: NIGHT_CHARGES
+              description: Describes the night charges for a specific ride.
+              reference: <PR/Issue/Discussion Links md format text
+
 init:
   context:
     action:
@@ -234,7 +254,7 @@ on_init:
         reference: <PR/Issue/Discussion Links md format text>
     location: *a1
     domain: *a2
-  message: &a10
+  message: 
     order:
       items: *a5
       fulfillments: *a3
@@ -260,7 +280,32 @@ on_confirm:
         reference: <PR/Issue/Discussion Links md format text>
     location: *a1
     domain: *a2
-  message: *a10
+  message: &a10
+    order:
+      items: *a5
+      fulfillments: *a3
+      payments: *a4
+      cancellation_terms:
+        fulfillment_state: *a8
+      quote: *a9
+      status: &a13
+        - code: SOFT_CANCEL
+          description: Describes a soft cancel request initiated by the buyer app, a step
+            preceding cancellation.
+          reference: <PR/Issue/Discussion Links md format text
+        - code: CONFIRM_CANCEL
+          description: Describes a confirm cancel request initiated by the buyer app,
+            confirming the order cancellation
+          reference: <PR/Issue/Discussion Links md format text
+        - code: ACTIVE
+          description: Describes the status of the order.
+          reference: <PR/Issue/Discussion Links md format text
+        - code: COMPLETE
+          description: Describes the status of the order.
+          reference: <PR/Issue/Discussion Links md format text
+        - code: CANCELLED
+          description: Describes the status of the order.
+          reference: <PR/Issue/Discussion Links md format text
 status:
   context:
     action:
@@ -319,7 +364,7 @@ cancel:
         description: Unable to contact rider
         reference: <PR/Issue/Discussion Links md format text
     descriptor:
-      code: *a6
+      code: *a13
 on_cancel:
   context:
     action:
@@ -338,6 +383,7 @@ on_cancel:
           descriptor:
             code: *a11
       quote: *a9
+      status: *a13
 update:
   context:
     action:
@@ -355,4 +401,10 @@ on_update:
         reference: <PR/Issue/Discussion Links md format text>
     location: *a1
     domain: *a2
-  message: *a12
+  message:
+    order:
+      items: *a5
+      fulfillments: *a3
+      payments: *a4
+      status: *a13
+      quote: *a9
