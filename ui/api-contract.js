@@ -9,7 +9,7 @@ function getStringAfterEquals(inputString) {
 
 async function readBuildFile(branchName) {
   if (!branchName) return;
-  const url = `https://api.github.com/repos/ondc-official/mobility-specification/contents/ui/build.js?ref=${branchName}`;
+  const url = `https://github.com/Manjinderrana/mobility-specification/contents/ui/build.js?ref=${branchName}`;
 
   try {
     const response = await fetch(url, {
