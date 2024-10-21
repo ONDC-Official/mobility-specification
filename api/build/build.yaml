@@ -345,6 +345,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -379,6 +380,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -435,6 +437,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -470,6 +473,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -483,6 +487,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -506,6 +511,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -519,6 +525,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -579,6 +586,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -618,6 +626,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -655,6 +664,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -692,6 +702,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -705,6 +716,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -743,6 +755,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -763,6 +776,7 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -1024,6 +1038,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Provider'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagGroup'
         exp:
           description: Timestamp after which catalog will expire
           type: string
@@ -1904,6 +1922,14 @@ components:
             Status of the order. Allowed values can be defined by the network
             policy
           type: string
+          enum:
+            - ACTIVE
+            - COMPLETE
+            - CANCELLED
+            - COMPLETED
+            - SOFT_CANCEL
+            - CANCELLATION_INITIATED
+            - CANCELLATION_REJECTED
         type:
           description: >-
             This is used to indicate the type of order being created to BPPs.
@@ -4804,7 +4830,7 @@ x-flows:
               bpp_uri: https://api.transit-solutions.com/beckn/
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: 5298561a-1f40-429f-a3c1-665b230fbcfa
-              timestamp: '2021-03-23T11:01:40.065Z'
+              timestamp: '2021-03-23T11:01:41.065Z'
               ttl: PT30S
             message:
               order:
@@ -5035,7 +5061,7 @@ x-flows:
                       Cancellation was rejected by the provider due to some
                       reason.
                 created_at: '2021-03-23T10:00:40.065Z'
-                updated_at: '2021-03-23T11:01:40.065Z'
+                updated_at: '2021-03-23T11:01:41.065Z'
   - summary: IntraCity - Delayed Cancellation Flow(Successful)
     details:
       - description: Detailed process of cancelling a ticket with soft & confirm status.
@@ -5152,7 +5178,7 @@ x-flows:
               bpp_uri: https://api.transit-solutions.com/beckn/
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: a254f067-f471-4ce3-87e7-18bd80774083
-              timestamp: '2021-03-23T11:01:40.065Z'
+              timestamp: '2021-03-23T11:01:41.065Z'
               ttl: PT30S
             message:
               order:
@@ -5395,7 +5421,7 @@ x-flows:
                       code: '0'
                       short_desc: Cancelled by the provider
                 created_at: '2021-03-23T10:00:40.065Z'
-                updated_at: '2021-03-23T11:01:40.065Z'
+                updated_at: '2021-03-23T11:01:41.065Z'
   - summary: IntraCity - GPS Based Flow
     details:
       - description: >-
@@ -9705,6 +9731,8 @@ x-flows:
                   reason:
                     descriptor:
                       code: '7'
+                created_at: '2021-03-23T10:00:40.065Z'
+                updated_at: '2021-03-23T10:00:40.065Z'
       - summary: Buyer app confirms the cancel request for ticket
         api: cancel
         details:
@@ -10011,6 +10039,8 @@ x-flows:
                     descriptor:
                       code: '7'
                       short_desc: Cancelled by the consumer
+                created_at: '2021-03-23T10:00:40.065Z'
+                updated_at: '2021-03-23T11:12:40.065Z'
   - summary: IntraCity - Vehicle Based Confirmation flow
     details:
       - description: Detailed process of ticket confirmation.
@@ -11114,7 +11144,7 @@ x-flows:
               bpp_uri: https://api.example-bpp.com/ondc/metro
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
-              timestamp: '2021-03-23T10:00:40.065Z'
+              timestamp: '2021-03-23T10:00:42.065Z'
               ttl: PT30S
             message:
               order:
@@ -11474,6 +11504,8 @@ x-flows:
                               code: SETTLEMENT_TYPE
                             value: NEFT
                 status: SOFT_CANCEL
+                created_at: '2021-03-23T10:00:40.065Z'
+                updated_at: '2021-03-23T10:00:40.065Z'
       - summary: Buyer app confirms the cancel request for ticket
         api: cancel
         details:
@@ -11552,7 +11584,7 @@ x-flows:
               bpp_uri: https://api.example-bpp.com/ondc/metro
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
-              timestamp: '2021-03-23T10:00:40.065Z'
+              timestamp: '2021-03-23T10:00:43.065Z'
               ttl: PT30S
             message:
               order:
@@ -11916,6 +11948,8 @@ x-flows:
                         currency: INR
                         value: '10'
                 status: CANCELLED
+                created_at: '2021-03-23T10:00:40.065Z'
+                updated_at: '2021-03-23T10:00:43.065Z'
   - summary: Metro - GPS Based Flow
     details:
       - description: >-
@@ -15210,7 +15244,7 @@ x-flows:
                   cancelled_by: PROVIDER
                   time: '2021-03-23T10:00:00.065Z'
                 created_at: '2021-03-23T10:00:40.065Z'
-                updated_at: '2021-03-23T10:00:40.065Z'
+                updated_at: '2021-03-23T10:05:48.061Z'
         details:
           - description: >-
               Provider accepts the terms of order and provides with latest order
@@ -15248,7 +15282,7 @@ x-flows:
               bpp_uri: https://api.example-bpp.com/ondc/metro
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
-              timestamp: '2021-03-23T10:05:48.061Z'
+              timestamp: '2021-03-23T10:05:49.061Z'
               ttl: PT30S
             message:
               order:
@@ -15632,7 +15666,7 @@ x-flows:
                       Cancellation was rejected by the provider due to some
                       reason.
                 created_at: '2021-03-23T10:00:40.065Z'
-                updated_at: '2021-03-23T10:00:40.065Z'
+                updated_at: '2021-03-23T10:05:49.061Z'
         details:
           - description: >-
               Provider accepts the terms of order and provides with latest order
@@ -15746,7 +15780,7 @@ x-flows:
               bpp_uri: https://api.example-bpp.com/ondc/metro
               transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
               message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
-              timestamp: '2021-03-23T10:05:48.061Z'
+              timestamp: '2021-03-23T10:05:49.061Z'
               ttl: PT30S
             message:
               order:
@@ -16146,7 +16180,7 @@ x-flows:
                       code: '0'
                       short_desc: Cancelled by the provider
                 created_at: '2021-03-23T10:00:40.065Z'
-                updated_at: '2021-03-23T10:00:40.065Z'
+                updated_at: '2021-03-23T10:05:49.061Z'
         details:
           - description: >-
               Provider accepts the terms of order and provides with latest order
