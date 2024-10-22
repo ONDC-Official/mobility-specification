@@ -1039,6 +1039,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Provider'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagGroup'
         exp:
           description: Timestamp after which catalog will expire
           type: string
@@ -1919,6 +1923,14 @@ components:
             Status of the order. Allowed values can be defined by the network
             policy
           type: string
+          enum:
+            - ACTIVE
+            - COMPLETE
+            - CANCELLED
+            - COMPLETED
+            - SOFT_CANCEL
+            - CANCELLATION_INITIATED
+            - CANCELLATION_REJECTED
         type:
           description: >-
             This is used to indicate the type of order being created to BPPs.
@@ -11270,6 +11282,16 @@ x-flows:
                       bank_code: XXXXXXXX
                       bank_account_number: xxxxxxxxxxxxxx
                     tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_TYPE
+                            value: percent
                       - descriptor:
                           code: SETTLEMENT_TERMS
                         display: false
