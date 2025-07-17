@@ -360,6 +360,8 @@ paths:
                 message:
                   type: object
                   properties:
+                    order_id:
+                      $ref: '#/components/schemas/Order/properties/id'
                     ratings:
                       type: array
                       items:
@@ -511,7 +513,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -730,17 +731,16 @@ paths:
                 message:
                   type: object
                   properties:
-                    feedback_form:
-                      description: >-
-                        A feedback form to allow the user to provide additional
-                        information on the rating provided
-                      allOf:
-                        - $ref: '#/components/schemas/XInput'
+                    order_id:
+                      $ref: '#/components/schemas/Order/properties/id'
+                    ratings:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Rating'
                 error:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -2315,7 +2315,6 @@ components:
         id:
           description: ID of the quote.
           type: string
-          format: uuid
         price:
           description: The total quoted price
           allOf:
@@ -2344,12 +2343,12 @@ components:
           description: Category of the entity being rated
           type: string
           enum:
-            - Item
-            - Order
-            - Fulfillment
-            - Provider
-            - Agent
-            - Support
+            - ITEM
+            - ORDER
+            - FULFILLMENT
+            - PROVIDER
+            - AGENT
+            - SUPPORT
         id:
           description: Id of the object being rated
           type: string
