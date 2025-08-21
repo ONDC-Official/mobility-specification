@@ -49,6 +49,12 @@ const BRANCHES = [
     status: "RELEASED",
   },
   {
+    code: "draft-TRV13-2.0.1",
+    name: "Accommodation Booking",
+    short_desc: "Hotel & Stay Booking",
+    status: "DRAFT",
+  },
+  {
     code: "release-TRV14-2.0.0",
     name: "Unreserved Entry Pass",
     short_desc: "Unreserved Tickets for Monuments, Museum, Art Gallery",
