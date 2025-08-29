@@ -46,13 +46,13 @@ const BRANCHES = [
     code: "release-TRV13-hotel",
     name: "Accommodation Booking",
     short_desc: "Hotel & Stay Booking",
-    status: "RELEASED",
+    status: "TO_BE_DEPRECATED",
   },
   {
-    code: "draft-TRV13-2.0.1",
+    code: "release-TRV13-2.0.1",
     name: "Accommodation Booking",
     short_desc: "Hotel & Stay Booking",
-    status: "DRAFT",
+    status: "RELEASED",
   },
   {
     code: "release-TRV14-2.0.0",
