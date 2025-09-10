@@ -1,5 +1,5 @@
 context:
-  action: on_status
+  action: on_cancel
   bap_id: example-bap.com
   bap_uri: https://example-bap.com/prod/trv10
   bpp_id: example-bpp.com
@@ -11,10 +11,10 @@ context:
     country:
       code: IND
   message_id: 8926b747-0362-4fcc-b795-0994a6287700
-  timestamp: '2023-12-10T08:03:34.294Z'
+  timestamp: '2023-12-10T08:03:44.294Z'
   transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
-  ttl: PT30S
   version: 2.1.0
+  ttl: PT30S
 message:
   order:
     cancellation_terms:
@@ -47,26 +47,7 @@ message:
             code: RIDE_STARTED
         reason_required: true
     fulfillments:
-      - id: F1
-        state:
-          descriptor:
-            code: RIDE_STARTED
-        stops:
-          - authorization:
-              token: '234234'
-              type: OTP
-              valid_to: '2023-12-10T08:05:34.294Z'
-              status: CLAIMED
-            location:
-              gps: 13.008935, 77.644408
-            type: START
-            instructions:
-              short_desc: short description of the location
-              long_desc: long description of the location
-          - location:
-              gps: 12.971186, 77.586812
-            type: END
-        agent:
+      - agent:
           contact:
             phone: '9856798567'
           person:
@@ -76,6 +57,22 @@ message:
             phone: '9876556789'
           person:
             name: Joe Adams
+        id: F1
+        state:
+          descriptor:
+            code: RIDE_ARRIVED_PICKUP
+        stops:
+          - authorization:
+              token: '234234'
+              type: OTP
+            location:
+              gps: 13.008935, 77.644408
+            time:
+              duration: PT2H
+            type: START
+            instructions:
+              short_desc: short description of the location
+              long_desc: long description of the location
         tags:
           - descriptor:
               code: ROUTE_INFO
@@ -93,7 +90,7 @@ message:
                   [{"gps":"12.909982,
                   77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,77.611822"},{"gps":"12.909982,
                   77.611822"}]
-        type: SELF_PICKUP
+        type: DELIVERY
         vehicle:
           category: AUTO_RICKSHAW
           variant: AUTO_RICKSHAW
@@ -104,7 +101,7 @@ message:
     items:
       - descriptor:
           code: RIDE
-          name: Auto Ride
+          name: CAB Ride
         category_ids:
           - 'C1'  
         fulfillment_ids:
@@ -162,7 +159,7 @@ message:
                   code: ETA_TO_NEAREST_DRIVER_MIN
                 value: '3'
     payments:
-      - collected_by: BPP
+      - collected_by: BAP
         id: PA1
         status: NOT-PAID
         type: ON-FULFILLMENT
@@ -178,11 +175,24 @@ message:
             currency: INR
             value: '116'
           title: DISTANCE_FARE
+        - price:
+            currency: INR
+            value: '10'
+          title: CANCELLATION_CHARGES
+        - price:
+            currency: INR
+            value: '-146'
+          title: REFUND
       price:
         currency: INR
-        value: '146'
+        value: '10'
       ttl: PT30S
-    status: ACTIVE
+    status: SOFT_CANCEL
+    cancellation:
+      cancelled_by: CONSUMER
+      reason: 
+        descriptor:
+          code: '002'
     created_at: '2023-12-10T08:03:34.294Z'
     updated_at: '2023-12-10T08:03:34.294Z'
     tags:
@@ -217,7 +227,7 @@ message:
             value: https://example-test-bap.com/static-terms.txt
           - descriptor:
               code: SETTLEMENT_AMOUNT
-            value: '1.46'
+            value: '85'
           - descriptor:
               code: SETTLEMENT_BANK_CODE
             value: 'XXXXXXXX'
@@ -258,4 +268,4 @@ message:
             value: https://example-test-bpp.com/static-terms.txt
           - descriptor:
               code: SETTLEMENT_AMOUNT
-            value: '1.46'
+            value: '85'
