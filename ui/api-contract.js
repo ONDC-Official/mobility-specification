@@ -37,6 +37,13 @@ async function readBuildFile(branchName, isError) {
         build_spec = JSON.parse(getStringAfterEquals(formattedrawResponse));
         onFirstLoad(build_spec);
       },1200)
+    }else{
+      const urlWithoutQuery = window.location.origin + window.location.pathname;
+      window.history.replaceState(null, '', urlWithoutQuery);
+      const home = document.getElementById("home")
+      const loader = document.getElementById("loader")
+      home.style.display = "block"
+      loader.style.display = "none"
     }
 
     // let splitedText = atob(formattedResponse?.content);

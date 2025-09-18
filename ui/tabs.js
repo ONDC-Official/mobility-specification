@@ -13,8 +13,10 @@ function onFirstLoad(build_spec) {
     "x-testcasesui",
     "x-changeLog"
   ];
-  const dropdown = document.getElementById("contract-dropdown");
-  const branch_name = dropdown.options[dropdown.selectedIndex].text;
+  // const dropdown = document.getElementById("contract-dropdown");
+  // const branch_name = dropdown.options[dropdown.selectedIndex].text;
+   const urlParams = new URLSearchParams(window.location.search);
+   const branch_name = urlParams.get('branch');
   xProperties.forEach((xProperty) => {
     if (data[xProperty]) {
       switch (xProperty) {
