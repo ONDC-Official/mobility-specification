@@ -3101,6 +3101,43 @@ x-enum:
               Describes a confirm-cancel request initiated by the buyer app,
               confirming the order cancellation
             reference: <PR/Issue/Discussion Links md format text
+      cancellation_reason_id: &ref_8
+        - code: '000'
+          description: Describes the error code for Technical cancellation
+          reference: <PR/Issue/Discussion Links md format text>
+        - code: '001'
+          description: Describes the code for Change in travel plans/ mind
+          reference: <PR/Issue/Discussion Links md format text>
+        - code: '002'
+          description: Describes the code for Personal emergency
+          reference: <PR/Issue/Discussion Links md format text>
+        - code: '003'
+          description: Describes the code for Wrong date/time booked
+          reference: <PR/Issue/Discussion Links md format text>
+        - code: '004'
+          description: Describes the code for Duplicate booking
+          reference: <PR/Issue/Discussion Links md format text>
+        - code: '005'
+          description: Describes the code for Booked for wrong experience
+          reference: <PR/Issue/Discussion Links md format text>
+        - code: '006'
+          description: Describes the code for Did not receive booking confirmation
+          reference: <PR/Issue/Discussion Links md format text>
+        - code: '007'
+          description: Describes the code for Inability to download/access the ticket
+          reference: <PR/Issue/Discussion Links md format text>
+        - code: '008'
+          description: Describes the code for Venue closure
+          reference: <PR/Issue/Discussion Links md format text>
+        - code: '009'
+          description: Describes the code for Overbooking or duplicate slot allocation
+          reference: <PR/Issue/Discussion Links md format text>
+        - code: '010'
+          description: Describes the code for Invalid ID or documentation provided
+          reference: <PR/Issue/Discussion Links md format text>
+        - code: '011'
+          description: Describes the code for Ticket type not matching eligibility
+          reference: <PR/Issue/Discussion Links md format text>
   on_cancel:
     context:
       action:
@@ -3109,7 +3146,23 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_7
+    message:
+      order:
+        items: *ref_3
+        fulfillments: *ref_2
+        payments: *ref_5
+        quote: *ref_6
+        cancellation:
+          cancelled_by:
+            - code: CONSUMER
+              description: Describes the error code for Technical cancellation
+              reference: <PR/Issue/Discussion Links md format text>
+            - code: PROVIDER
+              description: Describes the error code for Technical cancellation
+              reference: <PR/Issue/Discussion Links md format text>
+          reason:
+            descriptor:
+              code: *ref_8
   update:
     context:
       action:
@@ -3137,7 +3190,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      ratings: &ref_8
+      ratings: &ref_9
         rating_category:
           - code: ITEM
             description: Describes the category as an item.
@@ -3166,15 +3219,15 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      ratings: *ref_8
+      ratings: *ref_9
 x-tags:
   search:
     message:
-      intent: &ref_10
+      intent: &ref_11
         - code: BAP_TERMS
           description: Details about fare for the ride
           reference: <PR/Issue/Discussion Links md format text>
-          list: &ref_9
+          list: &ref_10
             - code: BUYER_FINDER_FEES_TYPE
               description: Buyer finder fee type
               reference: <PR/Issue/Discussion Links md format text>
@@ -3211,7 +3264,7 @@ x-tags:
         - code: BPP_TERMS
           description: Details about fare for the ride
           reference: <PR/Issue/Discussion Links md format text>
-          list: *ref_9
+          list: *ref_10
         - code: PAGINATION
           description: Details about pagination
           reference: <PR/Issue/Discussion Links md format text>
@@ -3235,8 +3288,8 @@ x-tags:
   on_search:
     message:
       catalog:
-        providers: &ref_11
-          items: &ref_12
+        providers: &ref_12
+          items: &ref_13
             tags:
               - code: FARE_POLICY
                 description: Details about fare for the ride
@@ -3262,22 +3315,22 @@ x-tags:
                       Describes whether the additional details form is required.
                       If this tag is not provided, the default value is false.
                     reference: <PR/Issue/Discussion Links md format text>
-        tags: *ref_10
+        tags: *ref_11
   on_select:
     message:
-      order: *ref_11
-  init: &ref_13
+      order: *ref_12
+  init: &ref_14
     message:
       order:
-        tags: *ref_10
-  on_init: &ref_14
+        tags: *ref_11
+  on_init: &ref_15
     message:
       order:
-        items: *ref_12
-        tags: *ref_10
-  confirm: *ref_13
-  on_confirm: *ref_14
-  on_status: *ref_14
+        items: *ref_13
+        tags: *ref_11
+  confirm: *ref_14
+  on_confirm: *ref_15
+  on_status: *ref_15
 x-flows:
   - summary: Unreserved Entry Pass - Seller App Pagination Flow (Culture-Heritage)
     details:
@@ -3315,7 +3368,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for unreserved entry pass
-          value: &ref_22
+          value: &ref_23
             context:
               location:
                 country:
@@ -3390,7 +3443,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a catalog for unreserved entry pass
-          value: &ref_15
+          value: &ref_16
             context:
               location:
                 country:
@@ -3553,7 +3606,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a catalog for unreserved entry pass
-          value: &ref_16
+          value: &ref_17
             context:
               location:
                 country:
@@ -4185,7 +4238,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a catalog for unreserved entry pass
-          value: &ref_17
+          value: &ref_18
             context:
               location:
                 country:
@@ -4924,7 +4977,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a catalog for unreserved entry pass
-          value: *ref_15
+          value: *ref_16
       - summary: Return a catalog of all unreserved-entry-pass services
         api: on_search
         details:
@@ -4942,7 +4995,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a catalog for unreserved entry pass
-          value: *ref_16
+          value: *ref_17
       - summary: Return a catalog of all unreserved-entry-pass services
         api: on_search
         details:
@@ -4960,7 +5013,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a catalog for unreserved entry pass
-          value: *ref_17
+          value: *ref_18
   - summary: Unreserved Entry Pass - Purchase Journey(Culture-Heritage)
     details:
       - description: >-
@@ -5039,7 +5092,7 @@ x-flows:
         reference: if any
         example:
           summary: Select a an item for unreserved-entry-pass
-          value: &ref_23
+          value: &ref_24
             context:
               location:
                 country:
@@ -5119,7 +5172,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a selected item for unreserved-entry-pass
-          value: &ref_29
+          value: &ref_30
             context:
               location:
                 country:
@@ -6081,7 +6134,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: &ref_24
+          value: &ref_25
             context:
               location:
                 country:
@@ -6184,7 +6237,7 @@ x-flows:
         reference: if any
         example:
           summary: Return draft order for transit ticket with settlement details
-          value: &ref_30
+          value: &ref_31
             context:
               location:
                 country:
@@ -6603,7 +6656,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_25
+          value: &ref_26
             context:
               location:
                 country:
@@ -6745,7 +6798,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_19
+          value: &ref_20
             context:
               location:
                 country:
@@ -7182,7 +7235,7 @@ x-flows:
         reference: if any
         example:
           summary: Fetch the latest status of order
-          value: &ref_18
+          value: &ref_19
             context:
               location:
                 country:
@@ -7222,7 +7275,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_20
+          value: &ref_21
             context:
               location:
                 country:
@@ -9252,7 +9305,7 @@ x-flows:
         reference: if any
         example:
           summary: Fetch the latest status of order
-          value: *ref_18
+          value: *ref_19
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -9734,7 +9787,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_19
+          value: *ref_20
       - summary: Buyer app request for latest order status
         api: status
         details:
@@ -10227,7 +10280,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel ticket booking
-          value: &ref_21
+          value: &ref_22
             context:
               location:
                 country:
@@ -10270,7 +10323,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel ticket booking
-          value: &ref_31
+          value: &ref_32
             context:
               location:
                 country:
@@ -10752,7 +10805,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel ticket booking
-          value: &ref_26
+          value: &ref_27
             context:
               location:
                 country:
@@ -10795,7 +10848,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel ticket booking
-          value: &ref_32
+          value: &ref_33
             context:
               location:
                 country:
@@ -11303,7 +11356,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_19
+          value: *ref_20
       - summary: Buyer app cancels the request for ticket
         api: cancel
         details:
@@ -11343,7 +11396,7 @@ x-flows:
               bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order_id: O1
-              cancellation_reason_id: '0'
+              cancellation_reason_id: '001'
               descriptor:
                 name: Ride Cancellation
                 code: SOFT_CANCEL
@@ -11863,7 +11916,7 @@ x-flows:
               bpp_uri: https://api.unreserved-entry-pass.com/beckn/
             message:
               order_id: O1
-              cancellation_reason_id: '0'
+              cancellation_reason_id: '001'
               descriptor:
                 name: Ride Cancellation
                 code: CONFIRM_CANCEL
@@ -12348,7 +12401,7 @@ x-flows:
                   cancelled_by: CONSUMER
                   reason:
                     descriptor:
-                      code: '0'
+                      code: '001'
                 created_at: '2024-06-26T04:53:26.000Z'
                 updated_at: '2024-06-26T04:53:26.000Z'
   - summary: Unreserved Entry Pass - Partial Cancellation Flow
@@ -12409,7 +12462,7 @@ x-flows:
               order:
                 cancellation:
                   reason:
-                    id: '0'
+                    id: '001'
                     descriptor:
                       code: SOFT_CANCEL
                 items:
@@ -12914,7 +12967,7 @@ x-flows:
               order:
                 cancellation:
                   reason:
-                    id: '0'
+                    id: '001'
                     descriptor:
                       code: CONFIRM_CANCEL
                 items:
@@ -13415,7 +13468,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_19
+          value: *ref_20
       - summary: The provider platform sends an unsolicited on_status call.
         api: on_status
         details:
@@ -13435,7 +13488,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: *ref_20
+          value: *ref_21
       - summary: Buyer app provides rating for an entity
         api: rating
         details:
@@ -13455,7 +13508,7 @@ x-flows:
         reference: if any
         example:
           summary: Buyer app provides rating for an entity
-          value: &ref_27
+          value: &ref_28
             context:
               location:
                 country:
@@ -13521,7 +13574,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_19
+          value: *ref_20
       - summary: The provider platform sends an unsolicited on_status call.
         api: on_status
         details:
@@ -13543,7 +13596,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: *ref_20
+          value: *ref_21
       - summary: Buyer app provides rating for an entity
         api: rating
         details:
@@ -13565,7 +13618,7 @@ x-flows:
         reference: if any
         example:
           summary: Buyer app provides rating for an entity
-          value: &ref_28
+          value: &ref_29
             context:
               location:
                 country:
@@ -13610,7 +13663,7 @@ x-flows:
         reference: if any
         example:
           summary: Provider returns with the on_rating
-          value: &ref_33
+          value: &ref_34
             context:
               location:
                 country:
@@ -13658,7 +13711,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_21
+          value: *ref_22
       - summary: The provider app rejected the cancellation as it is not allowed.
         api: on_cancel
         details:
@@ -13765,7 +13818,7 @@ x-examples:
                             code: SETTLEMENT_WINDOW
                           value: P30D
           - summary: Search_for_unreserved_entry_pass_2
-            value: *ref_22
+            value: *ref_23
           - summary: Search_for_unreserved_entry_pass_without_timestamp(FOOD_DINING)
             value:
               context:
@@ -13822,63 +13875,63 @@ x-examples:
       select:
         examples:
           - summary: Select_a_an_item_for_unreserved-entry-pass
-            value: *ref_23
+            value: *ref_24
       init:
         examples:
           - summary: Initialize_the_order_by_providing_billing_details
-            value: *ref_24
+            value: *ref_25
       confirm:
         examples:
           - summary: Confirm_ticket_booking
-            value: *ref_25
+            value: *ref_26
       cancel:
         examples:
           - summary: Cancel_ticket_booking
-            value: *ref_21
+            value: *ref_22
           - summary: Cancel_ticket_booking_2
-            value: *ref_26
+            value: *ref_27
       status:
         examples:
           - summary: Fetch_the_latest_status_of_order
-            value: *ref_18
+            value: *ref_19
       rating:
         examples:
           - summary: Provides the rating
-            value: *ref_27
-          - summary: Provides the rating with invalid order id
             value: *ref_28
+          - summary: Provides the rating with invalid order id
+            value: *ref_29
       on_search:
         examples:
           - summary: Return_a_catalog_for_unreserved_entry_pass
-            value: *ref_16
+            value: *ref_17
           - summary: on_search_request_1
-            value: *ref_15
+            value: *ref_16
       on_select:
         examples:
           - summary: Return_a_selected_item_for_unreserved-entry-pass
-            value: *ref_29
+            value: *ref_30
       on_init:
         examples:
           - summary: Return_draft_order_for_transit_ticket_with_settlement_details
-            value: *ref_30
+            value: *ref_31
       on_confirm:
         examples:
           - summary: Return_confirmed_ticket_order_with_payment_confirmation
-            value: *ref_19
+            value: *ref_20
       on_cancel:
         examples:
           - summary: Cancel_ticket_booking_1
-            value: *ref_31
-          - summary: Cancel_ticket_booking_2
             value: *ref_32
+          - summary: Cancel_ticket_booking_2
+            value: *ref_33
       on_status:
         examples:
           - summary: Return_confirmed_ticket_order_with_payment_confirmation_1
-            value: *ref_20
+            value: *ref_21
       on_rating:
         examples:
           - summary: Provides the on_Rating on case of error
-            value: *ref_33
+            value: *ref_34
 x-attributes:
   unreserved-entry-pass:
     attribute_set:
@@ -20907,6 +20960,40 @@ x-attributes:
               description: >-
                 This refers to the complete description of the legal contract
                 created between the buyer and the seller.
+x-errorcodes:
+  code:
+    - Event: Temporarily unavailable
+      Description: Service temporarily unavailable from seller side
+      From: BPP
+      code: 93201
+    - Event: Experience not available
+      Description: Selected experience is no longer available for booking
+      From: BPP
+      code: 93202
+    - Event: Maximum order qty exceeded
+      Description: Maximum order qty exceeded
+      From: BPP
+      code: 93203
+    - Event: Out-of-operational hours
+      Description: Ticketing not allowed during un-operational hours
+      From: BPP
+      code: 93204
+    - Event: Error in retrieving the ticket details
+      Description: Unable to retrieve ticket details
+      From: BPP
+      code: 93205
+    - Event: Cancellation Window Closed
+      Description: Cancellation Window Closed
+      From: BPP
+      code: 93206
+    - Event: Cancellation not allowed
+      Description: The seller application does not allow user to cancel of ticket
+      From: BPP
+      code: 93207
+    - Event: Invalid order id
+      Description: Invalid order id
+      From: BPP
+      code: 93208
 x-tlc:
   code:
     - Term: Buyer App Fee
