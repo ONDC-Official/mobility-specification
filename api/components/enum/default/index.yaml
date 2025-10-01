@@ -325,6 +325,44 @@ cancel: &cancel
           description: Describes a confirm-cancel request initiated by the buyer app,
             confirming the order cancellation
           reference: <PR/Issue/Discussion Links md format text
+    cancellation_reason_id: &cancellation_reason_codes
+      - code: '000'
+        description: Describes the error code for Technical cancellation
+        reference: <PR/Issue/Discussion Links md format text>
+      - code: '001'
+        description: Describes the code for Change in travel plans/ mind
+        reference: <PR/Issue/Discussion Links md format text>
+      - code: '002'
+        description: Describes the code for Personal emergency
+        reference: <PR/Issue/Discussion Links md format text>
+      - code: '003'
+        description: Describes the code for Wrong date/time booked
+        reference: <PR/Issue/Discussion Links md format text>
+      - code: '004'
+        description: Describes the code for Duplicate booking
+        reference: <PR/Issue/Discussion Links md format text>
+      - code: '005'
+        description: Describes the code for Booked for wrong experience
+        reference: <PR/Issue/Discussion Links md format text>
+      - code: '006'
+        description: Describes the code for Did not receive booking confirmation
+        reference: <PR/Issue/Discussion Links md format text>
+      - code: '007'
+        description: Describes the code for Inability to download/access the ticket
+        reference: <PR/Issue/Discussion Links md format text>
+      - code: '008'
+        description: Describes the code for Venue closure
+        reference: <PR/Issue/Discussion Links md format text>
+      - code: '009'
+        description: Describes the code for Overbooking or duplicate slot allocation
+        reference: <PR/Issue/Discussion Links md format text>
+      - code: '010'
+        description: Describes the code for Invalid ID or documentation provided
+        reference: <PR/Issue/Discussion Links md format text>
+      - code: '011'
+        description: Describes the code for Ticket type not matching eligibility
+        reference: <PR/Issue/Discussion Links md format text>                      
+
 on_cancel: &on_cancel
   context: &on_cancel_context
     action: &on_cancel_context_action
@@ -334,7 +372,23 @@ on_cancel: &on_cancel
         reference: <PR/Issue/Discussion Links md format text>
     location: *search_context_location
     domain: *search_context_domain
-  message: *on_init_message
+  message: 
+    order:
+      items: *on_search_message_catalog_providers_items
+      fulfillments: *search_message_intent_fulfillment
+      payments: *on_search_message_catalog_providers_payments
+      quote: *select_message_order_quote
+      cancellation:
+        cancelled_by:
+          - code: 'CONSUMER'
+            description: Describes the error code for Technical cancellation
+            reference: <PR/Issue/Discussion Links md format text>
+          - code: 'PROVIDER'
+            description: Describes the error code for Technical cancellation
+            reference: <PR/Issue/Discussion Links md format text>  
+        reason:
+          descriptor:
+            code: *cancellation_reason_codes
 update: &update
   context: &update_context
     action: &update_context_action
