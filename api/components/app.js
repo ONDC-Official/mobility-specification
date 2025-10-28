@@ -267,6 +267,136 @@ async function traverseAttributes(currentAttributeValue, schemaForTraversal, log
   }
 }
 
+function buildHierarchicalTagMap(xTags) {
+  const tagMapByEndpoint = {};
+
+  for (const [endpoint, data] of Object.entries(xTags)) {
+    const tagMap = {};
+
+    const collectTags = (tagsArray = [], path = '') => {
+      tagsArray.forEach(tag => {
+        const parentCode = tag.code;
+        if (!parentCode) return;
+        const key = path ? `${path}/${parentCode}` : parentCode;
+
+        if (!tagMap[key]) tagMap[key] = new Set();
+
+        if (Array.isArray(tag.list)) {
+          tag.list.forEach(item => {
+            const childCode = item.code;
+            if (childCode) tagMap[key].add(childCode);
+          });
+        }
+      });
+    };
+
+    const walk = (obj, path = '') => {
+      if (Array.isArray(obj)) return obj.forEach(o => walk(o, path));
+      if (obj && typeof obj === 'object') {
+        for (const k in obj) {
+          if (k === 'tags' && Array.isArray(obj[k])) {
+            collectTags(obj[k], path);
+          } else {
+            const next = path ? `${path}/${k}` : k;
+            walk(obj[k], next);
+          }
+        }
+      }
+    };
+
+    walk(data.message || {});
+    tagMapByEndpoint[endpoint] = tagMap;
+  }
+  return tagMapByEndpoint;
+}
+
+function collectUsedTagMap(message) {
+  const usedTagMap = {};
+
+  const collect = (tagsArray = [], path = '') => {
+    tagsArray.forEach(tag => {
+      const parentCode = tag.code || (tag.descriptor && tag.descriptor.code);
+      if (!parentCode) return;
+      const key = path ? `${path}/${parentCode}` : parentCode;
+
+      if (!usedTagMap[key]) usedTagMap[key] = new Set();
+
+      if (Array.isArray(tag.list)) {
+        tag.list.forEach(item => {
+          const childCode = item.code || (item.descriptor && item.descriptor.code);
+          if (childCode) usedTagMap[key].add(childCode);
+        });
+      }
+    });
+  };
+
+  const recurse = (obj, path = '') => {
+    if (Array.isArray(obj)) return obj.forEach(o => recurse(o, path));
+    if (obj && typeof obj === 'object') {
+      for (const k in obj) {
+        if (k === 'tags' && Array.isArray(obj[k])) {
+          collect(obj[k], path);
+        } else {
+          const next = path ? `${path}/${k}` : k;
+          recurse(obj[k], next);
+        }
+      }
+    }
+  };
+
+  recurse(message || {});
+  return usedTagMap;
+}
+
+function findMissingTags(xTags, xExamples) {
+  const validTags = buildHierarchicalTagMap(xTags);
+  const report = {};
+
+  for (const [setName, set] of Object.entries(xExamples)) {
+    const setData = set.example_set || {};
+    for (const [endpoint, epData] of Object.entries(setData)) {
+      const valid = validTags[endpoint] || {};
+      const examples = epData.examples || [];
+
+      for (const example of examples) {
+        const used = collectUsedTagMap(example.value?.message);
+        const missing = {};
+
+        for (const [key, usedChildren] of Object.entries(used)) {
+          // Try context-specific match first
+          if (valid[key]) {
+            const validChildren = valid[key];
+            const diff = [...usedChildren].filter(c => !validChildren.has(c));
+            if (diff.length) missing[key] = diff;
+          } else {
+            // Fallback: try just parent code (last segment)
+            const plain = key.split('/').pop();
+            if (valid[plain]) {
+              const validChildren = valid[plain];
+              const diff = [...usedChildren].filter(c => !validChildren.has(c));
+              if (diff.length) missing[key] = diff;
+            } else {
+              // Nothing matches at all
+              missing[key] = [...usedChildren];
+            }
+          }
+        }
+
+        if (Object.keys(missing).length) {
+          (report[setName] ||= {})[endpoint] ||= [];
+          report[setName][endpoint].push({
+            exampleSummary: example.summary,
+            missingTags: missing,
+          });
+        }
+      }
+    }
+  }
+  return report;
+}
+
+
+
 async function validateAttributes(attribute, schemaMap) {
   for (const example of Object.keys(attribute)) {
       validateTags(attribute[example].attribute_set,schemaMap,example);
@@ -325,6 +455,10 @@ async function getSwaggerYaml(example_set, outputPath) {
     if (process.argv.includes(BUILD.checkAttributes) && !hasTrueResult) {
         await checkAttributes(exampleSets, attributes)
     }
+
+    const missingTags = findMissingTags(tags, exampleSets);
+    console.log('Missing Tags:', JSON.stringify(missingTags, null, 2));
+
     if (hasTrueResult) return;
 
     if (!hasTrueResult) {
