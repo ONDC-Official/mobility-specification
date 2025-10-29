@@ -335,11 +335,8 @@ async function getSwaggerYaml(example_set, outputPath) {
       hasTrueResult = await validateAttributes(attributes, schemaMap);
     }
 
-    if (
-      !process.argv.includes(SKIP_VALIDATION.exampleAttributes) &&
-      !hasTrueResult
-    ) {
-      // await validateExamplesAttributes(exampleSets, attributes);
+    if (!process.argv.includes(SKIP_VALIDATION.exampleAttributes) && !hasTrueResult) {
+      await validateExamplesAttributes(exampleSets, attributes)
     }
 
     if (process.argv.includes(BUILD.checkAttributes) && !hasTrueResult) {
@@ -391,9 +388,10 @@ const checkKeysExistence = (example, mandatoryRequiredKeys, endPoint) => {
     let currentIndex = 0;
     let currentKeys = [];
 
-    if (keys.includes("_description")) {
+    if(keys.includes("_description")){
       continue;
     }
+
     for (let key of keys) {
       if (Array.isArray(currentObj)) {
         isArray = true;
@@ -410,6 +408,9 @@ const checkKeysExistence = (example, mandatoryRequiredKeys, endPoint) => {
     }
 
     if (isArray) {
+      if(keys.includes("tags")){
+        continue;
+      }
       handleIfObjectIsArray(currentKeys, currentObj, endPoint);
     }
   }

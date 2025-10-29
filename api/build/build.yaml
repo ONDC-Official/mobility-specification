@@ -360,6 +360,8 @@ paths:
                 message:
                   type: object
                   properties:
+                    order_id:
+                      $ref: '#/components/schemas/Order/properties/id'
                     ratings:
                       type: array
                       items:
@@ -511,7 +513,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -730,17 +731,16 @@ paths:
                 message:
                   type: object
                   properties:
-                    feedback_form:
-                      description: >-
-                        A feedback form to allow the user to provide additional
-                        information on the rating provided
-                      allOf:
-                        - $ref: '#/components/schemas/XInput'
+                    order_id:
+                      $ref: '#/components/schemas/Order/properties/id'
+                    ratings:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Rating'
                 error:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -2300,6 +2300,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        cancellation_terms:
+          description: Cancellation terms of this item
+          type: array
+          items:
+            $ref: '#/components/schemas/CancellationTerm'
     Quotation:
       description: >-
         Describes a quote. It is the estimated price of products or services
@@ -2310,7 +2315,6 @@ components:
         id:
           description: ID of the quote.
           type: string
-          format: uuid
         price:
           description: The total quoted price
           allOf:
@@ -2339,12 +2343,12 @@ components:
           description: Category of the entity being rated
           type: string
           enum:
-            - Item
-            - Order
-            - Fulfillment
-            - Provider
-            - Agent
-            - Support
+            - ITEM
+            - ORDER
+            - FULFILLMENT
+            - PROVIDER
+            - AGENT
+            - SUPPORT
         id:
           description: Id of the object being rated
           type: string
@@ -3514,7 +3518,7 @@ x-flows:
         reference: if any
         example:
           summary: Return draft order with payment terms[Buyer Collecting]
-          value: &ref_45
+          value: &ref_44
             context:
               action: on_init
               bap_id: example-bap.com
@@ -3759,7 +3763,7 @@ x-flows:
         reference: if any
         example:
           summary: Get latest fulfillment status of a booking
-          value: &ref_58
+          value: &ref_57
             context:
               action: status
               bap_id: example-bap.com
@@ -3795,7 +3799,7 @@ x-flows:
         reference: if any
         example:
           summary: Return draft order with payment terms[Buyer Collecting]
-          value: &ref_53
+          value: &ref_52
             context:
               action: on_status
               bap_id: example-bap.com
@@ -3846,6 +3850,11 @@ x-flows:
                     reason_required: true
                 fulfillments:
                   - id: F1
+                    customer:
+                      contact:
+                        phone: '9876556789'
+                      person:
+                        name: Joe Adams
                     stops:
                       - location:
                           gps: 13.008935, 77.644408
@@ -4673,6 +4682,8 @@ x-flows:
                   - id: I1
                 provider:
                   id: P1
+                fulfillments:
+                  - id: F1
       - summary: Ride provider provides the quote for selected service
         api: on_select
         details:
@@ -6348,7 +6359,7 @@ x-flows:
         reference: if any
         example:
           summary: Return updated order with recomputed charges
-          value: &ref_54
+          value: &ref_53
             context:
               action: on_update
               bap_id: example-bap.com
@@ -6623,7 +6634,7 @@ x-flows:
         reference: if any
         example:
           summary: Return order with status - Driver at pickup
-          value: &ref_52
+          value: &ref_51
             context:
               action: on_status
               bap_id: example-bap.com
@@ -7314,7 +7325,7 @@ x-flows:
         reference: if any
         example:
           summary: Return updated order with updated agent details
-          value: &ref_55
+          value: &ref_54
             context:
               action: on_update
               bap_id: example-bap.com
@@ -7640,7 +7651,7 @@ x-flows:
         reference: if any
         example:
           summary: Return order with status - Driver at pickup
-          value: &ref_49
+          value: &ref_48
             context:
               action: on_status
               bap_id: example-bap.com
@@ -7973,7 +7984,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a mobility catalog[Seller Collecting]
-          value: &ref_47
+          value: &ref_46
             context:
               action: on_search
               bap_id: example-bap.com
@@ -8142,7 +8153,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a provider
-          value: &ref_48
+          value: &ref_47
             context:
               action: on_select
               bap_id: example-bap.com
@@ -8399,7 +8410,7 @@ x-flows:
         reference: if any
         example:
           summary: Return draft order with payment terms[Seller Collecting]
-          value: &ref_46
+          value: &ref_45
             context:
               action: on_init
               bap_id: example-bap.com
@@ -8974,7 +8985,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed order with latest fulfillment details
-          value: &ref_56
+          value: &ref_55
             context:
               action: on_update
               bap_id: example-bap.com
@@ -9221,7 +9232,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed order with latest fulfillment details
-          value: &ref_50
+          value: &ref_49
             context:
               action: on_status
               bap_id: example-bap.com
@@ -9508,7 +9519,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed order with latest fulfillment details
-          value: &ref_57
+          value: &ref_56
             context:
               action: on_update
               bap_id: example-bap.com
@@ -9775,7 +9786,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed order with latest fulfillment details
-          value: &ref_51
+          value: &ref_50
             context:
               action: on_status
               bap_id: example-bap.com
@@ -11032,7 +11043,7 @@ x-flows:
         reference: if any
         api: on_confirm
         example:
-          value: &ref_44
+          value:
             context:
               action: on_confirm
               bap_id: example-bap.com
@@ -11701,9 +11712,6 @@ x-examples:
               on_confirm_ride_provider_confirms_the_ride_request_and_provides_the_ride_details_on_confirmation__7
             description: TBD
             value: *ref_43
-          - summary: ride_cancelled
-            description: TBD
-            value: *ref_44
       on_init:
         examples:
           - summary: Return_draft_order_with_payment_terms[Seller_Collecting]___X13
@@ -11711,11 +11719,11 @@ x-examples:
           - summary: >-
               on_init_ride_provider_accepts_the_terms_of_order_and_appends_its_own_terms_and_responds_with_the_final_draft__2
             description: TBD
-            value: *ref_45
+            value: *ref_44
           - summary: >-
               on_init_ride_provider_accepts_the_terms_of_order_and_appends_its_own_terms_and_responds_with_the_final_draft__4
             description: TBD
-            value: *ref_46
+            value: *ref_45
       on_rating:
         examples:
           - summary: Return_acknowledgement_of_rating_and_feedback___X14
@@ -11872,7 +11880,7 @@ x-examples:
           - summary: >-
               on_search_ride_providers_which_is_a_mobility_provider_platform_sends_the_catalog_of_all_services_that_can_be_used_for_transit_from_a_to_b_along_with_estimated_fare__1
             description: TBD
-            value: *ref_47
+            value: *ref_46
       on_select:
         examples:
           - summary: Return_a_quote_offered_by_a_provider___X17
@@ -11880,7 +11888,7 @@ x-examples:
           - summary: >-
               on_select_ride_provider_responds_with_detailed_information_and_quote_for_the_specific_service_that_the_buyer_app_would_like_to_avail__2
             description: TBD
-            value: *ref_48
+            value: *ref_47
       on_status:
         examples:
           - summary: >-
@@ -12542,11 +12550,11 @@ x-examples:
                       value: '146'
                     ttl: P200S
           - summary: Return_order_with_status_-_Driver_at_pickup___X18
-            value: *ref_49
+            value: *ref_48
           - summary: >-
               on_status_ride_provider_provides_the_latest_update_on_ride_details_to_the_buyer_app_with_fulfillment_state___ride_started_8
             description: TBD
-            value: *ref_50
+            value: *ref_49
           - summary: >-
               on_status_ride_provider_provides_the_updated_order_status_to_the_buyer_app_1
             description: TBD
@@ -12554,7 +12562,7 @@ x-examples:
           - summary: >-
               on_status_ride_provider_provides_the_updated_order_status_to_the_buyer_app_10
             description: TBD
-            value: *ref_51
+            value: *ref_50
           - summary: >-
               on_status_ride_provider_provides_the_updated_order_status_to_the_buyer_app_2
             description: TBD
@@ -12566,11 +12574,11 @@ x-examples:
           - summary: >-
               on_status_ride_provider_provides_the_updated_order_status_to_the_buyer_app_4
             description: TBD
-            value: *ref_52
+            value: *ref_51
           - summary: >-
               on_status_ride_provider_provides_the_updated_order_status_to_the_buyer_app_5
             description: TBD
-            value: *ref_53
+            value: *ref_52
       on_support:
         examples:
           - summary: Return_support_information_related_to_an_order___X22
@@ -12604,9 +12612,9 @@ x-examples:
       on_update:
         examples:
           - summary: Return_updated_order_with_recomputed_charges___X24
-            value: *ref_54
+            value: *ref_53
           - summary: Return_updated_order_with_updated_agent_details___X26
-            value: *ref_55
+            value: *ref_54
           - summary: Return_updated_order_with_updated_billing_details___X25
             value:
               context:
@@ -12839,11 +12847,11 @@ x-examples:
           - summary: >-
               on_update_ride_provider_provides_the_latest_update_on_ride_details_to_the_buyer_app__7
             description: TBD
-            value: *ref_56
+            value: *ref_55
           - summary: >-
               on_update_ride_provider_provides_the_updated_order_updates_to_the_buyer_app___can_update_the_quote_in_case_of_fare_update_9
             description: TBD
-            value: *ref_57
+            value: *ref_56
       rating:
         examples:
           - summary: Provide_a_rating___X27
@@ -12964,7 +12972,7 @@ x-examples:
           - summary: >-
               status_buyer_app_requests_the_ride_provider_to_provide_the_latest_order_status_4
             description: TBD
-            value: *ref_58
+            value: *ref_57
       support:
         examples:
           - summary: Fetch_support_information_related_to_a_particular_order___X30
@@ -13806,7 +13814,7 @@ x-attributes:
                 description: Unique reference ID to the fulfillment of an order
               stops:
                 type:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BAP
                   usage: START
@@ -13815,7 +13823,7 @@ x-attributes:
                     defined by the network policy.
                 location:
                   gps:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: 28.707358, 77.180910
@@ -13827,20 +13835,20 @@ x-attributes:
                     usage: Banaswadi
                     description: Describes the address of this location.
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     usage: '--'
                     description: Describes the location of stops.
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BAP
                   usage: '--'
                   description: Describes the fulfillments stops.
               vehicle:
                 category:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BAP
                   usage: CAB
@@ -13852,7 +13860,7 @@ x-attributes:
                   usage: SEDAN
                   description: Describes the vehicle variant.
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BAP
                   usage: '--'
@@ -16230,7 +16238,7 @@ x-attributes:
                     usage: John Doe
                     description: Describes the name of the agent
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BPP
                     usage: '--'
@@ -16243,13 +16251,13 @@ x-attributes:
                     usage: 7845981268
                     description: Describes the contact number of the agent
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BPP
                     usage: '--'
                     description: Describes the agent contact details.
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BPP
                   usage: '--'
@@ -16336,19 +16344,19 @@ x-attributes:
                   usage: AUTO_RICKSHAW
                   description: Describes vehicle category
                 make:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: Bajaj
                   description: Describes vehicle manufacturer
                 model:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: compact-re
                   description: Describes vehicle model
                 registration:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: HR-20AS-4578
@@ -16360,7 +16368,7 @@ x-attributes:
                   usage: SEDAN
                   description: Describes the vehicle variant.
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BAP/BPP
                   usage: '--'
@@ -17205,39 +17213,39 @@ x-attributes:
               agent:
                 person:
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: John Doe
                     description: Name of the agent
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BPP
                     usage: '--'
                     description: Describes the agent details.
                 contact:
                   phone:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     usage: 7845981268
                     description: Contact number of the agent
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BPP
                     usage: '--'
                     description: Describes the agent contact details.
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BPP
                   usage: '--'
                   description: Describes the agent.
               vehicle:
                 registration:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: HR-20AS-4578
@@ -17249,25 +17257,25 @@ x-attributes:
                   usage: SEDAN
                   description: Describes the vehicle variant.
                 category:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BAP
                   usage: AUTO_RICKSHAW
                   description: Describes vehicle category
                 make:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: Bajaj
                   description: Describes vehicle manufacturer
                 model:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   usage: compact-re
                   description: Describes vehicle model
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BAP/BPP
                   usage: '--'
