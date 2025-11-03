@@ -316,6 +316,9 @@ async function getSwaggerYaml(example_set, outputPath) {
       hasTrueResult = await validateAttributes(attributes, schemaMap);
     }
 
+    const missingTags = findMissingTags(tags, exampleSets);
+    console.log('Missing Tags:', JSON.stringify(missingTags, null, 2));
+
     if (hasTrueResult) return;
 
     if (!hasTrueResult) {
@@ -332,6 +335,136 @@ async function getSwaggerYaml(example_set, outputPath) {
   } catch (error) {
     console.log("Error generating build file", error);
   }
+}
+function buildHierarchicalTagMap(xTags) {
+  const tagMapByEndpoint = {};
+
+  for (const [endpoint, data] of Object.entries(xTags)) {
+    const tagMap = {};
+
+    const collectTags = (tagsArray = []) => {
+      tagsArray.forEach(tag => {
+        const parentCode = tag.code;
+        if (!parentCode) return;
+
+        tagMap[parentCode] = new Set();
+
+        if (Array.isArray(tag.list)) {
+          tag.list.forEach(item => {
+            const childCode = item.code;
+            if (childCode) {
+              tagMap[parentCode].add(childCode);
+            }
+          });
+        }
+      });
+    };
+
+    const walk = (obj) => {
+      if (Array.isArray(obj)) {
+        obj.forEach(walk);
+      } else if (obj && typeof obj === 'object') {
+        for (const key in obj) {
+          if (key === 'tags' && Array.isArray(obj[key])) {
+            collectTags(obj[key]);
+          } else {
+            walk(obj[key]);
+          }
+        }
+      }
+    };
+
+    walk(data.message);
+    tagMapByEndpoint[endpoint] = tagMap;
+  }
+
+  return tagMapByEndpoint;
+}
+
+function collectUsedTagMap(message) {
+  const usedTagMap = {};
+
+  const recurse = (obj) => {
+    if (Array.isArray(obj)) {
+      obj.forEach(recurse);
+    } else if (obj && typeof obj === 'object') {
+      for (const key in obj) {
+        if (key === 'tags' && Array.isArray(obj[key])) {
+          obj[key].forEach(tag => {
+            const parentCode = tag.code || (tag.descriptor && tag.descriptor.code);
+            if (!parentCode) return;
+
+            if (!usedTagMap[parentCode]) {
+              usedTagMap[parentCode] = new Set();
+            }
+
+            if (Array.isArray(tag.list)) {
+              tag.list.forEach(item => {
+                const childCode = item.code || (item.descriptor && item.descriptor.code);
+                if (childCode) {
+                  usedTagMap[parentCode].add(childCode);
+                }
+              });
+            }
+          });
+        } else {
+          recurse(obj[key]);
+        }
+      }
+    }
+  };
+
+  recurse(message);
+  return usedTagMap;
+}
+
+function findMissingTags(xTags, xExamples) {
+  const validHierarchicalTags = buildHierarchicalTagMap(xTags);
+  const report = {};
+
+  for (const [exampleSetName, exampleSet] of Object.entries(xExamples)) {
+    const exampleSetData = exampleSet.example_set;
+
+    for (const [endpoint, endpointData] of Object.entries(exampleSetData)) {
+      const validTagMap = validHierarchicalTags[endpoint] || {};
+      const examples = endpointData.examples || [];
+
+      for (const example of examples) {
+        const usedTagMap = collectUsedTagMap(example.value?.message);
+        const missing = {};
+
+        for (const [parentCode, usedChildren] of Object.entries(usedTagMap)) {
+          // If parent not in valid list
+          if (!validTagMap[parentCode]) {
+            missing[parentCode] = Array.from(usedChildren);
+          } else {
+            const validChildren = validTagMap[parentCode];
+            const missingChildren = Array.from(usedChildren).filter(child => !validChildren.has(child));
+            if (missingChildren.length > 0) {
+              missing[parentCode] = missingChildren;
+            }
+          }
+        }
+
+        if (Object.keys(missing).length > 0) {
+          if (!report[exampleSetName]) {
+            report[exampleSetName] = {};
+          }
+
+          if (!report[exampleSetName][endpoint]) {
+            report[exampleSetName][endpoint] = [];
+          }
+
+          report[exampleSetName][endpoint].push({
+            exampleSummary: example.summary,
+            missingTags: missing
+          });
+        }
+      }
+    }
+  }
+
+  return report;
 }
 
 function cleanup() {

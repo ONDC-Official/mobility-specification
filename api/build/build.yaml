@@ -3218,6 +3218,9 @@ x-tags:
                 - code: BUYER_FINDER_FEES_AMOUNT
                   description: Buyer finder fee in amount
                   reference: <PR/Issue/Discussion Links md format text>
+                - code: BUYER_FINDER_FEES_TYPE
+                  description: Buyer finder fee type
+                  reference: <PR/Issue/Discussion Links md format text>
             - code: SETTLEMENT_TERMS
               description: Describes the settlement terms
               reference: <PR/Issue/Discussion Links md format text>
@@ -3350,6 +3353,12 @@ x-tags:
                   - code: AVAILABLE
                     description: Describes whether seat is available for selection or not
                     reference: <PR/Issue/Discussion Links md format text>
+                  - code: NUMBER
+                    description: Describes the seat number
+                    reference: <PR/Issue/Discussion Links md format text>
+                  - code: SELECTED_SEAT
+                    description: Describes the selected seat
+                    reference: <PR/Issue/Discussion Links md format text>
               - code: VEHICLE_GRID
                 description: Vehicle details to identify specifics of vehicle
                 reference: <PR/Issue/Discussion Links md format text>
@@ -3395,58 +3404,56 @@ x-tags:
                   - code: ROUTE_DIRECTION
                     description: Describes the direction of a particular route
                     reference: <PR/Issue/Discussion Links md format text>
+              - code: VEHICLE_AMENITIES
+                description: Describes the vehicle amenities
+                reference: <PR/Issue/Discussion Links md format text>
           payments: *ref_10
   select:
     message:
       order:
         fulfillments: *ref_11
-  on_select: &ref_14
+  on_select:
     message:
       order:
         fulfillments: *ref_11
         items: *ref_12
-        provider: &ref_13
-          tags:
-            - code: FARE_TYPE
-              description: Details about type of fare for the ride
-              reference: <PR/Issue/Discussion Links md format text>
-              list:
-                - code: REGULAR
-                  description: Describes the regular type fare
+        quote: &ref_13
+          breakup:
+            item:
+              tags:
+                - code: TAX
+                  description: Describes the tax
                   reference: <PR/Issue/Discussion Links md format text>
-                - code: STUDENT
-                  description: Describes the special type of fare for students
+                  list:
+                    - code: CGST
+                      description: Describes the CGST charges elements
+                      reference: <PR/Issue/Discussion Links md format text>
+                    - code: SGST
+                      description: Describes the SGST charges elements
+                      reference: <PR/Issue/Discussion Links md format text>
+                    - code: SERVICE_TAX
+                      description: Describes the SERVICE_TAX charges elements
+                      reference: <PR/Issue/Discussion Links md format text>
+                - code: SELLER_FEES
+                  description: Describes the seller fee
                   reference: <PR/Issue/Discussion Links md format text>
-                - code: SENIOR_CITIZEN
-                  description: Describes the special type of fare for senior citizens
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: ARMED_FORCES
-                  description: Describes the special type of fare for armed personnel
-                  reference: <PR/Issue/Discussion Links md format text>
-                - code: DOCTORS_NURSES
-                  description: >-
-                    Describes the special type of fare for armed doctors &
-                    nurses
-                  reference: <PR/Issue/Discussion Links md format text>
-  init:
+  init: &ref_14
     message:
       order:
+        fulfillments: *ref_11
         payments: *ref_10
-  on_init:
+  on_init: &ref_15
     message:
       order:
         fulfillments: *ref_11
         items: *ref_12
-        provider: *ref_13
         payments: *ref_10
-  on_confirm: *ref_14
-  on_status:
-    message:
-      order:
-        fulfillments: *ref_11
-        items: *ref_12
-  on_cancel: *ref_14
-  on_update: *ref_14
+        quote: *ref_13
+  confirm: *ref_14
+  on_confirm: *ref_15
+  on_status: *ref_15
+  on_cancel: *ref_15
+  on_update: *ref_15
 x-flows:
   - summary: InterCity(Bus) - Station Code Based Flow
     details:
@@ -3527,7 +3534,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for all services form the given start location(code)
-          value: &ref_21
+          value: &ref_22
             context:
               location:
                 country:
@@ -3600,7 +3607,7 @@ x-flows:
         reference: if any
         example:
           summary: Return services available for provided start code or gps
-          value: &ref_31
+          value: &ref_32
             context:
               location:
                 country:
@@ -3756,7 +3763,7 @@ x-flows:
                                   https://api.transit-solutions.com/booking/terms
       - summary: Search for the bus by start and end station code
         api: search
-        details: &ref_15
+        details: &ref_16
           - description: >-
               Users searches over the network to avail the intercity bus mode of
               transport from one station to another
@@ -3775,7 +3782,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for all services from given start and end location(code)
-          value: &ref_22
+          value: &ref_23
             context:
               location:
                 country:
@@ -3838,7 +3845,7 @@ x-flows:
           Return an intercity catalog of all bus services from one station to
           another
         api: on_search
-        details: &ref_16
+        details: &ref_17
           - description: >-
               Provider platform sends the catalog of all the service that can be
               used for transit using bus from station A to station B
@@ -3859,7 +3866,7 @@ x-flows:
           summary: >-
             Return services available for provided start and end code or gps
             with journey date
-          value: &ref_32
+          value: &ref_33
             context:
               location:
                 country:
@@ -4170,11 +4177,11 @@ x-flows:
                                   https://api.transit-solutions.com/booking/terms
       - summary: Search for the specific bus service
         api: search
-        details: *ref_15
+        details: *ref_16
         reference: if any
         example:
           summary: Search for all services from given start and end location(code)
-          value: &ref_23
+          value: &ref_24
             context:
               location:
                 country:
@@ -4225,13 +4232,13 @@ x-flows:
                           value: https://api.example-bap.com/booking/terms
       - summary: Return an intercity specific bus services
         api: on_search
-        details: *ref_16
+        details: *ref_17
         reference: if any
         example:
           summary: >-
             Return services available seat layout for provided start and end
             code with journey date
-          value: &ref_33
+          value: &ref_34
             context:
               location:
                 country:
@@ -4486,7 +4493,7 @@ x-flows:
         reference: if any
         example:
           summary: Get Quote of a selected seat
-          value: &ref_24
+          value: &ref_25
             context:
               location:
                 country:
@@ -4540,7 +4547,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a intercity bus  service provider
-          value: &ref_34
+          value: &ref_35
             context:
               location:
                 country:
@@ -4781,7 +4788,7 @@ x-flows:
         reference: if any
         example:
           summary: Get Quote of a selected seat
-          value: &ref_25
+          value: &ref_26
             context:
               location:
                 country:
@@ -4863,7 +4870,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a intercity bus  service provider
-          value: &ref_18
+          value: &ref_19
             context:
               location:
                 country:
@@ -5119,7 +5126,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: &ref_19
+          value: &ref_20
             context:
               location:
                 country:
@@ -5249,7 +5256,7 @@ x-flows:
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
-          value: &ref_35
+          value: &ref_36
             context:
               location:
                 country:
@@ -5578,7 +5585,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_26
+          value: &ref_27
             context:
               location:
                 country:
@@ -5711,7 +5718,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_17
+          value: &ref_18
             context:
               location:
                 country:
@@ -6061,7 +6068,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_29
+          value: &ref_30
             context:
               location:
                 country:
@@ -6451,7 +6458,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: &ref_20
+          value: &ref_21
             context:
               location:
                 country:
@@ -6822,7 +6829,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_17
+          value: *ref_18
       - summary: Buyer app cancels the request for ticket
         api: cancel
         details:
@@ -6842,7 +6849,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a transit ticket booking before the cancellation period
-          value: &ref_27
+          value: &ref_28
             context:
               location:
                 country:
@@ -6887,7 +6894,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_36
+          value: &ref_37
             context:
               location:
                 country:
@@ -7236,7 +7243,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a transit ticket booking before the cancellation period
-          value: &ref_28
+          value: &ref_29
             context:
               location:
                 country:
@@ -7279,7 +7286,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_37
+          value: &ref_38
             context:
               location:
                 country:
@@ -7649,7 +7656,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a intercity bus  service provider
-          value: *ref_18
+          value: *ref_19
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -7671,7 +7678,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: *ref_19
+          value: *ref_20
       - summary: >-
           The provider platform returned an error code because the buyer app did
           not respond within the TTL specified in the quote object.
@@ -7763,7 +7770,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_17
+          value: *ref_18
       - summary: Buyer app request for ticket cancellation with soft cancel request
         api: update
         details:
@@ -8644,7 +8651,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_17
+          value: *ref_18
       - summary: >-
           The provider platform cancel the order with unsolicited on_cancel
           call.
@@ -9079,7 +9086,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_17
+          value: *ref_18
       - summary: The provider platform sends an unsolicited on_status call.
         api: on_status
         details:
@@ -9099,7 +9106,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: *ref_20
+          value: *ref_21
       - summary: Buyer app provides rating for an entity
         api: rating
         details:
@@ -9119,7 +9126,7 @@ x-flows:
         reference: if any
         example:
           summary: Buyer app provides rating for an entity
-          value: &ref_30
+          value: &ref_31
             context:
               location:
                 country:
@@ -9183,7 +9190,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_17
+          value: *ref_18
       - summary: The provider platform sends an unsolicited on_status call.
         api: on_status
         details:
@@ -9205,7 +9212,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: *ref_20
+          value: *ref_21
       - summary: Buyer app provides rating for an entity
         api: rating
         details:
@@ -9270,7 +9277,7 @@ x-flows:
         reference: if any
         example:
           summary: Provider returns with the on_rating
-          value: &ref_38
+          value: &ref_39
             context:
               location:
                 country:
@@ -9297,9 +9304,9 @@ x-examples:
       search:
         examples:
           - summary: Search_for_all_services_form_the_given_start_location(code)
-            value: *ref_21
-          - summary: Search_for_all_services_from_given_start_and_end_location(code)
             value: *ref_22
+          - summary: Search_for_all_services_from_given_start_and_end_location(code)
+            value: *ref_23
           - summary: Search_for_all_services_from_given_start_and_end_location(gps)
             value:
               context:
@@ -9411,13 +9418,13 @@ x-examples:
                               code: STATIC_TERMS
                             value: https://api.example-bap.com/booking/terms
           - summary: Search_for_all_services_from_given_start_and_end_location(code)_5
-            value: *ref_23
+            value: *ref_24
       select:
         examples:
           - summary: Get_Quote_of_a_selected_seat
-            value: *ref_24
-          - summary: Get_Quote_of_a_selected_seat_2
             value: *ref_25
+          - summary: Get_Quote_of_a_selected_seat_2
+            value: *ref_26
       init:
         examples:
           - summary: Initialize_the_order_by_providing_billing_details
@@ -9515,7 +9522,7 @@ x-examples:
                                 code: SETTLEMENT_AMOUNT
                               value: '940'
           - summary: Initialize_the_order_by_providing_billing_details_2
-            value: *ref_19
+            value: *ref_20
       confirm:
         examples:
           - summary: Confirm_ticket_booking
@@ -9618,17 +9625,17 @@ x-examples:
                                 code: SETTLEMENT_AMOUNT
                               value: '940'
           - summary: Confirm_ticket_booking_2
-            value: *ref_26
+            value: *ref_27
       cancel:
         examples:
           - summary: Cancel_a_transit_ticket_booking_before_the_cancellation_period
-            value: *ref_27
-          - summary: Cancel_a_transit_ticket_booking_before_the_cancellation_period_2
             value: *ref_28
+          - summary: Cancel_a_transit_ticket_booking_before_the_cancellation_period_2
+            value: *ref_29
       status:
         examples:
           - summary: Get_latest_status_of_a_transit_ticket_booking
-            value: *ref_29
+            value: *ref_30
       update:
         examples:
           - summary: Update_customer_details
@@ -9698,23 +9705,23 @@ x-examples:
       rating:
         examples:
           - summary: Provide feedback on a service
-            value: *ref_30
+            value: *ref_31
       on_search:
         examples:
           - summary: Return_services_available_for_provided_start_code_or_gps
-            value: *ref_31
-          - summary: >-
-              Return_services_available_for_provided_start_and_end_code_or_gps_with_journey_date
             value: *ref_32
           - summary: >-
-              Return_services_available_seat_layout_for_provided_start_and_end_code_with_journey_date
+              Return_services_available_for_provided_start_and_end_code_or_gps_with_journey_date
             value: *ref_33
+          - summary: >-
+              Return_services_available_seat_layout_for_provided_start_and_end_code_with_journey_date
+            value: *ref_34
       on_select:
         examples:
           - summary: Return_a_quote_offered_by_a_intercity_bus__service_provider
-            value: *ref_34
+            value: *ref_35
           - summary: Return_a_quote_offered_by_a_intercity_bus__service_provider_2
-            value: *ref_18
+            value: *ref_19
       on_init:
         examples:
           - summary: >-
@@ -9948,7 +9955,7 @@ x-examples:
                               value: '940'
           - summary: >-
               Return_draft_order_for_transit_ticket_with_settlement_via_payment_link_2
-            value: *ref_35
+            value: *ref_36
       on_confirm:
         examples:
           - summary: Return_confirmed_ticket_order_with_payment_confirmation
@@ -10194,7 +10201,7 @@ x-examples:
                   created_at: '2023-09-03T01:55:08.143Z'
                   updated_at: '2023-09-03T01:55:08.143Z'
           - summary: Return_confirmed_ticket_order_with_payment_confirmation_2
-            value: *ref_17
+            value: *ref_18
       on_status:
         examples:
           - summary: Return_transit_ticket_order_with_status_-_Journey_Completed
@@ -11535,13 +11542,13 @@ x-examples:
       on_cancel:
         examples:
           - summary: Return_cancelled_ticket_order_with_cancellation_charges
-            value: *ref_36
-          - summary: Return_cancelled_ticket_order_with_cancellation_charges_2
             value: *ref_37
+          - summary: Return_cancelled_ticket_order_with_cancellation_charges_2
+            value: *ref_38
       on_rating:
         examples:
           - summary: on_rating with error response
-            value: *ref_38
+            value: *ref_39
 x-attributes:
   inter-city:
     attribute_set:
