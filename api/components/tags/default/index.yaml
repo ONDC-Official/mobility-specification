@@ -107,6 +107,31 @@ on_search: &on_search
                   code: BASE_FARE
                   description: Describes the base fare component
                   reference: <PR/Issue/Discussion Links md format text>
+            - code: FARE_TYPE
+              description: Details about type of fare for the ride
+              reference: <PR/Issue/Discussion Links md format text>
+              list: &on_select_message_order_provider_tags_0_list
+                - &on_select_message_order_provider_tags_0_list_0
+                  code: REGULAR
+                  description: Describes the regular type fare
+                  reference: <PR/Issue/Discussion Links md format text>
+                - &on_select_message_order_provider_tags_0_list_1
+                  code: STUDENT
+                  description: Describes the special type of fare for students
+                  reference: <PR/Issue/Discussion Links md format text>
+                - &on_select_message_order_provider_tags_0_list_2
+                  code: SENIOR_CITIZEN
+                  description: Describes the special type of fare for senior citizens
+                  reference: <PR/Issue/Discussion Links md format text>
+                - &on_select_message_order_provider_tags_0_list_3
+                  code: ARMED_FORCES
+                  description: Describes the special type of fare for armed personnel
+                  reference: <PR/Issue/Discussion Links md format text>
+                - &on_select_message_order_provider_tags_0_list_4
+                  code: DOCTORS_NURSES
+                  description: Describes the special type of fare for armed doctors & nurses
+                  reference: <PR/Issue/Discussion Links md format text>
+        
         fulfillments: &on_search_message_catalog_providers_fulfillments
           tags: &on_search_message_catalog_providers_fulfillments_tags
             - &on_search_message_catalog_providers_fulfillments_tags_0
@@ -162,6 +187,14 @@ on_search: &on_search
                   code: AVAILABLE
                   description: Describes whether seat is available for selection or not
                   reference: <PR/Issue/Discussion Links md format text>
+                - code: NUMBER
+                  description: Describes seat number
+                  reference: <PR/Issue/Discussion Links md format text>
+                - code: SELECTED_SEAT
+                  description: Describes selected seat
+                  reference: <PR/Issue/Discussion Links md format text>  
+                    
+                  
             - &on_search_message_catalog_providers_fulfillments_tags_1
               code: VEHICLE_GRID
               description: Vehicle details to identify specifics of vehicle
@@ -250,33 +283,7 @@ on_select: &on_select
     order: &on_select_message_order
       fulfillments: *on_search_message_catalog_providers_fulfillments
       items: *on_search_message_catalog_providers_items
-      provider: &on_select_message_order_provider
-        tags: &on_select_message_order_provider_tags
-          - &on_select_message_order_provider_tags_0
-            code: FARE_TYPE
-            description: Details about type of fare for the ride
-            reference: <PR/Issue/Discussion Links md format text>
-            list: &on_select_message_order_provider_tags_0_list
-              - &on_select_message_order_provider_tags_0_list_0
-                code: REGULAR
-                description: Describes the regular type fare
-                reference: <PR/Issue/Discussion Links md format text>
-              - &on_select_message_order_provider_tags_0_list_1
-                code: STUDENT
-                description: Describes the special type of fare for students
-                reference: <PR/Issue/Discussion Links md format text>
-              - &on_select_message_order_provider_tags_0_list_2
-                code: SENIOR_CITIZEN
-                description: Describes the special type of fare for senior citizens
-                reference: <PR/Issue/Discussion Links md format text>
-              - &on_select_message_order_provider_tags_0_list_3
-                code: ARMED_FORCES
-                description: Describes the special type of fare for armed personnel
-                reference: <PR/Issue/Discussion Links md format text>
-              - &on_select_message_order_provider_tags_0_list_4
-                code: DOCTORS_NURSES
-                description: Describes the special type of fare for armed doctors & nurses
-                reference: <PR/Issue/Discussion Links md format text>
+      
       quote: &on_select_message_order_quote
         breakup: &on_select_message_order_quote_breakup
           item: &on_select_message_order_quote_breakup_item
@@ -289,6 +296,7 @@ on_select: &on_select
                 code: OTHER_CHARGES
                 description: Describes the other charges elements
                 reference: <PR/Issue/Discussion Links md format text>
+
 init: &init
   message: &init_message
     order: &init_message_order
@@ -298,9 +306,9 @@ on_init: &on_init
     order: &on_init_message_order
       fulfillments: *on_search_message_catalog_providers_fulfillments
       items: *on_search_message_catalog_providers_items
-      provider: *on_select_message_order_provider
       payments: *search_message_intent_payment
       quote: *on_select_message_order_quote
+confirm: *init
 on_confirm: *on_init
 on_status: &on_status
   message: &on_status_message
