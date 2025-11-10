@@ -1,0 +1,216 @@
+summary: Metro Card Recharge
+details:
+  - description: Discovery of Metro Card Recharge.
+    mermaid: >-
+      sequenceDiagram
+        title Metro Card Recharge Discovery
+        Buyer Platform (BAP)->>Gateway (BG): search
+        Gateway (BG) ->> Buyer Platform (BAP): ACK
+        Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+        Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+        Gateway (BG)->>Seller Platforms (BPP): search
+        Seller Platforms (BPP)->>Gateway (BG) : ACK
+        Seller Platforms (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+        Buyer Platform (BAP)->>Seller Platforms (BPP): ACK    
+  - description: Ordering
+    mermaid: >-
+      sequenceDiagram
+        title  Selection
+        participant Buyer Platform (BAP)
+        participant Seller Platforms (BPP)
+        Buyer Platform (BAP)->>Seller Platforms (BPP): select
+        Seller Platforms (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platforms (BPP)->>Buyer Platform (BAP):on_select
+        Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK  
+  - description: Initializing the order 
+    mermaid: >-
+      sequenceDiagram
+        title Initializing Order
+        participant Buyer Platform (BAP)
+        participant Seller Platforms (BPP)
+        Buyer Platform (BAP)->>Seller Platforms (BPP): init
+        Seller Platforms (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platforms (BPP)->>Buyer Platform (BAP):on_init
+        Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK      
+  - description: Order Confirmation 
+    mermaid: >-
+      sequenceDiagram
+        title  Order Confirmation
+        participant Buyer Platform (BAP)
+        participant Seller Platforms (BPP)
+        Buyer Platform (BAP)->>Seller Platforms (BPP): confirm
+        Seller Platforms (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platforms (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
+  - description: Fulfillment  
+    mermaid: >-
+      sequenceDiagram
+        title Order Fulfillment
+        participant Buyer Platform (BAP)
+        participant Seller Platforms (BPP)
+        Buyer Platform (BAP)->>Seller Platforms (BPP): status-Request application status
+        Seller Platforms (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platforms (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+        Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK            
+references: if any
+steps:
+  - summary: Buyer app search for available metro card recharge providers
+    api: search
+    details:
+      - description: Buyer app explore metro card recharge options by searching over the network.
+        mermaid: >-
+          sequenceDiagram
+            title metro card recharge Discovery
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platforms (BPP): search
+            Seller Platforms (BPP)->>Gateway (BG) : ACK
+            end
+            Seller Platforms (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platforms (BPP): ACK    
+    reference: if any
+    example:
+      value:
+        $ref: "../../examples/metro-wallet/search/search-request.yaml"
+  - summary: Seller provides a catalog of different products offered by a single provider
+    api: on_search
+    details:
+      - description: Seller sends a comprehensive catalog of various  products specifically tailored for metro card recharge.
+        mermaid: >-
+          sequenceDiagram
+            title metro card recharge Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platforms (BPP): search
+            Seller Platforms (BPP)->>Gateway (BG) : ACK
+            rect rgb(191, 223, 255)
+            Seller Platforms (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platforms (BPP): ACK  
+            end
+    reference: if any
+    example:
+      value:
+        $ref: "../../examples/metro-wallet/on_search/on_search-request.yaml"
+ 
+  - summary: Buyer app selects an item
+    api: select
+    details:
+      - description: Buyer app selects a specific metro card recharge item.
+        mermaid: >-
+          sequenceDiagram
+            title  Selection
+            participant Buyer Platform (BAP)
+            participant Seller Platforms (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platforms (BPP): select
+            Seller Platforms (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platforms (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
+    reference: if any
+    example:
+      value:
+        $ref: "../../examples/metro-wallet/select/select-request_recharge.yaml"
+  - summary: Seller returns the response to selected metro card recharge plan
+    api: on_select
+    details:
+      - description: Seller responds to the buyer app requests with quote.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platforms (BPP)
+            Buyer Platform (BAP)->>Seller Platforms (BPP): select
+            Seller Platforms (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platforms (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK
+            end 
+    reference: if any
+    example:
+      value:
+        $ref: "../../examples/metro-wallet/on_select/on_select-request_recharge.yaml"
+
+  - summary: The buyer app initiates the metro card recharge request
+    api: init
+    details:
+      - description: Buyer app initiates purchase of a specific metro card recharge.
+        mermaid: >-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platforms (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platforms (BPP): init
+            Seller Platforms (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platforms (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
+    reference: if any
+    example: 
+      value:
+        $ref: "../../examples/metro-wallet/init/init-request_recharge.yaml"
+  - summary: Seller returns the response to initailized metro card recharge plan.
+    api: on_init
+    details:
+      - description: Seller returns the response to initailized metro card recharge plan.
+        mermaid: >-
+          sequenceDiagram
+            title Initializing Order
+            participant Buyer Platform (BAP)
+            participant Seller Platforms (BPP)
+            Buyer Platform (BAP)->>Seller Platforms (BPP): init
+            Seller Platforms (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platforms (BPP)->>Buyer Platform (BAP):on_init
+            Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK
+            end
+    reference: if any
+    example: 
+      value:
+        $ref: "../../examples/metro-wallet/on_init/on_init-request_recharge.yaml"      
+ 
+  
+  - summary: Buyer app confirms the metro card recharge request
+    api: confirm
+    details:
+      - description: Buyer app confirms the metro card recharge request and provides all the necessary information as per the terms.
+        mermaid: >-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platforms (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platforms (BPP): confirm
+            Seller Platforms (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platforms (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
+    reference: if any
+    example:
+      value:
+        $ref: "../../examples/metro-wallet/confirm/confirm-request_recharge.yaml"         
+  - summary: Seller confirms the metro card recharge order
+    api: on_confirm
+    details:
+      - description: Seller confirms the order and provides the confirmation details.
+        mermaid: >-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platforms (BPP)
+            Buyer Platform (BAP)->>Seller Platforms (BPP): confirm
+            Seller Platforms (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platforms (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
+            end
+    reference: if any
+    example:
+      value:
+        $ref: "../../examples/metro-wallet/on_confirm/on_confirm-request_recharge.yaml"  
+  
