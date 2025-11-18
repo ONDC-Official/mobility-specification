@@ -2,8 +2,6 @@ context:
   location:
     country:
       code: IND
-    city:
-      code: std:011
   domain: ONDC:TRV11
   action: on_search
   version: 2.1.0
@@ -32,6 +30,14 @@ message:
               name: Pass
               code: PASS
             id: C2
+          - descriptor:
+              name: Wallet
+              code: WALLET
+            id: C3 
+        locations:
+          - id: L1
+            city:
+              code: std:011 
         time:
           range:
             start: '2023-09-14T05:30:00.000Z'
@@ -47,9 +53,6 @@ message:
             descriptor:
               name: Single Journey Ticket
               code: SJT
-            price:
-              currency: INR
-              value: '60'
             quantity:
               maximum:
                 count: 6
@@ -67,9 +70,6 @@ message:
             descriptor:
               name: Round Journey Ticket
               code: RJT
-            price:
-              currency: INR
-              value: '110'
             quantity:
               maximum:
                 count: 6
@@ -81,6 +81,37 @@ message:
               label: Validity
               duration: PT2D
               timestamp: '2021-03-23T11:01:40.065Z'
+          - id: I3
+            category_ids:
+              - C3
+            descriptor:
+              name: Metro Card Purchase
+              code: PURCHASE
+              images: 
+                - url: 'https://delhimetrorail.com/logos/logo.ico'
+            fulfillment_ids:
+              - F2
+            price:
+              currency: INR
+              value: '500'
+              minimum_value: '100'
+              maximum_value: '500'     
+          - id: I4
+            category_ids:
+              - C3
+            descriptor:
+              name: Metro Card Recharge
+              code: RECHARGE
+              images: 
+                - url: 'https://delhimetrorail.com/logos/logo.ico' 
+            price:
+              currency: INR
+              value: '200'
+              minimum_value: '50'
+              maximum_value:  '500'
+            fulfillment_ids:
+              - F3
+          
         fulfillments:
           - id: F1
             type: TRIP
@@ -294,6 +325,21 @@ message:
                   - descriptor:
                       code: ROUTE_NAME
                     value: Yellow Line
+          - id: F2
+            type: PASS
+            stops:
+              - instructions:
+                  name: 'How to use?'
+                  short_desc: 'short description about how to use?'
+                  long_desc: 'description about how to use?'
+          - id: F3
+            type: ONLINE
+            stops:
+              - instructions:
+                  name: 'How to use?'
+                  short_desc: 'short description about how to use?'
+                  long_desc: 'description about how to use?'
+        
         payments:
           - collected_by: BPP
         tags:
