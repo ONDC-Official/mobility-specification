@@ -323,6 +323,38 @@ cancel: &cancel
         reference: <PR/Issue/Discussion Links md format text>
     location: *search_context_location
     domain: *search_context_domain
+  message:
+    cancellation_reason_id: &cancellation_reason_id
+      - code: "000"
+        description: Technical cancellation(BAP/BPP)
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "001"
+        description: Change in travel plans/ not required anymore
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "002"
+        description: Requested by accident
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "003"
+        description: Wrong ticket type purchased
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "004"
+        description: Wrong start station selected
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "005"
+        description: Wrong end station selected
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "006"
+        description: Flight got canceled
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "007"
+        description: Operator changed schedule
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "008"
+        description: Service disruptions/ temporarily closed
+        reference: <PR/Issue/Discussion Links md format text
+      - code: "009"
+        description: System error
+        reference: <PR/Issue/Discussion Links md format text   
 on_cancel: &on_cancel
   context: &on_cancel_context
     action: &on_cancel_context_action
@@ -332,7 +364,39 @@ on_cancel: &on_cancel
         reference: <PR/Issue/Discussion Links md format text>
     location: *search_context_location
     domain: *search_context_domain
-  message: *on_init_message
+  message:
+    order:
+      items: *on_search_message_catalog_providers_items
+      fulfillments: *search_message_intent_fulfillment
+      payments: *on_search_message_catalog_providers_payments
+      cancellation_terms: &on_init_message_order_cancellation_terms
+        fulfillment_state: *search_message_intent_fulfillment_state
+      quote: *on_select_message_order_quote
+      status: &on_init_message_order_status
+        - &on_init_message_order_status_0
+          code: ACTIVE
+          description: Describes the status of the order.
+          reference: <PR/Issue/Discussion Links md format text
+        - &on_init_message_order_status_1
+          code: COMPLETE
+          description: Describes the status of the order.
+          reference: <PR/Issue/Discussion Links md format text
+        - &on_init_message_order_status_2
+          code: CANCELLED
+          description: Describes the status of the order.
+          reference: <PR/Issue/Discussion Links md format text
+      cancellation:
+        cancelled_by:
+          - code: CONSUMER
+            description: Describes, when the ride is cancelled by the consumer.
+            reference: <PR/Issue/Discussion Links md format text>
+          - code: PROVIDER
+            description: Describes, when the ride is cancelled by the provider.
+            reference: <PR/Issue/Discussion Links md format text>
+        reason:
+          descriptor:
+            code: *cancellation_reason_id
+
 update: &update
   context: &update_context
     action: &update_context_action

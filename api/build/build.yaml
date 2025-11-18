@@ -2963,7 +2963,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: &ref_10
+    message: &ref_11
       order:
         items: *ref_4
         fulfillments: *ref_3
@@ -3092,6 +3092,38 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
+    message:
+      cancellation_reason_id: &ref_10
+        - code: '000'
+          description: Technical cancellation(BAP/BPP)
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '001'
+          description: Change in travel plans/ not required anymore
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '002'
+          description: Requested by accident
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '003'
+          description: Wrong ticket type purchased
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '004'
+          description: Wrong start station selected
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '005'
+          description: Wrong end station selected
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '006'
+          description: Flight got canceled
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '007'
+          description: Operator changed schedule
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '008'
+          description: Service disruptions/ temporarily closed
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '009'
+          description: System error
+          reference: <PR/Issue/Discussion Links md format text
   on_cancel:
     context:
       action:
@@ -3100,7 +3132,35 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_9
+    message:
+      order:
+        items: *ref_4
+        fulfillments: *ref_3
+        payments: *ref_5
+        cancellation_terms:
+          fulfillment_state: *ref_6
+        quote: *ref_7
+        status:
+          - code: ACTIVE
+            description: Describes the status of the order.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: COMPLETE
+            description: Describes the status of the order.
+            reference: <PR/Issue/Discussion Links md format text
+          - code: CANCELLED
+            description: Describes the status of the order.
+            reference: <PR/Issue/Discussion Links md format text
+        cancellation:
+          cancelled_by:
+            - code: CONSUMER
+              description: Describes, when the ride is cancelled by the consumer.
+              reference: <PR/Issue/Discussion Links md format text>
+            - code: PROVIDER
+              description: Describes, when the ride is cancelled by the provider.
+              reference: <PR/Issue/Discussion Links md format text>
+          reason:
+            descriptor:
+              code: *ref_10
   update:
     context:
       action:
@@ -3109,7 +3169,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_10
+    message: *ref_11
   on_update:
     context:
       action:
@@ -3123,7 +3183,7 @@ x-tags:
   search:
     message:
       intent:
-        payment: &ref_11
+        payment: &ref_12
           tags:
             - code: BUYER_FINDER_FEES
               description: Describes the finder fees for buyer
@@ -3170,7 +3230,7 @@ x-tags:
             description: Describes the pagination values.
             reference: <PR/Issue/Discussion Links md format text>
             list:
-              - &ref_12
+              - &ref_13
                 code: PAGINATION_ID
                 description: Describes pagination ID.
                 reference: <PR/Issue/Discussion Links md format text>
@@ -3181,7 +3241,7 @@ x-tags:
     message:
       catalog:
         providers:
-          items: &ref_14
+          items: &ref_15
             tags:
               - code: GENERAL_INFO
                 description: General information about airlines
@@ -3230,7 +3290,7 @@ x-tags:
                       Describes the special type of fare for armed doctors &
                       nurses
                     reference: <PR/Issue/Discussion Links md format text>
-          fulfillments: &ref_13
+          fulfillments: &ref_14
             tags:
               - code: SEAT_GRID
                 description: Seat details to identify specifics of seat
@@ -3326,13 +3386,13 @@ x-tags:
                   - code: FULFILLMENT_SEQUENCE
                     description: Describes the sequence of the multiple fulfillments
                     reference: <PR/Issue/Discussion Links md format text>
-          payments: *ref_11
+          payments: *ref_12
         tags:
           - code: PAGINATION
             description: Describes the pagination values.
             reference: <PR/Issue/Discussion Links md format text>
             list:
-              - *ref_12
+              - *ref_13
               - code: CURRENT_PAGE_NUMBER
                 description: Describes the current page number.
                 reference: <PR/Issue/Discussion Links md format text>
@@ -3342,13 +3402,13 @@ x-tags:
   select:
     message:
       order:
-        fulfillments: *ref_13
+        fulfillments: *ref_14
   on_select:
     message:
       order:
-        fulfillments: *ref_13
-        items: *ref_14
-        quote: &ref_15
+        fulfillments: *ref_14
+        items: *ref_15
+        quote: &ref_16
           breakup:
             item:
               tags:
@@ -3358,26 +3418,26 @@ x-tags:
                 - code: OTHER_CHARGES
                   description: Describes the other charges elements
                   reference: <PR/Issue/Discussion Links md format text>
-  init: &ref_16
+  init: &ref_17
     message:
       order:
-        payments: *ref_11
-  on_init: &ref_17
+        payments: *ref_12
+  on_init: &ref_18
     message:
       order:
-        fulfillments: *ref_13
-        items: *ref_14
-        payments: *ref_11
-        quote: *ref_15
-  confirm: *ref_16
-  on_confirm: *ref_17
+        fulfillments: *ref_14
+        items: *ref_15
+        payments: *ref_12
+        quote: *ref_16
+  confirm: *ref_17
+  on_confirm: *ref_18
   on_status:
     message:
       order:
-        fulfillments: *ref_13
-        items: *ref_14
-  on_cancel: *ref_17
-  on_update: *ref_17
+        fulfillments: *ref_14
+        items: *ref_15
+  on_cancel: *ref_18
+  on_update: *ref_18
 x-flows:
   - summary: Airlines - Seller App Pagination Flow
     details:
@@ -3418,7 +3478,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for airline services by standard airport codes
-          value: &ref_19
+          value: &ref_22
             context:
               location:
                 country:
@@ -4052,7 +4112,7 @@ x-flows:
           Return an airline catalog of all flights services from one airport to
           another
         api: on_search
-        details: &ref_18
+        details: &ref_19
           - description: >-
               Users searches over the network to avail the airline mode of
               transport from one airport to another
@@ -4071,7 +4131,7 @@ x-flows:
         reference: if any
         example:
           summary: Return services available for provided start and end code
-          value: &ref_25
+          value: &ref_26
             context:
               location:
                 country:
@@ -4910,11 +4970,11 @@ x-flows:
           Return an airline catalog of all flights services from one airport to
           another
         api: on_search
-        details: *ref_18
+        details: *ref_19
         reference: if any
         example:
           summary: Return services available for provided start and end code
-          value: &ref_26
+          value: &ref_27
             context:
               location:
                 country:
@@ -5753,11 +5813,11 @@ x-flows:
           Return an airline catalog of all flights services from one airport to
           another
         api: on_search
-        details: *ref_18
+        details: *ref_19
         reference: if any
         example:
           summary: Return services available for provided start and end code
-          value: &ref_27
+          value: &ref_28
             context:
               location:
                 country:
@@ -6653,10 +6713,7 @@ x-flows:
       - summary: Selection of specific service
         api: select
         details:
-          - description: >-
-              There are two modes of selecting an item: with base and without
-              base. Either one can be utilized by the network participants. Both
-              are included as part of examples.
+          - description: Selection of specific service
             mermaid: |-
               sequenceDiagram
                 participant Buyer Platform (BAP)
@@ -6670,7 +6727,7 @@ x-flows:
         reference: if any
         example:
           summary: Get Quote of a selected item
-          value: &ref_20
+          value: &ref_23
             context:
               location:
                 country:
@@ -6715,10 +6772,14 @@ x-flows:
                     quantity:
                       selected:
                         count: 1
-                  - id: I2
+                  - parent_item_id: I2
                     quantity:
                       selected:
-                        count: 2
+                        count: 1
+                  - parent_item_id: I2
+                    quantity:
+                      selected:
+                        count: 1
                 fulfillments:
                   - id: F1
                     stops:
@@ -6744,7 +6805,7 @@ x-flows:
         reference: if any
         example:
           summary: Get Quote of a selected item
-          value: &ref_28
+          value: &ref_29
             context:
               location:
                 country:
@@ -7390,7 +7451,7 @@ x-flows:
         reference: if any
         example:
           summary: Get Quote of a selected item
-          value: &ref_21
+          value: &ref_24
             context:
               location:
                 country:
@@ -7555,7 +7616,7 @@ x-flows:
         reference: if any
         example:
           summary: Get Quote of a selected item
-          value: &ref_29
+          value: &ref_30
             context:
               location:
                 country:
@@ -8322,7 +8383,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize draft order and request for terms of service
-          value: &ref_22
+          value: &ref_25
             context:
               location:
                 country:
@@ -8491,7 +8552,7 @@ x-flows:
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
-          value: &ref_30
+          value: &ref_31
             context:
               location:
                 country:
@@ -9358,7 +9419,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_23
+          value: &ref_21
             context:
               location:
                 country:
@@ -9378,7 +9439,6 @@ x-flows:
               ttl: PT30S
             message:
               order:
-                id: O1
                 provider:
                   id: P1
                 items:
@@ -9531,7 +9591,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_31
+          value: &ref_20
             context:
               location:
                 country:
@@ -10396,33 +10456,75 @@ x-flows:
                   tax_id: GSTIN:22AAAAA0000A1Z5
                 created_at: '2023-03-23T04:41:16Z'
                 updated_at: '2023-03-23T04:41:16Z'
-      - summary: Consumer platform cancels the request
-        api: cancel
+  - summary: Airlines - Cancellation by Buyer
+    details:
+      - description: Detailed process of cancelling an order.
+        mermaid: |-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+    steps:
+      - summary: Provider platform confirms the order
+        api: on_confirm
         details:
           - description: >-
-              Consumer platform request the provider platform to provide with
-              latest order status
+              Provider platform confirms the order and provides details of the
+              journey upon confirmation
             mermaid: |-
               sequenceDiagram
-                title Order Fulfillment
+                  participant Buyer Platform (BAP)
+                  participant Seller Platform (BPP)
+                  rect rgb(191, 223, 255)
+                  Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                  Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+                  end
+                  Buyer Platform (BAP)->>Seller Platform (BPP): cancel
+                  Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                  
+                  Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                  Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: Confirm ticket booking
+          value: *ref_20
+      - summary: Buyer app requests for cancellation of ride.
+        api: cancel
+        details:
+          - description: Buyer app requests for cancellation of ride with soft cancel.
+            mermaid: |-
+              sequenceDiagram
                 participant Buyer Platform (BAP)
                 participant Seller Platform (BPP)
+
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
                 rect rgb(191, 223, 255)
                 Buyer Platform (BAP)->>Seller Platform (BPP): cancel
                 Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
                 end
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
-          summary: Cancel a transit ticket booking before the cancellation period
-          value: &ref_24
+          summary: Cancel ticket booking
+          value:
             context:
               location:
                 country:
                   code: IND
               domain: ONDC:TRV12
-              timestamp: '2023-09-03T01:55:08.143Z'
+              timestamp: '2025-09-03T01:55:08.143Z'
               bap_id: example-bap.com
               bap_uri: https://api.example-bap.com/beckn
               bpp_id: api.transit-solutions.com
@@ -10434,6 +10536,10 @@ x-flows:
               ttl: PT30S
             message:
               order_id: O1
+              cancellation_reason_id: '001'
+              descriptor:
+                code: SOFT_CANCEL
+                name: Order Cancellation
       - summary: Provider platform accepts/appends the terms of cancellation
         api: on_cancel
         details:
@@ -10442,19 +10548,22 @@ x-flows:
               consumer
             mermaid: |-
               sequenceDiagram
-                title Order Fulfillment
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                Buyer Platform (BAP)->>Seller Platform (BPP): cancel
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                rect rgb(191, 223, 255)
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-                end 
+                 participant Buyer Platform (BAP)
+                 participant Seller Platform (BPP)
+
+                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+                 
+                 Buyer Platform (BAP)->>Seller Platform (BPP): cancel
+                 Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                 rect rgb(191, 223, 255)
+                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                 end 
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_32
+          value:
             context:
               location:
                 country:
@@ -10462,7 +10571,7 @@ x-flows:
                 city:
                   code: std:080
               domain: ONDC:TRV12
-              timestamp: '2023-03-23T04:42:16Z'
+              timestamp: '2025-11-23T04:42:16Z'
               bap_id: example-test-bap.com
               transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
               message_id: 2859bc8b-8f40-41ba-bb20-30645596bf7a
@@ -11263,13 +11372,935 @@ x-flows:
                       price:
                         value: '-500'
                         currency: INR
+                    - title: CANCELLATION_CHARGES
+                      price:
+                        currency: INR
+                        value: '1000'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                      currency: INR
+                      amount: '41859'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT30D
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: INVOICE_RECEIPT
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'TRUE'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://api.example-bpp.com/booking/terms
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '10421'
+                status: SOFT_CANCEL
+                cancellation:
+                  cancelled_by: CONSUMER
+                  reason:
+                    descriptor:
+                      code: '001'
+                cancellation_terms:
+                  - cancel_by:
+                      duration: PT60M
+                    cancellation_fee:
+                      percentage: '0'
+                billing:
+                  name: Joe Adams
+                  phone: +91-9988776655
+                  tax_id: GSTIN:22AAAAA0000A1Z5
+                created_at: '2025-11-23T04:41:16Z'
+                updated_at: '2025-11-23T04:42:16Z'
+      - summary: Buyer app requests for cancellation of ride.
+        api: cancel
+        details:
+          - description: Buyer app requests for cancellation of ride with confirm cancel.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: Cancel ticket booking
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+              domain: ONDC:TRV12
+              timestamp: '2025-09-03T01:55:08.143Z'
+              bap_id: example-bap.com
+              bap_uri: https://api.example-bap.com/beckn
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 7d634314-3ccc-4ad4-a025-3348bc9aaea9
+              version: 2.0.0
+              action: cancel
+              ttl: PT30S
+            message:
+              order_id: O1
+              cancellation_reason_id: '001'
+              descriptor:
+                code: CONFIRM_CANCEL
+                name: Order Cancellation
+      - summary: Provider platform accepts/appends the terms of cancellation
+        api: on_cancel
+        details:
+          - description: >-
+              Provider platform provides the updated order status to the
+              consumer
+            mermaid: |-
+              sequenceDiagram
+                 participant Buyer Platform (BAP)
+                 participant Seller Platform (BPP)
+                 Buyer Platform (BAP)->>Seller Platform (BPP): cancel
+                 Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                 rect rgb(191, 223, 255)
+                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                 end 
+        reference: if any
+        example:
+          summary: Return cancelled ticket order with cancellation charges
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV12
+              timestamp: '2025-11-23T04:42:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 2859bc8b-8f40-41ba-bb20-30645596bf7a
+              version: 2.0.0
+              action: on_cancel
+              bap_uri: https://api.example-bap.com/pilot/bap/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bpp/v1
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator Fights Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                        size_type: xs
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT_TICKET
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 3
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I1-1
+                    parent_item_id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT_TICKET
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_1
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          selected:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I1-2
+                    parent_item_id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT_TICKET
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_2
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    add_ons:
+                      - id: A2
+                        descriptor:
+                          name: Delayed and Lost Baggage Protection
+                          code: BAGGAGE
+                        quantity:
+                          selected:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '500'
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I1-3
+                    parent_item_id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT_TICKET
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_3
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I2
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 2
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I2-1
+                    parent_item_id: I2
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_4
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I2-2
+                    parent_item_id: I2
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 2
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_5
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - type: START
+                        id: S1
+                        location:
+                          descriptor:
+                            name: Delhi
+                            code: DEL
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-10-15T20:00:00.000Z'
+                      - type: END
+                        id: S2
+                        location:
+                          descriptor:
+                            name: Bengaluru
+                            code: BLR
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-10-15T20:00:00.000Z'
+                    customer:
+                      person:
+                        name: Mr. | Joe | Wick | Adams
+                        age: '30'
+                        gender: MALE
+                        dob: '2001-03-23'
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
+                    vehicle:
+                      category: AIRLINE
+                      code: '6E284'
+                    tags:
+                      - descriptor:
+                          code: INFO
+                          name: Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: OPERATED_BY
+                            value: AirIndia
+                  - id: FT_1
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A1
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A1
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                  - id: FT_2
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                  - id: FT_3
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A3
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                  - id: FT_4
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: B1
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: B1
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                  - id: FT_5
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: B2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: B2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                quote:
+                  id: Q1
+                  price:
+                    value: '1000'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      item:
+                        id: I1
+                        quantity:
+                          selected:
+                            count: 3
+                        price:
+                          currency: INR
+                          value: '9280'
+                      price:
+                        currency: INR
+                        value: '27840'
+                    - title: BASE_FARE
+                      item:
+                        id: I2-1
+                      price:
+                        value: '4280'
+                        currency: INR
+                    - title: BASE_FARE
+                      item:
+                        id: I2-2
+                      price:
+                        value: '4280'
+                        currency: INR
+                    - title: TAX
+                      item:
+                        id: I1
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  name: cgst
+                                value: '5'
+                              - descriptor:
+                                  name: sgst
+                                value: '5'
+                              - descriptor:
+                                  name: fuel tax
+                                value: '0'
+                              - descriptor:
+                                  name: cess
+                                value: '0'
+                      price:
+                        currency: INR
+                        value: '3640'
+                    - title: TAX
+                      item:
+                        id: I2-1
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  name: cgst
+                                value: '0'
+                              - descriptor:
+                                  name: sgst
+                                value: '0'
+                              - descriptor:
+                                  name: fuel tax
+                                value: '0'
+                              - descriptor:
+                                  name: cess
+                                value: '0'
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: TAX
+                      item:
+                        id: I2-2
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  name: cgst
+                                value: '0'
+                              - descriptor:
+                                  name: sgst
+                                value: '0'
+                              - descriptor:
+                                  name: fuel tax
+                                value: '0'
+                              - descriptor:
+                                  name: cess
+                                value: '0'
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: CONVENIENCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                    - title: SEAT_FARE
+                      item:
+                        id: I1-1
+                      price:
+                        currency: INR
+                        value: '200'
+                    - title: SEAT_FARE
+                      item:
+                        id: I1-2
+                      price:
+                        currency: INR
+                        value: '200'
+                    - title: SEAT_FARE
+                      item:
+                        id: I1-3
+                      price:
+                        value: '200'
+                        currency: INR
+                    - title: SEAT_FARE
+                      item:
+                        id: I2-1
+                      price:
+                        value: '200'
+                        currency: INR
+                    - title: SEAT_FARE
+                      item:
+                        id: I2-2
+                      price:
+                        value: '200'
+                        currency: INR
+                    - title: ADD_ONS
+                      item:
+                        id: I1-1
+                        add_ons:
+                          - id: A1
+                      price:
+                        value: '300'
+                        currency: INR
+                    - title: ADD_ONS
+                      item:
+                        id: I1-2
+                        add_ons:
+                          - id: A2
+                      price:
+                        value: '500'
+                        currency: INR
+                    - title: OTHER_CHARGES
+                      item:
+                        tags:
+                          - descriptor:
+                              code: OTHER_CHARGES
+                            list:
+                              - descriptor:
+                                  name: fuel charge
+                                value: '0'
+                              - descriptor:
+                                  name: surcharge
+                                value: '0'
+                    - title: REFUND
+                      item:
+                        id: I1
+                        quantity:
+                          selected:
+                            count: 3
+                        price:
+                          currency: INR
+                          value: '-9280'
+                      price:
+                        currency: INR
+                        value: '-28640'
                     - title: REFUND
                       item:
                         id: I2-1
+                        quantity:
+                          selected:
+                            count: 1
+                      price:
+                        currency: INR
+                        value: '-4580'
+                    - title: REFUND
+                      item:
+                        id: I2-2
+                        quantity:
+                          selected:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '-4280'
+                      price:
+                        currency: INR
+                        value: '-4280'
+                    - title: REFUND
+                      item:
+                        id: I1-1
                         add_ons:
                           - id: A1
                       price:
                         value: '-300'
+                        currency: INR
+                    - title: REFUND
+                      item:
+                        id: I1-2
+                        add_ons:
+                          - id: A2
+                      price:
+                        value: '-500'
                         currency: INR
                     - title: CANCELLATION_CHARGES
                       price:
@@ -11320,7 +12351,10 @@ x-flows:
                 status: CANCELLED
                 cancellation:
                   cancelled_by: CONSUMER
-                  time: '2023-10-03T02:00:08.143Z'
+                  reason:
+                    descriptor:
+                      code: '001'
+                  time: '2023-11-03T02:00:08.143Z'
                 cancellation_terms:
                   - cancel_by:
                       duration: PT60M
@@ -11330,8 +12364,961 @@ x-flows:
                   name: Joe Adams
                   phone: +91-9988776655
                   tax_id: GSTIN:22AAAAA0000A1Z5
-                created_at: '2023-03-23T04:41:16Z'
-                updated_at: '2023-03-23T04:42:16Z'
+                created_at: '2025-11-23T04:41:16Z'
+                updated_at: '2025-11-23T04:42:16Z'
+  - summary: Airlines - Cancellation by Seller
+    details:
+      - description: Detailed process of cancelling an order.
+        mermaid: |-
+          sequenceDiagram
+            title  Order Confirmation
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+    steps:
+      - summary: Consumer confirms the booking and provides details.
+        api: confirm
+        details:
+          - description: >-
+              Consumer platform confirms the booking and provides all
+              information required for confirmation as per the terms of order
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+        reference: if any
+        example:
+          summary: Confirm ticket booking
+          value: *ref_21
+      - summary: Provider platform confirms the order
+        api: on_confirm
+        details:
+          - description: >-
+              Provider platform confirms the order and provides details of the
+              journey upon confirmation
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: Confirm ticket booking
+          value: *ref_20
+      - summary: Provider platform accepts/appends the terms of cancellation
+        api: on_cancel
+        details:
+          - description: >-
+              Provider platform provides the updated order status to the
+              consumer
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end 
+        reference: if any
+        example:
+          summary: Return cancelled ticket order with cancellation charges
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:080
+              domain: ONDC:TRV12
+              timestamp: '2025-11-23T04:42:16Z'
+              bap_id: example-test-bap.com
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 2859bc8b-8f40-41ba-bb20-30645596bf7a
+              version: 2.0.0
+              action: on_cancel
+              bap_uri: https://api.example-bap.com/pilot/bap/v1
+              bpp_id: example-bpp.com
+              bpp_uri: https://api.example-bpp.com/pilot/bpp/v1
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator Fights Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                        size_type: xs
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT_TICKET
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 3
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I1-1
+                    parent_item_id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT_TICKET
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_1
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    add_ons:
+                      - id: A1
+                        descriptor:
+                          name: meals
+                          code: MEALS
+                        quantity:
+                          selected:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '300'
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I1-2
+                    parent_item_id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT_TICKET
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_2
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    add_ons:
+                      - id: A2
+                        descriptor:
+                          name: Delayed and Lost Baggage Protection
+                          code: BAGGAGE
+                        quantity:
+                          selected:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '500'
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I1-3
+                    parent_item_id: I1
+                    descriptor:
+                      name: Adult
+                      code: ADULT_TICKET
+                    price:
+                      currency: INR
+                      value: '9280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_3
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I2
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 2
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I2-1
+                    parent_item_id: I2
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 1
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_4
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                  - id: I2-2
+                    parent_item_id: I2
+                    descriptor:
+                      name: Child
+                      code: CHILD_TICKET
+                    price:
+                      currency: INR
+                      value: '4280'
+                    quantity:
+                      selected:
+                        count: 2
+                    category_ids:
+                      - C1
+                    fulfillment_ids:
+                      - F1
+                      - FT_5
+                    time:
+                      label: JOURNEY_TIME
+                      duration: PT16H30M
+                    refund_terms:
+                      - refund_eligible: true
+                    tags:
+                      - descriptor:
+                          code: FARE_TYPE
+                          name: Fare Type
+                        display: true
+                        list:
+                          - descriptor:
+                              code: REGULAR
+                          - descriptor:
+                              code: STUDENT
+                          - descriptor:
+                              code: SENIOR_CITIZEN
+                          - descriptor:
+                              code: ARMED_FORCES
+                          - descriptor:
+                              code: DOCTORS_NURSES
+                      - descriptor:
+                          code: GENERAL_INFO
+                          name: General Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: CABIN_BAGGAGE
+                              name: Cabin Baggage
+                              short_desc: Allowed limit for cabin baggage
+                            value: 7 KG
+                          - descriptor:
+                              code: CHECK_IN_BAGGAGE
+                              name: Check-in Baggage
+                              short_desc: Allowed limit for checkin baggage
+                            value: 15 KG
+                          - descriptor:
+                              code: PROHIBITED_ITEMS
+                              name: Prohibited Items
+                            value: list of items
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - type: START
+                        id: S1
+                        location:
+                          descriptor:
+                            name: Delhi
+                            code: DEL
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-10-15T20:00:00.000Z'
+                      - type: END
+                        id: S2
+                        location:
+                          descriptor:
+                            name: Bengaluru
+                            code: BLR
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-10-15T20:00:00.000Z'
+                    customer:
+                      person:
+                        name: Mr. | Joe | Wick | Adams
+                        age: '30'
+                        gender: MALE
+                        dob: '2001-03-23'
+                      contact:
+                        phone: +91-9988776655
+                        email: joeadams@yahoo.com
+                    vehicle:
+                      category: AIRLINE
+                      code: '6E284'
+                    tags:
+                      - descriptor:
+                          code: INFO
+                          name: Info
+                        display: true
+                        list:
+                          - descriptor:
+                              code: OPERATED_BY
+                            value: AirIndia
+                  - id: FT_1
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A1
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A1
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                  - id: FT_2
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                  - id: FT_3
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: A3
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: 'true'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                  - id: FT_4
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: B1
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: B1
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                  - id: FT_5
+                    type: TICKET
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: SEAT_NUMBER
+                            value: B2
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: B2
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '200'
+                quote:
+                  id: Q1
+                  price:
+                    value: '1000'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      item:
+                        id: I1
+                        quantity:
+                          selected:
+                            count: 3
+                        price:
+                          currency: INR
+                          value: '9280'
+                      price:
+                        currency: INR
+                        value: '27840'
+                    - title: BASE_FARE
+                      item:
+                        id: I2-1
+                      price:
+                        value: '4280'
+                        currency: INR
+                    - title: BASE_FARE
+                      item:
+                        id: I2-2
+                      price:
+                        value: '4280'
+                        currency: INR
+                    - title: TAX
+                      item:
+                        id: I1
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  name: cgst
+                                value: '5'
+                              - descriptor:
+                                  name: sgst
+                                value: '5'
+                              - descriptor:
+                                  name: fuel tax
+                                value: '0'
+                              - descriptor:
+                                  name: cess
+                                value: '0'
+                      price:
+                        currency: INR
+                        value: '3640'
+                    - title: TAX
+                      item:
+                        id: I2-1
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  name: cgst
+                                value: '0'
+                              - descriptor:
+                                  name: sgst
+                                value: '0'
+                              - descriptor:
+                                  name: fuel tax
+                                value: '0'
+                              - descriptor:
+                                  name: cess
+                                value: '0'
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: TAX
+                      item:
+                        id: I2-2
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  name: cgst
+                                value: '0'
+                              - descriptor:
+                                  name: sgst
+                                value: '0'
+                              - descriptor:
+                                  name: fuel tax
+                                value: '0'
+                              - descriptor:
+                                  name: cess
+                                value: '0'
+                      price:
+                        currency: INR
+                        value: '0'
+                    - title: CONVENIENCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                    - title: SEAT_FARE
+                      item:
+                        id: I1-1
+                      price:
+                        currency: INR
+                        value: '200'
+                    - title: SEAT_FARE
+                      item:
+                        id: I1-2
+                      price:
+                        currency: INR
+                        value: '200'
+                    - title: SEAT_FARE
+                      item:
+                        id: I1-3
+                      price:
+                        value: '200'
+                        currency: INR
+                    - title: SEAT_FARE
+                      item:
+                        id: I2-1
+                      price:
+                        value: '200'
+                        currency: INR
+                    - title: SEAT_FARE
+                      item:
+                        id: I2-2
+                      price:
+                        value: '200'
+                        currency: INR
+                    - title: ADD_ONS
+                      item:
+                        id: I1-1
+                        add_ons:
+                          - id: A1
+                      price:
+                        value: '300'
+                        currency: INR
+                    - title: ADD_ONS
+                      item:
+                        id: I1-2
+                        add_ons:
+                          - id: A2
+                      price:
+                        value: '500'
+                        currency: INR
+                    - title: OTHER_CHARGES
+                      item:
+                        tags:
+                          - descriptor:
+                              code: OTHER_CHARGES
+                            list:
+                              - descriptor:
+                                  name: fuel charge
+                                value: '0'
+                              - descriptor:
+                                  name: surcharge
+                                value: '0'
+                    - title: REFUND
+                      item:
+                        id: I1
+                        quantity:
+                          selected:
+                            count: 3
+                        price:
+                          currency: INR
+                          value: '-9280'
+                      price:
+                        currency: INR
+                        value: '-28640'
+                    - title: REFUND
+                      item:
+                        id: I2-1
+                        quantity:
+                          selected:
+                            count: 1
+                      price:
+                        currency: INR
+                        value: '-4580'
+                    - title: REFUND
+                      item:
+                        id: I2-2
+                        quantity:
+                          selected:
+                            count: 1
+                        price:
+                          currency: INR
+                          value: '-4280'
+                      price:
+                        currency: INR
+                        value: '-4280'
+                    - title: REFUND
+                      item:
+                        id: I1-1
+                        add_ons:
+                          - id: A1
+                      price:
+                        value: '-300'
+                        currency: INR
+                    - title: REFUND
+                      item:
+                        id: I1-2
+                        add_ons:
+                          - id: A2
+                      price:
+                        value: '-500'
+                        currency: INR
+                    - title: CANCELLATION_CHARGES
+                      price:
+                        currency: INR
+                        value: '1000'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                      currency: INR
+                      amount: '41859'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT30D
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: INVOICE_RECEIPT
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'TRUE'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://api.example-bpp.com/booking/terms
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '10421'
+                status: CANCELLED
+                cancellation:
+                  cancelled_by: PROVIDER
+                  reason:
+                    descriptor:
+                      code: '008'
+                  time: '2023-11-03T02:00:08.143Z'
+                cancellation_terms:
+                  - cancel_by:
+                      duration: PT60M
+                    cancellation_fee:
+                      percentage: '0'
+                billing:
+                  name: Joe Adams
+                  phone: +91-9988776655
+                  tax_id: GSTIN:22AAAAA0000A1Z5
+                created_at: '2025-11-23T04:41:16Z'
+                updated_at: '2025-11-23T04:42:16Z'
 x-examples:
   airline:
     summary: Airline Use Case Specification
@@ -11340,7 +13327,7 @@ x-examples:
       search:
         examples:
           - summary: Search_for_airline_services_by_standard_airport_codes
-            value: *ref_19
+            value: *ref_22
           - summary: Search_for_airline_services_by_standard_airport_codes_2
             value:
               context:
@@ -11426,29 +13413,46 @@ x-examples:
       select:
         examples:
           - summary: Get_Quote_of_a_selected_item
-            value: *ref_20
+            value: *ref_23
           - summary: Get_Quote_of_a_selected_item_2
-            value: *ref_21
+            value: *ref_24
       init:
         examples:
           - summary: Initialize_draft_order_and_request_for_terms_of_service
-            value: *ref_22
+            value: *ref_25
       confirm:
         examples:
           - summary: Confirm_ticket_booking
-            value: *ref_23
+            value: *ref_21
       cancel:
         examples:
           - summary: Cancel_a_transit_ticket_booking_before_the_cancellation_period
-            value: *ref_24
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                domain: ONDC:TRV12
+                timestamp: '2023-09-03T01:55:08.143Z'
+                bap_id: example-bap.com
+                bap_uri: https://api.example-bap.com/beckn
+                bpp_id: api.transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+                version: 2.0.0
+                action: cancel
+                ttl: PT30S
+              message:
+                order_id: O1
       on_search:
         examples:
           - summary: Return_services_available_for_provided_start_and_end_code
-            value: *ref_25
-          - summary: Return_services_available_for_provided_start_and_end_code_2
             value: *ref_26
-          - summary: Return_services_available_for_provided_start_and_end_code_3
+          - summary: Return_services_available_for_provided_start_and_end_code_2
             value: *ref_27
+          - summary: Return_services_available_for_provided_start_and_end_code_3
+            value: *ref_28
           - summary: Return_services_available_for_provided_start_and_end_code_4
             value:
               context:
@@ -13124,22 +15128,891 @@ x-examples:
       on_select:
         examples:
           - summary: Get_Quote_of_a_selected_item_1
-            value: *ref_28
-          - summary: Get_Quote_of_a_selected_item_2
             value: *ref_29
+          - summary: Get_Quote_of_a_selected_item_2
+            value: *ref_30
       on_init:
         examples:
           - summary: >-
               Return_draft_order_for_transit_ticket_with_settlement_via_payment_link
-            value: *ref_30
+            value: *ref_31
       on_confirm:
         examples:
           - summary: Confirm_ticket_booking_1
-            value: *ref_31
+            value: *ref_20
       on_cancel:
         examples:
           - summary: Return_cancelled_ticket_order_with_cancellation_charges
-            value: *ref_32
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:080
+                domain: ONDC:TRV12
+                timestamp: '2023-03-23T04:42:16Z'
+                bap_id: example-test-bap.com
+                transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+                message_id: 2859bc8b-8f40-41ba-bb20-30645596bf7a
+                version: 2.0.0
+                action: on_cancel
+                bap_uri: https://api.example-bap.com/pilot/bap/v1
+                bpp_id: example-bpp.com
+                bpp_uri: https://api.example-bpp.com/pilot/bpp/v1
+                ttl: PT30S
+              message:
+                order:
+                  id: O1
+                  provider:
+                    id: P1
+                    descriptor:
+                      name: ABC Operator Fights Services
+                      images:
+                        - url: https://operator1.com/logos/logo.ico
+                          size_type: xs
+                  items:
+                    - id: I1
+                      descriptor:
+                        name: Adult
+                        code: ADULT_TICKET
+                      price:
+                        currency: INR
+                        value: '9280'
+                      quantity:
+                        selected:
+                          count: 3
+                      category_ids:
+                        - C1
+                      fulfillment_ids:
+                        - F1
+                      time:
+                        label: JOURNEY_TIME
+                        duration: PT16H30M
+                      refund_terms:
+                        - refund_eligible: true
+                      tags:
+                        - descriptor:
+                            code: FARE_TYPE
+                            name: Fare Type
+                          display: true
+                          list:
+                            - descriptor:
+                                code: REGULAR
+                            - descriptor:
+                                code: STUDENT
+                            - descriptor:
+                                code: SENIOR_CITIZEN
+                            - descriptor:
+                                code: ARMED_FORCES
+                            - descriptor:
+                                code: DOCTORS_NURSES
+                        - descriptor:
+                            code: GENERAL_INFO
+                            name: General Info
+                          display: true
+                          list:
+                            - descriptor:
+                                code: CABIN_BAGGAGE
+                                name: Cabin Baggage
+                                short_desc: Allowed limit for cabin baggage
+                              value: 7 KG
+                            - descriptor:
+                                code: CHECK_IN_BAGGAGE
+                                name: Check-in Baggage
+                                short_desc: Allowed limit for checkin baggage
+                              value: 15 KG
+                            - descriptor:
+                                code: PROHIBITED_ITEMS
+                                name: Prohibited Items
+                              value: list of items
+                    - id: I1-1
+                      parent_item_id: I1
+                      descriptor:
+                        name: Adult
+                        code: ADULT_TICKET
+                      price:
+                        currency: INR
+                        value: '9280'
+                      quantity:
+                        selected:
+                          count: 1
+                      category_ids:
+                        - C1
+                      fulfillment_ids:
+                        - F1
+                        - FT_1
+                      time:
+                        label: JOURNEY_TIME
+                        duration: PT16H30M
+                      refund_terms:
+                        - refund_eligible: true
+                      add_ons:
+                        - id: A1
+                          descriptor:
+                            name: meals
+                            code: MEALS
+                          quantity:
+                            selected:
+                              count: 1
+                          price:
+                            currency: INR
+                            value: '300'
+                      tags:
+                        - descriptor:
+                            code: FARE_TYPE
+                            name: Fare Type
+                          display: true
+                          list:
+                            - descriptor:
+                                code: REGULAR
+                            - descriptor:
+                                code: STUDENT
+                            - descriptor:
+                                code: SENIOR_CITIZEN
+                            - descriptor:
+                                code: ARMED_FORCES
+                            - descriptor:
+                                code: DOCTORS_NURSES
+                        - descriptor:
+                            code: GENERAL_INFO
+                            name: General Info
+                          display: true
+                          list:
+                            - descriptor:
+                                code: CABIN_BAGGAGE
+                                name: Cabin Baggage
+                                short_desc: Allowed limit for cabin baggage
+                              value: 7 KG
+                            - descriptor:
+                                code: CHECK_IN_BAGGAGE
+                                name: Check-in Baggage
+                                short_desc: Allowed limit for checkin baggage
+                              value: 15 KG
+                            - descriptor:
+                                code: PROHIBITED_ITEMS
+                                name: Prohibited Items
+                              value: list of items
+                    - id: I1-2
+                      parent_item_id: I1
+                      descriptor:
+                        name: Adult
+                        code: ADULT_TICKET
+                      price:
+                        currency: INR
+                        value: '9280'
+                      quantity:
+                        selected:
+                          count: 1
+                      category_ids:
+                        - C1
+                      fulfillment_ids:
+                        - F1
+                        - FT_2
+                      time:
+                        label: JOURNEY_TIME
+                        duration: PT16H30M
+                      refund_terms:
+                        - refund_eligible: true
+                      add_ons:
+                        - id: A2
+                          descriptor:
+                            name: Delayed and Lost Baggage Protection
+                            code: BAGGAGE
+                          quantity:
+                            selected:
+                              count: 1
+                          price:
+                            currency: INR
+                            value: '500'
+                      tags:
+                        - descriptor:
+                            code: FARE_TYPE
+                            name: Fare Type
+                          display: true
+                          list:
+                            - descriptor:
+                                code: REGULAR
+                            - descriptor:
+                                code: STUDENT
+                            - descriptor:
+                                code: SENIOR_CITIZEN
+                            - descriptor:
+                                code: ARMED_FORCES
+                            - descriptor:
+                                code: DOCTORS_NURSES
+                        - descriptor:
+                            code: GENERAL_INFO
+                            name: General Info
+                          display: true
+                          list:
+                            - descriptor:
+                                code: CABIN_BAGGAGE
+                                name: Cabin Baggage
+                                short_desc: Allowed limit for cabin baggage
+                              value: 7 KG
+                            - descriptor:
+                                code: CHECK_IN_BAGGAGE
+                                name: Check-in Baggage
+                                short_desc: Allowed limit for checkin baggage
+                              value: 15 KG
+                            - descriptor:
+                                code: PROHIBITED_ITEMS
+                                name: Prohibited Items
+                              value: list of items
+                    - id: I1-3
+                      parent_item_id: I1
+                      descriptor:
+                        name: Adult
+                        code: ADULT_TICKET
+                      price:
+                        currency: INR
+                        value: '9280'
+                      quantity:
+                        selected:
+                          count: 1
+                      category_ids:
+                        - C1
+                      fulfillment_ids:
+                        - F1
+                        - FT_3
+                      time:
+                        label: JOURNEY_TIME
+                        duration: PT16H30M
+                      refund_terms:
+                        - refund_eligible: true
+                      tags:
+                        - descriptor:
+                            code: FARE_TYPE
+                            name: Fare Type
+                          display: true
+                          list:
+                            - descriptor:
+                                code: REGULAR
+                            - descriptor:
+                                code: STUDENT
+                            - descriptor:
+                                code: SENIOR_CITIZEN
+                            - descriptor:
+                                code: ARMED_FORCES
+                            - descriptor:
+                                code: DOCTORS_NURSES
+                        - descriptor:
+                            code: GENERAL_INFO
+                            name: General Info
+                          display: true
+                          list:
+                            - descriptor:
+                                code: CABIN_BAGGAGE
+                                name: Cabin Baggage
+                                short_desc: Allowed limit for cabin baggage
+                              value: 7 KG
+                            - descriptor:
+                                code: CHECK_IN_BAGGAGE
+                                name: Check-in Baggage
+                                short_desc: Allowed limit for checkin baggage
+                              value: 15 KG
+                            - descriptor:
+                                code: PROHIBITED_ITEMS
+                                name: Prohibited Items
+                              value: list of items
+                    - id: I2
+                      descriptor:
+                        name: Child
+                        code: CHILD_TICKET
+                      price:
+                        currency: INR
+                        value: '4280'
+                      quantity:
+                        selected:
+                          count: 2
+                      category_ids:
+                        - C1
+                      fulfillment_ids:
+                        - F1
+                      time:
+                        label: JOURNEY_TIME
+                        duration: PT16H30M
+                      refund_terms:
+                        - refund_eligible: true
+                      tags:
+                        - descriptor:
+                            code: FARE_TYPE
+                            name: Fare Type
+                          display: true
+                          list:
+                            - descriptor:
+                                code: REGULAR
+                            - descriptor:
+                                code: STUDENT
+                            - descriptor:
+                                code: SENIOR_CITIZEN
+                            - descriptor:
+                                code: ARMED_FORCES
+                            - descriptor:
+                                code: DOCTORS_NURSES
+                        - descriptor:
+                            code: GENERAL_INFO
+                            name: General Info
+                          display: true
+                          list:
+                            - descriptor:
+                                code: CABIN_BAGGAGE
+                                name: Cabin Baggage
+                                short_desc: Allowed limit for cabin baggage
+                              value: 7 KG
+                            - descriptor:
+                                code: CHECK_IN_BAGGAGE
+                                name: Check-in Baggage
+                                short_desc: Allowed limit for checkin baggage
+                              value: 15 KG
+                            - descriptor:
+                                code: PROHIBITED_ITEMS
+                                name: Prohibited Items
+                              value: list of items
+                    - id: I2-1
+                      parent_item_id: I2
+                      descriptor:
+                        name: Child
+                        code: CHILD_TICKET
+                      price:
+                        currency: INR
+                        value: '4280'
+                      quantity:
+                        selected:
+                          count: 1
+                      category_ids:
+                        - C1
+                      fulfillment_ids:
+                        - F1
+                        - FT_4
+                      time:
+                        label: JOURNEY_TIME
+                        duration: PT16H30M
+                      refund_terms:
+                        - refund_eligible: true
+                      tags:
+                        - descriptor:
+                            code: FARE_TYPE
+                            name: Fare Type
+                          display: true
+                          list:
+                            - descriptor:
+                                code: REGULAR
+                            - descriptor:
+                                code: STUDENT
+                            - descriptor:
+                                code: SENIOR_CITIZEN
+                            - descriptor:
+                                code: ARMED_FORCES
+                            - descriptor:
+                                code: DOCTORS_NURSES
+                        - descriptor:
+                            code: GENERAL_INFO
+                            name: General Info
+                          display: true
+                          list:
+                            - descriptor:
+                                code: CABIN_BAGGAGE
+                                name: Cabin Baggage
+                                short_desc: Allowed limit for cabin baggage
+                              value: 7 KG
+                            - descriptor:
+                                code: CHECK_IN_BAGGAGE
+                                name: Check-in Baggage
+                                short_desc: Allowed limit for checkin baggage
+                              value: 15 KG
+                            - descriptor:
+                                code: PROHIBITED_ITEMS
+                                name: Prohibited Items
+                              value: list of items
+                    - id: I2-2
+                      parent_item_id: I2
+                      descriptor:
+                        name: Child
+                        code: CHILD_TICKET
+                      price:
+                        currency: INR
+                        value: '4280'
+                      quantity:
+                        selected:
+                          count: 2
+                      category_ids:
+                        - C1
+                      fulfillment_ids:
+                        - F1
+                        - FT_5
+                      time:
+                        label: JOURNEY_TIME
+                        duration: PT16H30M
+                      refund_terms:
+                        - refund_eligible: true
+                      tags:
+                        - descriptor:
+                            code: FARE_TYPE
+                            name: Fare Type
+                          display: true
+                          list:
+                            - descriptor:
+                                code: REGULAR
+                            - descriptor:
+                                code: STUDENT
+                            - descriptor:
+                                code: SENIOR_CITIZEN
+                            - descriptor:
+                                code: ARMED_FORCES
+                            - descriptor:
+                                code: DOCTORS_NURSES
+                        - descriptor:
+                            code: GENERAL_INFO
+                            name: General Info
+                          display: true
+                          list:
+                            - descriptor:
+                                code: CABIN_BAGGAGE
+                                name: Cabin Baggage
+                                short_desc: Allowed limit for cabin baggage
+                              value: 7 KG
+                            - descriptor:
+                                code: CHECK_IN_BAGGAGE
+                                name: Check-in Baggage
+                                short_desc: Allowed limit for checkin baggage
+                              value: 15 KG
+                            - descriptor:
+                                code: PROHIBITED_ITEMS
+                                name: Prohibited Items
+                              value: list of items
+                  fulfillments:
+                    - id: F1
+                      type: TRIP
+                      stops:
+                        - type: START
+                          id: S1
+                          location:
+                            descriptor:
+                              name: Delhi
+                              code: DEL
+                          time:
+                            label: DATE_TIME
+                            timestamp: '2023-10-15T20:00:00.000Z'
+                        - type: END
+                          id: S2
+                          location:
+                            descriptor:
+                              name: Bengaluru
+                              code: BLR
+                          time:
+                            label: DATE_TIME
+                            timestamp: '2023-10-15T20:00:00.000Z'
+                      customer:
+                        person:
+                          name: Mr. | Joe | Wick | Adams
+                          age: '30'
+                          gender: MALE
+                          dob: '2001-03-23'
+                        contact:
+                          phone: +91-9988776655
+                          email: joeadams@yahoo.com
+                      vehicle:
+                        category: AIRLINE
+                        code: '6E284'
+                      tags:
+                        - descriptor:
+                            code: INFO
+                            name: Info
+                          display: true
+                          list:
+                            - descriptor:
+                                code: OPERATED_BY
+                              value: AirIndia
+                    - id: FT_1
+                      type: TICKET
+                      tags:
+                        - descriptor:
+                            code: SEAT_GRID
+                          list:
+                            - descriptor:
+                                code: X
+                              value: '0'
+                            - descriptor:
+                                code: 'Y'
+                              value: '0'
+                            - descriptor:
+                                code: Z
+                              value: '0'
+                            - descriptor:
+                                code: SEAT_NUMBER
+                              value: A1
+                            - descriptor:
+                                code: SELECTED_SEAT
+                              value: A1
+                            - descriptor:
+                                code: SEAT_PRICE
+                              value: '200'
+                    - id: FT_2
+                      type: TICKET
+                      tags:
+                        - descriptor:
+                            code: SEAT_GRID
+                          list:
+                            - descriptor:
+                                code: X
+                              value: '0'
+                            - descriptor:
+                                code: 'Y'
+                              value: '0'
+                            - descriptor:
+                                code: Z
+                              value: '0'
+                            - descriptor:
+                                code: SEAT_NUMBER
+                              value: A2
+                            - descriptor:
+                                code: SELECTED_SEAT
+                              value: A2
+                            - descriptor:
+                                code: SEAT_PRICE
+                              value: '200'
+                    - id: FT_3
+                      type: TICKET
+                      tags:
+                        - descriptor:
+                            code: SEAT_GRID
+                          list:
+                            - descriptor:
+                                code: X
+                              value: '0'
+                            - descriptor:
+                                code: 'Y'
+                              value: '0'
+                            - descriptor:
+                                code: Z
+                              value: '0'
+                            - descriptor:
+                                code: SEAT_NUMBER
+                              value: A3
+                            - descriptor:
+                                code: SELECTED_SEAT
+                              value: 'true'
+                            - descriptor:
+                                code: SEAT_PRICE
+                              value: '200'
+                    - id: FT_4
+                      type: TICKET
+                      tags:
+                        - descriptor:
+                            code: SEAT_GRID
+                          list:
+                            - descriptor:
+                                code: X
+                              value: '0'
+                            - descriptor:
+                                code: 'Y'
+                              value: '0'
+                            - descriptor:
+                                code: Z
+                              value: '0'
+                            - descriptor:
+                                code: SEAT_NUMBER
+                              value: B1
+                            - descriptor:
+                                code: SELECTED_SEAT
+                              value: B1
+                            - descriptor:
+                                code: SEAT_PRICE
+                              value: '200'
+                    - id: FT_5
+                      type: TICKET
+                      tags:
+                        - descriptor:
+                            code: SEAT_GRID
+                          list:
+                            - descriptor:
+                                code: X
+                              value: '0'
+                            - descriptor:
+                                code: 'Y'
+                              value: '0'
+                            - descriptor:
+                                code: Z
+                              value: '0'
+                            - descriptor:
+                                code: SEAT_NUMBER
+                              value: B2
+                            - descriptor:
+                                code: SELECTED_SEAT
+                              value: B2
+                            - descriptor:
+                                code: SEAT_PRICE
+                              value: '200'
+                  quote:
+                    id: Q1
+                    price:
+                      value: '1000'
+                      currency: INR
+                    breakup:
+                      - title: BASE_FARE
+                        item:
+                          id: I1
+                          quantity:
+                            selected:
+                              count: 3
+                          price:
+                            currency: INR
+                            value: '9280'
+                        price:
+                          currency: INR
+                          value: '27840'
+                      - title: BASE_FARE
+                        item:
+                          id: I2-1
+                        price:
+                          value: '4280'
+                          currency: INR
+                      - title: BASE_FARE
+                        item:
+                          id: I2-2
+                        price:
+                          value: '4280'
+                          currency: INR
+                      - title: TAX
+                        item:
+                          id: I1
+                          tags:
+                            - descriptor:
+                                code: TAX
+                              list:
+                                - descriptor:
+                                    name: cgst
+                                  value: '5'
+                                - descriptor:
+                                    name: sgst
+                                  value: '5'
+                                - descriptor:
+                                    name: fuel tax
+                                  value: '0'
+                                - descriptor:
+                                    name: cess
+                                  value: '0'
+                        price:
+                          currency: INR
+                          value: '3640'
+                      - title: TAX
+                        item:
+                          id: I2-1
+                          tags:
+                            - descriptor:
+                                code: TAX
+                              list:
+                                - descriptor:
+                                    name: cgst
+                                  value: '0'
+                                - descriptor:
+                                    name: sgst
+                                  value: '0'
+                                - descriptor:
+                                    name: fuel tax
+                                  value: '0'
+                                - descriptor:
+                                    name: cess
+                                  value: '0'
+                        price:
+                          currency: INR
+                          value: '0'
+                      - title: TAX
+                        item:
+                          id: I2-2
+                          tags:
+                            - descriptor:
+                                code: TAX
+                              list:
+                                - descriptor:
+                                    name: cgst
+                                  value: '0'
+                                - descriptor:
+                                    name: sgst
+                                  value: '0'
+                                - descriptor:
+                                    name: fuel tax
+                                  value: '0'
+                                - descriptor:
+                                    name: cess
+                                  value: '0'
+                        price:
+                          currency: INR
+                          value: '0'
+                      - title: CONVENIENCE_FEE
+                        price:
+                          currency: INR
+                          value: '19'
+                      - title: SEAT_FARE
+                        item:
+                          id: I1-1
+                        price:
+                          currency: INR
+                          value: '200'
+                      - title: SEAT_FARE
+                        item:
+                          id: I1-2
+                        price:
+                          currency: INR
+                          value: '200'
+                      - title: SEAT_FARE
+                        item:
+                          id: I1-3
+                        price:
+                          value: '200'
+                          currency: INR
+                      - title: SEAT_FARE
+                        item:
+                          id: I2-1
+                        price:
+                          value: '200'
+                          currency: INR
+                      - title: SEAT_FARE
+                        item:
+                          id: I2-2
+                        price:
+                          value: '200'
+                          currency: INR
+                      - title: ADD_ONS
+                        item:
+                          id: I1-1
+                          add_ons:
+                            - id: A1
+                        price:
+                          value: '300'
+                          currency: INR
+                      - title: ADD_ONS
+                        item:
+                          id: I1-2
+                          add_ons:
+                            - id: A2
+                        price:
+                          value: '500'
+                          currency: INR
+                      - title: OTHER_CHARGES
+                        item:
+                          tags:
+                            - descriptor:
+                                code: OTHER_CHARGES
+                              list:
+                                - descriptor:
+                                    name: fuel charge
+                                  value: '0'
+                                - descriptor:
+                                    name: surcharge
+                                  value: '0'
+                      - title: REFUND
+                        item:
+                          id: I1
+                          quantity:
+                            selected:
+                              count: 3
+                          price:
+                            currency: INR
+                            value: '-9280'
+                        price:
+                          currency: INR
+                          value: '-28640'
+                      - title: REFUND
+                        item:
+                          id: I2-1
+                          quantity:
+                            selected:
+                              count: 1
+                        price:
+                          currency: INR
+                          value: '-4580'
+                      - title: REFUND
+                        item:
+                          id: I2-2
+                          quantity:
+                            selected:
+                              count: 1
+                          price:
+                            currency: INR
+                            value: '-4280'
+                        price:
+                          currency: INR
+                          value: '-4280'
+                      - title: REFUND
+                        item:
+                          id: I1-1
+                          add_ons:
+                            - id: A1
+                        price:
+                          value: '-300'
+                          currency: INR
+                      - title: REFUND
+                        item:
+                          id: I1-2
+                          add_ons:
+                            - id: A2
+                        price:
+                          value: '-500'
+                          currency: INR
+                      - title: CANCELLATION_CHARGES
+                        price:
+                          currency: INR
+                          value: '1000'
+                  payments:
+                    - id: PA1
+                      collected_by: BAP
+                      status: PAID
+                      type: PRE-ORDER
+                      params:
+                        transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                        currency: INR
+                        amount: '41859'
+                        bank_code: XXXXXXXX
+                        bank_account_number: xxxxxxxxxxxxxx
+                        virtual_payment_address: 9988199772@okicic
+                      tags:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES
+                          display: false
+                          list:
+                            - descriptor:
+                                code: BUYER_FINDER_FEES_PERCENTAGE
+                              value: '1'
+                        - descriptor:
+                            code: SETTLEMENT_TERMS
+                          display: false
+                          list:
+                            - descriptor:
+                                code: SETTLEMENT_WINDOW
+                              value: PT30D
+                            - descriptor:
+                                code: SETTLEMENT_BASIS
+                              value: INVOICE_RECEIPT
+                            - descriptor:
+                                code: MANDATORY_ARBITRATION
+                              value: 'TRUE'
+                            - descriptor:
+                                code: COURT_JURISDICTION
+                              value: New Delhi
+                            - descriptor:
+                                code: STATIC_TERMS
+                              value: https://api.example-bpp.com/booking/terms
+                            - descriptor:
+                                code: SETTLEMENT_AMOUNT
+                              value: '10421'
+                  status: CANCELLED
+                  cancellation:
+                    cancelled_by: CONSUMER
+                    time: '2023-10-03T02:00:08.143Z'
+                  cancellation_terms:
+                    - cancel_by:
+                        duration: PT60M
+                      cancellation_fee:
+                        percentage: '0'
+                  billing:
+                    name: Joe Adams
+                    phone: +91-9988776655
+                    tax_id: GSTIN:22AAAAA0000A1Z5
+                  created_at: '2023-03-23T04:41:16Z'
+                  updated_at: '2023-03-23T04:42:16Z'
 x-attributes:
   airline:
     attribute_set:
@@ -13147,7 +16020,7 @@ x-attributes:
         context:
           location:
             country:
-              code: &ref_33
+              code: &ref_32
                 required: MANDATORY
                 type: string
                 owner: BAP
@@ -13162,7 +16035,7 @@ x-attributes:
                   This attribute defines the country of location where the
                   transaction is meant to be completed.
             city:
-              code: &ref_34
+              code: &ref_33
                 required: MANDATORY
                 type: string
                 owner: BAP
@@ -13184,31 +16057,31 @@ x-attributes:
               description: >-
                 This attribute defines the location where the transaction is
                 meant to be completed.
-          domain: &ref_35
+          domain: &ref_34
             required: MANDATORY
             type: string
             owner: BAP
             usage: ONDC:TRV10
             description: Describes domain code that is relevant to this transaction context
-          timestamp: &ref_36
+          timestamp: &ref_35
             required: MANDATORY
             type: string
             owner: BAP
             usage: 2023-03-23T04:41:16.000Z
             description: Describes tme of request generation in RFC3339 format
-          bap_id: &ref_37
+          bap_id: &ref_36
             required: MANDATORY
             type: string
             owner: BAP
             usage: api.example-bap.com
             description: Describes subscriber ID of the BAP
-          transaction_id: &ref_38
+          transaction_id: &ref_37
             required: MANDATORY
             type: string
             owner: BAP
             usage: 6743e9e2
             description: Describes  a unique value which persists across all API calls
-          message_id: &ref_39
+          message_id: &ref_38
             required: MANDATORY
             type: string
             owner: BAP
@@ -13216,7 +16089,7 @@ x-attributes:
             description: >-
               Describes a unique value which persists during a request /
               callback cycle.
-          version: &ref_40
+          version: &ref_39
             required: MANDATORY
             type: integer
             owner: BAP
@@ -13232,7 +16105,7 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: &ref_41
+          bap_uri: &ref_40
             required: MANDATORY
             type: string
             owner: BAP
@@ -13240,7 +16113,7 @@ x-attributes:
             description: >-
               Describes subscriber URL of the BAP for accepting callbacks from
               BPPs.
-          ttl: &ref_42
+          ttl: &ref_41
             required: MANDATORY
             type: string
             owner: BAP
@@ -13414,7 +16287,7 @@ x-attributes:
                   owner: BAP
                   usage: '--'
                   description: Describes Buyer finder fee
-                  list: &ref_79
+                  list: &ref_78
                     BUYER_FINDER_FEES_PERCENTAGE:
                       required: MANDATORY
                       type: string
@@ -13428,13 +16301,13 @@ x-attributes:
                   usage: '--'
                   description: Describes settlement terms
                   list:
-                    DELAY_INTEREST: &ref_80
+                    DELAY_INTEREST: &ref_79
                       required: MANDATORY
                       type: string
                       owner: BAP
                       usage: '--'
                       description: Describes delay interest
-                    STATIC_TERMS: &ref_81
+                    STATIC_TERMS: &ref_80
                       required: MANDATORY
                       type: string
                       owner: BAP
@@ -13442,9 +16315,9 @@ x-attributes:
                       description: Describes static terms
       on_search:
         context:
-          location: &ref_45
+          location: &ref_44
             country:
-              code: *ref_33
+              code: *ref_32
               _description:
                 required: MANDATORY
                 type: object
@@ -13454,7 +16327,7 @@ x-attributes:
                   This attribute defines the country of location where the
                   transaction is meant to be completed.
             city:
-              code: *ref_34
+              code: *ref_33
               _description:
                 required: MANDATORY
                 type: object
@@ -13471,12 +16344,12 @@ x-attributes:
               description: >-
                 This attribute defines the location where the transaction is
                 meant to be completed.
-          domain: *ref_35
-          timestamp: *ref_36
-          bap_id: *ref_37
-          transaction_id: *ref_38
-          message_id: *ref_39
-          version: *ref_40
+          domain: *ref_34
+          timestamp: *ref_35
+          bap_id: *ref_36
+          transaction_id: *ref_37
+          message_id: *ref_38
+          version: *ref_39
           action:
             required: MANDATORY
             type: string
@@ -13485,15 +16358,15 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_41
-          ttl: *ref_42
-          bpp_id: &ref_46
+          bap_uri: *ref_40
+          ttl: *ref_41
+          bpp_id: &ref_45
             required: MANDATORY
             type: string
             owner: BPP
             usage: api.example-bpp.com
             description: Describes subscriber ID of the BPP
-          bpp_uri: &ref_47
+          bpp_uri: &ref_46
             required: MANDATORY
             type: string
             owner: BPP
@@ -13516,7 +16389,7 @@ x-attributes:
                   owner: BPP
                   usage: ' https://abc-AIRLINE.in/logos/logo.ico'
                   description: URL to the image. This can be a data url or an remote url
-                size_type: &ref_66
+                size_type: &ref_65
                   required: OPTIONAL
                   type: string
                   owner: BPP
@@ -13535,14 +16408,14 @@ x-attributes:
                 usage: '--'
                 description: Describes the catalog's descriptor.
             providers:
-              id: &ref_51
+              id: &ref_50
                 required: MANDATORY
                 type: string
                 owner: BPP
                 usage: 13ba8018
                 description: Id of the provider
               descriptor:
-                name: &ref_65
+                name: &ref_64
                   required: MANDATORY
                   type: string
                   owner: BPP
@@ -13567,7 +16440,7 @@ x-attributes:
                     owner: BPP
                     usage: '--'
                     description: Describes the images description.
-                _description: &ref_44
+                _description: &ref_43
                   required: MANDATORY
                   type: object
                   owner: BPP
@@ -13593,7 +16466,7 @@ x-attributes:
                     owner: BPP
                     usage: '--'
                     description: Describes the provider's categories description.
-                id: &ref_56
+                id: &ref_55
                   required: OPTIONAL
                   type: string
                   owner: BPP
@@ -13613,13 +16486,13 @@ x-attributes:
                   usage: 6743e9e2
                   description: ID of the item.
                 descriptor:
-                  name: &ref_52
+                  name: &ref_51
                     required: MANDATORY
                     type: string
                     owner: BAP/BPP
                     usage: Non Stop
                     description: Physical description of something.
-                  code: &ref_53
+                  code: &ref_52
                     required: MANDATORY
                     type: string
                     owner: BAP/BPP
@@ -13685,20 +16558,20 @@ x-attributes:
                   usage: C1
                   description: Id of Categories this item can be listed under
                 add_ons:
-                  id: &ref_62
+                  id: &ref_61
                     required: OPTIONAL
                     type: string
                     owner: BPP
                     usage: e74e5s5
                     description: Describes the id of the add_ons
                   descriptor:
-                    name: &ref_57
+                    name: &ref_56
                       required: OPTIONAL
                       type: string
                       owner: BPP
                       usage: meals
                       description: Describes the name of add_ons
-                    code: &ref_58
+                    code: &ref_57
                       required: OPTIONAL
                       type: string
                       owner: BPP
@@ -13720,7 +16593,7 @@ x-attributes:
                         item.
                   quantity:
                     available:
-                      count: &ref_59
+                      count: &ref_58
                         required: OPTIONAL
                         type: string
                         owner: BPP
@@ -13741,13 +16614,13 @@ x-attributes:
                       usage: '--'
                       description: Describes the add_ons quantity assocaited with an item.
                   price:
-                    value: &ref_60
+                    value: &ref_59
                       required: OPTIONAL
                       type: string
                       owner: BPP
                       usage: 422
                       description: Describes the price of add_on services
-                    currency: &ref_61
+                    currency: &ref_60
                       required: OPTIONAL
                       type: string
                       owner: BPP
@@ -13766,24 +16639,24 @@ x-attributes:
                     usage: '--'
                     description: Describes the add_ons assocaited with an item.
                 tags:
-                  FARE_TYPE: &ref_63
+                  FARE_TYPE: &ref_62
                     required: OPTIONAL
                     type: object
                     owner: BPP
                     usage: '--'
                     description: Describes the Fare Type
                     list:
-                      REGULAR: &ref_43
+                      REGULAR: &ref_42
                         required: OPTIONAL
                         type: string
                         owner: BPP
                         usage: '--'
                         description: Describes the Fare Type
-                      STUDENT: *ref_43
-                      SENIOR_CITIZEN: *ref_43
-                      ARMED_FORCES: *ref_43
-                      DOCTORS_NURSES: *ref_43
-                  GENERAL_INFO: &ref_64
+                      STUDENT: *ref_42
+                      SENIOR_CITIZEN: *ref_42
+                      ARMED_FORCES: *ref_42
+                      DOCTORS_NURSES: *ref_42
+                  GENERAL_INFO: &ref_63
                     required: OPTIONAL
                     type: object
                     owner: BPP
@@ -13833,7 +16706,7 @@ x-attributes:
                         owner: BPP
                         usage: '--'
                         description: Describes the base fare charges for fare breakup
-                _description: &ref_48
+                _description: &ref_47
                   required: MANDATORY
                   type: object
                   owner: BAP/BPP
@@ -13846,13 +16719,13 @@ x-attributes:
                     retail domain it can represent a product like a grocery
                     item.
               fulfillments:
-                id: &ref_55
+                id: &ref_54
                   required: MANDATORY
                   type: string
                   owner: BPP
                   usage: e74e565
                   description: Unique reference ID to the fulfillment of an order
-                type: &ref_68
+                type: &ref_67
                   required: MANDATORY
                   type: string
                   owner: BPP
@@ -13957,13 +16830,13 @@ x-attributes:
                         owner: BPP
                         usage: '--'
                         description: Describes the operated by info
-                      FULFILLMENT_SEQUENCE: &ref_49
+                      FULFILLMENT_SEQUENCE: &ref_48
                         required: OPTIONAL
                         type: string
                         owner: BPP
                         usage: '--'
                         description: Describes the fulfillments sequence info
-                      PARENT_ID: &ref_50
+                      PARENT_ID: &ref_49
                         required: OPTIONAL
                         type: string
                         owner: BPP
@@ -14029,7 +16902,7 @@ x-attributes:
                         owner: BAP/BPP
                         usage: '--'
                         description: Describes court jurisdiction
-              _description: *ref_44
+              _description: *ref_43
             _description:
               required: MANDATORY
               type: object
@@ -14038,13 +16911,13 @@ x-attributes:
               description: Describes the catalog's description.
       select:
         context:
-          location: *ref_45
-          domain: *ref_35
-          timestamp: *ref_36
-          bap_id: *ref_37
-          transaction_id: *ref_38
-          message_id: *ref_39
-          version: *ref_40
+          location: *ref_44
+          domain: *ref_34
+          timestamp: *ref_35
+          bap_id: *ref_36
+          transaction_id: *ref_37
+          message_id: *ref_38
+          version: *ref_39
           action:
             required: MANDATORY
             type: string
@@ -14053,10 +16926,10 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_41
-          ttl: *ref_42
-          bpp_id: *ref_46
-          bpp_uri: *ref_47
+          bap_uri: *ref_40
+          ttl: *ref_41
+          bpp_id: *ref_45
+          bpp_uri: *ref_46
         message:
           order:
             items:
@@ -14066,9 +16939,9 @@ x-attributes:
                 owner: BPP
                 usage: 46b8979
                 description: 'Unique ID of the item. '
-              quantity: &ref_113
-                selected: &ref_75
-                  count: &ref_54
+              quantity: &ref_112
+                selected: &ref_74
+                  count: &ref_53
                     required: MANDATORY
                     type: integer
                     owner: BAP
@@ -14088,7 +16961,7 @@ x-attributes:
                   owner: BAP/BPP
                   usage: '--'
                   description: Describes items quantity
-              add_ons: &ref_76
+              add_ons: &ref_75
                 id:
                   required: OPTIONAL
                   type: string
@@ -14127,16 +17000,16 @@ x-attributes:
                 owner: BAP
                 usage: 1
                 description: Describes the parent item id
-              _description: *ref_48
+              _description: *ref_47
             fulfillments:
-              id: &ref_77
+              id: &ref_76
                 required: MANDATORY
                 type: string
                 owner: BPP
                 usage: F1
                 description: Unique reference ID to the fulfillment of an order
-              stops: &ref_115
-                id: &ref_69
+              stops: &ref_114
+                id: &ref_68
                   required: OPTIONAL
                   type: string
                   owner: BPP
@@ -14155,7 +17028,7 @@ x-attributes:
                   owner: BAP
                   usage: AIRLINE
                   description: Describes vehicle category
-                code: &ref_70
+                code: &ref_69
                   required: OPTIONAL
                   type: string
                   owner: BPP
@@ -14187,42 +17060,42 @@ x-attributes:
                       owner: BAP
                       usage: '--'
                       description: Describes the seat is slected or not
-                    SEAT_PRICE: &ref_71
+                    SEAT_PRICE: &ref_70
                       required: OPTIONAL
                       type: string
                       owner: BPP
                       usage: '--'
                       description: Describes the seat price
-                INFO: &ref_94
+                INFO: &ref_93
                   required: OPTIONAL
                   type: object
                   owner: BPP
                   usage: '--'
                   description: Describes the fulfillments info
                   list:
-                    OPERATED_BY: &ref_73
+                    OPERATED_BY: &ref_72
                       required: OPTIONAL
                       type: string
                       owner: BPP
                       usage: '--'
                       description: Describes the operated by info
-                    FULFILLMENT_SEQUENCE: *ref_49
-                    PARENT_ID: *ref_50
-              _description: &ref_118
+                    FULFILLMENT_SEQUENCE: *ref_48
+                    PARENT_ID: *ref_49
+              _description: &ref_117
                 required: MANDATORY
                 type: object
                 owner: BAP/BPP
                 usage: '--'
                 description: Describes fulfillment assocaited with an item
-            provider: &ref_78
-              id: *ref_51
-              _description: &ref_67
+            provider: &ref_77
+              id: *ref_50
+              _description: &ref_66
                 required: MANDATORY
                 type: object
                 owner: BPP
                 usage: '--'
                 description: Describes provider details
-            _description: &ref_74
+            _description: &ref_73
               required: MANDATORY
               type: object
               owner: BAP/BPP
@@ -14230,13 +17103,13 @@ x-attributes:
               description: Describes order details
       on_select:
         context:
-          location: *ref_45
-          domain: *ref_35
-          timestamp: *ref_36
-          bap_id: *ref_37
-          transaction_id: *ref_38
-          message_id: *ref_39
-          version: *ref_40
+          location: *ref_44
+          domain: *ref_34
+          timestamp: *ref_35
+          bap_id: *ref_36
+          transaction_id: *ref_37
+          message_id: *ref_38
+          version: *ref_39
           action:
             required: MANDATORY
             type: string
@@ -14245,35 +17118,35 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_41
-          ttl: *ref_42
-          bpp_id: *ref_46
-          bpp_uri: *ref_47
+          bap_uri: *ref_40
+          ttl: *ref_41
+          bpp_id: *ref_45
+          bpp_uri: *ref_46
         message:
           order:
             items:
-              id: &ref_82
+              id: &ref_81
                 required: MANDATORY
                 type: string
                 owner: BPP
                 usage: 46b8979
                 description: ID of the item.
-              parent_item_id: &ref_87
+              parent_item_id: &ref_86
                 required: OPTIONAL
                 type: string
                 owner: BPP
                 usage: 46b8979
                 description: Describes the parent item id.
-              descriptor: &ref_83
-                name: *ref_52
-                code: *ref_53
+              descriptor: &ref_82
+                name: *ref_51
+                code: *ref_52
                 _description:
                   required: MANDATORY
                   type: object
                   owner: BAP/BPP
                   usage: '--'
                   description: Describes item description
-              price: &ref_84
+              price: &ref_83
                 currency:
                   required: MANDATORY
                   type: string
@@ -14292,9 +17165,9 @@ x-attributes:
                   owner: BPP
                   usage: '--'
                   description: Describes items price details
-              quantity: &ref_85
+              quantity: &ref_84
                 selected:
-                  count: *ref_54
+                  count: *ref_53
                   _description:
                     required: MANDATORY
                     type: object
@@ -14307,12 +17180,12 @@ x-attributes:
                   owner: BAP/BPP
                   usage: '--'
                   description: Describes quantity details
-              fulfillment_ids: *ref_55
-              category_ids: *ref_56
-              add_ons: &ref_86
+              fulfillment_ids: *ref_54
+              category_ids: *ref_55
+              add_ons: &ref_85
                 descriptor:
-                  name: *ref_57
-                  code: *ref_58
+                  name: *ref_56
+                  code: *ref_57
                   _description:
                     required: OPTIONAL
                     type: object
@@ -14321,7 +17194,7 @@ x-attributes:
                     description: Describes add_ons  descriptor of an item
                 quantity:
                   selected:
-                    count: *ref_59
+                    count: *ref_58
                     _description:
                       required: OPTIONAL
                       type: object
@@ -14335,15 +17208,15 @@ x-attributes:
                     usage: '--'
                     description: Describes the quantity for add_ons
                 price:
-                  value: *ref_60
-                  currency: *ref_61
+                  value: *ref_59
+                  currency: *ref_60
                   _description:
                     required: OPTIONAL
                     type: object
                     owner: BPP
                     usage: '--'
                     description: Describes the price of add_on services
-                id: *ref_62
+                id: *ref_61
                 _description:
                   required: OPTIONAL
                   type: object
@@ -14351,13 +17224,13 @@ x-attributes:
                   usage: '--'
                   description: Describes add_ons of an item
               tags:
-                FARE_TYPE: *ref_63
-                GENERAL_INFO: *ref_64
-              _description: *ref_48
-            provider: &ref_88
-              id: *ref_51
+                FARE_TYPE: *ref_62
+                GENERAL_INFO: *ref_63
+              _description: *ref_47
+            provider: &ref_87
+              id: *ref_50
               descriptor:
-                name: *ref_65
+                name: *ref_64
                 images:
                   url:
                     required: MANDATORY
@@ -14365,7 +17238,7 @@ x-attributes:
                     owner: BPP
                     usage: https://operator1.com/logos/logo.ico
                     description: URL to the image. This can be a data url or an remote url
-                  size_type: *ref_66
+                  size_type: *ref_65
                   _description:
                     required: MANDATORY
                     type: object
@@ -14378,13 +17251,13 @@ x-attributes:
                   owner: BPP
                   usage: '--'
                   description: Describes provider descriptor details
-              _description: *ref_67
+              _description: *ref_66
             fulfillments:
-              id: *ref_55
-              type: *ref_68
-              stops: &ref_89
-                id: *ref_69
-                type: &ref_123
+              id: *ref_54
+              type: *ref_67
+              stops: &ref_88
+                id: *ref_68
+                type: &ref_122
                   required: OPTIONAL
                   type: string
                   owner: BAP/BPP
@@ -14392,7 +17265,7 @@ x-attributes:
                   description: >-
                     The type of stop. Allowed values of this property can be
                     defined by the network policy.
-                location: &ref_124
+                location: &ref_123
                   descriptor:
                     name:
                       required: OPTIONAL
@@ -14418,7 +17291,7 @@ x-attributes:
                     owner: BAP/BPP
                     usage: '--'
                     description: Describes the location of stops.
-                time: &ref_125
+                time: &ref_124
                   label:
                     required: OPTIONAL
                     type: string
@@ -14437,20 +17310,20 @@ x-attributes:
                     owner: BAP/BPP
                     usage: '--'
                     description: Describes the time of location.
-                _description: &ref_126
+                _description: &ref_125
                   required: OPTIONAL
                   type: object
                   owner: BAP/BPP
                   usage: '--'
                   description: Describes stops details
-              vehicle: &ref_90
+              vehicle: &ref_89
                 category:
                   required: OPTIONAL
                   type: string
                   owner: BAP/BPP
                   usage: AIRLINE
                   description: Describes vehicle category
-                code: *ref_70
+                code: *ref_69
                 _description:
                   required: OPTIONAL
                   type: object
@@ -14458,7 +17331,7 @@ x-attributes:
                   usage: '--'
                   description: Describes the vehicle type.
               tags:
-                SEAT_GRID: &ref_95
+                SEAT_GRID: &ref_94
                   required: OPTIONAL
                   type: string
                   owner: BPP
@@ -14477,15 +17350,15 @@ x-attributes:
                       owner: BPP
                       usage: '--'
                       description: Describes the selected seat number
-                    SEAT_PRICE: *ref_71
-                    X: &ref_72
+                    SEAT_PRICE: *ref_70
+                    X: &ref_71
                       required: OPTIONAL
                       type: string
                       owner: BPP
                       usage: '--'
                       description: Describes the seat grid layout
-                    'Y': *ref_72
-                    Z: *ref_72
+                    'Y': *ref_71
+                    Z: *ref_71
                 INFO:
                   required: OPTIONAL
                   type: object
@@ -14493,8 +17366,8 @@ x-attributes:
                   usage: '--'
                   description: Describes the fulfillments info
                   list:
-                    OPERATED_BY: *ref_73
-              _description: &ref_96
+                    OPERATED_BY: *ref_72
+              _description: &ref_95
                 required: MANDATORY
                 type: object
                 owner: BAP/BPP
@@ -14547,7 +17420,7 @@ x-attributes:
                     usage: '--'
                     description: Describes price description
                 item:
-                  id: &ref_97
+                  id: &ref_96
                     required: OPTIONAL
                     type: string
                     owner: BPP
@@ -14560,7 +17433,7 @@ x-attributes:
                     usage: 3
                     description: Describes the item quantity for quote.
                     selected:
-                      count: &ref_100
+                      count: &ref_99
                         required: OPTIONAL
                         type: string
                         owner: BPP
@@ -14579,13 +17452,13 @@ x-attributes:
                       usage: '--'
                       description: Describes the item count
                   price:
-                    value: &ref_101
+                    value: &ref_100
                       required: OPTIONAL
                       type: string
                       owner: BPP
                       usage: 432
                       description: Describes the item price
-                    currency: &ref_102
+                    currency: &ref_101
                       required: OPTIONAL
                       type: string
                       owner: BPP
@@ -14598,19 +17471,19 @@ x-attributes:
                       usage: '--'
                       description: Describes the price for quote.
                   add_ons:
-                    id: &ref_98
+                    id: &ref_97
                       required: OPTIONAL
                       type: string
                       owner: BPP
                       usage: 432
                       description: Describes the item add_ons
-                    _description: &ref_99
+                    _description: &ref_98
                       required: OPTIONAL
                       type: object
                       owner: BPP
                       usage: '--'
                       description: Describes the item add_ons
-                  tags: &ref_103
+                  tags: &ref_102
                     TAX:
                       required: OPTIONAL
                       type: string
@@ -14641,16 +17514,16 @@ x-attributes:
                 owner: BPP
                 usage: '--'
                 description: Describes orders quote
-            _description: *ref_74
+            _description: *ref_73
       init:
         context:
-          location: *ref_45
-          domain: *ref_35
-          timestamp: *ref_36
-          bap_id: *ref_37
-          transaction_id: *ref_38
-          message_id: *ref_39
-          version: *ref_40
+          location: *ref_44
+          domain: *ref_34
+          timestamp: *ref_35
+          bap_id: *ref_36
+          transaction_id: *ref_37
+          message_id: *ref_38
+          version: *ref_39
           action:
             required: MANDATORY
             type: string
@@ -14659,29 +17532,29 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_41
-          ttl: *ref_42
-          bpp_id: *ref_46
-          bpp_uri: *ref_47
+          bap_uri: *ref_40
+          ttl: *ref_41
+          bpp_id: *ref_45
+          bpp_uri: *ref_46
         message:
           order:
             items:
-              id: &ref_112
+              id: &ref_111
                 required: MANDATORY
                 type: string
                 owner: BPP
                 usage: 46b8979
                 description: 'Unique ID of the item. '
               quantity:
-                selected: *ref_75
+                selected: *ref_74
                 _description:
                   required: MANDATORY
                   type: object
                   owner: BAP
                   usage: '--'
                   description: Describes items quantity
-              add_ons: *ref_76
-              parent_item_id: &ref_114
+              add_ons: *ref_75
+              parent_item_id: &ref_113
                 required: MANDATORY
                 type: integer
                 owner: BAP
@@ -14699,7 +17572,7 @@ x-attributes:
                   can represent the delivery service offering. In the retail
                   domain it can represent a product like a grocery item.
             fulfillments:
-              id: *ref_77
+              id: *ref_76
               stops:
                 id:
                   required: OPTIONAL
@@ -14713,7 +17586,7 @@ x-attributes:
                   owner: BPP
                   usage: '--'
                   description: Describes fulfillments stops
-              customer: &ref_116
+              customer: &ref_115
                 person:
                   name:
                     required: OPTIONAL
@@ -14735,7 +17608,7 @@ x-attributes:
                     owner: BAP
                     usage: MALE
                     description: Gender of the customer
-                  _description: &ref_91
+                  _description: &ref_90
                     required: OPTIONAL
                     type: object
                     owner: BAP
@@ -14754,26 +17627,26 @@ x-attributes:
                     owner: BAP
                     usage: joeadams@yahoo.com
                     description: Email of the  customer
-                  _description: &ref_92
+                  _description: &ref_91
                     required: OPTIONAL
                     type: object
                     owner: BAP
                     usage: '--'
                     description: Describes contact details
-                _description: &ref_93
+                _description: &ref_92
                   required: OPTIONAL
                   type: object
                   owner: BAP
                   usage: '--'
                   description: Describes customer details
-              vehicle: &ref_117
+              vehicle: &ref_116
                 category:
                   required: OPTIONAL
                   type: string
                   owner: BPP
                   usage: AIRLINE
                   description: Describes vehicle category
-                code: *ref_70
+                code: *ref_69
                 _description:
                   required: OPTIONAL
                   type: object
@@ -14786,9 +17659,9 @@ x-attributes:
                 owner: BPP
                 usage: '--'
                 description: Describes fulfillment assocaited with an item
-            provider: *ref_78
+            provider: *ref_77
             payments:
-              collected_by: &ref_104
+              collected_by: &ref_103
                 required: MANDATORY
                 type: string
                 owner: BAP
@@ -14800,20 +17673,20 @@ x-attributes:
                 owner: BAP
                 usage: NOT-PAID
                 description: Describe the payment status
-              type: &ref_119
+              type: &ref_118
                 required: MANDATORY
                 type: string
                 owner: BAP
                 usage: PRE-ORDER
                 description: Describes the payment type
-              tags: &ref_120
-                BUYER_FINDER_FEES: &ref_106
+              tags: &ref_119
+                BUYER_FINDER_FEES: &ref_105
                   required: MANDATORY
                   type: string
                   owner: BAP
                   usage: '--'
                   description: Describes Buyer finder fee
-                  list: *ref_79
+                  list: *ref_78
                 SETTLEMENT_TERMS:
                   required: MANDATORY
                   type: string
@@ -14821,40 +17694,40 @@ x-attributes:
                   usage: '--'
                   description: Describes settlement terms
                   list:
-                    SETTLEMENT_BASIS: &ref_107
+                    SETTLEMENT_BASIS: &ref_106
                       required: MANDATORY
                       type: string
                       owner: BAP
                       usage: '--'
                       description: Describes settlement basis
-                    DELAY_INTEREST: *ref_80
-                    STATIC_TERMS: *ref_81
-                    SETTLEMENT_AMOUNT: &ref_108
+                    DELAY_INTEREST: *ref_79
+                    STATIC_TERMS: *ref_80
+                    SETTLEMENT_AMOUNT: &ref_107
                       required: MANDATORY
                       type: string
                       owner: BAP
                       usage: '--'
                       description: Describes settlement amount to counter-party
-                    SETTLEMENT_TYPE: &ref_109
+                    SETTLEMENT_TYPE: &ref_108
                       required: MANDATORY
                       type: string
                       owner: BAP
                       usage: '--'
                       description: Describes settlement type
-              _description: &ref_110
+              _description: &ref_109
                 required: MANDATORY
                 type: object
                 owner: BAP/BPP
                 usage: '--'
                 description: The terms of settlement for this order
               params:
-                _description: &ref_105
+                _description: &ref_104
                   required: OPTIONAL
                   type: object
                   owner: BAP
                   usage: '--'
                   description: This attribute defines the payment params for this order.
-            billing: &ref_111
+            billing: &ref_110
               name:
                 required: MANDATORY
                 type: string
@@ -14879,16 +17752,16 @@ x-attributes:
                 owner: BAP
                 usage: '--'
                 description: Describes billing details of order
-            _description: *ref_74
+            _description: *ref_73
       on_init:
         context:
-          location: *ref_45
-          domain: *ref_35
-          timestamp: *ref_36
-          bap_id: *ref_37
-          transaction_id: *ref_38
-          message_id: *ref_39
-          version: *ref_40
+          location: *ref_44
+          domain: *ref_34
+          timestamp: *ref_35
+          bap_id: *ref_36
+          transaction_id: *ref_37
+          message_id: *ref_38
+          version: *ref_39
           action:
             required: MANDATORY
             type: string
@@ -14897,28 +17770,28 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_41
-          ttl: *ref_42
-          bpp_id: *ref_46
-          bpp_uri: *ref_47
+          bap_uri: *ref_40
+          ttl: *ref_41
+          bpp_id: *ref_45
+          bpp_uri: *ref_46
         message:
           order:
-            items: &ref_122
-              id: *ref_82
-              descriptor: *ref_83
-              price: *ref_84
-              quantity: *ref_85
-              fulfillment_ids: *ref_55
-              category_ids: *ref_56
-              add_ons: *ref_86
-              parent_item_id: *ref_87
-              _description: *ref_48
-            provider: *ref_88
+            items: &ref_121
+              id: *ref_81
+              descriptor: *ref_82
+              price: *ref_83
+              quantity: *ref_84
+              fulfillment_ids: *ref_54
+              category_ids: *ref_55
+              add_ons: *ref_85
+              parent_item_id: *ref_86
+              _description: *ref_47
+            provider: *ref_87
             fulfillments:
-              id: *ref_55
-              type: *ref_68
-              stops: *ref_89
-              vehicle: *ref_90
+              id: *ref_54
+              type: *ref_67
+              stops: *ref_88
+              vehicle: *ref_89
               customer:
                 person:
                   name:
@@ -14941,7 +17814,7 @@ x-attributes:
                     owner: BAP
                     usage: 30
                     description: Describes the customer gender
-                  _description: *ref_91
+                  _description: *ref_90
                 contact:
                   phone:
                     required: OPTIONAL
@@ -14955,14 +17828,14 @@ x-attributes:
                     owner: BAP
                     usage: 30
                     description: Describes the customer email
-                  _description: *ref_92
-                _description: *ref_93
-              tags: &ref_127
-                INFO: *ref_94
-                SEAT_GRID: *ref_95
-              _description: *ref_96
+                  _description: *ref_91
+                _description: *ref_92
+              tags: &ref_126
+                INFO: *ref_93
+                SEAT_GRID: *ref_94
+              _description: *ref_95
             quote:
-              price: &ref_128
+              price: &ref_127
                 value:
                   required: MANDATORY
                   type: string
@@ -14982,13 +17855,13 @@ x-attributes:
                   usage: '--'
                   description: 'Describes quotes price '
               breakup:
-                title: &ref_129
+                title: &ref_128
                   required: MANDATORY
                   type: string
                   owner: BPP
                   usage: BASE_FARE
                   description: Title of total quoted price
-                price: &ref_130
+                price: &ref_129
                   value:
                     required: MANDATORY
                     type: string
@@ -15008,18 +17881,18 @@ x-attributes:
                     usage: '--'
                     description: Describes price description
                 item:
-                  id: *ref_97
-                  add_ons: &ref_131
+                  id: *ref_96
+                  add_ons: &ref_130
                     required: OPTIONAL
                     type: string
                     owner: BPP
                     usage: 432
                     description: Describes the item add_ons
-                    id: *ref_98
-                    _description: *ref_99
-                  quantity: &ref_133
+                    id: *ref_97
+                    _description: *ref_98
+                  quantity: &ref_132
                     selected:
-                      count: *ref_100
+                      count: *ref_99
                       _description:
                         required: MANDATORY
                         type: object
@@ -15032,36 +17905,36 @@ x-attributes:
                       owner: BPP
                       usage: '--'
                       description: Describes the item count
-                  price: &ref_132
-                    value: *ref_101
-                    currency: *ref_102
+                  price: &ref_131
+                    value: *ref_100
+                    currency: *ref_101
                     _description:
                       required: MANDATORY
                       type: object
                       owner: BPP
                       usage: '--'
                       description: Describes the price for quote.
-                  _description: &ref_134
+                  _description: &ref_133
                     required: MANDATORY
                     type: object
                     owner: BPP
                     usage: '--'
                     description: Describes the item for quote.
-                  tags: *ref_103
-                _description: &ref_135
+                  tags: *ref_102
+                _description: &ref_134
                   required: MANDATORY
                   type: object
                   owner: BPP
                   usage: '--'
                   description: Describes breakup details
-              _description: &ref_136
+              _description: &ref_135
                 required: MANDATORY
                 type: object
                 owner: BPP
                 usage: '--'
                 description: Describes orders quote
             payments:
-              id: &ref_137
+              id: &ref_136
                 required: MANDATORY
                 type: string
                 owner: BPP
@@ -15069,33 +17942,33 @@ x-attributes:
                 description: >-
                   ID of the payment term that can be referred at an item or an
                   order level in a catalog
-              collected_by: *ref_104
-              status: &ref_138
+              collected_by: *ref_103
+              status: &ref_137
                 required: MANDATORY
                 type: string
                 owner: BAP
                 usage: NOT-PAID
                 description: Payment Status
-              type: &ref_139
+              type: &ref_138
                 required: MANDATORY
                 type: string
                 owner: BAP
                 usage: PRE-ORDER
                 description: Payment type
               params:
-                bank_code: &ref_140
+                bank_code: &ref_139
                   required: MANDATORY
                   type: string
                   owner: BAP
                   usage: XXXXXXXX
                   description: Bank code associated with payment activity
-                bank_account_number: &ref_141
+                bank_account_number: &ref_140
                   required: MANDATORY
                   type: string
                   owner: BAP
                   usage: xxxxxxxxxxxxxx
                   description: Bank account number associated with payment activity
-                virtual_payment_address: &ref_142
+                virtual_payment_address: &ref_141
                   required: MANDATORY
                   type: string
                   owner: BAP
@@ -15107,15 +17980,15 @@ x-attributes:
                   owner: BPP
                   usage: 5758
                   description: Describes the payment amount
-                currency: &ref_144
+                currency: &ref_143
                   required: MANDATORY
                   type: string
                   owner: BPP
                   usage: INR
                   description: Describes the payment currency
-                _description: *ref_105
-              tags: &ref_145
-                BUYER_FINDER_FEES: *ref_106
+                _description: *ref_104
+              tags: &ref_144
+                BUYER_FINDER_FEES: *ref_105
                 SETTLEMENT_TERMS:
                   required: MANDATORY
                   type: string
@@ -15129,11 +18002,11 @@ x-attributes:
                       owner: BAP
                       usage: '--'
                       description: Describes settlement window
-                    SETTLEMENT_BASIS: *ref_107
-                    DELAY_INTEREST: *ref_80
-                    STATIC_TERMS: *ref_81
-                    SETTLEMENT_AMOUNT: *ref_108
-                    SETTLEMENT_TYPE: *ref_109
+                    SETTLEMENT_BASIS: *ref_106
+                    DELAY_INTEREST: *ref_79
+                    STATIC_TERMS: *ref_80
+                    SETTLEMENT_AMOUNT: *ref_107
+                    SETTLEMENT_TYPE: *ref_108
                     MANDATORY_ARBITRATION:
                       required: MANDATORY
                       type: string
@@ -15146,8 +18019,8 @@ x-attributes:
                       owner: BPP
                       usage: '--'
                       description: Describes court jurisdiction
-              _description: *ref_110
-            cancellation_terms: &ref_146
+              _description: *ref_109
+            cancellation_terms: &ref_145
               cancel_by:
                 duration:
                   required: MANDATORY
@@ -15180,17 +18053,17 @@ x-attributes:
                 owner: BPP
                 usage: '--'
                 description: Describes cancellation terms of order
-            billing: *ref_111
-            _description: *ref_74
+            billing: *ref_110
+            _description: *ref_73
       confirm:
         context:
-          location: *ref_45
-          domain: *ref_35
-          timestamp: *ref_36
-          bap_id: *ref_37
-          transaction_id: *ref_38
-          message_id: *ref_39
-          version: *ref_40
+          location: *ref_44
+          domain: *ref_34
+          timestamp: *ref_35
+          bap_id: *ref_36
+          transaction_id: *ref_37
+          message_id: *ref_38
+          version: *ref_39
           action:
             required: MANDATORY
             type: string
@@ -15199,42 +18072,42 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_41
-          ttl: *ref_42
-          bpp_id: *ref_46
-          bpp_uri: *ref_47
+          bap_uri: *ref_40
+          ttl: *ref_41
+          bpp_id: *ref_45
+          bpp_uri: *ref_46
         message:
           order:
-            id: &ref_121
-              required: MANDATORY
+            id: &ref_120
+              required: Optional
               type: string
               owner: BPP
               usage: 36v8979
               description: 'Unique ID of the order. '
             items:
-              id: *ref_112
-              quantity: *ref_113
-              add_ons: *ref_76
-              parent_item_id: *ref_114
-              _description: *ref_48
+              id: *ref_111
+              quantity: *ref_112
+              add_ons: *ref_75
+              parent_item_id: *ref_113
+              _description: *ref_47
             fulfillments:
-              id: *ref_77
-              stops: *ref_115
-              customer: *ref_116
-              vehicle: *ref_117
-              _description: *ref_118
-            provider: *ref_78
+              id: *ref_76
+              stops: *ref_114
+              customer: *ref_115
+              vehicle: *ref_116
+              _description: *ref_117
+            provider: *ref_77
             payments:
-              collected_by: *ref_104
+              collected_by: *ref_103
               status:
                 required: MANDATORY
                 type: string
                 owner: BAP
                 usage: NOT-PAID
                 description: Describes the payment Status
-              type: *ref_119
+              type: *ref_118
               params:
-                transaction_id: &ref_143
+                transaction_id: &ref_142
                   required: MANDATORY
                   type: string
                   owner: BAP
@@ -15252,20 +18125,20 @@ x-attributes:
                   owner: BAP
                   usage: 10727
                   description: Describes the payment amount.
-                _description: *ref_105
-              tags: *ref_120
-              _description: *ref_110
-            billing: *ref_111
-            _description: *ref_74
+                _description: *ref_104
+              tags: *ref_119
+              _description: *ref_109
+            billing: *ref_110
+            _description: *ref_73
       on_confirm:
         context:
-          location: *ref_45
-          domain: *ref_35
-          timestamp: *ref_36
-          bap_id: *ref_37
-          transaction_id: *ref_38
-          message_id: *ref_39
-          version: *ref_40
+          location: *ref_44
+          domain: *ref_34
+          timestamp: *ref_35
+          bap_id: *ref_36
+          transaction_id: *ref_37
+          message_id: *ref_38
+          version: *ref_39
           action:
             required: MANDATORY
             type: string
@@ -15274,23 +18147,23 @@ x-attributes:
             description: >-
               Describes the Beckn protocol method being called by the sender and
               executed at the receiver.
-          bap_uri: *ref_41
-          ttl: *ref_42
-          bpp_id: *ref_46
-          bpp_uri: *ref_47
+          bap_uri: *ref_40
+          ttl: *ref_41
+          bpp_id: *ref_45
+          bpp_uri: *ref_46
         message:
           order:
-            id: *ref_121
-            items: *ref_122
-            provider: *ref_88
+            id: *ref_120
+            items: *ref_121
+            provider: *ref_87
             fulfillments:
-              id: *ref_55
-              type: *ref_68
+              id: *ref_54
+              type: *ref_67
               stops:
-                id: *ref_69
-                type: *ref_123
-                location: *ref_124
-                time: *ref_125
+                id: *ref_68
+                type: *ref_122
+                location: *ref_123
+                time: *ref_124
                 authorization:
                   type:
                     required: OPTIONAL
@@ -15310,9 +18183,9 @@ x-attributes:
                     owner: BPP
                     usage: '--'
                     description: Describes the authorization details
-                _description: *ref_126
-              vehicle: *ref_90
-              tags: *ref_127
+                _description: *ref_125
+              vehicle: *ref_89
+              tags: *ref_126
               customer:
                 person:
                   name:
@@ -15335,7 +18208,7 @@ x-attributes:
                     owner: BPP
                     usage: 30
                     description: Describes the customer gender
-                  _description: *ref_91
+                  _description: *ref_90
                 contact:
                   phone:
                     required: OPTIONAL
@@ -15349,43 +18222,43 @@ x-attributes:
                     owner: BPP
                     usage: 30
                     description: Describes the customer email
-                  _description: *ref_92
-                _description: *ref_93
-              _description: *ref_96
+                  _description: *ref_91
+                _description: *ref_92
+              _description: *ref_95
             quote:
-              price: *ref_128
+              price: *ref_127
               breakup:
-                title: *ref_129
-                price: *ref_130
+                title: *ref_128
+                price: *ref_129
                 item:
-                  id: *ref_97
-                  add_ons: *ref_131
-                  price: *ref_132
-                  quantity: *ref_133
-                  _description: *ref_134
-                  tags: *ref_103
-                _description: *ref_135
-              _description: *ref_136
+                  id: *ref_96
+                  add_ons: *ref_130
+                  price: *ref_131
+                  quantity: *ref_132
+                  _description: *ref_133
+                  tags: *ref_102
+                _description: *ref_134
+              _description: *ref_135
             payments:
-              id: *ref_137
-              collected_by: *ref_104
-              status: *ref_138
-              type: *ref_139
+              id: *ref_136
+              collected_by: *ref_103
+              status: *ref_137
+              type: *ref_138
               params:
-                bank_code: *ref_140
-                bank_account_number: *ref_141
-                virtual_payment_address: *ref_142
-                transaction_id: *ref_143
+                bank_code: *ref_139
+                bank_account_number: *ref_140
+                virtual_payment_address: *ref_141
+                transaction_id: *ref_142
                 amount:
                   required: MANDATORY
                   type: string
                   owner: BAP
                   usage: 5758
                   description: Describes the payment amount
-                currency: *ref_144
-                _description: *ref_105
-              tags: *ref_145
-              _description: *ref_110
+                currency: *ref_143
+                _description: *ref_104
+              tags: *ref_144
+              _description: *ref_109
             documents:
               descriptor:
                 code:
@@ -15434,11 +18307,55 @@ x-attributes:
               owner: BPP
               usage: ACTIVE
               description: Describes the order status
-            cancellation_terms: *ref_146
-            billing: *ref_111
-            _description: *ref_74
+            cancellation_terms: *ref_145
+            billing: *ref_110
+            _description: *ref_73
 x-errorcodes:
-  code: []
+  code:
+    - Event: Route Serviceability error
+      Description: To & from location not serviceable by Seller application
+      From: BPP
+      code: 92201
+    - Event: Origin station not serviceable
+      Description: Origin/To station not operational or unavailable
+      From: BPP
+      code: 92202
+    - Event: Destination not serviceable
+      Description: Destination/From station not operational or unavailable
+      From: BPP
+      code: 92203
+    - Event: Temporarily unavailable
+      Description: Service temporarily unavailable from seller side
+      From: BPP
+      code: 92204
+    - Event: not available
+      Description: Selected plane is no longer available for booking
+      From: BPP
+      code: 92205
+    - Event: Seat/s not available
+      Description: Seat/s not available
+      From: BPP
+      code: 92206
+    - Event: Seat/s longer available
+      Description: Selected seat/s no longer available
+      From: BPP
+      code: 92207
+    - Event: Error in retrieving the PNR
+      Description: Unable to retrieve ticket details
+      From: BPP
+      code: 92208
+    - Event: Pickup/dropoff details not available
+      Description: Unable to retrieve pickup/dropoff points
+      From: BPP
+      code: 92209
+    - Event: Fare fetch error
+      Description: Cannot fetch fare details for the selected route
+      From: BPP
+      code: 92210
+    - Event: Seat combination error
+      Description: The selected seat is not bookable due to gender mismatch
+      From: BPP
+      code: 92211
 x-tlc:
   code: []
 x-featureui:

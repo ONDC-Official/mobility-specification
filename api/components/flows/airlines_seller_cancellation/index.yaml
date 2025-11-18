@@ -1,0 +1,88 @@
+summary: Airlines - Cancellation by Seller
+details: &details
+  - &details_3
+    description: Detailed process of cancelling an order.
+    mermaid: |-
+      sequenceDiagram
+        title  Order Confirmation
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+    
+steps:
+  - &steps_6
+      summary: Consumer confirms the booking and provides details.
+      api: confirm
+      details: &steps_6_details
+        - &steps_6_details_0
+          description: Consumer platform confirms the booking and provides all information
+            required for confirmation as per the terms of order
+          mermaid: |-
+            sequenceDiagram
+              participant Buyer Platform (BAP)
+              participant Seller Platform (BPP)
+              rect rgb(191, 223, 255)
+              Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+              Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+              end
+              Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+              Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+              Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+              Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
+      reference: if any
+      example: &steps_6_example
+        summary: Confirm ticket booking
+        value: &steps_6_example_value
+          $ref: ../../examples/airline/confirm/Confirm_ticket_booking.yaml
+  - &steps_7
+    summary: Provider platform confirms the order
+    api: on_confirm
+    details: &steps_7_details
+      - &steps_7_details_0
+        description: Provider platform confirms the order and provides details of the
+          journey upon confirmation
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example: &steps_7_example
+      summary: Confirm ticket booking
+      value: &steps_7_example_value
+        $ref: ../../examples/airline/on_confirm/Confirm_ticket_booking_1.yaml 
+  - &steps_9
+    summary: Provider platform accepts/appends the terms of cancellation
+    api: on_cancel
+    details: &steps_9_details
+      - &steps_9_details_0
+        description: Provider platform provides the updated order status to the consumer
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end 
+    reference: if any
+    example: &steps_9_example
+      summary: Return cancelled ticket order with cancellation charges
+      value: &steps_9_example_value
+        $ref: ../../examples/airline/on_cancel/on_cancel_request_seller_side.yaml
