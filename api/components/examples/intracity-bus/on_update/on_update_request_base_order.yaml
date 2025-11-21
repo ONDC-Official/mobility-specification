@@ -5,37 +5,37 @@ context:
     city:
       code: std:011
   domain: ONDC:TRV11
-  action: on_init
+  action: on_update
   version: 2.1.0
   bap_id: api.example-bap.com
   bap_uri: https://api.example-bap.com/beckn/
   bpp_id: api.transit-solutions.com
   bpp_uri: https://api.transit-solutions.com/beckn/
   transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
-  message_id: 85216bd7-8ce4-4e27-b0f6-07287e5ede32
+  message_id: 33145cb7-88f8-4f41-9784-b1a760c7a4eb
   timestamp: '2021-03-23T10:00:40.065Z'
   ttl: PT30S
 message:
   order:
+    id: BASE_ORDER_ID_1
+    status: COMPLETED
     items:
-      - id: I1
+      - id: I10
         descriptor:
-          name: Single Journey Ticket
-          code: SJT
+          name: Agent Login
+          code: AGENT_TICKETING
           images:
             - url: >-
                 https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
               size_type: xs
+        category_ids:
+          - C1
         fulfillment_ids:
           - F1
-          - F5
-          - F6
+          - F11 
         price:
           currency: INR
-          value: '35'
-        quantity:
-          selected:
-            count: 2
+          value: '0'
         time:
           label: Validity
           duration: PT2D
@@ -50,7 +50,7 @@ message:
             size_type: xs
     fulfillments:
       - id: F1
-        type: TRIP
+        type: ROUTE
         stops:
           - type: START
             location:
@@ -60,8 +60,6 @@ message:
               gps: 28.666576, 77.233332
             id: '1'
           - type: INTERMEDIATE_STOP
-            instructions:
-              name: Stop 1
             location:
               descriptor:
                 name: Indira Gandhi Technical Unviversity
@@ -70,8 +68,6 @@ message:
             id: '2'
             parent_stop_id: '1'
           - type: INTERMEDIATE_STOP
-            instructions:
-              name: Stop 2
             location:
               descriptor:
                 name: Yamuna Bazar
@@ -80,8 +76,6 @@ message:
             id: '3'
             parent_stop_id: '2'
           - type: INTERMEDIATE_STOP
-            instructions:
-              name: Stop 3
             location:
               descriptor:
                 name: dhaula kuan
@@ -90,8 +84,6 @@ message:
             id: '4'
             parent_stop_id: '3'
           - type: INTERMEDIATE_STOP
-            instructions:
-              name: Stop 4
             location:
               descriptor:
                 name: gpo
@@ -119,43 +111,36 @@ message:
               - descriptor:
                   code: ROUTE_DIRECTION
                 value: UP
-      - id: F5
-        type: TICKET
-        stops:
-          - authorization:
-              type: QR
+  
+      - id: F11
+        type: AGENT_TICKETING
+        vehicle:
+          category: BUS
+          registration: DL 11A 123F
+        agent:
+          person: 
+            id: emp:E52432 
+        state:
+          descriptor:
+            code: COMPLETED
         tags:
+          - descriptor:
+              code: REF_ORDER_IDS
+            list:
+              - descriptor:
+                  code: CHILD_ORDER_ID
+                  name: Child Order Ids
+                value: CHILD_ORDER_ID_1 
           - descriptor:
               code: INFO
             list:
               - descriptor:
                   code: PARENT_ID
-                value: F1
-      - id: F6
-        type: TICKET
-        stops:
-          - authorization:
-              type: QR
-        tags:
-          - descriptor:
-              code: INFO
-            list:
-              - descriptor:
-                  code: PARENT_ID
-                value: F1
-    
-    cancellation_terms:
-      - cancel_by:
-          duration: PT60M
-        cancellation_fee:
-          percentage: '0'
-    billing:
-      name: John Doe
-      email: john.doe@example.com
-      phone: +91-9897867564
+                value: F1         
+
     quote:
       price:
-        value: '70'
+        value: '2750'
         currency: INR
       breakup:
         - title: BASE_FARE
@@ -166,10 +151,22 @@ message:
               value: '35'
             quantity:
               selected:
-                count: 2
+                count: 50
           price:
             currency: INR
-            value: '70'
+            value: '1750'
+        - title: BASE_FARE
+          item:
+            id: I2
+            price:
+              currency: INR
+              value: '25'
+            quantity:
+              selected:
+                count: 40
+          price:
+            currency: INR
+            value: '1000'    
         - title: OFFER
           price:
             currency: INR
@@ -206,12 +203,40 @@ message:
                       code: SURCHARGE
                     value: "0"        
         
-    payments:
-      - id: PA1
-        collected_by: BAP
-        status: NOT-PAID
-        type: PRE-ORDER
+    
     tags:
+      - descriptor:
+          code: BAP_TERMS
+          name: BAP Terms of Engagemen
+        display: false
+        list:
+          - descriptor:
+              code: BUYER_FINDER_FEES_PERCENTAGE
+            value: '1'
+          - descriptor:
+              code: SETTLEMENT_WINDOW
+            value: PT60M
+          - descriptor:
+              code: SETTLEMENT_BASIS
+            value: Delivery
+          - descriptor:
+              code: SETTLEMENT_TYPE
+            value: upi
+          - descriptor:
+              code: MANDATORY_ARBITRATION
+            value: 'true'
+          - descriptor:
+              code: COURT_JURISDICTION
+            value: New Delhi
+          - descriptor:
+              code: DELAY_INTEREST
+            value: '2.5'
+          - descriptor:
+              code: STATIC_TERMS
+            value: https://www.abc.com/settlement-terms/
+          - descriptor:
+              code: SETTLEMENT_AMOUNT
+            value: '12505'
       - descriptor:
           code: BPP_TERMS
           name: BPP Terms of Engagement
@@ -250,10 +275,6 @@ message:
           - descriptor:
               code: SETTLEMENT_BANK_ACCOUNT_NUMBER
             value: xxxxxxxxxxxxxx  
-      - descriptor:
-          code: ADDITIONAL_APIS
-        display: false
-        list:
-          - descriptor:
-              code: GTFS_RT
-            value: https://api.transit-solutions/gtfs-realtime 
+      
+    created_at: '2021-03-23T10:00:40.065Z'
+    updated_at: '2021-03-23T10:00:40.065Z'
