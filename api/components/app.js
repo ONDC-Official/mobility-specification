@@ -39,6 +39,8 @@ const SKIP_VALIDATION = {
   examples: "skip2",
   enums: "skip3",
   tags: "skip4",
+  attributes: "skip5",
+  exampleAttributes: "skip6"
 };
 
 const BUILD = {
@@ -120,7 +122,7 @@ async function matchKeyType(
   const exampleArray = currentExamplePos[currentAttrib];
   const schemaType = currentSchemaPos[currentAttrib]?.type;
   const allOfType = currentSchemaPos[currentAttrib]?.allOf?.[0]?.type;
-  const itemType = currentSchemaPos[currentAttrib]?.items?.allOf?.[0]?.type;
+  const itemType = currentSchemaPos[currentAttrib]?.items?.allOf?.[0]?.type || currentSchemaPos[currentAttrib]?.items?.type;
 
   for (let i = 0; i < exampleArray?.length; i++) {
     const checkEnum = exampleArray[i];
@@ -242,7 +244,6 @@ async function traverseAttributes(currentAttributeValue, schemaForTraversal, log
   for (const currentAttributeKey of Object.keys(currentAttributeValue)) {
     const currentAttr = currentAttributeValue[currentAttributeKey];
     const schemaType = schemaForTraversal[currentAttributeKey];
-
         //&& 'type' in currentAttr && 'owner' in currentAttr && 'usage' in currentAttr && 'description' in currentAttr
     if ('required' in currentAttr ) {
       continue ;
@@ -333,6 +334,72 @@ async function checkAttributes(exampleSets, attributes) {
      catch(error){
       console.log(`Error checking attributes, ${error}`)
      } 
+}
+
+async function iterateTags( examplesTag, attributesTag, example_sets) {
+  // for (let i = 0; i < examplesTag?.length; i++) {
+  //   const exampleItem = examplesTag[i];
+  //   const attributeItem = attributesTag;
+  //   const { list } = exampleItem;
+  //   console.log('exampleItem?.descriptor?.code',exampleItem?.descriptor?.code,attributeItem)
+  //   if(attributeItem?.hasOwnProperty(exampleItem?.descriptor?.code)){
+  //     if (Array.isArray(list)) {
+  //       await iterateTags(list, attributeItem[exampleItem?.descriptor?.code].list)
+  //     }
+  //   }else{
+  //     console.log("Tag not matched", exampleItem?.descriptor);
+  //   }
+  // }
+  for (const tags in attributesTag) {
+          //console.log('attributesTag',attributesTag)
+        if(attributesTag[tags]?.required?.toLowerCase() === "mandatory"){
+          const foundItem = examplesTag.find(item => item?.descriptor?.code === tags);
+          if(!foundItem){
+            console.log("Tag not found", tags, 'in', example_sets);
+          }else{
+            //console.log('tag', foundItem, attributesTag[tags])
+            const {list} = foundItem;
+            await iterateTags(list, attributesTag[tags]?.list, example_sets)
+          }
+        }
+  } 
+}
+
+async function comapreObjects(examples, attributes, example_sets) {
+  for (const key in examples) {
+    //un-commnet this if key is not found
+    //console.log('key', key, examples[key])
+    if(key == "tags"){
+      if (Array.isArray(examples[key])) {
+        //console.log('examples[key]', examples[key], attributes[key], attributes)
+        await iterateTags(examples[key], attributes[key], example_sets);
+      }
+    }else{
+      if (
+        typeof examples[key] === "object" &&
+        typeof attributes[key] === "object"
+      ) {
+        if (!attributes[key]) {
+          console.log(`null value found for, ${key} in  ${example_sets}`);
+        } else if (Array.isArray(examples[key])) {
+          for (let i = 0; i < examples[key]?.length; i++) {
+            const exampleItem = examples[key][i];
+            const attributeItem = attributes[key];
+            //use if array has no keys like: category_ids
+            if (typeof exampleItem === "string" && attributeItem) {
+              //found
+            } else {
+              await comapreObjects(exampleItem, attributeItem, example_sets);
+            }
+          }
+        } else {
+          await comapreObjects(examples[key], attributes[key], example_sets);
+        }
+      } else if (!attributes.hasOwnProperty(key)) {
+        console.log(`keys not found, ${key} in  ${example_sets}`);
+      }
+    }
+  }
 }
 async function validateObject(example, attribute, endPoint) {
   let mandatoryRequiredKeys = [];
@@ -710,4 +777,4 @@ function compareFiles () {
     const yamlString = yaml.dump(yamlData);
     fs.writeFileSync(yamlFilePath, yamlString, 'utf8');
   };
-    
+ 
