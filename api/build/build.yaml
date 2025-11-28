@@ -360,6 +360,8 @@ paths:
                 message:
                   type: object
                   properties:
+                    order_id:
+                      $ref: '#/components/schemas/Order/properties/id'
                     ratings:
                       type: array
                       items:
@@ -511,7 +513,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -730,17 +731,16 @@ paths:
                 message:
                   type: object
                   properties:
-                    feedback_form:
-                      description: >-
-                        A feedback form to allow the user to provide additional
-                        information on the rating provided
-                      allOf:
-                        - $ref: '#/components/schemas/XInput'
+                    order_id:
+                      $ref: '#/components/schemas/Order/properties/id'
+                    ratings:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Rating'
                 error:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -2300,6 +2300,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        cancellation_terms:
+          description: Cancellation terms of this item
+          type: array
+          items:
+            $ref: '#/components/schemas/CancellationTerm'
     Quotation:
       description: >-
         Describes a quote. It is the estimated price of products or services
@@ -2310,7 +2315,6 @@ components:
         id:
           description: ID of the quote.
           type: string
-          format: uuid
         price:
           description: The total quoted price
           allOf:
@@ -2339,12 +2343,12 @@ components:
           description: Category of the entity being rated
           type: string
           enum:
-            - Item
-            - Order
-            - Fulfillment
-            - Provider
-            - Agent
-            - Support
+            - ITEM
+            - ORDER
+            - FULFILLMENT
+            - PROVIDER
+            - AGENT
+            - SUPPORT
         id:
           description: Id of the object being rated
           type: string
@@ -6171,6 +6175,269 @@ x-flows:
                 status: COMPLETED
                 created_at: '2023-03-23T04:48:34.53Z'
                 updated_at: '2023-03-23T04:49:34.53Z'
+  - summary: On-Demand - Female Driver Flow
+    details:
+      - description: >-
+          The illustraive flow to perform a transaction of the nature where in a
+          buyer would like to book a mobility service form location
+          A(gps-cordinates) to localtion B(gps-cordinates)
+        mermaid: |-
+          sequenceDiagram
+            title On-Demand Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+    steps:
+      - summary: Buyer app search for available ride providers
+        api: search
+        details:
+          - description: >-
+              Buyer app explore ride providers to avail a mobility service from
+              Location A to Location B (GPS) over the network.
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: >-
+            Search for mobility services by pickup and drop location[Seller
+            Collecting]
+          value:
+            context:
+              action: search
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 37dfbc1c-e568-49f0-929c-fd5c3351733e
+              timestamp: '2025-12-09T13:39:56.645Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.0
+            message:
+              intent:
+                fulfillment:
+                  customer:
+                    person:
+                      gender: FEMALE
+                  agent:
+                    person:
+                      gender: FEMALE
+                  stops:
+                    - location:
+                        gps: 13.008935, 77.644408
+                      type: START
+                    - location:
+                        gps: 12.971186, 77.586812
+                      type: END
+                payment:
+                  collected_by: BPP
+                  tags:
+                    - descriptor:
+                        code: BUYER_FINDER_FEES
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+                    - descriptor:
+                        code: SETTLEMENT_TERMS
+                      display: false
+                      list:
+                        - descriptor:
+                            code: DELAY_INTEREST
+                          value: '5'
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://example-test-bap.com/static-terms.txt
+      - summary: Get a list of all services from ride providers
+        api: on_search
+        details:
+          - description: >-
+              Ride providers which is a mobility provider platform sends the
+              catalog of all services that can be used for transit from A to B
+              along with estimated fare.
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+                end
+        reference: if any
+        example:
+          summary: Return a mobility catalog[Seller Collecting]
+          value:
+            context:
+              action: on_search
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 21e54d3c-9c3b-47c1-aa3b-b0e7b20818ee
+              timestamp: '2023-12-09T13:41:16.161Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.0.0
+            message:
+              catalog:
+                descriptor:
+                  name: Mobility Servies BPP
+                providers:
+                  - fulfillments:
+                      - id: F1
+                        stops:
+                          - location:
+                              gps: 13.008935, 77.644408
+                            type: START
+                          - location:
+                              gps: 12.971186, 77.586812
+                            type: END
+                        type: DELIVERY
+                        vehicle:
+                          category: AUTO_RICKSHAW
+                      - id: F2
+                        stops:
+                          - location:
+                              gps: 13.008935, 77.644408
+                            type: START
+                          - location:
+                              gps: 12.971186, 77.586812
+                            type: END
+                        type: DELIVERY
+                        vehicle:
+                          category: CAB
+                      - id: F3
+                        agent:
+                          person:
+                            gender: FEMALE
+                        stops:
+                          - location:
+                              gps: 13.008935, 77.644408
+                            type: START
+                          - location:
+                              gps: 12.971186, 77.586812
+                            type: END
+                        type: DELIVERY
+                        vehicle:
+                          category: CAB
+                    id: P1
+                    items:
+                      - descriptor:
+                          code: RIDE
+                          name: Auto Ride
+                        fulfillment_ids:
+                          - F1
+                        id: I1
+                        location_ids:
+                          - L1
+                          - L3
+                        price:
+                          currency: INR
+                          maximum_value: '176'
+                          minimum_value: '136'
+                          value: '146'
+                      - descriptor:
+                          code: RIDE
+                          name: CAB Economy Ride
+                        fulfillment_ids:
+                          - F2
+                        id: I2
+                        location_ids:
+                          - L2
+                          - L4
+                        price:
+                          currency: INR
+                          maximum_value: '236'
+                          minimum_value: '206'
+                          value: '206'
+                      - descriptor:
+                          code: RIDE
+                          name: CAB Economy Ride – Female Driver
+                        fulfillment_ids:
+                          - F3
+                        id: I3
+                        location_ids:
+                          - L2
+                          - L4
+                        price:
+                          currency: INR
+                          maximum_value: '236'
+                          minimum_value: '206'
+                          value: '206'
+                    locations:
+                      - gps: 12.916468,77.608998
+                        id: L1
+                      - gps: 12.916714,77.609298
+                        id: L2
+                      - gps: 12.916573,77.615216
+                        id: L3
+                      - gps: 12.906857,77.604456
+                        id: L4
+                    payments:
+                      - collected_by: BPP
+                        tags:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: BUYER_FINDER_FEES_PERCENTAGE
+                                value: '1'
+                          - descriptor:
+                              code: SETTLEMENT_TERMS
+                            display: false
+                            list:
+                              - descriptor:
+                                  code: SETTLEMENT_WINDOW
+                                value: PT60M
+                              - descriptor:
+                                  code: SETTLEMENT_BASIS
+                                value: DELIVERY
+                              - descriptor:
+                                  code: SETTLEMENT_TYPE
+                                value: UPI
+                              - descriptor:
+                                  code: MANDATORY_ARBITRATION
+                                value: 'true'
+                              - descriptor:
+                                  code: COURT_JURISDICTION
+                                value: New Delhi
+                              - descriptor:
+                                  code: DELAY_INTEREST
+                                value: '5'
+                              - descriptor:
+                                  code: STATIC_TERMS
+                                value: https://example-test-bpp.com/static-terms.txt
   - summary: On-Demand - Ride cancellation by rider
     details:
       - description: Detailed process of cancelling a ride with soft & confirm status.
