@@ -3175,6 +3175,38 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
+    message:
+      cancellation_reason_id: &ref_10
+        - code: '000'
+          description: Technical cancellation(BAP/BPP)
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '001'
+          description: Change in travel plans/ not required anymore
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '002'
+          description: Requested by accident
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '003'
+          description: Wrong ticket type purchased
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '004'
+          description: Wrong start station selected
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '005'
+          description: Wrong end station selected
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '006'
+          description: Flight got canceled
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '007'
+          description: Operator changed schedule
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '008'
+          description: Service disruptions/ temporarily closed
+          reference: <PR/Issue/Discussion Links md format text
+        - code: '009'
+          description: System error
+          reference: <PR/Issue/Discussion Links md format text
   on_cancel:
     context:
       action:
@@ -3183,7 +3215,25 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_9
+    message:
+      order:
+        items: *ref_3
+        fulfillments: *ref_2
+        payments: *ref_4
+        quote: *ref_7
+        cancellation_terms:
+          fulfillment_state: *ref_8
+        cancellation:
+          cancelled_by:
+            - code: CONSUMER
+              description: Describes, when the ride is cancelled by the consumer.
+              reference: <PR/Issue/Discussion Links md format text>
+            - code: PROVIDER
+              description: Describes, when the ride is cancelled by the provider.
+              reference: <PR/Issue/Discussion Links md format text>
+          reason:
+            descriptor:
+              code: *ref_10
   update:
     context:
       action:
@@ -3206,7 +3256,7 @@ x-tags:
   search:
     message:
       intent:
-        payment: &ref_10
+        payment: &ref_11
           tags:
             - code: BUYER_FINDER_FEES
               description: Describes the finder fees for buyer
@@ -3255,7 +3305,7 @@ x-tags:
     message:
       catalog:
         providers:
-          items: &ref_12
+          items: &ref_13
             tags:
               - code: FARE_POLICY
                 description: Details about fare for the ride
@@ -3304,7 +3354,7 @@ x-tags:
                   - code: PROHIBITED_ITEMS
                     description: Describes the list of prohibited items
                     reference: <PR/Issue/Discussion Links md format text>
-          fulfillments: &ref_11
+          fulfillments: &ref_12
             tags:
               - code: SEAT_GRID
                 description: Seat details to identify specifics of seat
@@ -3407,17 +3457,17 @@ x-tags:
               - code: VEHICLE_AMENITIES
                 description: Describes the vehicle amenities
                 reference: <PR/Issue/Discussion Links md format text>
-          payments: *ref_10
+          payments: *ref_11
   select:
     message:
       order:
-        fulfillments: *ref_11
+        fulfillments: *ref_12
   on_select:
     message:
       order:
-        fulfillments: *ref_11
-        items: *ref_12
-        quote: &ref_13
+        fulfillments: *ref_12
+        items: *ref_13
+        quote: &ref_14
           breakup:
             item:
               tags:
@@ -3437,23 +3487,23 @@ x-tags:
                 - code: SELLER_FEES
                   description: Describes the seller fee
                   reference: <PR/Issue/Discussion Links md format text>
-  init: &ref_14
+  init: &ref_15
     message:
       order:
-        fulfillments: *ref_11
-        payments: *ref_10
-  on_init: &ref_15
+        fulfillments: *ref_12
+        payments: *ref_11
+  on_init: &ref_16
     message:
       order:
-        fulfillments: *ref_11
-        items: *ref_12
-        payments: *ref_10
-        quote: *ref_13
-  confirm: *ref_14
-  on_confirm: *ref_15
-  on_status: *ref_15
-  on_cancel: *ref_15
-  on_update: *ref_15
+        fulfillments: *ref_12
+        items: *ref_13
+        payments: *ref_11
+        quote: *ref_14
+  confirm: *ref_15
+  on_confirm: *ref_16
+  on_status: *ref_16
+  on_cancel: *ref_16
+  on_update: *ref_16
 x-flows:
   - summary: InterCity(Bus) - Station Code Based Flow
     details:
@@ -3534,7 +3584,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for all services form the given start location(code)
-          value: &ref_22
+          value: &ref_23
             context:
               location:
                 country:
@@ -3560,10 +3610,6 @@ x-flows:
                           code: std:080
                   vehicle:
                     category: BUS
-                    variant: AC
-                    capacity: 47
-                    wheels_count: '6'
-                    energy_type: DIESEL
                 payment:
                   tags:
                     - descriptor:
@@ -3607,7 +3653,7 @@ x-flows:
         reference: if any
         example:
           summary: Return services available for provided start code or gps
-          value: &ref_32
+          value: &ref_33
             context:
               location:
                 country:
@@ -3763,7 +3809,7 @@ x-flows:
                                   https://api.transit-solutions.com/booking/terms
       - summary: Search for the bus by start and end station code
         api: search
-        details: &ref_16
+        details: &ref_17
           - description: >-
               Users searches over the network to avail the intercity bus mode of
               transport from one station to another
@@ -3782,7 +3828,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for all services from given start and end location(code)
-          value: &ref_23
+          value: &ref_24
             context:
               location:
                 country:
@@ -3815,10 +3861,6 @@ x-flows:
                           code: std:040
                   vehicle:
                     category: BUS
-                    variant: AC
-                    capacity: 47
-                    wheels_count: '6'
-                    energy_type: DIESEL
                 payment:
                   tags:
                     - descriptor:
@@ -3845,7 +3887,7 @@ x-flows:
           Return an intercity catalog of all bus services from one station to
           another
         api: on_search
-        details: &ref_17
+        details: &ref_18
           - description: >-
               Provider platform sends the catalog of all the service that can be
               used for transit using bus from station A to station B
@@ -3866,7 +3908,7 @@ x-flows:
           summary: >-
             Return services available for provided start and end code or gps
             with journey date
-          value: &ref_33
+          value: &ref_34
             context:
               location:
                 country:
@@ -4177,11 +4219,11 @@ x-flows:
                                   https://api.transit-solutions.com/booking/terms
       - summary: Search for the specific bus service
         api: search
-        details: *ref_16
+        details: *ref_17
         reference: if any
         example:
           summary: Search for all services from given start and end location(code)
-          value: &ref_24
+          value: &ref_25
             context:
               location:
                 country:
@@ -4232,13 +4274,13 @@ x-flows:
                           value: https://api.example-bap.com/booking/terms
       - summary: Return an intercity specific bus services
         api: on_search
-        details: *ref_17
+        details: *ref_18
         reference: if any
         example:
           summary: >-
             Return services available seat layout for provided start and end
             code with journey date
-          value: &ref_34
+          value: &ref_35
             context:
               location:
                 country:
@@ -4493,7 +4535,7 @@ x-flows:
         reference: if any
         example:
           summary: Get Quote of a selected seat
-          value: &ref_25
+          value: &ref_26
             context:
               location:
                 country:
@@ -4547,7 +4589,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a intercity bus  service provider
-          value: &ref_35
+          value: &ref_36
             context:
               location:
                 country:
@@ -4788,7 +4830,7 @@ x-flows:
         reference: if any
         example:
           summary: Get Quote of a selected seat
-          value: &ref_26
+          value: &ref_27
             context:
               location:
                 country:
@@ -4870,7 +4912,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a intercity bus  service provider
-          value: &ref_19
+          value: &ref_20
             context:
               location:
                 country:
@@ -5126,7 +5168,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: &ref_20
+          value: &ref_21
             context:
               location:
                 country:
@@ -5256,7 +5298,7 @@ x-flows:
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
-          value: &ref_36
+          value: &ref_37
             context:
               location:
                 country:
@@ -5585,11 +5627,13 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_27
+          value: &ref_28
             context:
               location:
                 country:
                   code: IND
+                city:
+                  code: std:011
               domain: ONDC:TRV12
               timestamp: '2023-09-03T01:55:08.143Z'
               bap_id: example-bap.com
@@ -5603,7 +5647,6 @@ x-flows:
               ttl: PT30S
             message:
               order:
-                id: O1
                 items:
                   - id: I1
                     quantity:
@@ -5718,7 +5761,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_18
+          value: &ref_19
             context:
               location:
                 country:
@@ -6068,7 +6111,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_30
+          value: &ref_31
             context:
               location:
                 country:
@@ -6458,7 +6501,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: &ref_21
+          value: &ref_22
             context:
               location:
                 country:
@@ -6829,7 +6872,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_18
+          value: *ref_19
       - summary: Buyer app cancels the request for ticket
         api: cancel
         details:
@@ -6849,7 +6892,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a transit ticket booking before the cancellation period
-          value: &ref_28
+          value: &ref_29
             context:
               location:
                 country:
@@ -6869,7 +6912,7 @@ x-flows:
               ttl: PT30S
             message:
               order_id: O1
-              cancellation_reason_id: '7'
+              cancellation_reason_id: '001'
               descriptor:
                 name: Ride Cancellation
                 code: SOFT_CANCEL
@@ -6894,7 +6937,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_37
+          value: &ref_38
             context:
               location:
                 country:
@@ -7073,6 +7116,9 @@ x-flows:
                             value: I1
                 cancellation:
                   cancelled_by: CONSUMER
+                  reason:
+                    descriptor:
+                      code: '007'
                   time: '2023-09-03T02:00:08.143Z'
                 cancellation_terms:
                   - external_ref:
@@ -7243,7 +7289,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a transit ticket booking before the cancellation period
-          value: &ref_29
+          value: &ref_30
             context:
               location:
                 country:
@@ -7263,7 +7309,7 @@ x-flows:
               ttl: PT30S
             message:
               order_id: O1
-              cancellation_reason_id: '7'
+              cancellation_reason_id: '001'
               descriptor:
                 name: Ride Cancellation
                 code: CONFIRM_CANCEL
@@ -7286,7 +7332,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_38
+          value: &ref_39
             context:
               location:
                 country:
@@ -7465,6 +7511,9 @@ x-flows:
                             value: I1
                 cancellation:
                   cancelled_by: CONSUMER
+                  reason:
+                    descriptor:
+                      code: '007'
                   time: '2023-09-03T02:00:08.143Z'
                 cancellation_terms:
                   - external_ref:
@@ -7656,7 +7705,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a intercity bus  service provider
-          value: *ref_19
+          value: *ref_20
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -7678,7 +7727,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: *ref_20
+          value: *ref_21
       - summary: >-
           The provider platform returned an error code because the buyer app did
           not respond within the TTL specified in the quote object.
@@ -7770,7 +7819,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_18
+          value: *ref_19
       - summary: Buyer app request for ticket cancellation with soft cancel request
         api: update
         details:
@@ -8651,7 +8700,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_18
+          value: *ref_19
       - summary: >-
           The provider platform cancel the order with unsolicited on_cancel
           call.
@@ -8997,7 +9046,7 @@ x-flows:
                   cancelled_by: PROVIDER
                   reason:
                     descriptor:
-                      code: '001'
+                      code: '008'
                 payments:
                   - id: PA1
                     collected_by: BAP
@@ -9086,7 +9135,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_18
+          value: *ref_19
       - summary: The provider platform sends an unsolicited on_status call.
         api: on_status
         details:
@@ -9106,7 +9155,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: *ref_21
+          value: *ref_22
       - summary: Buyer app provides rating for an entity
         api: rating
         details:
@@ -9126,7 +9175,7 @@ x-flows:
         reference: if any
         example:
           summary: Buyer app provides rating for an entity
-          value: &ref_31
+          value: &ref_32
             context:
               location:
                 country:
@@ -9190,7 +9239,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_18
+          value: *ref_19
       - summary: The provider platform sends an unsolicited on_status call.
         api: on_status
         details:
@@ -9212,7 +9261,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: *ref_21
+          value: *ref_22
       - summary: Buyer app provides rating for an entity
         api: rating
         details:
@@ -9277,7 +9326,7 @@ x-flows:
         reference: if any
         example:
           summary: Provider returns with the on_rating
-          value: &ref_39
+          value: &ref_40
             context:
               location:
                 country:
@@ -9304,9 +9353,9 @@ x-examples:
       search:
         examples:
           - summary: Search_for_all_services_form_the_given_start_location(code)
-            value: *ref_22
-          - summary: Search_for_all_services_from_given_start_and_end_location(code)
             value: *ref_23
+          - summary: Search_for_all_services_from_given_start_and_end_location(code)
+            value: *ref_24
           - summary: Search_for_all_services_from_given_start_and_end_location(gps)
             value:
               context:
@@ -9333,10 +9382,6 @@ x-examples:
                           gps: 12.979759, 77.590427
                     vehicle:
                       category: BUS
-                      variant: AC
-                      capacity: 47
-                      wheels_count: '6'
-                      energy_type: DIESEL
                   payment:
                     tags:
                       - descriptor:
@@ -9391,10 +9436,6 @@ x-examples:
                           gps: 17.399832, 78.471200
                     vehicle:
                       category: BUS
-                      variant: AC
-                      capacity: 47
-                      wheels_count: '6'
-                      energy_type: DIESEL
                   payment:
                     tags:
                       - descriptor:
@@ -9418,13 +9459,13 @@ x-examples:
                               code: STATIC_TERMS
                             value: https://api.example-bap.com/booking/terms
           - summary: Search_for_all_services_from_given_start_and_end_location(code)_5
-            value: *ref_24
+            value: *ref_25
       select:
         examples:
           - summary: Get_Quote_of_a_selected_seat
-            value: *ref_25
-          - summary: Get_Quote_of_a_selected_seat_2
             value: *ref_26
+          - summary: Get_Quote_of_a_selected_seat_2
+            value: *ref_27
       init:
         examples:
           - summary: Initialize_the_order_by_providing_billing_details
@@ -9522,7 +9563,7 @@ x-examples:
                                 code: SETTLEMENT_AMOUNT
                               value: '940'
           - summary: Initialize_the_order_by_providing_billing_details_2
-            value: *ref_20
+            value: *ref_21
       confirm:
         examples:
           - summary: Confirm_ticket_booking
@@ -9531,6 +9572,8 @@ x-examples:
                 location:
                   country:
                     code: IND
+                  city:
+                    code: std:011
                 domain: ONDC:TRV12
                 timestamp: '2023-09-03T01:55:08.143Z'
                 bap_id: example-bap.com
@@ -9544,7 +9587,6 @@ x-examples:
                 ttl: PT30S
               message:
                 order:
-                  id: O1
                   items:
                     - id: I1
                       quantity:
@@ -9625,17 +9667,17 @@ x-examples:
                                 code: SETTLEMENT_AMOUNT
                               value: '940'
           - summary: Confirm_ticket_booking_2
-            value: *ref_27
+            value: *ref_28
       cancel:
         examples:
           - summary: Cancel_a_transit_ticket_booking_before_the_cancellation_period
-            value: *ref_28
-          - summary: Cancel_a_transit_ticket_booking_before_the_cancellation_period_2
             value: *ref_29
+          - summary: Cancel_a_transit_ticket_booking_before_the_cancellation_period_2
+            value: *ref_30
       status:
         examples:
           - summary: Get_latest_status_of_a_transit_ticket_booking
-            value: *ref_30
+            value: *ref_31
       update:
         examples:
           - summary: Update_customer_details
@@ -9705,23 +9747,23 @@ x-examples:
       rating:
         examples:
           - summary: Provide feedback on a service
-            value: *ref_31
+            value: *ref_32
       on_search:
         examples:
           - summary: Return_services_available_for_provided_start_code_or_gps
-            value: *ref_32
-          - summary: >-
-              Return_services_available_for_provided_start_and_end_code_or_gps_with_journey_date
             value: *ref_33
           - summary: >-
-              Return_services_available_seat_layout_for_provided_start_and_end_code_with_journey_date
+              Return_services_available_for_provided_start_and_end_code_or_gps_with_journey_date
             value: *ref_34
+          - summary: >-
+              Return_services_available_seat_layout_for_provided_start_and_end_code_with_journey_date
+            value: *ref_35
       on_select:
         examples:
           - summary: Return_a_quote_offered_by_a_intercity_bus__service_provider
-            value: *ref_35
+            value: *ref_36
           - summary: Return_a_quote_offered_by_a_intercity_bus__service_provider_2
-            value: *ref_19
+            value: *ref_20
       on_init:
         examples:
           - summary: >-
@@ -9955,7 +9997,7 @@ x-examples:
                               value: '940'
           - summary: >-
               Return_draft_order_for_transit_ticket_with_settlement_via_payment_link_2
-            value: *ref_36
+            value: *ref_37
       on_confirm:
         examples:
           - summary: Return_confirmed_ticket_order_with_payment_confirmation
@@ -10201,7 +10243,7 @@ x-examples:
                   created_at: '2023-09-03T01:55:08.143Z'
                   updated_at: '2023-09-03T01:55:08.143Z'
           - summary: Return_confirmed_ticket_order_with_payment_confirmation_2
-            value: *ref_18
+            value: *ref_19
       on_status:
         examples:
           - summary: Return_transit_ticket_order_with_status_-_Journey_Completed
@@ -11542,15 +11584,15 @@ x-examples:
       on_cancel:
         examples:
           - summary: Return_cancelled_ticket_order_with_cancellation_charges
-            value: *ref_37
-          - summary: Return_cancelled_ticket_order_with_cancellation_charges_2
             value: *ref_38
+          - summary: Return_cancelled_ticket_order_with_cancellation_charges_2
+            value: *ref_39
       on_rating:
         examples:
           - summary: on_rating with error response
-            value: *ref_39
+            value: *ref_40
 x-attributes:
-  inter-city:
+  intercity-bus:
     attribute_set:
       search:
         context:
@@ -11671,7 +11713,7 @@ x-attributes:
                     an order.
                 location:
                   gps:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     usage: 12.979759, 77.590427
@@ -11718,7 +11760,7 @@ x-attributes:
                     of an order.
               vehicle:
                 category:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BAP
                   usage: BUS
@@ -12337,13 +12379,13 @@ x-attributes:
                 description: Unique reference ID to the fulfillment of an order
               stops:
                 id:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: S1
                   description: Uniques id to refer stop.
                 _description:
-                  required: mandatory
+                  required: optional
                   type: object
                   owner: BPP
                   sample usage: '--'
@@ -12499,7 +12541,7 @@ x-attributes:
           order:
             provider:
               id:
-                required: false
+                required: mandatory
                 type: false
                 owner: false
                 sample usage: false
@@ -12625,7 +12667,7 @@ x-attributes:
                   sample usage: S1
                   description: Uniques id to refer stop.
                 type:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: PICKUP
@@ -12635,25 +12677,25 @@ x-attributes:
                 location:
                   descriptor:
                     name:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       sample usage: Agara
                       description: Physical description of something.
                     code:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       sample usage: std:080-pincode:560034
                       description: Physical description of something.
                   gps:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     sample usage: 12.924479, 77.648999
                     description: Describes a GPS coordinate
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
@@ -12679,13 +12721,13 @@ x-attributes:
                   description: Describes the fulfillments stops.
               vehicle:
                 category:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: BUS
                   description: Describes vehicle category
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BAP
                   sample usage: '--'
@@ -12701,45 +12743,45 @@ x-attributes:
             quote:
               price:
                 value:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: 899
                   description: Describes the price of a product or service
                 currency:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: INR
                   description: Describes the currency of a product or service
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BPP
                   sample usage: '--'
                   description: This refers to the value of used currency of quoted price.
               breakup:
                 title:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: BASE_FARE
                   description: Title of total quoted price
                 price:
                   value:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     sample usage: 800
                     description: Value of total quoted price
-                  ' currency':
-                    required: mandatory
+                  currency:
+                    required: optional
                     type: string
                     owner: BPP
                     sample usage: INR
                     description: Currency for total quoted price
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BPP
                     sample usage: '--'
@@ -12779,7 +12821,7 @@ x-attributes:
                     sample usage: '--'
                     description: Describes item details required for breakup
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BPP
                   sample usage: '--'
@@ -12787,7 +12829,7 @@ x-attributes:
                     This attribute describes the breakup of the total quoted
                     price.
               _description:
-                required: Mandatory
+                required: optional
                 type: object
                 owner: BPP
                 sample usage: '--'
@@ -12976,38 +13018,38 @@ x-attributes:
               customer:
                 person:
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Joe Adams
                     description: Name of the customer
                   age:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 30
                     description: Age of the customer
                   gender:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Male
                     description: Gender of the customer
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
                     description: Describes contact of end-customer
                 contact:
                   phone:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 9988776655
                     description: Phone number of the billable entity
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
@@ -13355,7 +13397,7 @@ x-attributes:
                   sample usage: S1
                   description: Uniques id to refer stop.
                 type:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: PICKUP
@@ -13365,25 +13407,25 @@ x-attributes:
                 location:
                   descriptor:
                     name:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       sample usage: Agara
                       description: Physical description of something.
                     code:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       sample usage: std:080-pincode:560034
                       description: Physical description of something.
                   gps:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     sample usage: 12.924479, 77.648999
                     description: Describes a GPS coordinate
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
@@ -13402,7 +13444,7 @@ x-attributes:
                     sample usage: '2023-09-06T06:30:00.000Z'
                     description: Timestamp for denoting time at stop
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BAP
                   sample usage: '--'
@@ -13410,63 +13452,63 @@ x-attributes:
               customer:
                 person:
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Joe Adams
                     description: Name of the customer
                   age:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 30
                     description: Age of the customer
                   gender:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Male
                     description: Gender of the customer
                   _description:
-                    required: mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
                     description: Describes the details of the person.
                 contact:
                   phone:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 9988776655
                     description: Phone number of the billable entity
                   _description:
-                    required: mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
                     description: Describes the details of the customer contact.
                 _description:
-                  required: mandatory
+                  required: optional
                   type: object
                   owner: BAP
                   sample usage: '--'
                   description: Describes the details of the customer.
               vehicle:
                 category:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: BUS
                   description: Describes vehicle category
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BAP
                   sample usage: '--'
                   description: Describes the vehicle type.
               _description:
-                required: Mandatory
+                required: optional
                 type: object
                 owner: BAP/BPP
                 sample usage: '--'
@@ -13507,7 +13549,7 @@ x-attributes:
                     owner: BPP
                     sample usage: 800
                     description: Value of total quoted price
-                  ' currency':
+                  currency:
                     required: mandatory
                     type: string
                     owner: BPP
@@ -13630,14 +13672,14 @@ x-attributes:
             cancellation_terms:
               cancel_by:
                 duration:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: PT60M
                   description: Duration for cancellation of order
               cancellation_fee:
                 percentage:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: false
@@ -13768,12 +13810,6 @@ x-attributes:
             description: Describes subscriber URL of the BPP for accepting calls from BAPs.
         message:
           order:
-            id:
-              required: mandatory
-              type: string
-              owner: BPP
-              sample usage: O1
-              description: 'Human-readable ID of the order. '
             items:
               id:
                 required: mandatory
@@ -13830,38 +13866,38 @@ x-attributes:
               customer:
                 person:
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Joe Adams
                     description: Name of the customer
                   age:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 30
                     description: Age of the customer
                   gender:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Male
                     description: Gender of the customer
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
                     description: Describes contact of end-customer
                 contact:
                   phone:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 9988776655
                     description: Phone number of the billable entity
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
@@ -14241,7 +14277,7 @@ x-attributes:
                   sample usage: S1
                   description: Uniques id to refer stop.
                 type:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: PICKUP
@@ -14251,25 +14287,25 @@ x-attributes:
                 location:
                   descriptor:
                     name:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       sample usage: Agara
                       description: Physical description of something.
                     code:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       sample usage: std:080-pincode:560034
                       description: Physical description of something.
                   gps:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     sample usage: 12.924479, 77.648999
                     description: Describes a GPS coordinate
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
@@ -14316,57 +14352,57 @@ x-attributes:
               customer:
                 person:
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Joe Adams
                     description: Name of the customer
                   age:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 30
                     description: Age of the customer
                   gender:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Male
                     description: Gender of the customer
                   _description:
-                    required: mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
                     description: Describes the details of the person.
                 contact:
                   phone:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 9988776655
                     description: Phone number of the billable entity
                   _description:
-                    required: mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
                     description: Describes the details of the customer contact.
                 _description:
-                  required: mandatory
+                  required: optional
                   type: object
                   owner: BAP
                   sample usage: '--'
                   description: Describes the details of the customer.
               vehicle:
                 category:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: BUS
                   description: Describes vehicle category
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BAP
                   sample usage: '--'
@@ -14413,7 +14449,7 @@ x-attributes:
                     owner: BPP
                     sample usage: 800
                     description: Value of total quoted price
-                  ' currency':
+                  currency:
                     required: mandatory
                     type: string
                     owner: BPP
@@ -14556,20 +14592,20 @@ x-attributes:
             cancellation_terms:
               cancel_by:
                 duration:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: PT60M
                   description: Duration for cancellation of order
               cancellation_fee:
                 percentage:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: false
                   description: Fee Percentage for cancellation
                 _description:
-                  required: mandatory
+                  required: optional
                   type: object
                   owner: BPP
                   sample usage: '--'
@@ -14971,7 +15007,7 @@ x-attributes:
                   sample usage: S1
                   description: Uniques id to refer stop.
                 type:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: PICKUP
@@ -14981,25 +15017,25 @@ x-attributes:
                 location:
                   descriptor:
                     name:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       sample usage: Agara
                       description: Physical description of something.
                     code:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       sample usage: std:080-pincode:560034
                       description: Physical description of something.
                   gps:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     sample usage: 12.924479, 77.648999
                     description: Describes a GPS coordinate
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
@@ -15046,57 +15082,57 @@ x-attributes:
               customer:
                 person:
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Joe Adams
                     description: Name of the customer
                   age:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 30
                     description: Age of the customer
                   gender:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Male
                     description: Gender of the customer
                   _description:
-                    required: mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
                     description: Describes the details of the person.
                 contact:
                   phone:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 9988776655
                     description: Phone number of the billable entity
                   _description:
-                    required: mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
                     description: Describes the details of the customer contact.
                 _description:
-                  required: mandatory
+                  required: optional
                   type: object
                   owner: BAP
                   sample usage: '--'
                   description: Describes the details of the customer.
               vehicle:
                 category:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: BUS
                   description: Describes vehicle category
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BAP
                   sample usage: '--'
@@ -15143,7 +15179,7 @@ x-attributes:
                     owner: BPP
                     sample usage: 800
                     description: Value of total quoted price
-                  ' currency':
+                  currency:
                     required: mandatory
                     type: string
                     owner: BPP
@@ -15286,20 +15322,20 @@ x-attributes:
             cancellation_terms:
               cancel_by:
                 duration:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: PT60M
                   description: Duration for cancellation of order
               cancellation_fee:
                 percentage:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: false
                   description: Fee Percentage for cancellation
                 _description:
-                  required: mandatory
+                  required: optional
                   type: object
                   owner: BPP
                   sample usage: '--'
@@ -15323,46 +15359,6 @@ x-attributes:
                 owner: BPP
                 sample usage: '2023-09-03T02:00:08.143Z'
                 description: Time of cancellation
-            refund_terms:
-              fulfillment_state:
-                name:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  sample usage: Ride Cancelled
-                  description: Physical description of something.
-                code:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  sample usage: RIDE_CANCELLED
-                  description: Physical description of something.
-              refund_eligible:
-                required: mandatory
-                type: string
-                owner: BPP
-                sample usage: mandatory
-                description: Flag to denote refund eligibility
-              refund_within:
-                duration:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  sample usage: PT1440M
-                  description: Duration for refund transaction
-              refund_amount:
-                currency:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  sample usage: INR
-                  description: currency for refund price
-                value:
-                  required: mandatory
-                  type: string
-                  owner: BPP
-                  sample usage: 899
-                  description: Value for refund price
             _description:
               required: Mandatory
               type: object
@@ -15827,7 +15823,7 @@ x-attributes:
                   sample usage: S1
                   description: Uniques id to refer stop.
                 type:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: PICKUP
@@ -15837,25 +15833,25 @@ x-attributes:
                 location:
                   descriptor:
                     name:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       sample usage: Agara
                       description: Physical description of something.
                     code:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       sample usage: std:080-pincode:560034
                       description: Physical description of something.
                   gps:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     sample usage: 12.924479, 77.648999
                     description: Describes a GPS coordinate
                   _description:
-                    required: Mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
@@ -15902,44 +15898,44 @@ x-attributes:
               customer:
                 person:
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Joe Adams
                     description: Name of the customer
                   age:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 30
                     description: Age of the customer
                   gender:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Male
                     description: Gender of the customer
                   _description:
-                    required: mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
                     description: Describes the details of the person.
                 contact:
                   phone:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 9988776655
                     description: Phone number of the billable entity
                   _description:
-                    required: mandatory
+                    required: optional
                     type: object
                     owner: BAP
                     sample usage: '--'
                     description: Describes the details of the customer contact.
                 _description:
-                  required: mandatory
+                  required: optional
                   type: object
                   owner: BAP
                   sample usage: '--'
@@ -15961,13 +15957,13 @@ x-attributes:
                     description: Denotes phone number of the assigned agent
               vehicle:
                 category:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: BUS
                   description: Describes vehicle category
                 _description:
-                  required: Mandatory
+                  required: optional
                   type: object
                   owner: BAP
                   sample usage: '--'
@@ -16014,7 +16010,7 @@ x-attributes:
                     owner: BPP
                     sample usage: 800
                     description: Value of total quoted price
-                  ' currency':
+                  currency:
                     required: mandatory
                     type: string
                     owner: BPP
@@ -16157,20 +16153,20 @@ x-attributes:
             cancellation_terms:
               cancel_by:
                 duration:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: PT60M
                   description: Duration for cancellation of order
               cancellation_fee:
                 percentage:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: false
                   description: Fee Percentage for cancellation
                 _description:
-                  required: mandatory
+                  required: optional
                   type: object
                   owner: BPP
                   sample usage: '--'
@@ -16495,7 +16491,7 @@ x-attributes:
                   sample usage: S1
                   description: Uniques id to refer stop.
                 type:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: PICKUP
@@ -16505,19 +16501,19 @@ x-attributes:
                 location:
                   descriptor:
                     name:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       sample usage: Agara
                       description: Physical description of something.
                     code:
-                      required: mandatory
+                      required: optional
                       type: string
                       owner: BPP
                       sample usage: std:080-pincode:560034
                       description: Physical description of something.
                   gps:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BPP
                     sample usage: 12.924479, 77.648999
@@ -16552,33 +16548,33 @@ x-attributes:
               customer:
                 person:
                   name:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Joe Adams
                     description: Name of the customer
                   age:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 30
                     description: Age of the customer
                   gender:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: Male
                     description: Gender of the customer
                 contact:
                   phone:
-                    required: mandatory
+                    required: optional
                     type: string
                     owner: BAP
                     sample usage: 9988776655
                     description: Phone number of the billable entity
               vehicle:
                 category:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: BUS
@@ -16611,7 +16607,7 @@ x-attributes:
                     owner: BPP
                     sample usage: 800
                     description: Value of total quoted price
-                  ' currency':
+                  currency:
                     required: mandatory
                     type: string
                     owner: BPP
@@ -16714,20 +16710,64 @@ x-attributes:
             cancellation_terms:
               cancel_by:
                 duration:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: PT60M
                   description: Duration for cancellation of order
               cancellation_fee:
                 percentage:
-                  required: mandatory
+                  required: optional
                   type: string
                   owner: BPP
                   sample usage: false
                   description: Fee Percentage for cancellation
 x-errorcodes:
-  code: []
+  code:
+    - Event: Route Serviceability error
+      Description: To & from location not serviceable by Seller application
+      From: BPP
+      code: 92201
+    - Event: Origin station not serviceable
+      Description: Origin/To station not operational or unavailable
+      From: BPP
+      code: 92202
+    - Event: Destination not serviceable
+      Description: Destination/From station not operational or unavailable
+      From: BPP
+      code: 92203
+    - Event: Temporarily unavailable
+      Description: Service temporarily unavailable from seller side
+      From: BPP
+      code: 92204
+    - Event: Bus not available
+      Description: Selected plane is no longer available for booking
+      From: BPP
+      code: 92205
+    - Event: Seat/s not available
+      Description: Seat/s not available for the selected bus
+      From: BPP
+      code: 92206
+    - Event: Seat/s no longer available
+      Description: Selected seat/s no longer available
+      From: BPP
+      code: 92207
+    - Event: Error in retrieving the PNR
+      Description: Unable to retrieve ticket details
+      From: BPP
+      code: 92208
+    - Event: Pickup/dropoff details not available
+      Description: Unable to retrieve pickup/dropoff points
+      From: BPP
+      code: 92209
+    - Event: Fare fetch error
+      Description: Cannot fetch fare details for the selected route
+      From: BPP
+      code: 92210
+    - Event: Seat combination error
+      Description: The selected seat is not bookable due to gender mismatch
+      From: BPP
+      code: 92211
 x-tlc:
   code: []
 x-featureui:
