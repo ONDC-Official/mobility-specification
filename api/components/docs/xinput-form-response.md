@@ -171,3 +171,34 @@ There are 2 possible ways to get the latest status after submitting a form
 
 - The seller responds with the latest status of submitted form corresponding to the submission_id ("Submission_ID") that was submitted earlier by the buyer.
 ````
+
+### Possible List of Fields
+##### Below is a possible consolidated list of fields with their data types and illustrative values
+
+| Field                         | Data Type            | Illustrative Value            |
+|------------------------------|----------------------|-------------------------------|
+| Pickup Location              | Text Field           | Delhi T2 Airport              |
+| Pickup Date & Time           | Date & Time Picker      | 13-Feb-2026, 8:30 pm          |
+| Special Requirements         | Text Field           | Arrange for a wheel chair    |
+| Arrival Airline Name         | Text Field           | Indigo                        |
+| Arrival Flight Number        | Text Field           | 6E 123                        |
+| Arrival Date & Time          | Date & Time Picker       | 13-Feb-2026, 8:30 pm          |
+| Arrival Pickup Location      | Text Field           | Delhi T2 Airport              |
+| Arrival Mode of Transfer     | Text Field           | SUV                           |
+| Drop Location                | Text Field           | Delhi T2 Airport              |
+| Departure Airline Name       | Text Field           | Indigo                        |
+| Departure Flight Number      | Text Field           | 6E 123                        |
+| Departure Date & Time        | Date & Time Picker       | 13-Feb-2026, 8:30 pm          |
+| Departure Pickup Location    | Text Field           | Siri Fort, Delhi              |
+| Departure Mode of Transfer   | Text Field           | Sedan AC                     |
+| Age                          | Text Field           | 40                            |
+| First Name                   | Text Field           | John                          |
+| Last Name                    | Text Field           | Smith                         |
+| Passport Given Name          | Text Field           | John Smith                   |
+| Passport Surname Name        | Text Field           | Gerald                        |
+| Passport Expiry              | Date Picker          | 13-Feb-2026                  |
+| Passport Nationality         | Text Field           | Indian                        |
+| Passport Number              | Text Field           | F123456                      |
+| Height                       | Text Field           | 5 Ft 3 inch                  |
+| Weight                       | Text Field           | 80 Kg                        |
+| Date of Birth                | Date Picker          | 13-Feb-2020                  |
