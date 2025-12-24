@@ -3138,7 +3138,7 @@ x-enum:
           - code: ACTIVE
             description: Describes the status of the order.
             reference: <PR/Issue/Discussion Links md format text
-          - code: COMPLETE
+          - code: COMPLETED
             description: Describes the status of the order.
             reference: <PR/Issue/Discussion Links md format text
           - code: CANCELLED
@@ -14621,6 +14621,431 @@ x-flows:
                       - descriptor:
                           code: SETTLEMENT_AMOUNT
                         value: '1.46'
+  - summary: On-Demand - Female Driver Flow
+    details:
+      - description: >-
+          The illustraive flow to perform a transaction of the nature where in a
+          buyer would like to book a mobility service form location
+          A(gps-cordinates) to localtion B(gps-cordinates)
+        mermaid: |-
+          sequenceDiagram
+            title On-Demand Discovery
+            Buyer Platform (BAP)->>Gateway (BG): search
+            Gateway (BG) ->> Buyer Platform (BAP): ACK
+            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+            Gateway (BG)->>Seller Platform (BPP): search
+            Seller Platform (BPP)->>Gateway (BG) : ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+            Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+      - description: Ordering
+        mermaid: |-
+          sequenceDiagram
+            title Selection
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): select
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    steps:
+      - summary: Buyer app search for available ride providers
+        api: search
+        details:
+          - description: >-
+              Buyer app explore ride providers to avail a mobility service from
+              Location A to Location B (GPS) over the network.
+            mermaid: |-
+              sequenceDiagram
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          summary: >-
+            Search for mobility services by pickup and drop location[Seller
+            Collecting]
+          value:
+            context:
+              action: search
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 40963dc1-e402-4f4d-ae70-7c5864ca682c
+              timestamp: '2023-12-09T13:39:56.645Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.1.0
+            message:
+              intent:
+                category:
+                  descriptor:
+                    code: ON_DEMAND_TRIP
+                tags:
+                  - descriptor:
+                      name: BAP Terms of Engagement
+                      code: BAP_TERMS
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://example-test-bap.com/static-terms.txt
+                fulfillment:
+                  customer:
+                    person:
+                      gender: FEMALE
+                  agent:
+                    person:
+                      gender: FEMALE
+                  stops:
+                    - location:
+                        gps: 13.008935, 77.644408
+                      type: START
+                    - location:
+                        gps: 12.971186, 77.586812
+                      type: END
+                payment:
+                  collected_by: BPP
+      - summary: Get a list of all services from ride providers
+        api: on_search
+        details:
+          - description: >-
+              Ride providers which is a mobility provider platform sends the
+              catalog of all services that can be used for transit from A to B
+              along with estimated fare.
+            mermaid: |-
+              sequenceDiagram
+                Buyer Platform (BAP)->>Gateway (BG): search
+                Gateway (BG) ->> Buyer Platform (BAP): ACK
+                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+                Gateway (BG)->>Seller Platform (BPP): search
+                Seller Platform (BPP)->>Gateway (BG) : ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
+                end
+        reference: if any
+        example:
+          summary: Return a mobility catalog[Seller Collecting]
+          value:
+            context:
+              action: on_search
+              bap_id: example-bap.com
+              bap_uri: https://example-bap.com/prod/trv10
+              bpp_id: example-bpp.com
+              bpp_uri: https://example-bpp.com/prod/seller
+              domain: ONDC:TRV10
+              location:
+                city:
+                  code: std:080
+                country:
+                  code: IND
+              message_id: 21e54d3c-9c3b-47c1-aa3b-b0e7b20818ee
+              timestamp: '2023-12-09T13:41:16.161Z'
+              transaction_id: 870782be-6757-43f1-945c-8eeaf9536259
+              ttl: PT30S
+              version: 2.1.0
+            message:
+              catalog:
+                descriptor:
+                  name: Mobility Servies BPP
+                providers:
+                  - fulfillments:
+                      - id: F1
+                        stops:
+                          - location:
+                              gps: 13.008935, 77.644408
+                            type: START
+                            instructions:
+                              short_desc: short description of the location
+                              long_desc: long description of the location
+                          - location:
+                              gps: 12.971186, 77.586812
+                            type: END
+                        type: DELIVERY
+                        vehicle:
+                          category: AUTO_RICKSHAW
+                          variant: AUTO_RICKSHAW
+                      - id: F2
+                        stops:
+                          - location:
+                              gps: 13.008935, 77.644408
+                            type: START
+                            instructions:
+                              short_desc: short description of the location
+                              long_desc: long description of the location
+                          - location:
+                              gps: 12.971186, 77.586812
+                            type: END
+                        type: DELIVERY
+                        vehicle:
+                          category: CAB
+                          variant: SEDAN
+                          energy_type: PETROL
+                      - id: F3
+                        customer:
+                          person:
+                            gender: FEMALE
+                        agent:
+                          person:
+                            gender: FEMALE
+                        stops:
+                          - location:
+                              gps: 13.008935, 77.644408
+                            type: START
+                            instructions:
+                              short_desc: short description of the location
+                              long_desc: long description of the location
+                          - location:
+                              gps: 12.971186, 77.586812
+                            type: END
+                        type: DELIVERY
+                        vehicle:
+                          category: CAB
+                          variant: SEDAN
+                          energy_type: PETROL
+                    id: P1
+                    items:
+                      - descriptor:
+                          code: RIDE
+                          name: CAB Economy Ride – Female Driver
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F3
+                        id: I3
+                        location_ids:
+                          - L2
+                          - L4
+                        price:
+                          currency: INR
+                          maximum_value: '236'
+                          minimum_value: '206'
+                          value: '206'
+                        tags:
+                          - descriptor:
+                              code: FEATURE_LIST
+                              name: Feature list
+                            list:
+                              - value: AC
+                              - value: LOW_PRICE
+                              - value: FREE_WIFI
+                        cancellation_terms:
+                          - cancellation_fee:
+                              percentage: '10'
+                            fulfillment_state:
+                              descriptor:
+                                code: RIDE_ASSIGNED
+                            reason_required: true
+                          - cancellation_fee:
+                              amount:
+                                currency: INR
+                                value: '50'
+                            fulfillment_state:
+                              descriptor:
+                                code: RIDE_ENROUTE_PICKUP
+                            reason_required: true
+                          - cancellation_fee:
+                              amount:
+                                currency: INR
+                                value: '50'
+                            fulfillment_state:
+                              descriptor:
+                                code: RIDE_ARRIVED_PICKUP
+                            reason_required: true
+                          - cancellation_fee:
+                              percentage: '90'
+                            fulfillment_state:
+                              descriptor:
+                                code: RIDE_STARTED
+                            reason_required: true
+                        matched: true
+                        recommended: false
+                      - descriptor:
+                          code: RIDE
+                          name: Auto Ride
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F1
+                        id: I1
+                        location_ids:
+                          - L1
+                          - L3
+                        price:
+                          currency: INR
+                          maximum_value: '176'
+                          minimum_value: '136'
+                          value: '146'
+                        tags:
+                          - descriptor:
+                              code: FEATURE_LIST
+                              name: Feature list
+                            list:
+                              - value: NON_AC
+                              - value: LOW_PRICE
+                              - value: DOORSTEP_PICK_UP
+                        cancellation_terms:
+                          - cancellation_fee:
+                              percentage: '0'
+                            fulfillment_state:
+                              descriptor:
+                                code: RIDE_ASSIGNED
+                            reason_required: true
+                          - cancellation_fee:
+                              amount:
+                                currency: INR
+                                value: '30'
+                            fulfillment_state:
+                              descriptor:
+                                code: RIDE_ENROUTE_PICKUP
+                            reason_required: true
+                          - cancellation_fee:
+                              amount:
+                                currency: INR
+                                value: '50'
+                            fulfillment_state:
+                              descriptor:
+                                code: RIDE_ARRIVED_PICKUP
+                            reason_required: true
+                          - cancellation_fee:
+                              percentage: '100'
+                            fulfillment_state:
+                              descriptor:
+                                code: RIDE_STARTED
+                            reason_required: true
+                        matched: false
+                        recommended: true
+                      - descriptor:
+                          code: RIDE
+                          name: CAB Economy Ride
+                        category_ids:
+                          - C1
+                        fulfillment_ids:
+                          - F2
+                        id: I2
+                        location_ids:
+                          - L2
+                          - L4
+                        price:
+                          currency: INR
+                          maximum_value: '236'
+                          minimum_value: '206'
+                          value: '206'
+                        tags:
+                          - descriptor:
+                              code: FEATURE_LIST
+                              name: Feature list
+                            list:
+                              - value: AC
+                              - value: LOW_PRICE
+                              - value: FREE_WIFI
+                        cancellation_terms:
+                          - cancellation_fee:
+                              percentage: '10'
+                            fulfillment_state:
+                              descriptor:
+                                code: RIDE_ASSIGNED
+                            reason_required: true
+                          - cancellation_fee:
+                              amount:
+                                currency: INR
+                                value: '50'
+                            fulfillment_state:
+                              descriptor:
+                                code: RIDE_ENROUTE_PICKUP
+                            reason_required: true
+                          - cancellation_fee:
+                              amount:
+                                currency: INR
+                                value: '50'
+                            fulfillment_state:
+                              descriptor:
+                                code: RIDE_ARRIVED_PICKUP
+                            reason_required: true
+                          - cancellation_fee:
+                              percentage: '90'
+                            fulfillment_state:
+                              descriptor:
+                                code: RIDE_STARTED
+                            reason_required: true
+                        matched: false
+                        recommended: true
+                    cancellation_terms:
+                      - cancellation_fee:
+                          percentage: '10'
+                        fulfillment_state:
+                          descriptor:
+                            code: RIDE_ASSIGNED
+                        reason_required: true
+                      - external_ref:
+                          url: >-
+                            https://example-bpp.com/prod/seller/v1/cancellation_terms.pdf
+                          mimetype: application/pdf
+                    locations:
+                      - gps: 12.916468,77.608998
+                        id: L1
+                      - gps: 12.916714,77.609298
+                        id: L2
+                      - gps: 12.916573,77.615216
+                        id: L3
+                      - gps: 12.906857,77.604456
+                        id: L4
+                    payments:
+                      - collected_by: BPP
+                    categories:
+                      - id: C1
+                        descriptor:
+                          code: ON_DEMAND_TRIP
+                          name: on demand
+                tags:
+                  - descriptor:
+                      code: BPP_TERMS
+                      name: BPP Terms of Engagement
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: PT60M
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://example-test-bpp.com/static-terms.txt
   - summary: On-Demand - Ride cancellation by driver
     details:
       - description: Detailed process of cancelling a ride with soft & confirm status.
@@ -33796,6 +34221,22 @@ x-attributes:
         message:
           intent:
             fulfillment:
+              customer:
+                person:
+                  gender:
+                    required: optional
+                    type: string
+                    owner: BAP
+                    usage: FEMALE
+                    description: Describes the customer gender.
+              agent:
+                person:
+                  gender:
+                    required: optional
+                    type: string
+                    owner: BAP
+                    usage: FEMALE
+                    description: Describes the agent gender.
               stops:
                 type: &ref_90
                   required: MANDATORY
@@ -34048,6 +34489,22 @@ x-attributes:
                   description: >-
                     Describes the unique reference ID to the fulfillment of an
                     order
+                customer:
+                  person:
+                    gender:
+                      required: optional
+                      type: string
+                      owner: BAP
+                      usage: FEMALE
+                      description: Describes the customer gender.
+                agent:
+                  person:
+                    gender:
+                      required: optional
+                      type: string
+                      owner: BAP
+                      usage: FEMALE
+                      description: Describes the agent gender.
                 type:
                   required: MANDATORY
                   type: string
@@ -34509,6 +34966,22 @@ x-attributes:
                   A code that describes the mode of fulfillment. This is
                   typically set when there are multiple ways an order can be
                   fulfilled. 
+              customer:
+                person:
+                  gender:
+                    required: optional
+                    type: string
+                    owner: BAP
+                    usage: FEMALE
+                    description: Describes the customer gender.
+              agent:
+                person:
+                  gender:
+                    required: optional
+                    type: string
+                    owner: BAP
+                    usage: FEMALE
+                    description: Describes the agent gender.
               stops:
                 type: *ref_90
                 location: &ref_116
@@ -34861,6 +35334,12 @@ x-attributes:
                     owner: BAP
                     usage: Jason Roy
                     description: Describes the name of the customer
+                  gender:
+                    required: optional
+                    type: string
+                    owner: BAP
+                    usage: FEMALE
+                    description: Describes the agent gender.
                   _description: &ref_157
                     required: MANDATORY
                     type: object
@@ -34886,6 +35365,14 @@ x-attributes:
                   owner: BAP
                   usage: '--'
                   description: Describes the customer.
+              agent:
+                person:
+                  gender:
+                    required: optional
+                    type: string
+                    owner: BAP
+                    usage: FEMALE
+                    description: Describes the agent gender
               tags: *ref_117
             quote:
               price: *ref_118
@@ -35217,6 +35704,12 @@ x-attributes:
                     owner: BPP
                     usage: John Doe
                     description: Describes the name of the agent
+                  gender:
+                    required: optional
+                    type: string
+                    owner: BAP
+                    usage: FEMALE
+                    description: Describes the agent gender
                   _description: &ref_161
                     required: MANDATORY
                     type: object
