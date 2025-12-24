@@ -360,6 +360,8 @@ paths:
                 message:
                   type: object
                   properties:
+                    order_id:
+                      $ref: '#/components/schemas/Order/properties/id'
                     ratings:
                       type: array
                       items:
@@ -511,7 +513,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -549,7 +550,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -627,7 +627,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -732,17 +731,16 @@ paths:
                 message:
                   type: object
                   properties:
-                    feedback_form:
-                      description: >-
-                        A feedback form to allow the user to provide additional
-                        information on the rating provided
-                      allOf:
-                        - $ref: '#/components/schemas/XInput'
+                    order_id:
+                      $ref: '#/components/schemas/Order/properties/id'
+                    ratings:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Rating'
                 error:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -993,6 +991,9 @@ components:
           $ref: '#/components/schemas/XInput'
         external_ref:
           $ref: '#/components/schemas/MediaFile'
+        cancellation_eligible:
+          description: Indicates if cancellation is eligible
+          type: boolean
     Catalog:
       description: >-
         Describes the products or services offered by a BPP. This is typically
@@ -1931,6 +1932,9 @@ components:
             - SOFT_CANCEL
             - CANCELLATION_INITIATED
             - CANCELLATION_REJECTED
+            - SOFT_UPDATE
+            - CONFIRM_UPDATE
+            - UPDATED
         type:
           description: >-
             This is used to indicate the type of order being created to BPPs.
@@ -2296,6 +2300,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        cancellation_terms:
+          description: Cancellation terms of this item
+          type: array
+          items:
+            $ref: '#/components/schemas/CancellationTerm'
     Quotation:
       description: >-
         Describes a quote. It is the estimated price of products or services
@@ -2306,7 +2315,6 @@ components:
         id:
           description: ID of the quote.
           type: string
-          format: uuid
         price:
           description: The total quoted price
           allOf:
@@ -2335,12 +2343,12 @@ components:
           description: Category of the entity being rated
           type: string
           enum:
-            - Item
-            - Order
-            - Fulfillment
-            - Provider
-            - Agent
-            - Support
+            - ITEM
+            - ORDER
+            - FULFILLMENT
+            - PROVIDER
+            - AGENT
+            - SUPPORT
         id:
           description: Id of the object being rated
           type: string
@@ -3134,7 +3142,7 @@ x-enum:
           - code: ACTIVE
             description: Describes the status of the order.
             reference: <PR/Issue/Discussion Links md format text
-          - code: COMPLETE
+          - code: COMPLETED
             description: Describes the status of the order.
             reference: <PR/Issue/Discussion Links md format text
           - code: CANCELLED
@@ -5132,7 +5140,7 @@ x-flows:
             message:
               order:
                 id: O1
-                status: COMPLETE
+                status: COMPLETED
                 provider:
                   id: P1
                 items:
@@ -5366,7 +5374,7 @@ x-flows:
             message:
               order:
                 id: O1
-                status: COMPLETE
+                status: COMPLETED
                 provider:
                   id: P1
                 items:
