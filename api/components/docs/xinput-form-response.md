@@ -171,3 +171,34 @@ There are 2 possible ways to get the latest status after submitting a form
 
 - The seller responds with the latest status of submitted form corresponding to the submission_id ("Submission_ID") that was submitted earlier by the buyer.
 ````
+
+### Possible List of Fields
+##### Below is a possible consolidated list of fields with their data types and illustrative values
+
+Field Name                    | Field Description            | Data Type            | Illustrative Value            |
+------------------------------|------------------------------|----------------------|-------------------------------|
+pickupLocation                | Pickup Location              | Text Field           | Delhi T2 Airport              |
+pickupDateTime                | Pickup Date & Time           | Date & Time Picker      | 13-Feb-2026, 8:30 pm          |
+specialRequirements          | Special Requirements         | Text Field           | Arrange for a wheel chair     |
+arrivalAirlineName          | Arrival Airline Name         | Text Field           | Indigo                        |
+arrivalFlightNumber         | Arrival Flight Number        | Text Field           | 6E 123                           |
+arrivalDateTime           | Arrival Date & Time          | Date & Time Picker       | 13-Feb-2026, 8:30 pm          |
+arrivalPickupLocation      | Arrival Pickup Location      | Text Field           | Delhi T2 Airport              |
+arrivalModeOfTransfer      | Arrival Mode of Transfer     | Text Field           | SUV                           |
+dropLocation                 | Drop Location                | Text Field           | Delhi T2 Airport              |
+departureAirlineName        | Departure Airline Name       | Text Field           | Indigo                        |
+departureFlightNumber       | Departure Flight Number      | Text Field           | 6E 123                        |
+departureDateTime         | Departure Date & Time        | Date & Time Picker       | 13-Feb-2026, 8:30 pm          |
+departurePickupLocation     | Departure Pickup Location    | Text Field           | Siri Fort, Delhi              |
+departureModeOfTransfer    | Departure Mode of Transfer   | Text Field           | Sedan AC                     |
+age                           | Age                          | Text Field           | 40                            |
+firstName                    | First Name                   | Text Field           | John                          |
+lastName                     | Last Name                    | Text Field           | Smith                         |
+passportGivenName          | Passport Given Name          | Text Field           | John Smith                   |
+passportSurnameName         | Passport Surname Name        | Text Field           | Gerald                        |
+passportExpiry               | Passport Expiry              | Date Picker          | 13-Feb-2026                  |
+passportNationality          | Passport Nationality         | Text Field           | Indian                        |
+passportNumber               | Passport Number              | Text Field           | F123456                      |
+height                        | Height                       | Text Field           | 5 Ft 3 inch                  |
+weight                        | Weight                       | Text Field           | 80 Kg                        |
+dateOfBirth                 | Date of Birth                | Date Picker          | 13-Feb-2020                  |
