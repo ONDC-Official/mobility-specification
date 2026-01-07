@@ -200,10 +200,6 @@ function populateVersionDropdown(branches) {
 
 async function renderBranchesTable() {
   const response = await fetchBranches()
-
-  console.log("response", response)
-  console.log("BRANHES", BRANCHES)
-
   const filteredBranches = BRANCHES.filter(item1 =>
     response.some(item2 => item1.code === item2.name)
   );

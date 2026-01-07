@@ -29,7 +29,6 @@ function extractTextBetweenBackticks(inputString) {
 }
 
 function renderMDFile(branchName, file) {
-  console.log('branchName', branchName)
   fetch(
     `https://raw.githubusercontent.com/ONDC-Official/mobility-specification/${branchName}/api/components/docs/changeLog/${file}.md`
   )

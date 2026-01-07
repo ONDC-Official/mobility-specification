@@ -47,7 +47,6 @@ function renderDropdownMarkdown(branchname, filteredData) {
 }
 
 function renderMarkdown(branchName, file) {
-  console.log("file---", file);
   fetch(
     `https://raw.githubusercontent.com/ondc-official/mobility-specification/${branchName}/api/components/docs/${file}.md`
   )
@@ -77,7 +76,9 @@ function renderMarkdown(branchName, file) {
 
 function updateFeature() {
   var example_set = document.getElementById("feature-sets-dropdown");
-  const selectedOption = document.getElementById("contract-dropdown")?.value;
+  const urlParams = new URLSearchParams(window.location.search);
+  const branch_name = urlParams.get('branch');
+  const selectedOption = document.getElementById("contract-dropdown")?.value || branch_name;
   renderMarkdown(selectedOption, example_set.value);
 }
 
