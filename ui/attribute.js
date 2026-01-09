@@ -34,8 +34,6 @@ function loadAttributes(data) {
   const indexKey = Object.keys(attributes);
   addAttributeSets(indexKey[0]);
 
-  console.log("done loading...")
-
   const veriosnDropdown = document.getElementById("version-dropdown")
   const content = document.getElementById("content")
   const home = document.getElementById("home")
