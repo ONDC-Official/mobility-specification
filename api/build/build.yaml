@@ -1384,7 +1384,7 @@ components:
             - application/xml
         resubmit:
           type: boolean
-        multiple_sumbissions:
+        multiple_submissions:
           type: boolean
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
@@ -15278,7 +15278,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -15304,7 +15304,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -16579,7 +16579,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for public  transit for city and type of vehicle
-          value: &ref_64
+          value: &ref_63
             context:
               location:
                 country:
@@ -17097,7 +17097,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for public  transit via station code and vehicle type
-          value: &ref_65
+          value: &ref_64
             context:
               location:
                 country:
@@ -17529,7 +17529,7 @@ x-flows:
           summary: >-
             Get a quote for a fare product selected from a public transit
             catalog
-          value: &ref_66
+          value: &ref_65
             context:
               location:
                 country:
@@ -18565,47 +18565,7 @@ x-flows:
         example:
           summary: Return confirmed ticket order with payment confirmation
           value: *ref_28
-      - summary: Consumer platform requests for latest status
-        api: status
-        details:
-          - description: >-
-              Consumer platform request the provider platform to provide with
-              latest order status
-            mermaid: |-
-              sequenceDiagram
-                title Order Fulfillment
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                rect rgb(191, 223, 255)
-                Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                end
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
-        reference: if any
-        example:
-          summary: Get latest status of a transit ticket booking
-          value: &ref_67
-            context:
-              location:
-                country:
-                  code: IND
-                city:
-                  code: std:011
-              domain: ONDC:TRV11
-              action: status
-              version: 2.1.0
-              bap_id: api.example-bap.com
-              bap_uri: https://api.example-bap.com/ondc/metro
-              bpp_id: api.example-bpp.com
-              bpp_uri: https://api.example-bpp.com/ondc/metro
-              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
-              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
-              timestamp: '2021-03-23T10:00:40.065Z'
-              ttl: PT30S
-            message:
-              order_id: 077b248f
-      - summary: Provider platform provides latest order status
+      - summary: Provider platform provides latest order status with CHECKED_IN state
         api: on_status
         details:
           - description: >-
@@ -18616,8 +18576,8 @@ x-flows:
                 title Order Fulfillment
                 participant Buyer Platform (BAP)
                 participant Seller Platform (BPP)
-                Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 rect rgb(191, 223, 255)
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
@@ -18625,7 +18585,492 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: &ref_63
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV11
+              action: on_status
+              version: 2.1.0
+              bap_id: api.example-bap.com
+              bap_uri: https://api.example-bap.com/ondc/metro
+              bpp_id: api.example-bpp.com
+              bpp_uri: https://api.example-bpp.com/ondc/metro
+              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+              timestamp: '2021-03-23T10:00:40.065Z'
+              ttl: PT30S
+            message:
+              order:
+                id: 077b248f
+                status: ACTIVE
+                items:
+                  - id: I1
+                    category_ids:
+                      - C1
+                    descriptor:
+                      name: Single Journey Ticket
+                      code: SJT
+                    price:
+                      currency: INR
+                      value: '60'
+                    quantity:
+                      selected:
+                        count: 2
+                    fulfillment_ids:
+                      - F1
+                      - F3
+                      - F4
+                    time:
+                      label: Validity
+                      duration: PT2D
+                      timestamp: '2021-03-23T11:01:40.065Z'
+                provider:
+                  id: P1
+                  descriptor:
+                    name: Delhi Metro Rail Limited
+                    images:
+                      - url: https://delhimetrorail.com/logos/logo.ico
+                  time:
+                    range:
+                      start: '2023-09-14T05:30:00.000Z'
+                      end: '2023-09-14T23:30:00.000Z'
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    stops:
+                      - type: START
+                        location:
+                          descriptor:
+                            name: Shaheed Sthal(New Bus Adda)
+                            code: SHAHEED_STHAL
+                          gps: 28.686576, 77.441632
+                        id: '1'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 1
+                        location:
+                          descriptor:
+                            name: Hindon River
+                            code: HINDON_RIVER
+                          gps: 28.686176, 77.442632
+                        id: '2'
+                        parent_stop_id: '1'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 2
+                        location:
+                          descriptor:
+                            name: Arthala
+                          gps: 28.181276, 77.442332
+                        id: '3'
+                        parent_stop_id: '2'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 3
+                        location:
+                          descriptor:
+                            name: Mohan Nagar
+                          gps: 28.981276, 77.772332
+                        id: '4'
+                        parent_stop_id: '3'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 4
+                        location:
+                          descriptor:
+                            name: Shyam Park
+                          gps: 28.620976, 77.046732
+                        id: '5'
+                        parent_stop_id: '4'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 5
+                        location:
+                          descriptor:
+                            name: Major Mohit Sharma Rajendra Nagar
+                          gps: 28.120976, 77.946732
+                        id: '6'
+                        parent_stop_id: '5'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 6
+                        location:
+                          descriptor:
+                            name: Raj Bagh
+                          gps: 28.677076, 77.346632
+                        id: '7'
+                        parent_stop_id: '6'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 7
+                        location:
+                          descriptor:
+                            name: Shaheed Nagar
+                          gps: 28.617076, 77.146632
+                        id: '8'
+                        parent_stop_id: '7'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 8
+                        location:
+                          descriptor:
+                            name: Dilshad Garden
+                          gps: 28.917076, 77.146632
+                        id: '9'
+                        parent_stop_id: '8'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 9
+                        location:
+                          descriptor:
+                            name: Jhilmil
+                          gps: 28.897076, 77.146632
+                        id: '10'
+                        parent_stop_id: '9'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 10
+                        location:
+                          descriptor:
+                            name: Mansarovar Park
+                          gps: 28.117076, 77.116632
+                        id: '11'
+                        parent_stop_id: '10'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 11
+                        location:
+                          descriptor:
+                            name: Shahdara
+                          gps: 28.127076, 77.416632
+                        id: '12'
+                        parent_stop_id: '11'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 12
+                        location:
+                          descriptor:
+                            name: Welcome
+                          gps: 28.217076, 77.216632
+                        id: '13'
+                        parent_stop_id: '12'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 13
+                        location:
+                          descriptor:
+                            name: Seelampur
+                          gps: 28.327076, 77.416632
+                        id: '14'
+                        parent_stop_id: '13'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 14
+                        location:
+                          descriptor:
+                            name: Shastri Park
+                          gps: 28.427076, 77.446632
+                        id: '15'
+                        parent_stop_id: '14'
+                      - type: TRANSIT_STOP
+                        instructions:
+                          name: Stop 15
+                          short_desc: Please Change here for Yellow Line
+                        location:
+                          descriptor:
+                            name: Kashmere Gate
+                          gps: 28.738426, 77.139922
+                        id: '16'
+                        parent_stop_id: '15'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 16
+                        location:
+                          descriptor:
+                            name: Civil Lines
+                          gps: 28.627076, 77.646632
+                        id: '17'
+                        parent_stop_id: '16'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 17
+                        location:
+                          descriptor:
+                            name: Vidhan Sabha
+                          gps: 28.727076, 77.746632
+                        id: '18'
+                        parent_stop_id: '17'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 18
+                        location:
+                          descriptor:
+                            name: Vishwavidyalaya
+                          gps: 28.827076, 77.846632
+                        id: '19'
+                        parent_stop_id: '18'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 19
+                        location:
+                          descriptor:
+                            name: Guru Tegh Bahadur Nagar
+                          gps: 28.927076, 77.946632
+                        id: '20'
+                        parent_stop_id: '19'
+                      - type: INTERMEDIATE_STOP
+                        instructions:
+                          name: Stop 20
+                        location:
+                          descriptor:
+                            name: Model Town
+                          gps: 28.217076, 77.496632
+                        id: '21'
+                        parent_stop_id: '20'
+                      - type: END
+                        location:
+                          descriptor:
+                            name: Azadpur
+                            code: AZADPUR
+                          gps: 28.707358, 77.180910
+                        id: '22'
+                        parent_stop_id: '21'
+                    vehicle:
+                      category: METRO
+                    tags:
+                      - descriptor:
+                          code: ROUTE_INFO
+                        list:
+                          - descriptor:
+                              code: ROUTE_ID
+                            value: '242'
+                          - descriptor:
+                              code: ROUTE_NAME
+                            value: Yellow Line
+                  - id: F3
+                    type: TICKET
+                    state:
+                      descriptor:
+                        code: CHECKED_IN
+                    stops:
+                      - type: START
+                        authorization:
+                          type: QR
+                          token: >-
+                            aMOPw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GINAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2024-07-23T23:59:59.999Z'
+                          status: UNCLAIMED
+                    tags:
+                      - descriptor:
+                          code: INFO
+                        list:
+                          - descriptor:
+                              code: PARENT_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 7ed21b6f
+                  - id: F4
+                    type: TICKET
+                    state:
+                      descriptor:
+                        code: CHECKED_IN
+                    stops:
+                      - type: START
+                        authorization:
+                          type: QR
+                          token: >-
+                            iNCORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2024-07-23T23:59:59.999Z'
+                          status: UNCLAIMED
+                    tags:
+                      - descriptor:
+                          code: INFO
+                        list:
+                          - descriptor:
+                              code: PARENT_ID
+                            value: F1
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 5xd31b8f
+                billing:
+                  name: John Doe
+                  email: john.doe@example.com
+                  phone: +91-9897867564
+                quote:
+                  price:
+                    value: '120'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      item:
+                        id: I1
+                        price:
+                          currency: INR
+                          value: '60'
+                        quantity:
+                          selected:
+                            count: 2
+                      price:
+                        currency: INR
+                        value: '120'
+                    - title: TAX
+                      price:
+                        currency: INR
+                        value: '0'
+                      item:
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  code: CGST
+                                value: '0'
+                              - descriptor:
+                                  code: SGST
+                                value: '0'
+                    - title: OTHER_CHARGES
+                      price:
+                        currency: INR
+                        value: '0'
+                      item:
+                        tags:
+                          - descriptor:
+                              code: OTHER_CHARGES
+                            list:
+                              - descriptor:
+                                  code: SURCHARGE
+                                value: '0'
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
+                      currency: INR
+                      amount: '120'
+                cancellation_terms:
+                  - external_ref:
+                      mimetype: text/html
+                      url: https://transitsolutions.com/mf/tnc.html
+                tags:
+                  - descriptor:
+                      code: BAP_TERMS
+                      name: BAP Terms of Engagemen
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: PT60M
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: Delivery
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: NEFT
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '2.5'
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://www.abc.com/settlement-terms/
+                      - descriptor:
+                          code: SETTLEMENT_AMOUNT
+                        value: '59'
+                  - descriptor:
+                      code: BPP_TERMS
+                      name: BPP Terms of Engagement
+                    display: false
+                    list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P30D
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: INVOICE_RECEIPT
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'TRUE'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://api.example-bpp.com/booking/terms
+                      - descriptor:
+                          code: SETTLEMENT_AMOUNT
+                        value: '59'
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: NEFT
+                      - descriptor:
+                          code: SETTLEMENT_BANK_CODE
+                        value: XXXXXXXX
+                      - descriptor:
+                          code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                        value: xxxxxxxxxxxxxx
+                  - descriptor:
+                      code: ADDITIONAL_APIS
+                    display: false
+                    list:
+                      - descriptor:
+                          code: GTFS_RT
+                        value: https://metro-transit/gtfs-realtime
+                      - descriptor:
+                          code: GTFS_ST
+                        value: https://metro-transit/gtfs-static
+                      - descriptor:
+                          code: WALLET_BALANCE_CHECK
+                          name: >-
+                            The CARD_NUMBER represents the Metro card number and
+                            is used to check the wallet balance via the API.
+                        value: https://metro-transit/wallet/balance/{CARD_NUMBER}
+                created_at: '2021-03-23T10:00:40.065Z'
+                updated_at: '2021-03-23T10:00:40.065Z'
+      - summary: Provider platform provides latest order status with CHECKED_OUT state
+        api: on_status
+        details:
+          - description: >-
+              Provider platform provides the updated order status to the
+              consumer
+            mermaid: |-
+              sequenceDiagram
+                title Order Fulfillment
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end 
+        reference: if any
+        example:
+          summary: Return transit ticket order with status - Journey Completed
+          value:
             context:
               location:
                 country:
@@ -18649,11 +19094,11 @@ x-flows:
                 status: COMPLETED
                 items:
                   - id: I1
+                    category_ids:
+                      - C1
                     descriptor:
                       name: Single Journey Ticket
                       code: SJT
-                    category_ids:
-                      - C1
                     price:
                       currency: INR
                       value: '60'
@@ -18943,10 +19388,6 @@ x-flows:
                           - descriptor:
                               code: NUMBER
                             value: 5xd31b8f
-                cancellation_terms:
-                  - external_ref:
-                      mimetype: text/html
-                      url: https://transitsolutions.com/mf/tnc.html
                 billing:
                   name: John Doe
                   email: john.doe@example.com
@@ -19004,6 +19445,10 @@ x-flows:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
                       amount: '120'
+                cancellation_terms:
+                  - external_ref:
+                      mimetype: text/html
+                      url: https://transitsolutions.com/mf/tnc.html
                 tags:
                   - descriptor:
                       code: BAP_TERMS
@@ -19441,7 +19886,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -19467,7 +19912,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -19933,7 +20378,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -19959,7 +20404,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -20233,7 +20678,7 @@ x-flows:
         reference: if any
         api: on_update
         example:
-          value: &ref_68
+          value: &ref_66
             context:
               location:
                 country:
@@ -20503,7 +20948,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -20529,7 +20974,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -21111,7 +21556,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -21137,7 +21582,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -21632,8 +22077,17 @@ x-flows:
                             value: Yellow Line
                   - id: F3
                     type: TICKET
+                    state:
+                      descriptor:
+                        code: ACTIVE
                     stops:
                       - type: START
+                        authorization:
+                          type: QR
+                          token: >-
+                            aMOPw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GINAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2024-07-23T23:59:59.999Z'
+                          status: UNCLAIMED
                     tags:
                       - descriptor:
                           code: INFO
@@ -21649,8 +22103,17 @@ x-flows:
                             value: 7ed21b6f
                   - id: F4
                     type: TICKET
+                    state:
+                      descriptor:
+                        code: ACTIVE
                     stops:
                       - type: START
+                        authorization:
+                          type: QR
+                          token: >-
+                            iNCORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2024-07-23T23:59:59.999Z'
+                          status: UNCLAIMED
                     tags:
                       - descriptor:
                           code: INFO
@@ -22158,8 +22621,17 @@ x-flows:
                             value: Yellow Line
                   - id: F3
                     type: TICKET
+                    state:
+                      descriptor:
+                        code: ACTIVE
                     stops:
                       - type: START
+                        authorization:
+                          type: QR
+                          token: >-
+                            aMOPw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GINAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2024-07-23T23:59:59.999Z'
+                          status: UNCLAIMED
                     tags:
                       - descriptor:
                           code: INFO
@@ -22175,8 +22647,17 @@ x-flows:
                             value: 7ed21b6f
                   - id: F4
                     type: TICKET
+                    state:
+                      descriptor:
+                        code: ACTIVE
                     stops:
                       - type: START
+                        authorization:
+                          type: QR
+                          token: >-
+                            iNCORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2024-07-23T23:59:59.999Z'
+                          status: UNCLAIMED
                     tags:
                       - descriptor:
                           code: INFO
@@ -22742,7 +23223,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -22768,7 +23249,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -23275,7 +23756,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -23301,7 +23782,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -23812,7 +24293,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -23838,7 +24319,7 @@ x-flows:
                     type: TICKET
                     state:
                       descriptor:
-                        code: CHECKED_IN
+                        code: ACTIVE
                     stops:
                       - type: START
                         authorization:
@@ -24061,7 +24542,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_69
+          value: &ref_67
             context:
               action: select
               bap_id: api.example-bap.com
@@ -24105,7 +24586,7 @@ x-flows:
                 end 
         reference: if any
         example:
-          value: &ref_75
+          value: &ref_73
             context:
               action: on_select
               bap_id: api.example-bap.com
@@ -24221,7 +24702,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_71
+          value: &ref_69
             context:
               action: init
               bap_id: api.example-bap.com
@@ -24302,7 +24783,7 @@ x-flows:
                 end
         reference: if any
         example:
-          value: &ref_77
+          value: &ref_75
             context:
               action: on_init
               bap_id: api.example-bap.com
@@ -24466,7 +24947,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_73
+          value: &ref_71
             context:
               action: confirm
               bap_id: api.example-bap.com
@@ -24585,7 +25066,7 @@ x-flows:
                 end
         reference: if any
         example:
-          value: &ref_79
+          value: &ref_77
             context:
               action: on_confirm
               bap_id: api.example-bap.com
@@ -24842,7 +25323,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_70
+          value: &ref_68
             context:
               action: select
               bap_id: api.example-bap.com
@@ -24892,7 +25373,7 @@ x-flows:
                 end 
         reference: if any
         example:
-          value: &ref_76
+          value: &ref_74
             context:
               action: on_select
               bap_id: api.example-bap.com
@@ -25013,7 +25494,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_72
+          value: &ref_70
             context:
               action: init
               bap_id: api.example-bap.com
@@ -25097,7 +25578,7 @@ x-flows:
                 end
         reference: if any
         example:
-          value: &ref_78
+          value: &ref_76
             context:
               action: on_init
               bap_id: api.example-bap.com
@@ -25265,7 +25746,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_74
+          value: &ref_72
             context:
               action: confirm
               bap_id: api.example-bap.com
@@ -25387,7 +25868,7 @@ x-flows:
                 end
         reference: if any
         example:
-          value: &ref_80
+          value: &ref_78
             context:
               action: on_confirm
               bap_id: api.example-bap.com
@@ -28438,7 +28919,472 @@ x-examples:
       on_status:
         examples:
           - summary: Return_transit_ticket_order_with_status_-_Journey_Completed_59
-            value: *ref_63
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV11
+                action: on_status
+                version: 2.1.0
+                bap_id: api.example-bap.com
+                bap_uri: https://api.example-bap.com/ondc/metro
+                bpp_id: api.example-bpp.com
+                bpp_uri: https://api.example-bpp.com/ondc/metro
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+                ttl: PT30S
+              message:
+                order:
+                  id: 077b248f
+                  status: COMPLETED
+                  items:
+                    - id: I1
+                      descriptor:
+                        name: Single Journey Ticket
+                        code: SJT
+                      category_ids:
+                        - C1
+                      price:
+                        currency: INR
+                        value: '60'
+                      quantity:
+                        selected:
+                          count: 2
+                      fulfillment_ids:
+                        - F1
+                        - F3
+                        - F4
+                      time:
+                        label: Validity
+                        duration: PT2D
+                        timestamp: '2021-03-23T11:01:40.065Z'
+                  provider:
+                    id: P1
+                    descriptor:
+                      name: Delhi Metro Rail Limited
+                      images:
+                        - url: https://delhimetrorail.com/logos/logo.ico
+                    time:
+                      range:
+                        start: '2023-09-14T05:30:00.000Z'
+                        end: '2023-09-14T23:30:00.000Z'
+                  fulfillments:
+                    - id: F1
+                      type: TRIP
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: Shaheed Sthal(New Bus Adda)
+                              code: SHAHEED_STHAL
+                            gps: 28.686576, 77.441632
+                          id: '1'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 1
+                          location:
+                            descriptor:
+                              name: Hindon River
+                              code: HINDON_RIVER
+                            gps: 28.686176, 77.442632
+                          id: '2'
+                          parent_stop_id: '1'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 2
+                          location:
+                            descriptor:
+                              name: Arthala
+                            gps: 28.181276, 77.442332
+                          id: '3'
+                          parent_stop_id: '2'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 3
+                          location:
+                            descriptor:
+                              name: Mohan Nagar
+                            gps: 28.981276, 77.772332
+                          id: '4'
+                          parent_stop_id: '3'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 4
+                          location:
+                            descriptor:
+                              name: Shyam Park
+                            gps: 28.620976, 77.046732
+                          id: '5'
+                          parent_stop_id: '4'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 5
+                          location:
+                            descriptor:
+                              name: Major Mohit Sharma Rajendra Nagar
+                            gps: 28.120976, 77.946732
+                          id: '6'
+                          parent_stop_id: '5'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 6
+                          location:
+                            descriptor:
+                              name: Raj Bagh
+                            gps: 28.677076, 77.346632
+                          id: '7'
+                          parent_stop_id: '6'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 7
+                          location:
+                            descriptor:
+                              name: Shaheed Nagar
+                            gps: 28.617076, 77.146632
+                          id: '8'
+                          parent_stop_id: '7'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 8
+                          location:
+                            descriptor:
+                              name: Dilshad Garden
+                            gps: 28.917076, 77.146632
+                          id: '9'
+                          parent_stop_id: '8'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 9
+                          location:
+                            descriptor:
+                              name: Jhilmil
+                            gps: 28.897076, 77.146632
+                          id: '10'
+                          parent_stop_id: '9'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 10
+                          location:
+                            descriptor:
+                              name: Mansarovar Park
+                            gps: 28.117076, 77.116632
+                          id: '11'
+                          parent_stop_id: '10'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 11
+                          location:
+                            descriptor:
+                              name: Shahdara
+                            gps: 28.127076, 77.416632
+                          id: '12'
+                          parent_stop_id: '11'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 12
+                          location:
+                            descriptor:
+                              name: Welcome
+                            gps: 28.217076, 77.216632
+                          id: '13'
+                          parent_stop_id: '12'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 13
+                          location:
+                            descriptor:
+                              name: Seelampur
+                            gps: 28.327076, 77.416632
+                          id: '14'
+                          parent_stop_id: '13'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 14
+                          location:
+                            descriptor:
+                              name: Shastri Park
+                            gps: 28.427076, 77.446632
+                          id: '15'
+                          parent_stop_id: '14'
+                        - type: TRANSIT_STOP
+                          instructions:
+                            name: Stop 15
+                            short_desc: Please Change here for Yellow Line
+                          location:
+                            descriptor:
+                              name: Kashmere Gate
+                            gps: 28.738426, 77.139922
+                          id: '16'
+                          parent_stop_id: '15'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 16
+                          location:
+                            descriptor:
+                              name: Civil Lines
+                            gps: 28.627076, 77.646632
+                          id: '17'
+                          parent_stop_id: '16'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 17
+                          location:
+                            descriptor:
+                              name: Vidhan Sabha
+                            gps: 28.727076, 77.746632
+                          id: '18'
+                          parent_stop_id: '17'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 18
+                          location:
+                            descriptor:
+                              name: Vishwavidyalaya
+                            gps: 28.827076, 77.846632
+                          id: '19'
+                          parent_stop_id: '18'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 19
+                          location:
+                            descriptor:
+                              name: Guru Tegh Bahadur Nagar
+                            gps: 28.927076, 77.946632
+                          id: '20'
+                          parent_stop_id: '19'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 20
+                          location:
+                            descriptor:
+                              name: Model Town
+                            gps: 28.217076, 77.496632
+                          id: '21'
+                          parent_stop_id: '20'
+                        - type: END
+                          location:
+                            descriptor:
+                              name: Azadpur
+                              code: AZADPUR
+                            gps: 28.707358, 77.180910
+                          id: '22'
+                          parent_stop_id: '21'
+                      vehicle:
+                        category: METRO
+                      tags:
+                        - descriptor:
+                            code: ROUTE_INFO
+                          list:
+                            - descriptor:
+                                code: ROUTE_ID
+                              value: '242'
+                            - descriptor:
+                                code: ROUTE_NAME
+                              value: Yellow Line
+                    - id: F3
+                      type: TICKET
+                      state:
+                        descriptor:
+                          code: CHECKED_OUT
+                      stops:
+                        - type: START
+                          authorization:
+                            type: QR
+                            token: >-
+                              aMOPw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GINAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                            valid_to: '2024-07-23T23:59:59.999Z'
+                            status: CLAIMED
+                      tags:
+                        - descriptor:
+                            code: INFO
+                          list:
+                            - descriptor:
+                                code: PARENT_ID
+                              value: F1
+                        - descriptor:
+                            code: TICKET_INFO
+                          list:
+                            - descriptor:
+                                code: NUMBER
+                              value: 7ed21b6f
+                    - id: F4
+                      type: TICKET
+                      state:
+                        descriptor:
+                          code: CHECKED_OUT
+                      stops:
+                        - type: START
+                          authorization:
+                            type: QR
+                            token: >-
+                              iNCORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                            valid_to: '2024-07-23T23:59:59.999Z'
+                            status: CLAIMED
+                      tags:
+                        - descriptor:
+                            code: INFO
+                          list:
+                            - descriptor:
+                                code: PARENT_ID
+                              value: F1
+                        - descriptor:
+                            code: TICKET_INFO
+                          list:
+                            - descriptor:
+                                code: NUMBER
+                              value: 5xd31b8f
+                  cancellation_terms:
+                    - external_ref:
+                        mimetype: text/html
+                        url: https://transitsolutions.com/mf/tnc.html
+                  billing:
+                    name: John Doe
+                    email: john.doe@example.com
+                    phone: +91-9897867564
+                  quote:
+                    price:
+                      value: '120'
+                      currency: INR
+                    breakup:
+                      - title: BASE_FARE
+                        item:
+                          id: I1
+                          price:
+                            currency: INR
+                            value: '60'
+                          quantity:
+                            selected:
+                              count: 2
+                        price:
+                          currency: INR
+                          value: '120'
+                      - title: TAX
+                        price:
+                          currency: INR
+                          value: '0'
+                        item:
+                          tags:
+                            - descriptor:
+                                code: TAX
+                              list:
+                                - descriptor:
+                                    code: CGST
+                                  value: '0'
+                                - descriptor:
+                                    code: SGST
+                                  value: '0'
+                      - title: OTHER_CHARGES
+                        price:
+                          currency: INR
+                          value: '0'
+                        item:
+                          tags:
+                            - descriptor:
+                                code: OTHER_CHARGES
+                              list:
+                                - descriptor:
+                                    code: SURCHARGE
+                                  value: '0'
+                  payments:
+                    - id: PA1
+                      collected_by: BAP
+                      status: PAID
+                      type: PRE-ORDER
+                      params:
+                        transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
+                        currency: INR
+                        amount: '120'
+                  tags:
+                    - descriptor:
+                        code: BAP_TERMS
+                        name: BAP Terms of Engagemen
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+                        - descriptor:
+                            code: SETTLEMENT_WINDOW
+                          value: PT60M
+                        - descriptor:
+                            code: SETTLEMENT_BASIS
+                          value: Delivery
+                        - descriptor:
+                            code: SETTLEMENT_TYPE
+                          value: NEFT
+                        - descriptor:
+                            code: MANDATORY_ARBITRATION
+                          value: 'true'
+                        - descriptor:
+                            code: COURT_JURISDICTION
+                          value: New Delhi
+                        - descriptor:
+                            code: DELAY_INTEREST
+                          value: '2.5'
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://www.abc.com/settlement-terms/
+                        - descriptor:
+                            code: SETTLEMENT_AMOUNT
+                          value: '59'
+                    - descriptor:
+                        code: BPP_TERMS
+                        name: BPP Terms of Engagement
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+                        - descriptor:
+                            code: SETTLEMENT_WINDOW
+                          value: P30D
+                        - descriptor:
+                            code: SETTLEMENT_BASIS
+                          value: INVOICE_RECEIPT
+                        - descriptor:
+                            code: MANDATORY_ARBITRATION
+                          value: 'TRUE'
+                        - descriptor:
+                            code: COURT_JURISDICTION
+                          value: New Delhi
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://api.example-bpp.com/booking/terms
+                        - descriptor:
+                            code: SETTLEMENT_AMOUNT
+                          value: '59'
+                        - descriptor:
+                            code: SETTLEMENT_TYPE
+                          value: NEFT
+                        - descriptor:
+                            code: SETTLEMENT_BANK_CODE
+                          value: XXXXXXXX
+                        - descriptor:
+                            code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                          value: xxxxxxxxxxxxxx
+                    - descriptor:
+                        code: ADDITIONAL_APIS
+                      display: false
+                      list:
+                        - descriptor:
+                            code: GTFS_RT
+                          value: https://metro-transit/gtfs-realtime
+                        - descriptor:
+                            code: GTFS_ST
+                          value: https://metro-transit/gtfs-static
+                        - descriptor:
+                            code: WALLET_BALANCE_CHECK
+                            name: >-
+                              The CARD_NUMBER represents the Metro card number
+                              and is used to check the wallet balance via the
+                              API.
+                          value: https://metro-transit/wallet/balance/{CARD_NUMBER}
+                  created_at: '2021-03-23T10:00:40.065Z'
+                  updated_at: '2021-03-23T10:00:40.065Z'
       on_support:
         examples:
           - summary: Return_transit_ticket_order_with_status_-_Journey_Completed_60
@@ -28514,18 +29460,37 @@ x-examples:
                             code: DELAY_INTEREST
                           value: '2.5'
           - summary: Search_for_public__transit_for_city_and_type_of_vehicle_42
-            value: *ref_64
+            value: *ref_63
           - summary: Search_for_public__transit_via_station_code_and_vehicle_type_43
-            value: *ref_65
+            value: *ref_64
       select:
         examples:
           - summary: >-
               Get_a_quote_for_a_fare_product_selected_from_a_public_transit_catalog_44
-            value: *ref_66
+            value: *ref_65
       status:
         examples:
           - summary: Get_latest_status_of_a_transit_ticket_booking_49
-            value: *ref_67
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV11
+                action: status
+                version: 2.1.0
+                bap_id: api.example-bap.com
+                bap_uri: https://api.example-bap.com/ondc/metro
+                bpp_id: api.example-bpp.com
+                bpp_uri: https://api.example-bpp.com/ondc/metro
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+                ttl: PT30S
+              message:
+                order_id: 077b248f
           - summary: Get_latest_status_of_a_transit_ticket_booking_using_ref_id_50
             value:
               context:
@@ -29052,7 +30017,7 @@ x-examples:
                   updated_at: '2021-03-23T10:05:49.061Z'
           - summary: accep_cancel_request
             description: TBD
-            value: *ref_68
+            value: *ref_66
   metro-wallet:
     summary: Metro wallet use-case
     description: Metro wallet use-case
@@ -29105,16 +30070,16 @@ x-examples:
                           value: P30D
       select:
         examples:
+          - value: *ref_67
+          - value: *ref_68
+      init:
+        examples:
           - value: *ref_69
           - value: *ref_70
-      init:
+      confirm:
         examples:
           - value: *ref_71
           - value: *ref_72
-      confirm:
-        examples:
-          - value: *ref_73
-          - value: *ref_74
           - value:
               context:
                 action: confirm
@@ -29329,16 +30294,16 @@ x-examples:
                           value: 2.5 %
       on_select:
         examples:
+          - value: *ref_73
+          - value: *ref_74
+      on_init:
+        examples:
           - value: *ref_75
           - value: *ref_76
-      on_init:
+      on_confirm:
         examples:
           - value: *ref_77
           - value: *ref_78
-      on_confirm:
-        examples:
-          - value: *ref_79
-          - value: *ref_80
           - value:
               context:
                 action: on_confirm
@@ -43808,7 +44773,7 @@ x-tlc:
         Terms and the ONDC Network Policy or the Static Terms and the Network
         Participant Agreement, the terms of the ONDC Network Policy or the
         Network Participant Agreement (as the case may be) will prevail.
-x-featureui: &ref_81
+x-featureui: &ref_79
   filenames:
     - log-verification.md
     - order_confirmation.md
@@ -43816,7 +44781,7 @@ x-sandboxui:
   dropdown:
     - environment-name: staging
       link: https://mobility-staging.ondc.org
-x-testcasesui: *ref_81
+x-testcasesui: *ref_79
 x-changeLog:
   filenames:
     - TRV11_2.1.0_141125
