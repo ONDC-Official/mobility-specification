@@ -24,7 +24,7 @@ The differentiation in MIME types and additional settings, such as resubmit and 
       "id": "<Form_ID>",
       "mime_type": "<MIME_Type>",
       "url": "<Form_URL>",
-      "multiple_sumbissions": <Multiple_Sumbissions_Flag>
+      "multiple_submissions": <multiple_submissions_Flag>
     },
     "required": true
   }
@@ -44,7 +44,7 @@ The differentiation in MIME types and additional settings, such as resubmit and 
   - `id`: Unique ID associated with the form.
   - `mime_type`: Type of MIME.
   - `url`: Endpoint where the form is hosted.
-  - `multiple_sumbissions`: Indicates whether multiple submissions are allowed.
+  - `multiple_submissions`: Indicates whether multiple submissions are allowed.
 
   ### Additional Behavior:
 
