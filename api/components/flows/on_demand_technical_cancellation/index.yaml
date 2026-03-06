@@ -1,0 +1,162 @@
+summary: On-Demand - Technical Cancellation Flow
+details: 
+  - description: Detailed process of cancelling a ride with soft & confirm status.
+    mermaid: >-
+      sequenceDiagram
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platform (BPP): NACK
+        Buyer Platform (BAP)->>Seller Platform (BPP): status
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK 
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK         
+reference: if any
+steps:
+  - summary: Provider confirms the request
+    api: on_confirm
+    details: 
+      - description: The provider has confirmed the request, but the buyer app received the request after the TTL had expired.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): NACK 
+            end
+            Buyer Platform (BAP)->>Seller Platform (BPP): status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
+    reference: if any
+    example:
+      value:
+        $ref: "../../examples/on-demand/on_confirm/Return_confirmed_order_with_latest_fulfillment_details___X10.yaml"
+  
+  - summary: Buyer app request for latest order status
+    api: status
+    details: 
+      - description: Buyer app request for latest order status
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): NACK 
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+    reference: if any
+    example:
+      value:
+        $ref: "../../examples/on-demand/status/status_request_technical_cancel_1.yaml"
+  - summary: Provider sends the latest order status
+    api: on_status
+    details: 
+      - description:  Provider sends the latest order status
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): NACK 
+            Buyer Platform (BAP)->>Seller Platform (BPP): status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+             rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+            end
+    reference: if any
+    example:
+      value:
+        $ref: "../../examples/on-demand/on_status/on_status_request_techical_cancel_1.yaml"
+  
+  
+  
+  
+  - summary: Buyer app cancels the request for ride
+    api: cancel
+    details: 
+      - description: Buyer app requests for cancellation of ride.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      value:
+        $ref: "../../examples/on-demand/cancel/cancel_request_soft_cancel.yaml"
+  - summary: Provider accepts/appends the terms of cancellation
+    api: on_cancel
+    details: 
+      - description: Provider accepts the terms of order and appends its own terms and provides with latest order update.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      value:
+        $ref: "../../examples/on-demand/on_cancel/on_cancel_request_soft_cancel.yaml"
+  
+  - summary: Buyer app confirms the cancel request for ride
+    api: cancel
+    details: 
+      - description: Buyer app give the confirmation to cancel the ride.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      value:
+        $ref: "../../examples/on-demand/cancel/cancel_request_confirm_cancel.yaml"
+  - summary: Provider accepts the terms of cancellation
+    api: on_cancel
+    details: 
+      - description: Provider accepts the terms of order and provides with latest order update.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end 
+    reference: if any
+    example:
+      value:
+        $ref: "../../examples/on-demand/on_cancel/on_cancel_request_confirm_cancel.yaml"                            
+  
