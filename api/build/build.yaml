@@ -1384,7 +1384,7 @@ components:
             - application/xml
         resubmit:
           type: boolean
-        multiple_sumbissions:
+        multiple_submissions:
           type: boolean
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
@@ -1787,6 +1787,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        creds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Credential'
     Location:
       description: The physical location of something
       type: object
@@ -2221,6 +2225,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        descriptor:
+          $ref: '#/components/schemas/Descriptor'
     Price:
       description: Describes the price of a product or service
       type: object
@@ -2916,7 +2922,7 @@ x-enum:
                   description: Describes the kind of ticket Pass (multiple use ticket)
                   reference: <PR/Issue/Discussion Links md format text
           fulfillments: *ref_2
-          payments: &ref_7
+          payments: &ref_4
             status:
               - code: NOT-PAID
                 description: >-
@@ -2954,20 +2960,10 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: &ref_6
+      order: &ref_7
         items: *ref_3
         fulfillments: *ref_2
-        status: &ref_4
-          - code: SOFT_CANCEL
-            description: >-
-              Describes a soft-cancel request initiated by the buyer app, a step
-              preceding cancellation.
-            reference: <PR/Issue/Discussion Links md format text
-          - code: CONFIRM_CANCEL
-            description: >-
-              Describes a confirm-cancel request initiated by the buyer app,
-              confirming the order cancellation
-            reference: <PR/Issue/Discussion Links md format text
+        status: &ref_5
           - code: ACTIVE
             description: Describes the status of the order.
             reference: <PR/Issue/Discussion Links md format text
@@ -2977,7 +2973,12 @@ x-enum:
           - code: CANCELLED
             description: Describes the status of the order.
             reference: <PR/Issue/Discussion Links md format text
-        quote: &ref_5
+          - code: SOFT_CANCEL
+            description: >-
+              Describes a soft-cancel request initiated by the buyer app, a step
+              preceding cancellation.
+            reference: <PR/Issue/Discussion Links md format text
+        quote: &ref_6
           breakup:
             title:
               - code: BASE_PRICE
@@ -2995,6 +2996,7 @@ x-enum:
               - code: TOLL
                 description: Describes the Toll charges for an item.
                 reference: <PR/Issue/Discussion Links md format text
+        payments: *ref_4
   on_select:
     context:
       action:
@@ -3009,8 +3011,9 @@ x-enum:
       order:
         items: *ref_3
         fulfillments: *ref_2
-        status: *ref_4
-        quote: *ref_5
+        status: *ref_5
+        quote: *ref_6
+        payments: *ref_4
   init:
     context:
       action:
@@ -3022,7 +3025,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_6
+      order: *ref_7
   on_init:
     context:
       action:
@@ -3034,11 +3037,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: &ref_8
-        items: *ref_3
-        fulfillments: *ref_2
-        payments: *ref_7
-        quote: *ref_5
+      order: *ref_7
   confirm:
     context:
       action:
@@ -3048,7 +3047,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_8
+      order: *ref_7
   on_confirm:
     context:
       action:
@@ -3060,7 +3059,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_8
+      order: *ref_7
   status:
     context:
       action:
@@ -3078,7 +3077,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_8
+      order: *ref_7
   cancel:
     context:
       action:
@@ -3109,7 +3108,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_8
+      order: *ref_7
   update:
     context:
       action:
@@ -3119,7 +3118,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_8
+      order: *ref_7
   on_update:
     context:
       action:
@@ -3129,12 +3128,12 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      order: *ref_8
+      order: *ref_7
 x-tags:
   search:
     message:
       intent:
-        payment: &ref_9
+        payment: &ref_8
           tags:
             - code: BUYER_FINDER_FEES
               description: Describes the finder fees for buyer
@@ -3183,7 +3182,7 @@ x-tags:
     message:
       catalog:
         providers:
-          items: &ref_11
+          items: &ref_10
             tags:
               - code: FARE_POLICY
                 description: Details about fare for the ride
@@ -3195,7 +3194,7 @@ x-tags:
                   - code: RESTRICTION_PROOF
                     description: Describes the proof needed for restriction
                     reference: <PR/Issue/Discussion Links md format text>
-          fulfillments: &ref_10
+          fulfillments: &ref_9
             tags:
               - code: ROUTE_INFO
                 description: Describes the information about the route
@@ -3224,7 +3223,7 @@ x-tags:
                   - code: UTILIZED_TRIPS
                     description: Describes the number of utilized trips.
                     reference: <PR/Issue/Discussion Links md format text>
-          payments: *ref_9
+          payments: *ref_8
           tags:
             - code: SCHEDULED_INFO
               description: Describes the schdedule information.
@@ -3236,26 +3235,26 @@ x-tags:
   select:
     message:
       order:
-        fulfillments: *ref_10
-  on_select: &ref_13
+        fulfillments: *ref_9
+  on_select: &ref_12
     message:
       order:
-        fulfillments: *ref_10
-        items: *ref_11
+        fulfillments: *ref_9
+        items: *ref_10
   init:
     message:
       order:
-        payments: *ref_9
-  on_init: &ref_12
+        payments: *ref_8
+  on_init: &ref_11
     message:
       order:
-        fulfillments: *ref_10
-        items: *ref_11
-        payments: *ref_9
-  on_confirm: *ref_12
-  on_status: *ref_12
-  on_cancel: *ref_12
-  on_update: *ref_13
+        fulfillments: *ref_9
+        items: *ref_10
+        payments: *ref_8
+  on_confirm: *ref_11
+  on_status: *ref_11
+  on_cancel: *ref_11
+  on_update: *ref_12
 x-flows:
   - summary: IntraCity - GPS Based Flow
     details:
@@ -3335,7 +3334,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_30
+        example: &ref_29
           summary: >-
             Search for intra city bus service mode of transit from a specific
             position
@@ -3412,7 +3411,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: &ref_14
+        example: &ref_13
           summary: Return a public transit catalog of fare products
           value:
             context:
@@ -3791,7 +3790,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_15
+        example: &ref_14
           summary: >-
             Get a quote for a fare product selected from a intra city bus
             service catalog
@@ -3842,7 +3841,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_16
+        example: &ref_15
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -4076,7 +4075,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_17
+        example: &ref_16
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -4169,7 +4168,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end    
         reference: if any
-        example: &ref_18
+        example: &ref_17
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
@@ -4462,7 +4461,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_19
+        example: &ref_18
           summary: Confirm ticket booking
           value:
             context:
@@ -4560,7 +4559,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_20
+        example: &ref_19
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -4883,7 +4882,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: &ref_32
+        example: &ref_31
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -4986,6 +4985,12 @@ x-flows:
                             name: kashmere gate
                             code: KASHMERE_GATE
                           gps: 28.666576, 77.233332
+                        authorization:
+                          type: QR
+                          token: >-
+                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2021-03-23T23:59:59.999Z'
+                          status: CLAIMED
                         id: '1'
                       - type: INTERMEDIATE_STOP
                         instructions:
@@ -5062,6 +5067,12 @@ x-flows:
                             name: kashmere gate
                             code: KASHMERE_GATE
                           gps: 28.666576, 77.233332
+                        authorization:
+                          type: QR
+                          token: >-
+                            bxVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2021-03-23T23:59:59.999Z'
+                          status: CLAIMED
                         id: '1'
                       - type: INTERMEDIATE_STOP
                         instructions:
@@ -5136,7 +5147,7 @@ x-flows:
                       percentage: '0'
                 billing:
                   name: John Doe
-                  email: john_doe@example.com
+                  email: john.doe@example.com
                   phone: +91-9897867564
                 quote:
                   price:
@@ -5744,7 +5755,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: *ref_14
+        example: *ref_13
       - summary: Selection of specific service
         api: select
         details:
@@ -5762,7 +5773,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_15
+        example: *ref_14
       - summary: >-
           Provider platform provides the quote for selected service of intracity
           bus
@@ -5783,7 +5794,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_16
+        example: *ref_15
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -5801,7 +5812,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_17
+        example: *ref_16
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -5819,7 +5830,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_18
+        example: *ref_17
       - summary: Consumer confirms the booking and provides details.
         api: confirm
         details:
@@ -5837,7 +5848,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: *ref_19
+        example: *ref_18
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -5855,7 +5866,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_20
+        example: *ref_19
       - summary: Consumer platform updates the ride details
         api: update
         details:
@@ -6227,7 +6238,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
         reference: if any
-        example: *ref_20
+        example: *ref_19
       - summary: Buyer app cancels the request for ticket
         api: cancel
         details:
@@ -6245,7 +6256,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_31
+        example: &ref_30
           summary: Cancel a ticket booking before the cancellation period
           value:
             context:
@@ -6988,7 +6999,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
         reference: if any
-        example: *ref_20
+        example: *ref_19
       - summary: Buyer app request for latest order status
         api: status
         details:
@@ -8145,7 +8156,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_34
+        example: &ref_33
           summary: Search for public  transit for city and type of vehicle
           value:
             context:
@@ -8210,7 +8221,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_38
+        example: &ref_37
           summary: >-
             Return a metro catalog of available fulfillments based on search by
             city
@@ -8727,7 +8738,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_35
+        example: &ref_34
           summary: Search for public  transit via station code and vehicle type
           value:
             context:
@@ -8805,7 +8816,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_21
+        example: &ref_20
           summary: >-
             Return a metro catalog of fare products based on station code or gps
             based search
@@ -9210,7 +9221,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_22
+        example: &ref_21
           summary: >-
             Get a quote for a fare product selected from a public transit
             catalog
@@ -9259,7 +9270,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_23
+        example: &ref_22
           summary: Return a quote offered by a public transit service provider
           value:
             context:
@@ -9762,7 +9773,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_24
+        example: &ref_23
           summary: Initialize the order by providing billing details
           value:
             context:
@@ -9850,7 +9861,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end   
         reference: if any
-        example: &ref_25
+        example: &ref_24
           summary: Return draft order for transit ticket with settlement details
           value:
             context:
@@ -10383,7 +10394,7 @@ x-flows:
                       - descriptor:
                           code: GTFS
                         value: https://metro-transit/gtfs-realtime
-      - summary: Consumer confirms the
+      - summary: Consumer confirms the booking and provides all information
         api: confirm
         details:
           - description: >-
@@ -10401,7 +10412,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_26
+        example: &ref_25
           summary: Confirm ticket booking
           value:
             context:
@@ -10502,7 +10513,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_27
+        example: &ref_26
           summary: Return confirmed ticket order with payment confirmation
           value:
             context:
@@ -11088,7 +11099,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_28
+        example: &ref_27
           summary: Get latest status of a transit ticket booking
           value:
             context:
@@ -11128,7 +11139,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_29
+        example: &ref_28
           summary: Return transit ticket order with status - Journey Completed
           value:
             context:
@@ -11191,6 +11202,12 @@ x-flows:
                             name: Shaheed Sthal(New Bus Adda)
                             code: SHAHEED_STHAL
                           gps: 28.686576, 77.441632
+                        authorization:
+                          type: QR
+                          token: >-
+                            iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2021-03-23T23:59:59.999Z'
+                          status: CLAIMED
                         id: '1'
                       - type: INTERMEDIATE_STOP
                         instructions:
@@ -11401,6 +11418,12 @@ x-flows:
                             name: Shaheed Sthal(New Bus Adda)
                             code: SHAHEED_STHAL
                           gps: 28.686576, 77.441632
+                        authorization:
+                          type: QR
+                          token: >-
+                            xNMPRw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
+                          valid_to: '2021-03-23T23:59:59.999Z'
+                          status: CLAIMED
                         id: '1'
                       - type: INTERMEDIATE_STOP
                         instructions:
@@ -11762,7 +11785,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
         reference: if any
-        example: &ref_33
+        example: &ref_32
           summary: Search for a public mode of transit from a specific position
           value:
             context:
@@ -11838,7 +11861,7 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_21
+        example: *ref_20
       - summary: Selection of specific service(Optional)
         api: select
         details:
@@ -11856,7 +11879,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: *ref_22
+        example: *ref_21
       - summary: Provider platform provides the quote for selected service of metro
         api: on_select
         details:
@@ -11875,7 +11898,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
                 end 
         reference: if any
-        example: *ref_23
+        example: *ref_22
       - summary: Consumer platform initializes the order
         api: init
         details:
@@ -11893,7 +11916,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
-        example: *ref_24
+        example: *ref_23
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -11911,8 +11934,8 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
                 end
         reference: if any
-        example: *ref_25
-      - summary: Consumer confirms the
+        example: *ref_24
+      - summary: Consumer confirms the booking and provides all information
         api: confirm
         details:
           - description: >-
@@ -11929,7 +11952,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
-        example: *ref_26
+        example: *ref_25
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -11947,7 +11970,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: *ref_27
+        example: *ref_26
       - summary: Consumer platform requests for latest status
         api: status
         details:
@@ -11965,7 +11988,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK    
         reference: if any
-        example: *ref_28
+        example: *ref_27
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -11983,7 +12006,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: *ref_29
+        example: *ref_28
   - summary: Metro - Cancel Flow
     details:
       - description: Detailed process of cancelling a ticket with soft & confirm status.
@@ -12022,7 +12045,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
         reference: if any
-        example: *ref_27
+        example: *ref_26
       - summary: Buyer app cancels the request for ticket
         api: cancel
         details:
@@ -12040,7 +12063,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_36
+        example: &ref_35
           summary: Cancel a transit ticket booking before the cancellation period
           value:
             context:
@@ -12085,7 +12108,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
         reference: if any
-        example: &ref_39
+        example: &ref_38
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -12673,7 +12696,7 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
-        example: &ref_37
+        example: &ref_36
           summary: Initiates cancelling a ride with confirm cancel status
           value:
             context:
@@ -12718,7 +12741,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end 
         reference: if any
-        example: &ref_40
+        example: &ref_39
           summary: Return cancelled ticket order with cancellation charges
           value:
             context:
@@ -13282,34 +13305,34 @@ x-examples:
     example_set:
       search:
         examples:
-          - *ref_30
+          - *ref_29
       select:
         examples:
-          - *ref_15
+          - *ref_14
       init:
         examples:
-          - *ref_17
+          - *ref_16
       confirm:
         examples:
-          - *ref_19
+          - *ref_18
       cancel:
         examples:
-          - *ref_31
+          - *ref_30
       status:
         examples:
-          - *ref_32
+          - *ref_31
       on_search:
         examples:
-          - *ref_14
+          - *ref_13
       on_select:
         examples:
-          - *ref_16
+          - *ref_15
       on_init:
         examples:
-          - *ref_18
+          - *ref_17
       on_confirm:
         examples:
-          - *ref_20
+          - *ref_19
   metro:
     summary: Metro Use Case Specification
     description: >-
@@ -13329,25 +13352,25 @@ x-examples:
     example_set:
       search:
         examples:
+          - *ref_32
           - *ref_33
           - *ref_34
-          - *ref_35
       select:
         examples:
-          - *ref_22
+          - *ref_21
       init:
         examples:
-          - *ref_24
+          - *ref_23
       confirm:
         examples:
-          - *ref_26
+          - *ref_25
       cancel:
         examples:
+          - *ref_35
           - *ref_36
-          - *ref_37
       status:
         examples:
-          - *ref_28
+          - *ref_27
           - summary: Get latest status of a transit ticket booking using ref_id
             value:
               context:
@@ -13394,24 +13417,24 @@ x-examples:
                 ref_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
       on_search:
         examples:
-          - *ref_38
-          - *ref_21
+          - *ref_37
+          - *ref_20
       on_select:
         examples:
-          - *ref_23
+          - *ref_22
       on_init:
         examples:
-          - *ref_25
+          - *ref_24
       on_confirm:
         examples:
-          - *ref_27
+          - *ref_26
       on_cancel:
         examples:
+          - *ref_38
           - *ref_39
-          - *ref_40
       on_status:
         examples:
-          - *ref_29
+          - *ref_28
       on_support:
         examples:
           - summary: Return transit ticket order with status - Journey Completed
@@ -22434,7 +22457,7 @@ x-tlc:
         Terms and the ONDC Network Policy or the Static Terms and the Network
         Participant Agreement, the terms of the ONDC Network Policy or the
         Network Participant Agreement (as the case may be) will prevail.
-x-featureui: &ref_41
+x-featureui: &ref_40
   filenames:
     - log-verification.md
     - order_confirmation.md
@@ -22442,7 +22465,7 @@ x-sandboxui:
   dropdown:
     - environment-name: staging
       link: https://mobility-staging.ondc.org
-x-testcasesui: *ref_41
+x-testcasesui: *ref_40
 x-changeLog:
   filenames:
     - TRV11_2.0.0_130824.md
