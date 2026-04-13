@@ -1384,7 +1384,7 @@ components:
             - application/xml
         resubmit:
           type: boolean
-        multiple_sumbissions:
+        multiple_submissions:
           type: boolean
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
@@ -1787,6 +1787,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        creds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Credential'
     Location:
       description: The physical location of something
       type: object
@@ -2221,6 +2225,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        descriptor:
+          $ref: '#/components/schemas/Descriptor'
     Price:
       description: Describes the price of a product or service
       type: object
@@ -3130,6 +3136,7 @@ x-enum:
         quote: *ref_7
         cancellation_terms:
           fulfillment_state: *ref_8
+        status: *ref_5
   confirm:
     context:
       action:
@@ -3584,7 +3591,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for all services form the given start location(code)
-          value: &ref_23
+          value: &ref_24
             context:
               location:
                 country:
@@ -3828,7 +3835,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for all services from given start and end location(code)
-          value: &ref_24
+          value: &ref_25
             context:
               location:
                 country:
@@ -4223,7 +4230,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for all services from given start and end location(code)
-          value: &ref_25
+          value: &ref_26
             context:
               location:
                 country:
@@ -4535,7 +4542,7 @@ x-flows:
         reference: if any
         example:
           summary: Get Quote of a selected seat
-          value: &ref_26
+          value: &ref_27
             context:
               location:
                 country:
@@ -4830,7 +4837,7 @@ x-flows:
         reference: if any
         example:
           summary: Get Quote of a selected seat
-          value: &ref_27
+          value: &ref_28
             context:
               location:
                 country:
@@ -5627,7 +5634,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_28
+          value: &ref_29
             context:
               location:
                 country:
@@ -6111,7 +6118,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_31
+          value: &ref_22
             context:
               location:
                 country:
@@ -6501,7 +6508,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: &ref_22
+          value: &ref_23
             context:
               location:
                 country:
@@ -6892,7 +6899,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a transit ticket booking before the cancellation period
-          value: &ref_29
+          value: &ref_30
             context:
               location:
                 country:
@@ -7289,7 +7296,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a transit ticket booking before the cancellation period
-          value: &ref_30
+          value: &ref_31
             context:
               location:
                 country:
@@ -9097,6 +9104,1219 @@ x-flows:
                             value: '1766'
                 created_at: '2023-09-03T01:55:08.143Z'
                 updated_at: '2023-09-03T01:55:08.143Z'
+  - summary: Intercity - Technical Cancellation Flow
+    details:
+      - description: Detailed process of cancelling a ride with soft & confirm status.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): NACK
+            Buyer Platform (BAP)->>Seller Platform (BPP): status
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK 
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK         
+    reference: if any
+    steps:
+      - summary: Provider confirms the request
+        api: on_confirm
+        details:
+          - description: >-
+              The provider has confirmed the request, but the buyer app received
+              the request after the TTL had expired.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): NACK 
+                end
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
+        reference: if any
+        example:
+          value: *ref_19
+      - summary: Buyer app request for latest order status
+        api: status
+        details:
+          - description: Buyer app request for latest order status
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): NACK 
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+        reference: if any
+        example:
+          value: *ref_22
+      - summary: Provider sends the latest order status
+        api: on_status
+        details:
+          - description: Provider sends the latest order status
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+                Buyer Platform (BAP)-->>Seller Platform (BPP): NACK 
+                Buyer Platform (BAP)->>Seller Platform (BPP): status
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                 rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_status
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
+                end
+        reference: if any
+        example:
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV12
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: example-bap.com
+              bap_uri: https://api.example-bap.com/beckn
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: on_status
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                status: ACTIVE
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Seater Ticket
+                      code: SEAT
+                    price:
+                      currency: INR
+                      value: '800'
+                    quantity:
+                      selected:
+                        count: 2
+                    fulfillment_ids:
+                      - F1
+                      - FT1
+                      - FT2
+                    category_ids:
+                      - C1
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator 1 Bus Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    state:
+                      descriptor:
+                        code: CONFIRMED
+                    stops:
+                      - id: S2
+                        type: PICKUP
+                        location:
+                          descriptor:
+                            name: Agara
+                            code: std:080-pincode:560034
+                          gps: 12.924479, 77.648999
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T06:30:00.000Z'
+                        authorization:
+                          type: PNR
+                          token: RB3F9K7H
+                          status: UNCLAIMED
+                      - id: S5
+                        type: DROP
+                        location:
+                          descriptor:
+                            name: Ameerpet
+                            code: std:040-pincode:500016
+                          gps: 17.441586, 78.441581
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T15:10:00.000Z'
+                    vehicle:
+                      category: BUS
+                      variant: AC
+                      capacity: 47
+                      wheels_count: '6'
+                      energy_type: DIESEL
+                  - id: FT1
+                    type: TICKET
+                    state:
+                      descriptor:
+                        code: CONFIRMED
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: X_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: Y_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: NUMBER
+                            value: A1
+                          - descriptor:
+                              code: RESTRICTED_GENDER
+                            value: FEMALE
+                          - descriptor:
+                              code: SINGLE_SEAT
+                            value: 'TRUE'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '50'
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A1
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I1
+                  - id: FT2
+                    type: TICKET
+                    state:
+                      descriptor:
+                        code: CONFIRMED
+                    customer:
+                      person:
+                        name: RACHEL ADAMS
+                        age: '27'
+                        gender: FEMALE
+                      contact:
+                        phone: +91-9723797890
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '1'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '1'
+                          - descriptor:
+                              code: X_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: Y_SIZE
+                            value: '2'
+                          - descriptor:
+                              code: NUMBER
+                            value: F1
+                          - descriptor:
+                              code: RESTRICTED_GENDER
+                            value: MALE
+                          - descriptor:
+                              code: SINGLE_SEAT
+                            value: 'TRUE'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '50'
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: F1
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I1
+                cancellation_terms:
+                  - external_ref:
+                      mimetype: text/html
+                      url: https://api.unreserved-entry-pass.com/beckn/tnc.html
+                    cancellation_eligible: true
+                  - cancellation_fee:
+                      percentage: '10'
+                    fulfillment_state:
+                      descriptor:
+                        code: CONFIRMED
+                    cancel_by:
+                      label: DURATION
+                      duration: PT1H30M
+                    cancellation_eligible: true
+                quote:
+                  price:
+                    value: '1783'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      price:
+                        currency: INR
+                        value: '1600'
+                      item:
+                        id: I1
+                        price:
+                          currency: INR
+                          value: '800'
+                        quantity:
+                          selected:
+                            count: 2
+                    - title: TAX
+                      price:
+                        currency: INR
+                        value: '64'
+                      item:
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  code: CGST
+                                value: 2%
+                              - descriptor:
+                                  code: SGST
+                                value: 2%
+                              - descriptor:
+                                  code: SERVICE_TAX
+                                value: 2%
+                    - title: CONVENIENCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                    - title: SEAT_FARE
+                      price:
+                        value: '50'
+                        currency: INR
+                      item:
+                        id: I1
+                        fulfillment_ids:
+                          - FT1
+                    - title: SEAT_FARE
+                      price:
+                        value: '50'
+                        currency: INR
+                      item:
+                        id: I1
+                        fulfillment_ids:
+                          - FT2
+                    - title: SELLER_FEES
+                      price:
+                        currency: INR
+                        value: '0'
+                      item:
+                        tags:
+                          - descriptor:
+                              code: SELLER_FEES
+                            list:
+                              - descriptor:
+                                  name: TotReservationFare
+                                value: '0'
+                              - descriptor:
+                                  name: TotSRTFee
+                                value: '0'
+                              - descriptor:
+                                  name: TotTollFee
+                                value: '0'
+                              - descriptor:
+                                  name: concessionAmount
+                                value: '0'
+                              - descriptor:
+                                  name: roundOfFee
+                                value: '0'
+                  ttl: PT10M
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                      currency: INR
+                      amount: '1783'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT60M
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: Delivery
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '2.5'
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://www.abc.com/settlement-terms/
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '1766'
+                created_at: '2023-09-03T01:55:08.143Z'
+                updated_at: '2023-09-03T01:55:08.143Z'
+      - summary: Buyer app cancels the request for ride(Optional)
+        api: cancel
+        details:
+          - description: Buyer app requests for cancellation of ride.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV12
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: example-bap.com
+              bap_uri: https://api.example-bap.com/beckn
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: cancel
+              ttl: PT30S
+            message:
+              order_id: O1
+              cancellation_reason_id: '000'
+              descriptor:
+                name: Ride Cancellation
+                code: SOFT_CANCEL
+      - summary: Provider accepts/appends the terms of cancellation(Optional)
+        api: on_cancel
+        details:
+          - description: >-
+              Provider accepts the terms of order and appends its own terms and
+              provides with latest order update.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with soft_cancel request
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end
+        reference: if any
+        example:
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV12
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: example-bap.com
+              bap_uri: https://api.example-bap.com/beckn
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: on_cancel
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                status: SOFT_CANCEL
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Seater Ticket
+                      code: SEAT
+                    price:
+                      currency: INR
+                      value: '800'
+                    quantity:
+                      selected:
+                        count: 2
+                    fulfillment_ids:
+                      - F1
+                      - FT1
+                      - FT2
+                    category_ids:
+                      - C1
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator 1 Bus Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    state:
+                      descriptor:
+                        code: CONFIRMED
+                    stops:
+                      - id: S2
+                        type: PICKUP
+                        location:
+                          descriptor:
+                            name: Agara
+                            code: std:080-pincode:560034
+                          gps: 12.924479, 77.648999
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T06:30:00.000Z'
+                        authorization:
+                          type: PNR
+                          token: RB3F9K7H
+                          status: UNCLAIMED
+                      - id: S5
+                        type: DROP
+                        location:
+                          descriptor:
+                            name: Ameerpet
+                            code: std:040-pincode:500016
+                          gps: 17.441586, 78.441581
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T15:10:00.000Z'
+                    vehicle:
+                      category: BUS
+                      variant: AC
+                      capacity: 47
+                      wheels_count: '6'
+                      energy_type: DIESEL
+                  - id: FT1
+                    type: TICKET
+                    state:
+                      descriptor:
+                        code: CONFIRMED
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: X_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: Y_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: NUMBER
+                            value: A1
+                          - descriptor:
+                              code: RESTRICTED_GENDER
+                            value: FEMALE
+                          - descriptor:
+                              code: SINGLE_SEAT
+                            value: 'TRUE'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '50'
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A1
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I1
+                  - id: FT2
+                    type: TICKET
+                    state:
+                      descriptor:
+                        code: CONFIRMED
+                    customer:
+                      person:
+                        name: RACHEL ADAMS
+                        age: '27'
+                        gender: FEMALE
+                      contact:
+                        phone: +91-9723797890
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '1'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '1'
+                          - descriptor:
+                              code: X_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: Y_SIZE
+                            value: '2'
+                          - descriptor:
+                              code: NUMBER
+                            value: F1
+                          - descriptor:
+                              code: RESTRICTED_GENDER
+                            value: MALE
+                          - descriptor:
+                              code: SINGLE_SEAT
+                            value: 'TRUE'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '50'
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: F1
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I1
+                cancellation_terms:
+                  - external_ref:
+                      mimetype: text/html
+                      url: https://api.unreserved-entry-pass.com/beckn/tnc.html
+                    cancellation_eligible: true
+                  - cancellation_fee:
+                      percentage: '10'
+                    fulfillment_state:
+                      descriptor:
+                        code: CONFIRMED
+                    cancel_by:
+                      label: DURATION
+                      duration: PT1H30M
+                    cancellation_eligible: true
+                cancellation:
+                  cancelled_by: CONSUMER
+                  reason:
+                    descriptor:
+                      code: '000'
+                quote:
+                  price:
+                    value: '10'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      price:
+                        currency: INR
+                        value: '1600'
+                      item:
+                        id: I1
+                        price:
+                          currency: INR
+                          value: '800'
+                        quantity:
+                          selected:
+                            count: 2
+                    - title: TAX
+                      price:
+                        currency: INR
+                        value: '64'
+                      item:
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  code: CGST
+                                value: 2%
+                              - descriptor:
+                                  code: SGST
+                                value: 2%
+                              - descriptor:
+                                  code: SERVICE_TAX
+                                value: 2%
+                    - title: CONVENIENCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                    - title: SEAT_FARE
+                      price:
+                        value: '50'
+                        currency: INR
+                      item:
+                        id: I1
+                        fulfillment_ids:
+                          - FT1
+                    - title: SEAT_FARE
+                      price:
+                        value: '50'
+                        currency: INR
+                      item:
+                        id: I1
+                        fulfillment_ids:
+                          - FT2
+                    - title: SELLER_FEES
+                      price:
+                        currency: INR
+                        value: '0'
+                      item:
+                        tags:
+                          - descriptor:
+                              code: SELLER_FEES
+                            list:
+                              - descriptor:
+                                  name: TotReservationFare
+                                value: '0'
+                              - descriptor:
+                                  name: TotSRTFee
+                                value: '0'
+                              - descriptor:
+                                  name: TotTollFee
+                                value: '0'
+                              - descriptor:
+                                  name: concessionAmount
+                                value: '0'
+                              - descriptor:
+                                  name: roundOfFee
+                                value: '0'
+                    - title: CANCELLATION_CHARGES
+                      price:
+                        value: '10'
+                        currency: INR
+                    - title: REFUND
+                      price:
+                        value: '-1773'
+                        currency: INR
+                  ttl: PT10M
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                      currency: INR
+                      amount: '1783'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT60M
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: Delivery
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '2.5'
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://www.abc.com/settlement-terms/
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '1766'
+                created_at: '2023-09-03T01:55:08.143Z'
+                updated_at: '2023-09-03T01:55:08.143Z'
+      - summary: Buyer app confirms the cancel request for ride
+        api: cancel
+        details:
+          - description: Buyer app give the confirmation to cancel the ride.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                end
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+        reference: if any
+        example:
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV12
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: example-bap.com
+              bap_uri: https://api.example-bap.com/beckn
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 12c7e344-dd70-4107-acf8-bc1e7be747ba
+              version: 2.0.0
+              action: cancel
+              ttl: PT30S
+            message:
+              order_id: O1
+              cancellation_reason_id: '000'
+              descriptor:
+                name: Ride Cancellation
+                code: CONFIRM_CANCEL
+      - summary: Provider accepts the terms of cancellation
+        api: on_cancel
+        details:
+          - description: >-
+              Provider accepts the terms of order and provides with latest order
+              update.
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): cancel - with confirm_cancel request
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                rect rgb(191, 223, 255)
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_cancel
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                end 
+        reference: if any
+        example:
+          value:
+            context:
+              location:
+                country:
+                  code: IND
+                city:
+                  code: std:011
+              domain: ONDC:TRV12
+              timestamp: '2023-09-03T01:55:08.143Z'
+              bap_id: example-bap.com
+              bap_uri: https://api.example-bap.com/beckn
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
+              transaction_id: 6743e9e2-4fb5-487c-92b7-13ba8018f176
+              message_id: 537c8bc0-bec5-473c-977c-0843df158d26
+              version: 2.0.0
+              action: on_cancel
+              ttl: PT30S
+            message:
+              order:
+                id: O1
+                status: CANCELLED
+                items:
+                  - id: I1
+                    descriptor:
+                      name: Seater Ticket
+                      code: SEAT
+                    price:
+                      currency: INR
+                      value: '800'
+                    quantity:
+                      selected:
+                        count: 2
+                    fulfillment_ids:
+                      - F1
+                      - FT1
+                      - FT2
+                    category_ids:
+                      - C1
+                provider:
+                  id: P1
+                  descriptor:
+                    name: ABC Operator 1 Bus Services
+                    images:
+                      - url: https://operator1.com/logos/logo.ico
+                fulfillments:
+                  - id: F1
+                    type: TRIP
+                    state:
+                      descriptor:
+                        code: CONFIRMED
+                    stops:
+                      - id: S2
+                        type: PICKUP
+                        location:
+                          descriptor:
+                            name: Agara
+                            code: std:080-pincode:560034
+                          gps: 12.924479, 77.648999
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T06:30:00.000Z'
+                        authorization:
+                          type: PNR
+                          token: RB3F9K7H
+                          status: UNCLAIMED
+                      - id: S5
+                        type: DROP
+                        location:
+                          descriptor:
+                            name: Ameerpet
+                            code: std:040-pincode:500016
+                          gps: 17.441586, 78.441581
+                        time:
+                          label: DATE_TIME
+                          timestamp: '2023-09-06T15:10:00.000Z'
+                    vehicle:
+                      category: BUS
+                      variant: AC
+                      capacity: 47
+                      wheels_count: '6'
+                      energy_type: DIESEL
+                  - id: FT1
+                    type: TICKET
+                    state:
+                      descriptor:
+                        code: CONFIRMED
+                    customer:
+                      person:
+                        name: Joe Adams
+                        age: '30'
+                        gender: MALE
+                      contact:
+                        phone: +91-9988776655
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '0'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '0'
+                          - descriptor:
+                              code: X_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: Y_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: NUMBER
+                            value: A1
+                          - descriptor:
+                              code: RESTRICTED_GENDER
+                            value: FEMALE
+                          - descriptor:
+                              code: SINGLE_SEAT
+                            value: 'TRUE'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '50'
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: A1
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I1
+                  - id: FT2
+                    type: TICKET
+                    state:
+                      descriptor:
+                        code: CONFIRMED
+                    customer:
+                      person:
+                        name: RACHEL ADAMS
+                        age: '27'
+                        gender: FEMALE
+                      contact:
+                        phone: +91-9723797890
+                    tags:
+                      - descriptor:
+                          code: SEAT_GRID
+                        list:
+                          - descriptor:
+                              code: X
+                            value: '1'
+                          - descriptor:
+                              code: 'Y'
+                            value: '0'
+                          - descriptor:
+                              code: Z
+                            value: '1'
+                          - descriptor:
+                              code: X_SIZE
+                            value: '1'
+                          - descriptor:
+                              code: Y_SIZE
+                            value: '2'
+                          - descriptor:
+                              code: NUMBER
+                            value: F1
+                          - descriptor:
+                              code: RESTRICTED_GENDER
+                            value: MALE
+                          - descriptor:
+                              code: SINGLE_SEAT
+                            value: 'TRUE'
+                          - descriptor:
+                              code: SEAT_PRICE
+                            value: '50'
+                          - descriptor:
+                              code: SELECTED
+                            value: 'true'
+                          - descriptor:
+                              code: SELECTED_SEAT
+                            value: F1
+                          - descriptor:
+                              code: ITEM_ID
+                            value: I1
+                cancellation_terms:
+                  - external_ref:
+                      mimetype: text/html
+                      url: https://api.unreserved-entry-pass.com/beckn/tnc.html
+                    cancellation_eligible: true
+                  - cancellation_fee:
+                      percentage: '10'
+                    fulfillment_state:
+                      descriptor:
+                        code: CONFIRMED
+                    cancel_by:
+                      label: DURATION
+                      duration: PT1H30M
+                    cancellation_eligible: true
+                cancellation:
+                  cancelled_by: CONSUMER
+                  reason:
+                    descriptor:
+                      code: '000'
+                quote:
+                  price:
+                    value: '10'
+                    currency: INR
+                  breakup:
+                    - title: BASE_FARE
+                      price:
+                        currency: INR
+                        value: '1600'
+                      item:
+                        id: I1
+                        price:
+                          currency: INR
+                          value: '800'
+                        quantity:
+                          selected:
+                            count: 2
+                    - title: TAX
+                      price:
+                        currency: INR
+                        value: '64'
+                      item:
+                        tags:
+                          - descriptor:
+                              code: TAX
+                            list:
+                              - descriptor:
+                                  code: CGST
+                                value: 2%
+                              - descriptor:
+                                  code: SGST
+                                value: 2%
+                              - descriptor:
+                                  code: SERVICE_TAX
+                                value: 2%
+                    - title: CONVENIENCE_FEE
+                      price:
+                        currency: INR
+                        value: '19'
+                    - title: SEAT_FARE
+                      price:
+                        value: '50'
+                        currency: INR
+                      item:
+                        id: I1
+                        fulfillment_ids:
+                          - FT1
+                    - title: SEAT_FARE
+                      price:
+                        value: '50'
+                        currency: INR
+                      item:
+                        id: I1
+                        fulfillment_ids:
+                          - FT2
+                    - title: SELLER_FEES
+                      price:
+                        currency: INR
+                        value: '0'
+                      item:
+                        tags:
+                          - descriptor:
+                              code: SELLER_FEES
+                            list:
+                              - descriptor:
+                                  name: TotReservationFare
+                                value: '0'
+                              - descriptor:
+                                  name: TotSRTFee
+                                value: '0'
+                              - descriptor:
+                                  name: TotTollFee
+                                value: '0'
+                              - descriptor:
+                                  name: concessionAmount
+                                value: '0'
+                              - descriptor:
+                                  name: roundOfFee
+                                value: '0'
+                    - title: CANCELLATION_CHARGES
+                      price:
+                        value: '10'
+                        currency: INR
+                    - title: REFUND
+                      price:
+                        value: '-1773'
+                        currency: INR
+                  ttl: PT10M
+                payments:
+                  - id: PA1
+                    collected_by: BAP
+                    status: PAID
+                    type: PRE-ORDER
+                    params:
+                      transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
+                      currency: INR
+                      amount: '1783'
+                      bank_code: XXXXXXXX
+                      bank_account_number: xxxxxxxxxxxxxx
+                      virtual_payment_address: 9988199772@okicic
+                    tags:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES
+                        display: false
+                        list:
+                          - descriptor:
+                              code: BUYER_FINDER_FEES_PERCENTAGE
+                            value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_TERMS
+                        display: false
+                        list:
+                          - descriptor:
+                              code: SETTLEMENT_WINDOW
+                            value: PT60M
+                          - descriptor:
+                              code: SETTLEMENT_BASIS
+                            value: Delivery
+                          - descriptor:
+                              code: SETTLEMENT_TYPE
+                            value: UPI
+                          - descriptor:
+                              code: MANDATORY_ARBITRATION
+                            value: 'true'
+                          - descriptor:
+                              code: COURT_JURISDICTION
+                            value: New Delhi
+                          - descriptor:
+                              code: DELAY_INTEREST
+                            value: '2.5'
+                          - descriptor:
+                              code: STATIC_TERMS
+                            value: https://www.abc.com/settlement-terms/
+                          - descriptor:
+                              code: SETTLEMENT_AMOUNT
+                            value: '1766'
+                created_at: '2023-09-03T01:55:08.143Z'
+                updated_at: '2023-09-03T01:55:08.143Z'
   - summary: InterCity(Bus) - Rating(Success)
     details:
       - description: Detailed process of rating.
@@ -9155,7 +10375,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: *ref_22
+          value: *ref_23
       - summary: Buyer app provides rating for an entity
         api: rating
         details:
@@ -9261,7 +10481,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: *ref_22
+          value: *ref_23
       - summary: Buyer app provides rating for an entity
         api: rating
         details:
@@ -9353,9 +10573,9 @@ x-examples:
       search:
         examples:
           - summary: Search_for_all_services_form_the_given_start_location(code)
-            value: *ref_23
-          - summary: Search_for_all_services_from_given_start_and_end_location(code)
             value: *ref_24
+          - summary: Search_for_all_services_from_given_start_and_end_location(code)
+            value: *ref_25
           - summary: Search_for_all_services_from_given_start_and_end_location(gps)
             value:
               context:
@@ -9459,13 +10679,13 @@ x-examples:
                               code: STATIC_TERMS
                             value: https://api.example-bap.com/booking/terms
           - summary: Search_for_all_services_from_given_start_and_end_location(code)_5
-            value: *ref_25
+            value: *ref_26
       select:
         examples:
           - summary: Get_Quote_of_a_selected_seat
-            value: *ref_26
-          - summary: Get_Quote_of_a_selected_seat_2
             value: *ref_27
+          - summary: Get_Quote_of_a_selected_seat_2
+            value: *ref_28
       init:
         examples:
           - summary: Initialize_the_order_by_providing_billing_details
@@ -9667,17 +10887,17 @@ x-examples:
                                 code: SETTLEMENT_AMOUNT
                               value: '940'
           - summary: Confirm_ticket_booking_2
-            value: *ref_28
+            value: *ref_29
       cancel:
         examples:
           - summary: Cancel_a_transit_ticket_booking_before_the_cancellation_period
-            value: *ref_29
-          - summary: Cancel_a_transit_ticket_booking_before_the_cancellation_period_2
             value: *ref_30
+          - summary: Cancel_a_transit_ticket_booking_before_the_cancellation_period_2
+            value: *ref_31
       status:
         examples:
           - summary: Get_latest_status_of_a_transit_ticket_booking
-            value: *ref_31
+            value: *ref_22
       update:
         examples:
           - summary: Update_customer_details
