@@ -3494,7 +3494,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for intra city bus service, with city and type of vehicle
-          value: &ref_48
+          value: &ref_46
             context:
               location:
                 country:
@@ -3812,7 +3812,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a public transit catalog of all routes in serverd
-          value: &ref_41
+          value: &ref_38
             context:
               location:
                 country:
@@ -4211,7 +4211,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a public transit catalog of all routes in serverd
-          value: &ref_42
+          value: &ref_39
             context:
               location:
                 country:
@@ -4610,7 +4610,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a public transit catalog of all routes in serverd
-          value: &ref_43
+          value: &ref_40
             context:
               location:
                 country:
@@ -5001,12 +5001,12 @@ x-flows:
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://api.example-bpp.com/booking/terms
-  - summary: IntraCity - GPS Based Flow
+  - summary: IntraCity - Purchase Journey Flow(Code Based)
     details:
       - description: >-
-          The illustrative flow to perform a transaction of the nature where a
-          buyer would like to book a intracity bus service from location
-          A(gps-cordinates) to localtion B(gps-cordinates)
+          The illustraive flow to perform a transaction of the nature where in a
+          buyer would like to book a bus service(intracity) form location
+          A(code) to localtion B(code)
         mermaid: |-
           sequenceDiagram
             title Intra-city Discovery
@@ -5058,31 +5058,27 @@ x-flows:
             Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
             Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
             Buyer Platform (BAP)-->>Seller Platform (BPP): ACK      
+        reference: if any
     steps:
-      - summary: Search for the intracity bus from point A(gps) to point B(gps)
+      - summary: Search for the intracity bus from point A to point B
         api: search
         details:
           - description: >-
               Users searches over the network to avail the intracity bus mode of
-              transport from point A(gps) to point B(gps)
+              transport from point A(code) to point B(code)
             mermaid: |-
               sequenceDiagram
                 rect rgb(191, 223, 255)
-                Buyer Platform (BAP)->>Gateway (BG): search
-                Gateway (BG) ->> Buyer Platform (BAP): ACK
-                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
-                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
-                Gateway (BG)->>Seller Platform (BPP): search
-                Seller Platform (BPP)->>Gateway (BG) : ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): search
+                Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
                 end
-                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
-                Buyer Platform (BAP)->>Seller Platform (BPP): ACK  
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_search
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+                
         reference: if any
         example:
-          summary: >-
-            Search for intra city bus service mode of transit from a specific
-            position
-          value: &ref_50
+          summary: Search for intra city bus service, with city and type of vehicle
+          value: &ref_47
             context:
               location:
                 country:
@@ -5097,6 +5093,8 @@ x-flows:
               version: 2.1.0
               action: search
               bap_uri: https://api.example-bap.com/beckn/
+              bpp_id: api.transit-solutions.com
+              bpp_uri: https://api.transit-solutions.com/beckn/
               ttl: PT30S
             message:
               intent:
@@ -5104,10 +5102,12 @@ x-flows:
                   stops:
                     - type: START
                       location:
-                        gps: 28.666576, 77.233332
+                        descriptor:
+                          code: KASHMERE_GATE
                     - type: END
                       location:
-                        gps: 28.548230, 77.238039
+                        descriptor:
+                          code: GREATER_KAILASH
                   vehicle:
                     category: BUS
                 payment:
@@ -5128,30 +5128,26 @@ x-flows:
                           code: DELAY_INTEREST
                         value: '2.5'
       - summary: >-
-          Return a bus catalog of all intracity bus services from point A(gps)
-          to point B(gps)
+          Return a bus catalog of all intracity bus services from point A(code)
+          to point B(code)
         api: on_search
         details:
           - description: >-
               Provider platform sends the catalog of all the service that can be
-              used for transit using bus service from point A(gps) to point
-              B(gps)
+              used for transit using bus service from point A(code) to point
+              B(code)
             mermaid: |-
               sequenceDiagram
-                Buyer Platform (BAP)->>Gateway (BG): search
-                Gateway (BG) ->> Buyer Platform (BAP): ACK
-                Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
-                Registry->>Gateway (BG): List of Seller Platforms (200 OK)
-                Gateway (BG)->>Seller Platform (BPP): search
-                Seller Platform (BPP)->>Gateway (BG) : ACK
+                Buyer Platform (BAP)->>Seller Platform (BPP): search
+                Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
                 rect rgb(191, 223, 255)
-                Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
-                Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
-                end 
+                Seller Platform (BPP)->>Buyer Platform (BAP): on_search
+                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+                end
         reference: if any
         example:
           summary: Return a public transit catalog of fare products
-          value: &ref_18
+          value: &ref_41
             context:
               location:
                 country:
@@ -5534,7 +5530,7 @@ x-flows:
           summary: >-
             Get a quote for a fare product selected from a intra city bus
             service catalog
-          value: &ref_19
+          value: &ref_48
             context:
               location:
                 country:
@@ -5585,7 +5581,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a public transit service provider
-          value: &ref_20
+          value: &ref_42
             context:
               location:
                 country:
@@ -5810,7 +5806,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: &ref_21
+          value: &ref_30
             context:
               location:
                 country:
@@ -5894,13 +5890,13 @@ x-flows:
                 rect rgb(191, 223, 255)
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_init
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-                end    
+                end 
         reference: if any
         example:
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
-          value: &ref_22
+          value: &ref_36
             context:
               location:
                 country:
@@ -6177,7 +6173,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_23
+          value: &ref_22
             context:
               location:
                 country:
@@ -6318,7 +6314,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_24
+          value: &ref_20
             context:
               location:
                 country:
@@ -6638,644 +6634,6 @@ x-flows:
                         value: https://api.transit-solutions/gtfs-realtime
                 created_at: '2021-03-23T10:00:40.065Z'
                 updated_at: '2021-03-23T10:00:40.065Z'
-      - summary: Consumer platform requests for latest status
-        api: status
-        details:
-          - description: >-
-              Consumer platform request the provider platform to provide with
-              latest order status.
-            mermaid: |-
-              sequenceDiagram
-                title Order Fulfillment
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                rect rgb(191, 223, 255)
-                Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                end
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
-        reference: if any
-        example:
-          summary: Get latest status of a transit ticket booking
-          value: &ref_52
-            context:
-              location:
-                country:
-                  code: IND
-                city:
-                  code: std:011
-              domain: ONDC:TRV11
-              action: status
-              version: 2.1.0
-              bap_id: api.example-bap.com
-              bap_uri: https://api.example-bap.com/beckn/
-              bpp_id: api.transit-solutions.com
-              bpp_uri: https://api.transit-solutions.com/beckn/
-              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
-              message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
-              timestamp: '2021-03-23T10:00:40.065Z'
-              ttl: PT30S
-            message:
-              order_id: O1
-      - summary: Provider platform provides latest order status
-        api: on_status
-        details:
-          - description: >-
-              Provider platform provides the updated order status to the
-              consumer.
-            mermaid: |-
-              sequenceDiagram
-                title Order Fulfillment
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                rect rgb(191, 223, 255)
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-                end 
-        reference: if any
-        example:
-          summary: Provider platform provides latest order status
-          value: &ref_45
-            context:
-              location:
-                country:
-                  code: IND
-                city:
-                  code: std:011
-              domain: ONDC:TRV11
-              action: on_status
-              version: 2.1.0
-              bap_id: api.example-bap.com
-              bap_uri: https://api.example-bap.com/beckn/
-              bpp_id: api.transit-solutions.com
-              bpp_uri: https://api.transit-solutions.com/beckn/
-              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
-              message_id: 33145cb7-88f8-4f41-9784-b1a760c7a4eb
-              timestamp: '2021-03-23T10:00:40.065Z'
-              ttl: PT30S
-            message:
-              order:
-                id: O1
-                status: COMPLETED
-                items:
-                  - id: I1
-                    descriptor:
-                      name: Single Journey Ticket
-                      code: SJT
-                      images:
-                        - url: >-
-                            https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
-                          size_type: xs
-                    fulfillment_ids:
-                      - F1
-                      - F5
-                      - F6
-                    price:
-                      currency: INR
-                      value: '35'
-                    quantity:
-                      selected:
-                        count: 2
-                    time:
-                      label: Validity
-                      duration: PT2D
-                      timestamp: '2021-03-23T11:01:40.065Z'
-                provider:
-                  id: P1
-                  descriptor:
-                    name: Delhi Transport Corporation
-                    images:
-                      - url: >-
-                          https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
-                        size_type: xs
-                fulfillments:
-                  - id: F1
-                    type: TRIP
-                    stops:
-                      - type: START
-                        location:
-                          descriptor:
-                            name: kashmere gate
-                            code: KASHMERE_GATE
-                          gps: 28.666576, 77.233332
-                        id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 1
-                        location:
-                          descriptor:
-                            name: Indira Gandhi Technical Unviversity
-                            code: INDIRA_GANDHI_TECHNICAL_UNIV
-                          gps: 28.624097, 77.204991
-                        id: '2'
-                        parent_stop_id: '1'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 2
-                        location:
-                          descriptor:
-                            name: Yamuna Bazar
-                            code: YAMUNA_BAZAR
-                          gps: 28.625972,77.209917
-                        id: '3'
-                        parent_stop_id: '2'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 3
-                        location:
-                          descriptor:
-                            name: dhaula kuan
-                            code: DHAULA_KUAN
-                          gps: 28.610972,77.201717
-                        id: '4'
-                        parent_stop_id: '3'
-                      - type: INTERMEDIATE_STOP
-                        instructions:
-                          name: Stop 4
-                        location:
-                          descriptor:
-                            name: gpo
-                            code: GPO
-                          gps: 28.623097,77.209917
-                        id: '5'
-                        parent_stop_id: '4'
-                      - type: END
-                        location:
-                          descriptor:
-                            name: Greater Kailash
-                            code: GREATER_KAILASH
-                          gps: 28.548230, 77.238039
-                        id: '6'
-                        parent_stop_id: '5'
-                    vehicle:
-                      category: BUS
-                    tags:
-                      - descriptor:
-                          code: ROUTE_INFO
-                        list:
-                          - descriptor:
-                              code: ROUTE_ID
-                            value: '242'
-                          - descriptor:
-                              code: ROUTE_DIRECTION
-                            value: UP
-                  - id: F5
-                    type: TICKET
-                    tags:
-                      - descriptor:
-                          code: INFO
-                        list:
-                          - descriptor:
-                              code: PARENT_ID
-                            value: F1
-                      - descriptor:
-                          code: TICKET_INFO
-                        list:
-                          - descriptor:
-                              code: NUMBER
-                            value: 7ed21b6f
-                  - id: F6
-                    type: TICKET
-                    tags:
-                      - descriptor:
-                          code: INFO
-                        list:
-                          - descriptor:
-                              code: PARENT_ID
-                            value: F1
-                      - descriptor:
-                          code: TICKET_INFO
-                        list:
-                          - descriptor:
-                              code: NUMBER
-                            value: 5xd31b8f
-                cancellation_terms:
-                  - cancel_by:
-                      duration: PT60M
-                    cancellation_fee:
-                      percentage: '0'
-                billing:
-                  name: John Doe
-                  email: john_doe@example.com
-                  phone: +91-9897867564
-                quote:
-                  price:
-                    value: '70'
-                    currency: INR
-                  breakup:
-                    - title: BASE_FARE
-                      item:
-                        id: I1
-                        price:
-                          currency: INR
-                          value: '35'
-                        quantity:
-                          selected:
-                            count: 2
-                      price:
-                        currency: INR
-                        value: '70'
-                    - title: OFFER
-                      price:
-                        currency: INR
-                        value: '0'
-                    - title: TOLL
-                      price:
-                        currency: INR
-                        value: '0'
-                    - title: TAX
-                      price:
-                        currency: INR
-                        value: '0'
-                      item:
-                        tags:
-                          - descriptor:
-                              code: TAX
-                            list:
-                              - descriptor:
-                                  code: CGST
-                                value: '0'
-                              - descriptor:
-                                  code: SGST
-                                value: '0'
-                    - title: OTHER_CHARGES
-                      price:
-                        currency: INR
-                        value: '0'
-                      item:
-                        tags:
-                          - descriptor:
-                              code: OTHER_CHARGES
-                            list:
-                              - descriptor:
-                                  code: SURCHARGE
-                                value: '0'
-                payments:
-                  - id: PA1
-                    collected_by: BAP
-                    status: PAID
-                    type: PRE-ORDER
-                    params:
-                      transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
-                      currency: INR
-                      amount: '70'
-                tags:
-                  - descriptor:
-                      code: BAP_TERMS
-                      name: BAP Terms of Engagemen
-                    display: false
-                    list:
-                      - descriptor:
-                          code: BUYER_FINDER_FEES_PERCENTAGE
-                        value: '1'
-                      - descriptor:
-                          code: SETTLEMENT_WINDOW
-                        value: PT60M
-                      - descriptor:
-                          code: SETTLEMENT_BASIS
-                        value: Delivery
-                      - descriptor:
-                          code: SETTLEMENT_TYPE
-                        value: upi
-                      - descriptor:
-                          code: MANDATORY_ARBITRATION
-                        value: 'true'
-                      - descriptor:
-                          code: COURT_JURISDICTION
-                        value: New Delhi
-                      - descriptor:
-                          code: DELAY_INTEREST
-                        value: '2.5'
-                      - descriptor:
-                          code: STATIC_TERMS
-                        value: https://www.abc.com/settlement-terms/
-                      - descriptor:
-                          code: SETTLEMENT_AMOUNT
-                        value: '12505'
-                  - descriptor:
-                      code: BPP_TERMS
-                      name: BPP Terms of Engagement
-                    display: false
-                    list:
-                      - descriptor:
-                          code: BUYER_FINDER_FEES_PERCENTAGE
-                        value: '1'
-                      - descriptor:
-                          code: SETTLEMENT_WINDOW
-                        value: PT60M
-                      - descriptor:
-                          code: SETTLEMENT_BASIS
-                        value: Delivery
-                      - descriptor:
-                          code: SETTLEMENT_TYPE
-                        value: upi
-                      - descriptor:
-                          code: MANDATORY_ARBITRATION
-                        value: 'true'
-                      - descriptor:
-                          code: COURT_JURISDICTION
-                        value: New Delhi
-                      - descriptor:
-                          code: DELAY_INTEREST
-                        value: '2.5'
-                      - descriptor:
-                          code: STATIC_TERMS
-                        value: https://www.abc.com/settlement-terms/
-                      - descriptor:
-                          code: SETTLEMENT_AMOUNT
-                        value: '12505'
-                      - descriptor:
-                          code: SETTLEMENT_BANK_CODE
-                        value: XXXXXXXX
-                      - descriptor:
-                          code: SETTLEMENT_BANK_ACCOUNT_NUMBER
-                        value: xxxxxxxxxxxxxx
-                  - descriptor:
-                      code: ADDITIONAL_APIS
-                    display: false
-                    list:
-                      - descriptor:
-                          code: GTFS_RT
-                        value: https://api.transit-solutions/gtfs-realtime
-                created_at: '2021-03-23T10:00:40.065Z'
-                updated_at: '2021-03-23T10:00:40.065Z'
-  - summary: IntraCity - Purchase Journey Flow(Code Based)
-    details:
-      - description: >-
-          The illustraive flow to perform a transaction of the nature where in a
-          buyer would like to book a bus service(intracity) form location
-          A(code) to localtion B(code)
-        mermaid: |-
-          sequenceDiagram
-            title Intra-city Discovery
-            Buyer Platform (BAP)->>Gateway (BG): search
-            Gateway (BG) ->> Buyer Platform (BAP): ACK
-            Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
-            Registry->>Gateway (BG): List of Seller Platforms (200 OK)
-            Gateway (BG)->>Seller Platform (BPP): search
-            Seller Platform (BPP)->>Gateway (BG) : ACK
-            Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
-            Buyer Platform (BAP)->>Seller Platform (BPP): ACK 
-      - description: Ordering
-        mermaid: |-
-          sequenceDiagram
-            title Selection
-            participant Buyer Platform (BAP)
-            participant Seller Platform (BPP)
-            Buyer Platform (BAP)->>Seller Platform (BPP): select
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            Seller Platform (BPP)->>Buyer Platform (BAP):on_select
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-      - description: Initializing the order
-        mermaid: |-
-          sequenceDiagram
-            title Initializing Order
-            participant Buyer Platform (BAP)
-            participant Seller Platform (BPP)
-            Buyer Platform (BAP)->>Seller Platform (BPP): init
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            Seller Platform (BPP)->>Buyer Platform (BAP):on_init
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
-      - description: Order Confirmation
-        mermaid: |-
-          sequenceDiagram
-            title  Order Confirmation
-            participant Buyer Platform (BAP)
-            participant Seller Platform (BPP)
-            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
-      - description: Fulfillment
-        mermaid: |-
-          sequenceDiagram
-            title Order Fulfillment
-            participant Buyer Platform (BAP)
-            participant Seller Platform (BPP)
-            Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
-            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-            Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
-            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK      
-        reference: if any
-    steps:
-      - summary: Search for the intracity bus from point A to point B
-        api: search
-        details:
-          - description: >-
-              Users searches over the network to avail the intracity bus mode of
-              transport from point A(code) to point B(code)
-            mermaid: |-
-              sequenceDiagram
-                rect rgb(191, 223, 255)
-                Buyer Platform (BAP)->>Seller Platform (BPP): search
-                Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
-                end
-                Seller Platform (BPP)->>Buyer Platform (BAP): on_search
-                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
-                
-        reference: if any
-        example:
-          summary: Search for intra city bus service, with city and type of vehicle
-          value: &ref_49
-            context:
-              location:
-                country:
-                  code: IND
-                city:
-                  code: std:011
-              domain: ONDC:TRV11
-              timestamp: '2023-03-23T04:41:16.000Z'
-              bap_id: api.example-bap.com
-              transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
-              message_id: b39a5f78-b774-4a09-a3f0-04223c5e0230
-              version: 2.1.0
-              action: search
-              bap_uri: https://api.example-bap.com/beckn/
-              bpp_id: api.transit-solutions.com
-              bpp_uri: https://api.transit-solutions.com/beckn/
-              ttl: PT30S
-            message:
-              intent:
-                fulfillment:
-                  stops:
-                    - type: START
-                      location:
-                        descriptor:
-                          code: KASHMERE_GATE
-                    - type: END
-                      location:
-                        descriptor:
-                          code: GREATER_KAILASH
-                  vehicle:
-                    category: BUS
-                payment:
-                  collected_by: BAP
-                tags:
-                  - descriptor:
-                      code: BAP_TERMS
-                      name: BAP Terms of Engagement
-                    display: false
-                    list:
-                      - descriptor:
-                          code: BUYER_FINDER_FEES_PERCENTAGE
-                        value: '1'
-                      - descriptor:
-                          code: STATIC_TERMS
-                        value: https://api.example-bap.com/booking/terms
-                      - descriptor:
-                          code: DELAY_INTEREST
-                        value: '2.5'
-      - summary: >-
-          Return a bus catalog of all intracity bus services from point A(code)
-          to point B(code)
-        api: on_search
-        details:
-          - description: >-
-              Provider platform sends the catalog of all the service that can be
-              used for transit using bus service from point A(code) to point
-              B(code)
-            mermaid: |-
-              sequenceDiagram
-                Buyer Platform (BAP)->>Seller Platform (BPP): search
-                Seller Platform (BPP) ->> Buyer Platform (BAP): ACK
-                rect rgb(191, 223, 255)
-                Seller Platform (BPP)->>Buyer Platform (BAP): on_search
-                Buyer Platform (BAP)->>Seller Platform (BPP): ACK
-                end
-        reference: if any
-        example:
-          summary: Return a public transit catalog of fare products
-          value: *ref_18
-      - summary: Selection of specific service
-        api: select
-        details:
-          - description: >-
-              The end consumer have to select the specific service and would
-              like to have the necessary details
-            mermaid: |-
-              sequenceDiagram
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                rect rgb(191, 223, 255)
-                Buyer Platform (BAP)->>Seller Platform (BPP): select
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                end
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-        reference: if any
-        example:
-          summary: >-
-            Get a quote for a fare product selected from a intra city bus
-            service catalog
-          value: *ref_19
-      - summary: >-
-          Provider platform provides the quote for selected service of intracity
-          bus
-        api: on_select
-        details:
-          - description: >-
-              Provider platform responds with the service detailed information
-              and quotes for the specific service that consumer would like to
-              avail
-            mermaid: |-
-              sequenceDiagram
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                Buyer Platform (BAP)->>Seller Platform (BPP): select
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                rect rgb(191, 223, 255)
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-                end 
-        reference: if any
-        example:
-          summary: Return a quote offered by a public transit service provider
-          value: *ref_20
-      - summary: Consumer platform initializes the order
-        api: init
-        details:
-          - description: >-
-              Consumer platform shares the terms of order and initializes the
-              order
-            mermaid: |-
-              sequenceDiagram
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                rect rgb(191, 223, 255)
-                Buyer Platform (BAP)->>Seller Platform (BPP): init
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                end
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-        reference: if any
-        example:
-          summary: Initialize the order by providing billing details
-          value: *ref_21
-      - summary: Provider platform accepts/appends the terms of orders
-        api: on_init
-        details:
-          - description: >-
-              Provider platform accepts the terms of orders and appends its own
-              terms and responds with the final draft
-            mermaid: |-
-              sequenceDiagram
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                Buyer Platform (BAP)->>Seller Platform (BPP): init
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                rect rgb(191, 223, 255)
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_init
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-                end 
-        reference: if any
-        example:
-          summary: >-
-            Return draft order for transit ticket with settlement via payment
-            link
-          value: *ref_22
-      - summary: Consumer confirms the booking and provides details.
-        api: confirm
-        details:
-          - description: >-
-              Consumer platform confirms the booking and provides all
-              information required for confirmation as per the terms of order
-            mermaid: |-
-              sequenceDiagram
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                rect rgb(191, 223, 255)
-                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                end
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-        reference: if any
-        example:
-          summary: Confirm ticket booking
-          value: *ref_23
-      - summary: Provider platform confirms the order
-        api: on_confirm
-        details:
-          - description: >-
-              Provider platform confirms the order and provides details of the
-              journey on confirmation
-            mermaid: |-
-              sequenceDiagram
-                participant Buyer Platform (BAP)
-                participant Seller Platform (BPP)
-                Buyer Platform (BAP)->>Seller Platform (BPP): confirm
-                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
-                rect rgb(191, 223, 255)
-                Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
-                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
-                end
-        reference: if any
-        example:
-          summary: Return confirmed ticket order with payment confirmation
-          value: *ref_24
       - summary: Consumer platform updates the ride details
         api: update
         details:
@@ -7285,7 +6643,7 @@ x-flows:
         reference: if any
         example:
           summary: Update customer details for inter-city bus service
-          value: &ref_53
+          value: &ref_50
             context:
               location:
                 country:
@@ -7318,7 +6676,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_46
+          value: &ref_44
             context:
               location:
                 country:
@@ -8245,7 +7603,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_25
+          value: &ref_18
             context:
               location:
                 country:
@@ -8367,7 +7725,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_26
+          value: &ref_19
             context:
               location:
                 country:
@@ -8904,7 +8262,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: *ref_25
+          value: *ref_18
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -8924,7 +8282,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_26
+          value: *ref_19
   - summary: IntraCity - Purchase Journey(Agent Based)
     details:
       - description: >-
@@ -9957,7 +9315,7 @@ x-flows:
           summary: >-
             Get a quote for a fare product selected from a intra city bus
             service catalog
-          value: &ref_51
+          value: &ref_49
             context:
               location:
                 country:
@@ -10014,7 +9372,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a public transit service provider
-          value: &ref_44
+          value: &ref_43
             context:
               location:
                 country:
@@ -10163,7 +9521,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: &ref_35
+          value: &ref_31
             context:
               location:
                 country:
@@ -10257,7 +9615,7 @@ x-flows:
           summary: >-
             Return draft order for transit ticket with settlement via payment
             link
-          value: &ref_40
+          value: &ref_37
             context:
               location:
                 country:
@@ -10465,7 +9823,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_34
+          value: &ref_29
             context:
               location:
                 country:
@@ -10610,7 +9968,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_38
+          value: &ref_34
             context:
               location:
                 country:
@@ -10884,7 +10242,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_24
+          value: *ref_20
       - summary: Buyer app cancels the request for ticket
         api: cancel
         details:
@@ -10904,7 +10262,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a ticket booking before the cancellation period
-          value: &ref_32
+          value: &ref_27
             context:
               location:
                 country:
@@ -10949,7 +10307,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_36
+          value: &ref_32
             context:
               location:
                 country:
@@ -11291,7 +10649,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a ticket booking before the cancellation period
-          value: &ref_33
+          value: &ref_28
             context:
               location:
                 country:
@@ -11334,7 +10692,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_37
+          value: &ref_33
             context:
               location:
                 country:
@@ -11694,7 +11052,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_27
+          value: &ref_21
             context:
               location:
                 country:
@@ -11835,7 +11193,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_39
+          value: &ref_35
             context:
               location:
                 country:
@@ -12163,7 +11521,7 @@ x-flows:
         reference: if any
         example:
           summary: Update vehicle details for intra-city bus service
-          value: &ref_54
+          value: &ref_51
             context:
               location:
                 country:
@@ -12209,7 +11567,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_47
+          value: &ref_45
             context:
               location:
                 country:
@@ -13070,7 +12428,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: *ref_27
+          value: *ref_21
       - summary: Provider confirms the request
         api: on_confirm
         details:
@@ -13865,7 +13223,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: *ref_23
+          value: *ref_22
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -13887,7 +13245,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_24
+          value: *ref_20
       - summary: Provider platform sends the unsolicited on_update call.
         api: on_update
         details:
@@ -14277,7 +13635,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
         reference: if any
         example:
-          value: *ref_24
+          value: *ref_20
       - summary: Buyer app request for latest order status
         api: status
         details:
@@ -15459,7 +14817,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_28
+          value: &ref_23
             context:
               location:
                 country:
@@ -15943,7 +15301,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel a transit ticket booking before the cancellation period
-          value: &ref_55
+          value: &ref_52
             context:
               location:
                 country:
@@ -15988,7 +15346,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_58
+          value: &ref_55
             context:
               location:
                 country:
@@ -16454,7 +15812,7 @@ x-flows:
         reference: if any
         example:
           summary: Initiates cancelling a ride with confirm cancel status
-          value: &ref_56
+          value: &ref_53
             context:
               action: cancel
               bap_id: https://api.beckn.juspay.in/pilot/bap/cab/v1
@@ -16499,7 +15857,7 @@ x-flows:
         reference: if any
         example:
           summary: Return cancelled ticket order with cancellation charges
-          value: &ref_59
+          value: &ref_56
             context:
               location:
                 country:
@@ -17030,7 +16388,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for public  transit for city and type of vehicle
-          value: &ref_63
+          value: &ref_60
             context:
               location:
                 country:
@@ -18043,7 +17401,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for public  transit via station code and vehicle type
-          value: &ref_64
+          value: &ref_61
             context:
               location:
                 country:
@@ -18113,7 +17471,7 @@ x-flows:
           summary: >-
             Return a metro catalog of fare products based on station code or gps
             based search
-          value: &ref_61
+          value: &ref_58
             context:
               location:
                 country:
@@ -18475,7 +17833,7 @@ x-flows:
           summary: >-
             Get a quote for a fare product selected from a public transit
             catalog
-          value: &ref_65
+          value: &ref_62
             context:
               location:
                 country:
@@ -18522,7 +17880,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a quote offered by a public transit service provider
-          value: &ref_62
+          value: &ref_59
             context:
               location:
                 country:
@@ -18889,7 +18247,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: &ref_57
+          value: &ref_54
             context:
               location:
                 country:
@@ -18971,7 +18329,7 @@ x-flows:
         reference: if any
         example:
           summary: Return draft order for transit ticket with settlement details
-          value: &ref_60
+          value: &ref_57
             context:
               location:
                 country:
@@ -19382,7 +18740,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_31
+          value: &ref_26
             context:
               location:
                 country:
@@ -19510,7 +18868,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_28
+          value: *ref_23
       - summary: Provider platform provides latest order status with CHECKED_IN state
         api: on_status
         details:
@@ -22042,7 +21400,7 @@ x-flows:
         reference: if any
         api: on_confirm
         example:
-          value: *ref_28
+          value: *ref_23
         details:
           - description: >-
               Provider confirms the  request and provides the details on
@@ -22059,7 +21417,7 @@ x-flows:
         reference: if any
         api: cancel
         example:
-          value: &ref_29
+          value: &ref_24
             context:
               location:
                 country:
@@ -22101,7 +21459,7 @@ x-flows:
         reference: if any
         api: on_cancel
         example:
-          value: &ref_30
+          value: &ref_25
             context:
               location:
                 country:
@@ -23105,7 +22463,7 @@ x-flows:
         reference: if any
         api: on_confirm
         example:
-          value: *ref_28
+          value: *ref_23
         details:
           - description: >-
               Provider confirms the  request and provides the details on
@@ -23122,7 +22480,7 @@ x-flows:
         reference: if any
         api: cancel
         example:
-          value: *ref_29
+          value: *ref_24
         details:
           - description: Buyer app give the confirmation to cancel the ticket.
             mermaid: |-
@@ -23141,7 +22499,7 @@ x-flows:
         reference: if any
         api: on_cancel
         example:
-          value: *ref_30
+          value: *ref_25
         details:
           - description: >-
               Provider accepts the terms of order and provides with latest order
@@ -23163,7 +22521,7 @@ x-flows:
         reference: if any
         api: on_update
         example:
-          value: &ref_66
+          value: &ref_63
             context:
               location:
                 country:
@@ -23714,7 +23072,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK   
         reference: if any
         example:
-          value: *ref_28
+          value: *ref_23
       - summary: Buyer app request for latest order status
         api: status
         details:
@@ -25401,7 +24759,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK 
         reference: if any
         example:
-          value: *ref_31
+          value: *ref_26
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -25423,7 +24781,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
         reference: if any
         example:
-          value: *ref_28
+          value: *ref_23
       - summary: Provider platform cancel the order
         api: on_cancel
         details:
@@ -25971,7 +25329,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK  
         reference: if any
         example:
-          value: *ref_28
+          value: *ref_23
       - summary: Buyer app request for end stop with soft update (optional)
         api: update
         details:
@@ -27633,7 +26991,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_67
+          value: &ref_64
             context:
               action: select
               bap_id: api.example-bap.com
@@ -27677,7 +27035,7 @@ x-flows:
                 end 
         reference: if any
         example:
-          value: &ref_73
+          value: &ref_70
             context:
               action: on_select
               bap_id: api.example-bap.com
@@ -27793,7 +27151,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_69
+          value: &ref_66
             context:
               action: init
               bap_id: api.example-bap.com
@@ -27874,7 +27232,7 @@ x-flows:
                 end
         reference: if any
         example:
-          value: &ref_75
+          value: &ref_72
             context:
               action: on_init
               bap_id: api.example-bap.com
@@ -28038,7 +27396,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_71
+          value: &ref_68
             context:
               action: confirm
               bap_id: api.example-bap.com
@@ -28157,7 +27515,7 @@ x-flows:
                 end
         reference: if any
         example:
-          value: &ref_77
+          value: &ref_74
             context:
               action: on_confirm
               bap_id: api.example-bap.com
@@ -28414,7 +27772,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_68
+          value: &ref_65
             context:
               action: select
               bap_id: api.example-bap.com
@@ -28464,7 +27822,7 @@ x-flows:
                 end 
         reference: if any
         example:
-          value: &ref_74
+          value: &ref_71
             context:
               action: on_select
               bap_id: api.example-bap.com
@@ -28585,7 +27943,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_70
+          value: &ref_67
             context:
               action: init
               bap_id: api.example-bap.com
@@ -28669,7 +28027,7 @@ x-flows:
                 end
         reference: if any
         example:
-          value: &ref_76
+          value: &ref_73
             context:
               action: on_init
               bap_id: api.example-bap.com
@@ -28837,7 +28195,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_72
+          value: &ref_69
             context:
               action: confirm
               bap_id: api.example-bap.com
@@ -28959,7 +28317,7 @@ x-flows:
                 end
         reference: if any
         example:
-          value: &ref_78
+          value: &ref_75
             context:
               action: on_confirm
               bap_id: api.example-bap.com
@@ -29148,9 +28506,9 @@ x-examples:
       cancel:
         examples:
           - summary: Cancel_a_ticket_booking_before_the_cancellation_period_11
-            value: *ref_32
+            value: *ref_27
           - summary: Cancel_a_ticket_booking_before_the_cancellation_period_12
-            value: *ref_33
+            value: *ref_28
           - summary: Cancel_a_ticket_booking_before_the_cancellation_period_13
             value:
               context:
@@ -29228,21 +28586,21 @@ x-examples:
       confirm:
         examples:
           - summary: Confirm_ticket_booking_10
-            value: *ref_34
+            value: *ref_29
           - summary: Confirm_ticket_booking_9
-            value: *ref_23
+            value: *ref_22
       init:
         examples:
           - summary: Initialize_the_order_by_providing_billing_details_7
-            value: *ref_21
+            value: *ref_30
           - summary: Initialize_the_order_by_providing_billing_details_8
-            value: *ref_35
+            value: *ref_31
       on_cancel:
         examples:
           - summary: Return_cancelled_ticket_order_with_cancellation_charges_33
-            value: *ref_36
+            value: *ref_32
           - summary: Return_cancelled_ticket_order_with_cancellation_charges_34
-            value: *ref_37
+            value: *ref_33
           - summary: Return_cancelled_ticket_order_with_cancellation_charges_35
             value:
               context:
@@ -29556,25 +28914,25 @@ x-examples:
       on_confirm:
         examples:
           - summary: Return_confirmed_ticket_order_with_payment_confirmation_30
-            value: *ref_24
+            value: *ref_20
           - summary: Return_confirmed_ticket_order_with_payment_confirmation_31
-            value: *ref_38
+            value: *ref_34
           - summary: Return_confirmed_ticket_order_with_payment_confirmation_32
-            value: *ref_39
+            value: *ref_35
       on_init:
         examples:
           - summary: >-
               Return_draft_order_for_transit_ticket_with_settlement_via_payment_link_28
-            value: *ref_22
+            value: *ref_36
           - summary: >-
               Return_draft_order_for_transit_ticket_with_settlement_via_payment_link_29
-            value: *ref_40
+            value: *ref_37
       on_search:
         examples:
           - summary: Return_a_public_transit_catalog_of_all_routes_in_serverd_21
-            value: *ref_41
+            value: *ref_38
           - summary: Return_a_public_transit_catalog_of_all_routes_in_serverd_22
-            value: *ref_42
+            value: *ref_39
           - summary: Return_a_public_transit_catalog_of_all_routes_in_serverd_23
             value:
               context:
@@ -30330,9 +29688,9 @@ x-examples:
                             code: STATIC_TERMS
                           value: https://api.example-bpp.com/booking/terms
           - summary: Return_a_public_transit_catalog_of_all_routes_in_serverd_25
-            value: *ref_43
+            value: *ref_40
           - summary: Return_a_public_transit_catalog_of_fare_products_19
-            value: *ref_18
+            value: *ref_41
           - summary: Return_a_public_transit_catalog_of_fare_products_20
             value:
               context:
@@ -30701,13 +30059,316 @@ x-examples:
       on_select:
         examples:
           - summary: Return_a_quote_offered_by_a_public_transit_service_provider_26
-            value: *ref_20
+            value: *ref_42
           - summary: Return_a_quote_offered_by_a_public_transit_service_provider_27
-            value: *ref_44
+            value: *ref_43
       on_status:
         examples:
           - summary: Provider_platform_provides_latest_order_status_36
-            value: *ref_45
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV11
+                action: on_status
+                version: 2.1.0
+                bap_id: api.example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: api.transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: 33145cb7-88f8-4f41-9784-b1a760c7a4eb
+                timestamp: '2021-03-23T10:00:40.065Z'
+                ttl: PT30S
+              message:
+                order:
+                  id: O1
+                  status: COMPLETED
+                  items:
+                    - id: I1
+                      descriptor:
+                        name: Single Journey Ticket
+                        code: SJT
+                        images:
+                          - url: >-
+                              https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                            size_type: xs
+                      fulfillment_ids:
+                        - F1
+                        - F5
+                        - F6
+                      price:
+                        currency: INR
+                        value: '35'
+                      quantity:
+                        selected:
+                          count: 2
+                      time:
+                        label: Validity
+                        duration: PT2D
+                        timestamp: '2021-03-23T11:01:40.065Z'
+                  provider:
+                    id: P1
+                    descriptor:
+                      name: Delhi Transport Corporation
+                      images:
+                        - url: >-
+                            https://dtc.delhi.gov.in/sites/default/files/DTC/logo/dtc_logo_2.png
+                          size_type: xs
+                  fulfillments:
+                    - id: F1
+                      type: TRIP
+                      stops:
+                        - type: START
+                          location:
+                            descriptor:
+                              name: kashmere gate
+                              code: KASHMERE_GATE
+                            gps: 28.666576, 77.233332
+                          id: '1'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 1
+                          location:
+                            descriptor:
+                              name: Indira Gandhi Technical Unviversity
+                              code: INDIRA_GANDHI_TECHNICAL_UNIV
+                            gps: 28.624097, 77.204991
+                          id: '2'
+                          parent_stop_id: '1'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 2
+                          location:
+                            descriptor:
+                              name: Yamuna Bazar
+                              code: YAMUNA_BAZAR
+                            gps: 28.625972,77.209917
+                          id: '3'
+                          parent_stop_id: '2'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 3
+                          location:
+                            descriptor:
+                              name: dhaula kuan
+                              code: DHAULA_KUAN
+                            gps: 28.610972,77.201717
+                          id: '4'
+                          parent_stop_id: '3'
+                        - type: INTERMEDIATE_STOP
+                          instructions:
+                            name: Stop 4
+                          location:
+                            descriptor:
+                              name: gpo
+                              code: GPO
+                            gps: 28.623097,77.209917
+                          id: '5'
+                          parent_stop_id: '4'
+                        - type: END
+                          location:
+                            descriptor:
+                              name: Greater Kailash
+                              code: GREATER_KAILASH
+                            gps: 28.548230, 77.238039
+                          id: '6'
+                          parent_stop_id: '5'
+                      vehicle:
+                        category: BUS
+                      tags:
+                        - descriptor:
+                            code: ROUTE_INFO
+                          list:
+                            - descriptor:
+                                code: ROUTE_ID
+                              value: '242'
+                            - descriptor:
+                                code: ROUTE_DIRECTION
+                              value: UP
+                    - id: F5
+                      type: TICKET
+                      tags:
+                        - descriptor:
+                            code: INFO
+                          list:
+                            - descriptor:
+                                code: PARENT_ID
+                              value: F1
+                        - descriptor:
+                            code: TICKET_INFO
+                          list:
+                            - descriptor:
+                                code: NUMBER
+                              value: 7ed21b6f
+                    - id: F6
+                      type: TICKET
+                      tags:
+                        - descriptor:
+                            code: INFO
+                          list:
+                            - descriptor:
+                                code: PARENT_ID
+                              value: F1
+                        - descriptor:
+                            code: TICKET_INFO
+                          list:
+                            - descriptor:
+                                code: NUMBER
+                              value: 5xd31b8f
+                  cancellation_terms:
+                    - cancel_by:
+                        duration: PT60M
+                      cancellation_fee:
+                        percentage: '0'
+                  billing:
+                    name: John Doe
+                    email: john_doe@example.com
+                    phone: +91-9897867564
+                  quote:
+                    price:
+                      value: '70'
+                      currency: INR
+                    breakup:
+                      - title: BASE_FARE
+                        item:
+                          id: I1
+                          price:
+                            currency: INR
+                            value: '35'
+                          quantity:
+                            selected:
+                              count: 2
+                        price:
+                          currency: INR
+                          value: '70'
+                      - title: OFFER
+                        price:
+                          currency: INR
+                          value: '0'
+                      - title: TOLL
+                        price:
+                          currency: INR
+                          value: '0'
+                      - title: TAX
+                        price:
+                          currency: INR
+                          value: '0'
+                        item:
+                          tags:
+                            - descriptor:
+                                code: TAX
+                              list:
+                                - descriptor:
+                                    code: CGST
+                                  value: '0'
+                                - descriptor:
+                                    code: SGST
+                                  value: '0'
+                      - title: OTHER_CHARGES
+                        price:
+                          currency: INR
+                          value: '0'
+                        item:
+                          tags:
+                            - descriptor:
+                                code: OTHER_CHARGES
+                              list:
+                                - descriptor:
+                                    code: SURCHARGE
+                                  value: '0'
+                  payments:
+                    - id: PA1
+                      collected_by: BAP
+                      status: PAID
+                      type: PRE-ORDER
+                      params:
+                        transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
+                        currency: INR
+                        amount: '70'
+                  tags:
+                    - descriptor:
+                        code: BAP_TERMS
+                        name: BAP Terms of Engagemen
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+                        - descriptor:
+                            code: SETTLEMENT_WINDOW
+                          value: PT60M
+                        - descriptor:
+                            code: SETTLEMENT_BASIS
+                          value: Delivery
+                        - descriptor:
+                            code: SETTLEMENT_TYPE
+                          value: upi
+                        - descriptor:
+                            code: MANDATORY_ARBITRATION
+                          value: 'true'
+                        - descriptor:
+                            code: COURT_JURISDICTION
+                          value: New Delhi
+                        - descriptor:
+                            code: DELAY_INTEREST
+                          value: '2.5'
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://www.abc.com/settlement-terms/
+                        - descriptor:
+                            code: SETTLEMENT_AMOUNT
+                          value: '12505'
+                    - descriptor:
+                        code: BPP_TERMS
+                        name: BPP Terms of Engagement
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+                        - descriptor:
+                            code: SETTLEMENT_WINDOW
+                          value: PT60M
+                        - descriptor:
+                            code: SETTLEMENT_BASIS
+                          value: Delivery
+                        - descriptor:
+                            code: SETTLEMENT_TYPE
+                          value: upi
+                        - descriptor:
+                            code: MANDATORY_ARBITRATION
+                          value: 'true'
+                        - descriptor:
+                            code: COURT_JURISDICTION
+                          value: New Delhi
+                        - descriptor:
+                            code: DELAY_INTEREST
+                          value: '2.5'
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://www.abc.com/settlement-terms/
+                        - descriptor:
+                            code: SETTLEMENT_AMOUNT
+                          value: '12505'
+                        - descriptor:
+                            code: SETTLEMENT_BANK_CODE
+                          value: XXXXXXXX
+                        - descriptor:
+                            code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                          value: xxxxxxxxxxxxxx
+                    - descriptor:
+                        code: ADDITIONAL_APIS
+                      display: false
+                      list:
+                        - descriptor:
+                            code: GTFS_RT
+                          value: https://api.transit-solutions/gtfs-realtime
+                  created_at: '2021-03-23T10:00:40.065Z'
+                  updated_at: '2021-03-23T10:00:40.065Z'
       on_update:
         examples:
           - summary: Return_cancelled_ticket_order_with_cancellation_charges_39
@@ -31353,15 +31014,15 @@ x-examples:
                   created_at: '2021-03-23T10:00:40.065Z'
                   updated_at: '2021-03-23T11:01:41.065Z'
           - summary: Return_confirmed_ticket_order_with_payment_confirmation_37
-            value: *ref_46
+            value: *ref_44
           - summary: Return_confirmed_ticket_order_with_payment_confirmation_38
-            value: *ref_47
+            value: *ref_45
       search:
         examples:
           - summary: Search_for_intra_city_bus_service,_with_city_and_type_of_vehicle_2
-            value: *ref_48
+            value: *ref_46
           - summary: Search_for_intra_city_bus_service,_with_city_and_type_of_vehicle_3
-            value: *ref_49
+            value: *ref_47
           - summary: Search_for_intra_city_bus_service,_with_city_and_type_of_vehicle_4
             value:
               context:
@@ -31403,25 +31064,88 @@ x-examples:
                           value: '2.5'
           - summary: >-
               Search_for_intra_city_bus_service_mode_of_transit_from_a_specific_position_1
-            value: *ref_50
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV11
+                timestamp: '2023-03-23T04:41:16.000Z'
+                bap_id: api.example-bap.com
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: b39a5f78-b774-4a09-a3f0-04223c5e0230
+                version: 2.1.0
+                action: search
+                bap_uri: https://api.example-bap.com/beckn/
+                ttl: PT30S
+              message:
+                intent:
+                  fulfillment:
+                    stops:
+                      - type: START
+                        location:
+                          gps: 28.666576, 77.233332
+                      - type: END
+                        location:
+                          gps: 28.548230, 77.238039
+                    vehicle:
+                      category: BUS
+                  payment:
+                    collected_by: BAP
+                  tags:
+                    - descriptor:
+                        code: BAP_TERMS
+                        name: BAP Terms of Engagement
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://api.example-bap.com/booking/terms
+                        - descriptor:
+                            code: DELAY_INTEREST
+                          value: '2.5'
       select:
         examples:
           - summary: >-
               Get_a_quote_for_a_fare_product_selected_from_a_intra_city_bus_service_catalog_5
-            value: *ref_19
+            value: *ref_48
           - summary: >-
               Get_a_quote_for_a_fare_product_selected_from_a_intra_city_bus_service_catalog_6
-            value: *ref_51
+            value: *ref_49
       status:
         examples:
           - summary: Get_latest_status_of_a_transit_ticket_booking_16
-            value: *ref_52
+            value:
+              context:
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                domain: ONDC:TRV11
+                action: status
+                version: 2.1.0
+                bap_id: api.example-bap.com
+                bap_uri: https://api.example-bap.com/beckn/
+                bpp_id: api.transit-solutions.com
+                bpp_uri: https://api.transit-solutions.com/beckn/
+                transaction_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                message_id: fde8b8b6-c2e5-49f7-b254-720843d528bd
+                timestamp: '2021-03-23T10:00:40.065Z'
+                ttl: PT30S
+              message:
+                order_id: O1
       update:
         examples:
           - summary: Update_customer_details_for_inter-city_bus_service_17
-            value: *ref_53
+            value: *ref_50
           - summary: Update_vehicle_details_for_intra-city_bus_service_18
-            value: *ref_54
+            value: *ref_51
   metro:
     summary: Metro Use Case Specification
     description: >-
@@ -31442,37 +31166,37 @@ x-examples:
       cancel:
         examples:
           - summary: Cancel_a_transit_ticket_booking_before_the_cancellation_period_47
-            value: *ref_55
+            value: *ref_52
           - summary: Initiates_cancelling_a_ride_with_confirm_cancel_status_48
-            value: *ref_56
+            value: *ref_53
           - summary: request_cancel
             description: TBD
-            value: *ref_29
+            value: *ref_24
       confirm:
         examples:
           - summary: Confirm_ticket_booking_46
-            value: *ref_31
+            value: *ref_26
       init:
         examples:
           - summary: Initialize_the_order_by_providing_billing_details_45
-            value: *ref_57
+            value: *ref_54
       on_cancel:
         examples:
           - summary: Return_cancelled_ticket_order_with_cancellation_charges_57
-            value: *ref_58
+            value: *ref_55
           - summary: Return_cancelled_ticket_order_with_cancellation_charges_58
-            value: *ref_59
+            value: *ref_56
           - summary: confirm_cancel_request
             description: TBD
-            value: *ref_30
+            value: *ref_25
       on_confirm:
         examples:
           - summary: Return_confirmed_ticket_order_with_payment_confirmation_56
-            value: *ref_28
+            value: *ref_23
       on_init:
         examples:
           - summary: Return_draft_order_for_transit_ticket_with_settlement_details_55
-            value: *ref_60
+            value: *ref_57
       on_search:
         examples:
           - summary: >-
@@ -32002,11 +31726,11 @@ x-examples:
                           value: https://api.example-bpp.com/booking/terms
           - summary: >-
               Return_a_metro_catalog_of_fare_products_based_on_station_code_or_gps_based_search_53
-            value: *ref_61
+            value: *ref_58
       on_select:
         examples:
           - summary: Return_a_quote_offered_by_a_public_transit_service_provider_54
-            value: *ref_62
+            value: *ref_59
       on_status:
         examples:
           - summary: Return_transit_ticket_order_with_status_-_Journey_Completed_59
@@ -32551,14 +32275,14 @@ x-examples:
                             code: DELAY_INTEREST
                           value: '2.5'
           - summary: Search_for_public__transit_for_city_and_type_of_vehicle_42
-            value: *ref_63
+            value: *ref_60
           - summary: Search_for_public__transit_via_station_code_and_vehicle_type_43
-            value: *ref_64
+            value: *ref_61
       select:
         examples:
           - summary: >-
               Get_a_quote_for_a_fare_product_selected_from_a_public_transit_catalog_44
-            value: *ref_65
+            value: *ref_62
       status:
         examples:
           - summary: Get_latest_status_of_a_transit_ticket_booking_49
@@ -33108,7 +32832,7 @@ x-examples:
                   updated_at: '2021-03-23T10:05:49.061Z'
           - summary: accep_cancel_request
             description: TBD
-            value: *ref_66
+            value: *ref_63
   metro-wallet:
     summary: Metro wallet use-case
     description: Metro wallet use-case
@@ -33161,16 +32885,16 @@ x-examples:
                           value: P30D
       select:
         examples:
-          - value: *ref_67
-          - value: *ref_68
+          - value: *ref_64
+          - value: *ref_65
       init:
         examples:
-          - value: *ref_69
-          - value: *ref_70
+          - value: *ref_66
+          - value: *ref_67
       confirm:
         examples:
-          - value: *ref_71
-          - value: *ref_72
+          - value: *ref_68
+          - value: *ref_69
           - value:
               context:
                 action: confirm
@@ -33385,16 +33109,16 @@ x-examples:
                           value: 2.5 %
       on_select:
         examples:
-          - value: *ref_73
-          - value: *ref_74
+          - value: *ref_70
+          - value: *ref_71
       on_init:
         examples:
-          - value: *ref_75
-          - value: *ref_76
+          - value: *ref_72
+          - value: *ref_73
       on_confirm:
         examples:
-          - value: *ref_77
-          - value: *ref_78
+          - value: *ref_74
+          - value: *ref_75
           - value:
               context:
                 action: on_confirm
@@ -47864,7 +47588,7 @@ x-tlc:
         Terms and the ONDC Network Policy or the Static Terms and the Network
         Participant Agreement, the terms of the ONDC Network Policy or the
         Network Participant Agreement (as the case may be) will prevail.
-x-featureui: &ref_79
+x-featureui: &ref_76
   filenames:
     - log-verification.md
     - order_confirmation.md
@@ -47872,7 +47596,7 @@ x-sandboxui:
   dropdown:
     - environment-name: staging
       link: https://mobility-staging.ondc.org
-x-testcasesui: *ref_79
+x-testcasesui: *ref_76
 x-changeLog:
   filenames:
     - TRV11_2.1.0_141125
