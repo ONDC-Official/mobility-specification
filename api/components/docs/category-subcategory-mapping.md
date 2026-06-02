@@ -2,6 +2,13 @@
 
 | Category | Sub Category | Sub Category Enum |
 |---------|--------------|-------------------|
+| **Experience(EXPERIENCE)** | Culture & Heritage | CULTURE_HERITAGE |
+|  | Entertainment & Shows | ENTERTAINMENT_SHOWS |
+|  | Leisure & Theme Parks | LEISURE_THEME_PARKS |
+|  | Sporting & Outdoor | SPORTING_OUTDOOR |
+|  | Tours & Sightseeing | TOURS_SIGHTSEEING |
+|  | Food & Dining | FOOD_DINING |  
+|  | Speciality Events | SPECIALITY_EVENTS |
 | **Culture & Heritage(CULTURE_HERITAGE)** | Monument & Historical Site | MONUMENT_HISTORICAL_SITE |
 |  | Museum / Galleries | MUSEUM / GALLERIES |
 |  | Memorial | MEMORIAL |
