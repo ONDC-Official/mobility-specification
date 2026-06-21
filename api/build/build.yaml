@@ -1370,8 +1370,7 @@ components:
         data:
           description: The form submission data
           type: object
-          additionalProperties:
-            type: string
+          additionalProperties: true
         mime_type:
           description: >-
             This field indicates the nature and format of the form received by
@@ -1382,6 +1381,7 @@ components:
             - text/html
             - application/html
             - application/xml
+            - none
         resubmit:
           type: boolean
         multiple_submissions:
@@ -1846,6 +1846,14 @@ components:
           description: The rating of this location
           allOf:
             - $ref: '#/components/schemas/Rating/properties/value'
+        time:
+          description: >-
+            Temporal attributes of this item. This property is used when the
+            item exists on the catalog only for a limited period of time.
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Time'
     MediaFile:
       description: This object contains a url to a media file.
       type: object
@@ -3829,6 +3837,32 @@ x-flows:
                 category:
                   descriptor:
                     code: ON_DEMAND_TRIP
+                fulfillment:
+                  stops:
+                    - location:
+                        gps: 13.008935, 77.644408
+                        address: >-
+                          2nd & 3rd Floor, 7/6, August Kranti Marg, Siri Fort
+                          Institutional Area
+                        city:
+                          code: std:080
+                        district: New Delhi
+                        country:
+                          code: IND
+                        area_code: '110049'
+                      type: START
+                    - location:
+                        gps: 12.971186, 77.586812
+                        address: Jai Singh Road, Connaught Place, New Delhi
+                        city:
+                          code: std:080
+                        district: New Delhi
+                        country:
+                          code: IND
+                        area_code: '110001'
+                      type: END
+                payment:
+                  collected_by: BPP
                 tags:
                   - descriptor:
                       name: BAP Terms of Engagement
@@ -3844,16 +3878,6 @@ x-flows:
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bap.com/static-terms.txt
-                fulfillment:
-                  stops:
-                    - location:
-                        gps: 13.008935, 77.644408
-                      type: START
-                    - location:
-                        gps: 12.971186, 77.586812
-                      type: END
-                payment:
-                  collected_by: BPP
       - summary: Get a list of all services from ride providers
         api: on_search
         details:
@@ -3899,7 +3923,16 @@ x-flows:
                 descriptor:
                   name: Mobility Servies BPP
                 providers:
-                  - fulfillments:
+                  - id: P1
+                    descriptor:
+                      images:
+                        - url: >-
+                            https://example-bpp.com/prod/seller/assets/images/header/logo.png
+                          size_type: sm
+                      name: Uber
+                      short_desc: Uber Rides
+                      long_desc: Uber Rides, India.
+                    fulfillments:
                       - id: F1
                         stops:
                           - location:
@@ -3931,7 +3964,6 @@ x-flows:
                           category: CAB
                           variant: SEDAN
                           energy_type: PETROL
-                    id: P1
                     items:
                       - descriptor:
                           code: RIDE
@@ -4308,6 +4340,14 @@ x-flows:
                           - value: DOORSTEP_PICK_UP
                 provider:
                   id: P1
+                  descriptor:
+                    images:
+                      - url: >-
+                          https://example-bpp.com/prod/seller/assets/images/header/logo.png
+                        size_type: sm
+                    name: Uber
+                    short_desc: Uber Rides
+                    long_desc: Uber Rides, India.
                 quote:
                   breakup:
                     - price:
@@ -4612,6 +4652,14 @@ x-flows:
                     type: ON-FULFILLMENT
                 provider:
                   id: P1
+                  descriptor:
+                    images:
+                      - url: >-
+                          https://example-bpp.com/prod/seller/assets/images/header/logo.png
+                        size_type: sm
+                    name: Uber
+                    short_desc: Uber Rides
+                    long_desc: Uber Rides, India.
                 quote:
                   breakup:
                     - price:
@@ -4878,6 +4926,11 @@ x-flows:
                         phone: '9856798567'
                       person:
                         name: Jason Roy
+                        image:
+                          url: >-
+                            https://example-bpp.com/prod/seller/images/agent/profile-image.png
+                          size_type: sm
+                      rating: '5'
                     customer:
                       contact:
                         phone: '9876556789'
@@ -5001,6 +5054,14 @@ x-flows:
                     type: ON-FULFILLMENT
                 provider:
                   id: P1
+                  descriptor:
+                    images:
+                      - url: >-
+                          https://example-bpp.com/prod/seller/assets/images/header/logo.png
+                        size_type: sm
+                    name: Uber
+                    short_desc: Uber Rides
+                    long_desc: Uber Rides, India.
                 quote:
                   breakup:
                     - price:
@@ -5166,6 +5227,11 @@ x-flows:
                         phone: '9856798567'
                       person:
                         name: Jason Roy
+                        image:
+                          url: >-
+                            https://example-bpp.com/prod/seller/images/agent/profile-image.png
+                          size_type: sm
+                      rating: '5'
                     customer:
                       contact:
                         phone: '9876556789'
@@ -5289,6 +5355,14 @@ x-flows:
                     type: ON-FULFILLMENT
                 provider:
                   id: P1
+                  descriptor:
+                    images:
+                      - url: >-
+                          https://example-bpp.com/prod/seller/assets/images/header/logo.png
+                        size_type: sm
+                    name: Uber
+                    short_desc: Uber Rides
+                    long_desc: Uber Rides, India.
                 quote:
                   breakup:
                     - price:
@@ -5535,6 +5609,11 @@ x-flows:
                         phone: '9856798567'
                       person:
                         name: Jason Roy
+                        image:
+                          url: >-
+                            https://example-bpp.com/prod/seller/images/agent/profile-image.png
+                          size_type: sm
+                      rating: '5'
                     customer:
                       contact:
                         phone: '9876556789'
@@ -5658,6 +5737,14 @@ x-flows:
                     type: ON-FULFILLMENT
                 provider:
                   id: P1
+                  descriptor:
+                    images:
+                      - url: >-
+                          https://example-bpp.com/prod/seller/assets/images/header/logo.png
+                        size_type: sm
+                    name: Uber
+                    short_desc: Uber Rides
+                    long_desc: Uber Rides, India.
                 quote:
                   breakup:
                     - price:
@@ -5821,6 +5908,11 @@ x-flows:
                         phone: '9856798567'
                       person:
                         name: Jason Roy
+                        image:
+                          url: >-
+                            https://example-bpp.com/prod/seller/images/agent/profile-image.png
+                          size_type: sm
+                      rating: '5'
                     customer:
                       contact:
                         phone: '9876556789'
@@ -5944,6 +6036,14 @@ x-flows:
                     type: ON-FULFILLMENT
                 provider:
                   id: P1
+                  descriptor:
+                    images:
+                      - url: >-
+                          https://example-bpp.com/prod/seller/assets/images/header/logo.png
+                        size_type: sm
+                    name: Uber
+                    short_desc: Uber Rides
+                    long_desc: Uber Rides, India.
                 quote:
                   breakup:
                     - price:
@@ -6111,6 +6211,11 @@ x-flows:
                         phone: '9856798567'
                       person:
                         name: Jason Roy
+                        image:
+                          url: >-
+                            https://example-bpp.com/prod/seller/images/agent/profile-image.png
+                          size_type: sm
+                      rating: '5'
                     customer:
                       contact:
                         phone: '9876556789'
@@ -6223,6 +6328,14 @@ x-flows:
                     type: ON-FULFILLMENT
                 provider:
                   id: P1
+                  descriptor:
+                    images:
+                      - url: >-
+                          https://example-bpp.com/prod/seller/assets/images/header/logo.png
+                        size_type: sm
+                    name: Uber
+                    short_desc: Uber Rides
+                    long_desc: Uber Rides, India.
                 quote:
                   breakup:
                     - price:
@@ -6430,6 +6543,11 @@ x-flows:
                         phone: '9856798567'
                       person:
                         name: Jason Roy
+                        image:
+                          url: >-
+                            https://example-bpp.com/prod/seller/images/agent/profile-image.png
+                          size_type: sm
+                      rating: '5'
                     customer:
                       contact:
                         phone: '9876556789'
@@ -6555,6 +6673,14 @@ x-flows:
                     type: ON-FULFILLMENT
                 provider:
                   id: P1
+                  descriptor:
+                    images:
+                      - url: >-
+                          https://example-bpp.com/prod/seller/assets/images/header/logo.png
+                        size_type: sm
+                    name: Uber
+                    short_desc: Uber Rides
+                    long_desc: Uber Rides, India.
                 quote:
                   breakup:
                     - price:
@@ -6644,6 +6770,14 @@ x-flows:
                           code: SETTLEMENT_AMOUNT
                         value: '1.46'
                 status: COMPLETED
+                documents:
+                  - descriptor:
+                      code: INVOICE
+                      name: Invoice Document
+                      short_desc: Download your Invoice document here.
+                      long_desc: Download your Invoice document here.
+                    mime_type: application/pdf
+                    url: https://example-bpp.com/prod/seller/invoices/O1.pdf
                 created_at: '2023-12-10T08:03:34.294Z'
                 updated_at: '2023-12-11T03:54:28.832Z'
   - summary: On-Demand - Assign driver post on-confirm
