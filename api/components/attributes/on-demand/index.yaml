@@ -126,6 +126,39 @@ search: &search
               owner: BAP
               usage: 12.923608, 77.614629
               description: Describes the GPS co-ordinates of this location.
+            address: 
+              required: OPTIONAL
+              type: string
+              owner: BAP
+              usage: 2nd & 3rd Floor, 7/6, August Kranti Marg
+              description: Describes the address of the location.
+            city: 
+              code: 
+                required: OPTIONAL
+                type: string
+                owner: BAP
+                usage: std:080
+                description: Describes the city code.
+            district: 
+              required: OPTIONAL
+              type: string
+              owner: BAP
+              usage: New Delhi
+              description: Describes the district value.
+            country: 
+              code: 
+                required: OPTIONAL
+                type: string
+                owner: BAP
+                usage: IND
+                description: Describes the country code.
+            area_code: 
+              required: OPTIONAL
+              type: string
+              owner: BAP
+              usage: '110049'
+              description: Describes the area code.     
+                          
             _description: &search_message_intent_fulfillment_stops_location__description
               required: MANDATORY
               type: object
@@ -324,6 +357,38 @@ on_search: &on_search
           owner: BPP
           usage: 450dec0f
           description: Describes the unique Id of the provider.
+        descriptor: &provider_descriptor_details
+          name: 
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: Uber
+            description: Describes the provdier name.  
+          short_desc: 
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: Uber Rides
+            description: Describes the provdier short_desc.
+          long_desc: 
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: Uber Rides, India
+            description: Describes the provdier long_desc.    
+          images:  
+            url: &provider_descriptor_image_url
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: https://example-bpp.com/prod/seller/asset
+              description: Describes the provdier image url.  
+            size_type: &provider_descriptor_image_size
+              required: OPTIONAL
+              type: string
+              owner: BPP
+              usage: sm
+              description: Describes the provdier image size type.    
         locations: &on_search_message_catalog_providers_locations
           id: &on_search_message_catalog_providers_locations_id
             required: OPTIONAL
@@ -801,6 +866,7 @@ on_select: &on_select
         tags: *on_search_message_catalog_providers_items_tags
       provider: &on_select_message_order_provider
         id: *on_search_message_catalog_providers_id
+        descriptor: *provider_descriptor_details
         _description: *on_search_message_catalog_providers__description
       fulfillments: &on_select_message_order_fulfillments
         id: *on_select_message_order_items_fulfillment_ids
@@ -1149,6 +1215,7 @@ on_init: &on_init
           owner: BPP
           usage: 450dec0f
           description: Describes the unqiue Id of the provider
+        descriptor: *provider_descriptor_details  
         _description: *on_search_message_catalog_providers__description
       fulfillments: &on_init_message_order_fulfillments
         id: *on_select_message_order_items_fulfillment_ids
@@ -1519,6 +1586,7 @@ on_confirm: &on_confirm
           owner: BPP
           usage: 450dec0f
           description: Unique reference ID to the payment of an order
+        descriptor: *provider_descriptor_details  
         _description: *on_search_message_catalog_providers__description
       fulfillments: &on_confirm_message_order_fulfillments
         id: *on_select_message_order_items_fulfillment_ids
@@ -1537,13 +1605,32 @@ on_confirm: &on_confirm
               type: string
               owner: BAP
               usage: FEMALE
-              description: Describes the agent gender    
+              description: Describes the agent gender 
+            image:
+              url:
+                required: optional
+                type: string
+                owner: BPP
+                usage: https://example-bpp.com/prod/seller/images
+                description: Describes the agent image
+              size_type:
+                required: optional
+                type: string
+                owner: BPP
+                usage: sm
+                description: Describes the size type of image     
             _description: &on_confirm_message_order_fulfillments_agent_person__description
               required: MANDATORY
               type: object
               owner: BPP
               usage: --
               description: Describes the agent details.
+          rating: &on_confirm_message_order_fulfillments_agent_rating
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: '5'
+            description: Describes the agent rating.
           contact: &on_confirm_message_order_fulfillments_agent_contact
             phone: &on_confirm_message_order_fulfillments_agent_contact_phone
               required: OPTIONAL
@@ -1847,7 +1934,8 @@ on_cancel: &on_cancel
           type: string
           owner: BPP
           usage: 450dec0f
-          description: "Describes the unique ID of the provider. "
+          description: "Describes the unique ID of the provider."
+        descriptor: *provider_descriptor_details  
         _description: *on_search_message_catalog_providers__description
       fulfillments: &on_cancel_message_order_fulfillments
         id: *on_select_message_order_items_fulfillment_ids
@@ -1887,17 +1975,58 @@ on_cancel: &on_cancel
               type: string
               owner: BPP
               usage: John Doe
-              description: Name of the agent
-            _description: *on_confirm_message_order_fulfillments_agent_person__description
-          contact: &on_cancel_message_order_fulfillments_agent_contact
-            phone: &on_cancel_message_order_fulfillments_agent_contact_phone
+              description: Describes the name of the agent
+            gender:
+              required: optional
+              type: string
+              owner: BAP
+              usage: FEMALE
+              description: Describes the agent gender 
+            image:
+              url:
+                required: optional
+                type: string
+                owner: BPP
+                usage: https://example-bpp.com/prod/seller/images
+                description: Describes the agent image
+              size_type:
+                required: optional
+                type: string
+                owner: BPP
+                usage: sm
+                description: Describes the size type of image     
+            _description: &on_confirm_message_order_fulfillments_agent_person__description
               required: MANDATORY
+              type: object
+              owner: BPP
+              usage: --
+              description: Describes the agent details.
+          rating: &on_cancel_message_order_fulfillments_agent_rating
+            required: OPTIONAL
+            type: string
+            owner: BPP
+            usage: '5'
+            description: Describes the agent rating.
+          contact: &on_confirm_message_order_fulfillments_agent_contact
+            phone: &on_confirm_message_order_fulfillments_agent_contact_phone
+              required: OPTIONAL
               type: string
               owner: BPP
               usage: 7845981268
-              description: Contact number of the agent
-            _description: *on_confirm_message_order_fulfillments_agent_contact__description
-          _description: *on_confirm_message_order_fulfillments_agent__description
+              description: Describes the contact number of the agent
+            _description: &on_confirm_message_order_fulfillments_agent_contact__description
+              required: MANDATORY
+              type: object
+              owner: BPP
+              usage: --
+              description: Describes the agent contact details.
+          _description: &on_confirm_message_order_fulfillments_agent__description
+            required: MANDATORY
+            type: object
+            owner: BPP
+            usage: --
+            description: Describes the agent.
+        
         vehicle: &on_cancel_message_order_fulfillments_vehicle
           registration: &on_cancel_message_order_fulfillments_vehicle_registration
             required: MANDATORY
@@ -2022,6 +2151,64 @@ on_cancel: &on_cancel
         usage: SOFT_CANCEL
         description: Describes the order status.
       _description: *on_init_message_order__description
+      documents: &invoice_document
+        descriptor:
+          code:
+            required: OPTIONAL
+            usage: INVOICE
+            description: >-
+              It refers to the unique descriptor identifier used for the
+              document
+            owner: BPP
+            type: string
+          name:
+            required: OPTIONAL
+            usage: Invoice Document
+            description: It refers to the specific name of the document
+            owner: BPP
+            type: string
+          short_desc:
+            required: OPTIONAL
+            usage: Download your Invoice Document here
+            description: This refers to the concised description of the document
+            owner: BPP
+            type: string
+          long_desc:
+            required: OPTIONAL
+            usage: Download your Invoice Document here
+            description: This refers to the brief description of the document
+            owner: BPP
+            type: string
+          _description:
+            required: OPTIONAL
+            usage: '--'
+            description: >-
+              It refers to the unique descriptor identifier used for the
+              document
+            owner: BPP
+            type: object
+        mime_type:
+          required: OPTIONAL
+          usage: application/pdf
+          description: >-
+            It refers to the categorization of the document based on its file
+            format and content type.
+          owner: BPP
+          type: string
+        url:
+          required: OPTIONAL
+          usage: https://seller.com/loan/invoice/O1.pdf
+          description: This describes the url from where the document can be accessed
+          owner: BPP
+          type: string
+        _description:
+          required: mandatory
+          usage: '--'
+          description: >-
+            It refers to the set of documents that are associated to a
+            particular order
+          owner: BPP
+          type: object
 status: &status
   context: &status_context
     location: *cancel_context_location
@@ -2111,6 +2298,7 @@ on_status: &on_status
         tags: *on_search_message_catalog_providers_items_tags
       provider: &on_status_message_order_provider
         id: *init_message_order_provider_id
+        descriptor: *provider_descriptor_details
         _description: *on_search_message_catalog_providers__description
       fulfillments: &on_status_message_order_fulfillments
         id: *on_select_message_order_items_fulfillment_ids
@@ -2227,6 +2415,7 @@ on_status: &on_status
         description: Describes The date-time of updated of this order
       id: *on_init_message_order_id
       _description: *on_init_message_order__description
+      documents: *invoice_document
 update: &update
   context: &update_context
     location: *cancel_context_location
@@ -2398,6 +2587,7 @@ on_update: &on_update
           description: Describes the contact number of the billable entity
       id: *on_confirm_message_order_id
       _description: *on_init_message_order__description
+      documents: *invoice_document
 track: 
   context:
     location: *cancel_context_location
