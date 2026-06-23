@@ -254,12 +254,13 @@ message:
         id: F01
       form_response:
         status: SUCCESS
-        submission_id: F01_SUBMISSION_ID
+        # submission_id: F01_SUBMISSION_ID
     fulfillments:
       - id: F1
         type: VISIT
         stops:
           - type: START
+            id: '1'
             instructions:
               additional_desc:
                 url: https://api.unreserved-entry-pass.com/sites/additional-info
@@ -267,6 +268,8 @@ message:
             time:
               timestamp: '2024-06-28T05:00:16.000Z'
           - type: CHECKPOINT
+            id: '2'
+            parent_stop_id: '1'
             instructions:
               additional_desc:
                 url: >-
@@ -276,6 +279,8 @@ message:
               # timestamp: '2024-06-28T05:00:16.000Z'
               duration: PT2H
           - type: CHECKPOINT
+            id: '3'
+            parent_stop_id: '2'
             instructions:
               additional_desc:
                 url: >-
@@ -284,6 +289,8 @@ message:
             time:
               duration: PT2H
           - type: END
+            id: '4'
+            parent_stop_id: '3'
             instructions:
               additional_desc:
                 url: >-
@@ -310,6 +317,8 @@ message:
       locations:
         - id: L1
           gps: 28.524596, 77.185577
+          city: 
+            code: std:011
           descriptor:
             name: Qutab Minar
             short_desc: >-
@@ -322,7 +331,24 @@ message:
             images:
               - url: https://api.unreserved-entry-pass.com/sites/images/location.png
                 size_type: md
-          rating: "5"  
+          rating: "5" 
+          time:
+            - label: OPERATIONAL_HOURS
+              days: "1,2,3,4,5,6,7"
+              schedule:
+                holidays: 
+                  - "2026-01-26T00:00:00.000Z"
+                  - "2026-08-15T00:00:00.000Z"
+                # frequency: PT4H
+                # times:
+                #   - "2026-01-26T09:00:00.000Z"
+                #   - "2026-01-26T11:00:00.000Z"
+
+                # times:
+                #   - "2026-01-26T09:00:00Z/PT2H"
+              range:
+                start: '2026-01-26T09:00:00Z'
+                end: '2026-01-26T11:00:00Z' 
     cancellation_terms:
       - cancellation_fee: 
           percentage: '10'
