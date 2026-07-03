@@ -5751,10 +5751,10 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): select
                 Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
                 end
-                # Buyer Platform (BAP)->>Seller Form Service: Get Form
-                # Seller Form Service-->>Buyer Platform (BAP): Form Received
-                # Buyer Platform (BAP)->>Seller Form Service: Form Submission
-                # Seller Form Service-->>Buyer Platform (BAP): Submission ID
+                Buyer Platform (BAP)->>Seller Form Service: Get Form
+                Seller Form Service-->>Buyer Platform (BAP): Form Received
+                Buyer Platform (BAP)->>Seller Form Service: Form Submission
+                Seller Form Service-->>Buyer Platform (BAP): Submission ID
         reference: if any
         example:
           summary: Select a an item for unreserved-entry-pass
@@ -5831,10 +5831,10 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
-                # Buyer Platform (BAP)->>Seller Form Service: Get Form
-                # Seller Form Service-->>Buyer Platform (BAP): Form Received
-                # Buyer Platform (BAP)->>Seller Form Service: Form Submission
-                # Seller Form Service-->>Buyer Platform (BAP): Submission ID
+                Buyer Platform (BAP)->>Seller Form Service: Get Form
+                Seller Form Service-->>Buyer Platform (BAP): Form Received
+                Buyer Platform (BAP)->>Seller Form Service: Form Submission
+                Seller Form Service-->>Buyer Platform (BAP): Submission ID
         reference: if any
         example:
           summary: Return a selected item for unreserved-entry-pass
@@ -5991,31 +5991,17 @@ x-flows:
                       head:
                         descriptor:
                           name: Additional Details
-                          code: ADDITIONAL_DETAILS
+                        index:
+                          min: 0
+                          cur: 0
+                          max: 0
                         headings:
                           - ADDITIONAL_DETAILS
                       form:
                         id: F01
-                        mime_type: none
-                        data:
-                          name:
-                            type: string
-                          country:
-                            type: string
-                          countryCode:
-                            type: string
-                          age:
-                            type: string
-                          email:
-                            type: string
-                          gender:
-                            type: enum
-                          phoneNumber:
-                            type: string
-                          idProof:
-                            type: enum
-                          passportNumber:
-                            type: string
+                        mime_type: text/html
+                        url: >-
+                          https://api.unreserved-entry-pass.com/xinput/additonal-details/F01
                         resubmit: false
                         multiple_submissions: false
                       required: true
@@ -6059,31 +6045,17 @@ x-flows:
                       head:
                         descriptor:
                           name: Additional Details
-                          code: ADDITIONAL_DETAILS
+                        index:
+                          min: 0
+                          cur: 0
+                          max: 0
                         headings:
                           - ADDITIONAL_DETAILS
                       form:
                         id: F02
-                        mime_type: none
-                        data:
-                          name:
-                            type: string
-                          country:
-                            type: string
-                          countryCode:
-                            type: string
-                          age:
-                            type: string
-                          email:
-                            type: string
-                          gender:
-                            type: enum
-                          phoneNumber:
-                            type: string
-                          idProof:
-                            type: enum
-                          passportNumber:
-                            type: string
+                        mime_type: text/html
+                        url: >-
+                          https://api.unreserved-entry-pass.com/xinput/additonal-details/F02
                         resubmit: false
                         multiple_submissions: false
                       required: true
@@ -6335,6 +6307,81 @@ x-flows:
                   price:
                     currency: INR
                     value: '800'
+      - summary: Provider platform share the additional details form
+        api: form
+        details:
+          - description: >-
+              Buyer platform fetches the additional details form from the
+              Provider platform using the link provided in the previous step
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Form Service: Get Form
+                Seller Form Service-->>Buyer Platform (BAP): Form Received
+                Buyer Platform (BAP)->>Seller Form Service: Form Submission
+                Seller Form Service-->>Buyer Platform (BAP): Submission ID
+                end
+        reference: if any
+        example:
+          value: |-
+            <!DOCTYPE html>
+            <html lang="en">
+
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Additional Details</title>
+            </head>
+
+            <body>
+              <form action="/form/submission/additional-details">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name"/> 
+
+                <label for="country">Country</label>
+                <input type="text" id="country" name="country"/> 
+                
+                <label for="countryCode">Country Code</label>
+                <input type="text" id="countryCode" name="countryCode"/>
+
+                <label for="age">Age</label>
+                <input type="text" id="age" name="age"/> 
+                
+                <label for="email">Email ID</label>
+                <input type="text" id="email" name="email"/> 
+
+                <label for="gender">Gender</label>
+                <select name="gender" id="gender">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="transgender">Transgender</option>
+                </select>
+
+                <label for="phoneNumber">Phone number</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" />
+
+                <label for="idProof">ID Proof</label>
+                <select name="idProof" id="idProof">
+                  <option value="passport">Passport</option>
+                </select>
+
+                <label for="passportNumber">Passport Number</label>
+                <input type="text" id="passportNumber" name="passportNumber"/>
+
+               
+                <input type="hidden" id="formId" name="formId" value="FO1">
+                <input type="hidden" id="transactionId" name="transactionId" value="cf7bb367-c820-4bc9-9be8-f548e0bbf222"></label>
+                <input type="submit" value="Submit">
+              </form>
+            </body>
+
+            </html>
       - summary: Buyer app submit the Additional Details Form
         api: select
         details:
@@ -6386,31 +6433,11 @@ x-flows:
                           selected:
                             count: 1
                     xinput:
-                      head:
-                        descriptor:
-                          name: Additional Details
-                          code: ADDITIONAL_DETAILS
                       form:
                         id: F01
-                        data:
-                          name:
-                            value: Mary Jane Watson
-                          country:
-                            value: India
-                          countryCode:
-                            value: IND
-                          age:
-                            value: '21'
-                          email:
-                            value: example@gmail.com
-                          gender:
-                            value: Male
-                          phoneNumber:
-                            value: '+919123456789'
-                          idProof:
-                            value: Passport
-                          passportNumber:
-                            type: '758658248'
+                      form_response:
+                        status: SUCCESS
+                        submission_id: F01_SUBMISSION_ID
                   - id: I2
                     parent_item_id: I0
                     quantity:
@@ -6422,31 +6449,11 @@ x-flows:
                           selected:
                             count: 1
                     xinput:
-                      head:
-                        descriptor:
-                          name: Additional Details
-                          code: ADDITIONAL_DETAILS
                       form:
                         id: F02
-                        data:
-                          name:
-                            value: Larry Jane Watson
-                          country:
-                            value: India
-                          countryCode:
-                            value: IND
-                          age:
-                            value: '31'
-                          email:
-                            value: example@gmail.com
-                          gender:
-                            value: Male
-                          phoneNumber:
-                            value: '+919123456789'
-                          idProof:
-                            value: Passport
-                          passportNumber:
-                            type: '758658248'
+                      form_response:
+                        status: SUCCESS
+                        submission_id: F02_SUBMISSION_ID
                   - id: I5
                     parent_item_id: I0
                     quantity:
@@ -11130,10 +11137,10 @@ x-flows:
                 Buyer Platform (BAP)->>Seller Platform (BPP): select
                 Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
                 end
-                # Buyer Platform (BAP)->>Seller Form Service: Get Form
-                # Seller Form Service-->>Buyer Platform (BAP): Form Received
-                # Buyer Platform (BAP)->>Seller Form Service: Form Submission
-                # Seller Form Service-->>Buyer Platform (BAP): Submission ID
+                Buyer Platform (BAP)->>Seller Form Service: Get Form
+                Seller Form Service-->>Buyer Platform (BAP): Form Received
+                Buyer Platform (BAP)->>Seller Form Service: Form Submission
+                Seller Form Service-->>Buyer Platform (BAP): Submission ID
         reference: if any
         example:
           summary: Select a an item for unreserved-entry-pass
@@ -11157,10 +11164,10 @@ x-flows:
                 Seller Platform (BPP)->>Buyer Platform (BAP):on_select
                 Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
                 end
-                # Buyer Platform (BAP)->>Seller Form Service: Get Form
-                # Seller Form Service-->>Buyer Platform (BAP): Form Received
-                # Buyer Platform (BAP)->>Seller Form Service: Form Submission
-                # Seller Form Service-->>Buyer Platform (BAP): Submission ID
+                Buyer Platform (BAP)->>Seller Form Service: Get Form
+                Seller Form Service-->>Buyer Platform (BAP): Form Received
+                Buyer Platform (BAP)->>Seller Form Service: Form Submission
+                Seller Form Service-->>Buyer Platform (BAP): Submission ID
         reference: if any
         example:
           summary: Return a selected item for unreserved-entry-pass
@@ -11434,31 +11441,17 @@ x-flows:
                   head:
                     descriptor:
                       name: Additional Details
-                      code: ADDITIONAL_DETAILS
+                    index:
+                      min: 0
+                      cur: 0
+                      max: 0
                     headings:
                       - ADDITIONAL_DETAILS
                   form:
                     id: F01
-                    mime_type: none
-                    data:
-                      name:
-                        type: string
-                      country:
-                        type: string
-                      countryCode:
-                        type: string
-                      age:
-                        type: string
-                      email:
-                        type: string
-                      gender:
-                        type: enum
-                      phoneNumber:
-                        type: string
-                      idProof:
-                        type: enum
-                      passportNumber:
-                        type: string
+                    mime_type: text/html
+                    url: >-
+                      https://api.unreserved-entry-pass.com/xinput/additonal-details/F01
                     resubmit: false
                     multiple_submissions: false
                   required: true
@@ -11629,6 +11622,81 @@ x-flows:
                   price:
                     currency: INR
                     value: '800'
+      - summary: Provider platform share the additional details form
+        api: form
+        details:
+          - description: >-
+              Buyer platform fetches the additional details form from the
+              Provider platform using the link provided in the previous step
+            mermaid: |-
+              sequenceDiagram
+                participant Buyer Platform (BAP)
+                participant Seller Platform (BPP)
+                Buyer Platform (BAP)->>Seller Platform (BPP): select
+                Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+                Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+                Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+                rect rgb(191, 223, 255)
+                Buyer Platform (BAP)->>Seller Form Service: Get Form
+                Seller Form Service-->>Buyer Platform (BAP): Form Received
+                Buyer Platform (BAP)->>Seller Form Service: Form Submission
+                Seller Form Service-->>Buyer Platform (BAP): Submission ID
+                end
+        reference: if any
+        example:
+          value: |-
+            <!DOCTYPE html>
+            <html lang="en">
+
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Additional Details</title>
+            </head>
+
+            <body>
+              <form action="/form/submission/additional-details">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name"/> 
+
+                <label for="country">Country</label>
+                <input type="text" id="country" name="country"/> 
+                
+                <label for="countryCode">Country Code</label>
+                <input type="text" id="countryCode" name="countryCode"/>
+
+                <label for="age">Age</label>
+                <input type="text" id="age" name="age"/> 
+                
+                <label for="email">Email ID</label>
+                <input type="text" id="email" name="email"/> 
+
+                <label for="gender">Gender</label>
+                <select name="gender" id="gender">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="transgender">Transgender</option>
+                </select>
+
+                <label for="phoneNumber">Phone number</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" />
+
+                <label for="idProof">ID Proof</label>
+                <select name="idProof" id="idProof">
+                  <option value="passport">Passport</option>
+                </select>
+
+                <label for="passportNumber">Passport Number</label>
+                <input type="text" id="passportNumber" name="passportNumber"/>
+
+               
+                <input type="hidden" id="formId" name="formId" value="FO1">
+                <input type="hidden" id="transactionId" name="transactionId" value="cf7bb367-c820-4bc9-9be8-f548e0bbf222"></label>
+                <input type="submit" value="Submit">
+              </form>
+            </body>
+
+            </html>
       - summary: Buyer app submit the Additional Details Form
         api: select
         details:
@@ -11695,31 +11763,11 @@ x-flows:
                       selected:
                         count: 1
                 xinput:
-                  head:
-                    descriptor:
-                      name: Additional Details
-                      code: ADDITIONAL_DETAILS
                   form:
                     id: F01
-                    data:
-                      name:
-                        value: Larry Jane Watson
-                      country:
-                        value: India
-                      countryCode:
-                        value: IND
-                      age:
-                        value: '31'
-                      email:
-                        value: example@gmail.com
-                      gender:
-                        value: Male
-                      phoneNumber:
-                        value: '+919123456789'
-                      idProof:
-                        value: Passport
-                      passportNumber:
-                        type: '758658248'
+                  form_response:
+                    status: SUCCESS
+                    submission_id: F01_SUBMISSION_ID
                 fulfillments:
                   - id: F1
                     stops:
