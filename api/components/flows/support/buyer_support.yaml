@@ -1,0 +1,190 @@
+summary: On-Demand - Support
+details:
+  - description:
+      The illustraive flow to perform a transaction of the nature where
+      in a buyer would like to book a mobility service form location
+      A(gps-cordinates) to localtion B(gps-cordinates)
+    mermaid: >-
+      sequenceDiagram
+        title On-Demand Discovery
+        Buyer Platform (BAP)->>Gateway (BG): search
+        Gateway (BG) ->> Buyer Platform (BAP): ACK
+        Gateway (BG)->>Registry: Lookup Seller Platforms (lookup)
+        Registry->>Gateway (BG): List of Seller Platforms (200 OK)
+        Gateway (BG)->>Seller Platform (BPP): search
+        Seller Platform (BPP)->>Gateway (BG) : ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP): Publish Catalog of Seller 1 (on_search)
+        Buyer Platform (BAP)->>Seller Platform (BPP): ACK
+  - description: Ordering
+    mermaid: |-
+      sequenceDiagram
+        title Selection
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): select
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_select
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - description: Initializing the order
+    mermaid: |-
+      sequenceDiagram
+        title Initializing Order
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): init
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_init
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - description: Order Confirmation
+    mermaid: |-
+      sequenceDiagram
+        title  Order Confirmation
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+  - description: Fulfillment
+    mermaid: >-
+      sequenceDiagram
+        title Order Fulfillment
+        participant Buyer Platform (BAP)
+        participant Seller Platform (BPP)
+        Buyer Platform (BAP)->>Seller Platform (BPP): status-Request application status
+        Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+        Seller Platform (BPP)->>Buyer Platform (BAP):on_status - Provide application status
+        Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+steps:
+  - summary: Ride provider confirms the ride request
+    api: on_confirm
+    details:
+      - description:
+          Ride provider confirms the ride request and provides the ride
+          details on confirmation.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      summary: Return confirmed order with latest fulfillment details
+      value:
+        $ref: ../../examples/on-demand/on_confirm/Return_confirmed_order_with_latest_fulfillment_details___X10.yaml
+  - summary: Ride provider provides latest order status
+    api: on_status
+    details:
+      - description: Ride provider provides the updated order status to the buyer app
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): confirm
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_confirm
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      summary: Return updated order with updated agent details
+      value:
+        $ref: ../../examples/on-demand/on_status/on_status_ride_provider_provides_the_updated_order_status_to_the_buyer_app_1.yaml
+  - summary: Ride provider provides latest order status
+    api: on_status
+    details:
+      - description: Ride provider provides the updated order status to the buyer app
+        mermaid: "sequenceDiagram
+
+          \  participant Buyer Platform (BAP)
+
+          \  participant Seller Platform (BPP)
+
+          \  rect rgb(191, 223, 255)
+
+          \  Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+
+          \  Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+
+          \  end
+
+          \  Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+
+          \  Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+
+          \  "
+    reference: if any
+    example:
+      summary: Return updated order with updated agent details
+      value:
+        $ref: ../../examples/on-demand/on_status/on_status_ride_provider_provides_the_updated_order_status_to_the_buyer_app_12.yaml
+  - summary: Ride provider provides latest order updates
+    api: on_status
+    details:
+      - description: Ride provider provides the updated order status to the buyer app
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_status
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+    reference: if any
+    example:
+      summary: Return updated order with updated agent details
+      value:
+        $ref: ../../examples/on-demand/on_status/on_status_ride_provider_provides_the_updated_order_status_to_the_buyer_app_3.yaml
+  - summary: The Buyer App initiates the support request
+    api: support
+    details:
+      - description: The Buyer App initiates the support request
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): support
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_support
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            
+    reference: if any
+    example:
+      summary: Return updated order with updated agent details
+      value:
+        $ref: ../../examples/on-demand/support/support_request.yaml
+  - summary: The Seller App returns the on_support response to the Buyer App.
+    api: on_support
+    details:
+      - description: The Seller App returns the on_support response to the Buyer App.
+        mermaid: |-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Seller Platform (BPP)->>Buyer Platform (BAP): support
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP): on_support
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end
+            
+    reference: if any
+    example:
+      summary: Return updated order with updated agent details
+      value:
+        $ref: ../../examples/on-demand/on_support/on_support_request.yaml      
+
