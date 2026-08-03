@@ -46,7 +46,7 @@ In this approach, the Seller NP generates a signed URL that can only be validate
 }
 ```
 
-### Recommended JWT Algorithms
+<!-- ### Recommended JWT Algorithms
 
 When JWT is used for generating signed URLs, the following algorithms are recommended:
 
@@ -55,7 +55,7 @@ When JWT is used for generating signed URLs, the following algorithms are recomm
 | **EdDSA (Ed25519)** | ⭐⭐⭐⭐⭐ Recommended | Modern, fast and secure. Recommended for new implementations. |
 | **ES256 (ECDSA P-256)** | ⭐⭐⭐⭐ | Widely supported and secure. |
 | **RS256 (RSA-256)** | ⭐⭐⭐⭐ | Commonly used when RSA infrastructure already exists. |
-| **HS256** | ⭐⭐ | Suitable only when both parties securely share the same secret key. |
+| **HS256** | ⭐⭐ | Suitable only when both parties securely share the same secret key. | -->
 
 The signed token may contain claims such as:
 
