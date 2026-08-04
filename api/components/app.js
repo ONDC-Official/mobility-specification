@@ -591,6 +591,7 @@ function buildSwagger(inPath, outPath) {
 }
 
 function addEnumTag(base, layer) {
+  if (layer.branch_status) base.info.branch_status = layer.branch_status;
   base["x-enum"] = layer["enum"];
   base["x-tags"] = layer["tags"];
   base["x-flows"] = layer["flows"];
