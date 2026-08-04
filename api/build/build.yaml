@@ -396,6 +396,7 @@ paths:
                         - action
                 message:
                   type: object
+                  additionalProperties: false
                   properties:
                     support:
                       $ref: '#/components/schemas/Support'
@@ -2157,17 +2158,19 @@ components:
         type:
           type: string
           enum:
-            - PRE-ORDER
-            - PRE-FULFILLMENT
-            - ON-FULFILLMENT
-            - POST-FULFILLMENT
-            - ON-ORDER
-            - PART-PAYMENT
+            - PRE_ORDER
+            - PRE_FULFILLMENT
+            - ON_FULFILLMENT
+            - POST_FULFILLMENT
+            - ON_ORDER
+            - PART_PAYMENT
+            - ON_CANCELLATION
+            - POST_CANCELLATION
         status:
           type: string
           enum:
             - PAID
-            - NOT-PAID
+            - NOT_PAID
         time:
           $ref: '#/components/schemas/Time'
         tags:
@@ -2590,6 +2593,10 @@ components:
         url:
           type: string
           format: uri
+        descriptor:
+          $ref: '#/components/schemas/Descriptor'
+        ref_type:
+          type: string
     Tag:
       description: >-
         Describes a tag. This is used to contain extended metadata. This object
@@ -2848,7 +2855,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
     message:
       intent:
-        fulfillment: &ref_3
+        fulfillment: &ref_4
           state:
             descriptor:
               code:
@@ -3086,7 +3093,7 @@ x-enum:
       catalog:
         providers:
           categories: *ref_2
-          items: &ref_4
+          items: &ref_5
             descriptor:
               code:
                 - code: ENTRY_PASS
@@ -3098,12 +3105,24 @@ x-enum:
                 - code: ADD_ON
                   description: Describes the item code as Entry Pass
                   reference: <PR/Issue/Discussion Links md format text
-          fulfillments: *ref_3
-          payments: &ref_6
+            margin:
+              selected: &ref_3
+                measure:
+                  unit:
+                    - code: PERCENT
+                      description: Describes the margin type as percent
+                      reference: <PR/Issue/Discussion Links md format text
+                    - code: INR
+                      description: Describes the margin type as INR
+                      reference: <PR/Issue/Discussion Links md format text
+              maximum: *ref_3
+              minimum: *ref_3
+          fulfillments: *ref_4
+          payments: &ref_7
             status:
-              - code: NOT-PAID
+              - code: NOT_PAID
                 description: >-
-                  NOT-PAID indicates a payment status where the payment process
+                  NOT_PAID indicates a payment status where the payment process
                   has not been completed.
                 reference: <PR/Issue/Discussion Links md format text
               - code: PAID
@@ -3119,13 +3138,13 @@ x-enum:
                 description: Describes when the buyer app is collecting the payment.
                 reference: <PR/Issue/Discussion Links md format text
             type:
-              - code: PRE-ORDER
+              - code: PRE_ORDER
                 description: Payment occurs prior to order placement.
                 reference: <PR/Issue/Discussion Links md format text
-              - code: ON-FULFILLMENT
+              - code: ON_FULFILLMENT
                 description: Payment occurs upon completion of the journey.
                 reference: <PR/Issue/Discussion Links md format text
-              - code: POST-FULFILLMENT
+              - code: POST_FULFILLMENT
                 description: Payment occurs after the completion of the journey.
                 reference: <PR/Issue/Discussion Links md format text
   select:
@@ -3136,10 +3155,10 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: &ref_5
+    message: &ref_6
       order:
-        items: *ref_4
-        fulfillments: *ref_3
+        items: *ref_5
+        fulfillments: *ref_4
         status:
           - code: SOFT_CANCEL
             description: >-
@@ -3160,7 +3179,7 @@ x-enum:
           - code: CANCELLED
             description: Describes the status of the order.
             reference: <PR/Issue/Discussion Links md format text
-        quote: &ref_7
+        quote: &ref_8
           breakup:
             title:
               - code: BASE_FARE
@@ -3191,7 +3210,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_5
+    message: *ref_6
   init:
     context:
       action:
@@ -3202,7 +3221,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_5
+    message: *ref_6
   on_init:
     context:
       action:
@@ -3213,12 +3232,12 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: &ref_8
+    message: &ref_9
       order:
-        items: *ref_4
-        fulfillments: *ref_3
-        payments: *ref_6
-        quote: *ref_7
+        items: *ref_5
+        fulfillments: *ref_4
+        payments: *ref_7
+        quote: *ref_8
   confirm:
     context:
       action:
@@ -3227,7 +3246,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_8
+    message: *ref_9
   on_confirm:
     context:
       action:
@@ -3238,7 +3257,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_8
+    message: *ref_9
   status:
     context:
       action:
@@ -3255,7 +3274,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_8
+    message: *ref_9
   cancel:
     context:
       action:
@@ -3277,7 +3296,7 @@ x-enum:
               Describes a confirm-cancel request initiated by the buyer app,
               confirming the order cancellation
             reference: <PR/Issue/Discussion Links md format text
-      cancellation_reason_id: &ref_9
+      cancellation_reason_id: &ref_10
         - code: '000'
           description: Describes the error code for Technical cancellation
           reference: <PR/Issue/Discussion Links md format text>
@@ -3324,10 +3343,10 @@ x-enum:
       domain: *ref_1
     message:
       order:
-        items: *ref_4
-        fulfillments: *ref_3
-        payments: *ref_6
-        quote: *ref_7
+        items: *ref_5
+        fulfillments: *ref_4
+        payments: *ref_7
+        quote: *ref_8
         cancellation:
           cancelled_by:
             - code: CONSUMER
@@ -3338,7 +3357,7 @@ x-enum:
               reference: <PR/Issue/Discussion Links md format text>
           reason:
             descriptor:
-              code: *ref_9
+              code: *ref_10
   update:
     context:
       action:
@@ -3347,7 +3366,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_8
+    message: *ref_9
   on_update:
     context:
       action:
@@ -3356,7 +3375,7 @@ x-enum:
           reference: <PR/Issue/Discussion Links md format text>
       location: *ref_0
       domain: *ref_1
-    message: *ref_8
+    message: *ref_9
   rating:
     context:
       action:
@@ -3366,7 +3385,7 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      ratings: &ref_10
+      ratings: &ref_11
         rating_category:
           - code: ITEM
             description: Describes the category as an item.
@@ -3395,16 +3414,16 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      ratings: *ref_10
+      ratings: *ref_11
 x-tags:
   search:
     message:
       intent:
-        tags: &ref_12
+        tags: &ref_13
           - code: BAP_TERMS
             description: Details about fare for the ride
             reference: <PR/Issue/Discussion Links md format text>
-            list: &ref_11
+            list: &ref_12
               - code: BUYER_FINDER_FEES_TYPE
                 description: Buyer finder fee type
                 reference: <PR/Issue/Discussion Links md format text>
@@ -3447,7 +3466,7 @@ x-tags:
           - code: BPP_TERMS
             description: Details about fare for the ride
             reference: <PR/Issue/Discussion Links md format text>
-            list: *ref_11
+            list: *ref_12
           - code: PAGINATION
             description: Details about pagination
             reference: <PR/Issue/Discussion Links md format text>
@@ -3471,8 +3490,8 @@ x-tags:
   on_search:
     message:
       catalog:
-        providers: &ref_13
-          items: &ref_14
+        providers: &ref_14
+          items: &ref_15
             tags:
               - code: FARE_POLICY
                 description: Details about fare for the ride
@@ -3511,23 +3530,23 @@ x-tags:
               - code: EXCLUSIONS
                 description: Details about list of exclusions
                 reference: <PR/Issue/Discussion Links md format text>
-        tags: *ref_12
+        tags: *ref_13
   on_select:
     message:
-      order: *ref_13
-  init: &ref_15
+      order: *ref_14
+  init: &ref_16
     message:
       order:
-        tags: *ref_12
-  on_init: &ref_16
+        tags: *ref_13
+  on_init: &ref_17
     message:
       order:
-        items: *ref_14
-        tags: *ref_12
-  confirm: *ref_15
-  on_confirm: *ref_16
-  on_status: *ref_16
-  on_cancel: *ref_16
+        items: *ref_15
+        tags: *ref_13
+  confirm: *ref_16
+  on_confirm: *ref_17
+  on_status: *ref_17
+  on_cancel: *ref_17
 x-flows:
   - summary: Unreserved Entry Pass - Seller App Pagination Flow (Culture-Heritage)
     details:
@@ -3565,7 +3584,7 @@ x-flows:
         reference: if any
         example:
           summary: Search for unreserved entry pass
-          value: &ref_28
+          value: &ref_29
             context:
               location:
                 country:
@@ -3640,7 +3659,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a catalog for unreserved entry pass
-          value: &ref_17
+          value: &ref_18
             context:
               location:
                 country:
@@ -3886,7 +3905,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a catalog for unreserved entry pass
-          value: &ref_18
+          value: &ref_19
             context:
               location:
                 country:
@@ -4164,11 +4183,11 @@ x-flows:
                           maximum:
                             measure:
                               value: '10'
-                              unit: PERCENT
+                              unit: INR
                           minimum:
                             measure:
                               value: '8'
-                              unit: PERCENT
+                              unit: INR
                         time:
                           label: VALIDITY
                           duration: P2D
@@ -4250,11 +4269,11 @@ x-flows:
                           maximum:
                             measure:
                               value: '10'
-                              unit: PERCENT
+                              unit: INR
                           minimum:
                             measure:
                               value: '8'
-                              unit: PERCENT
+                              unit: INR
                         time:
                           label: VALIDITY
                           duration: P2D
@@ -4400,6 +4419,15 @@ x-flows:
                             count: 6
                           minimum:
                             count: 1
+                        margin:
+                          maximum:
+                            measure:
+                              value: '10'
+                              unit: PERCENT
+                          minimum:
+                            measure:
+                              value: '8'
+                              unit: PERCENT
                         time:
                           label: VALIDITY
                           duration: P2D
@@ -4477,6 +4505,15 @@ x-flows:
                             count: 4
                           minimum:
                             count: 1
+                        margin:
+                          maximum:
+                            measure:
+                              value: '10'
+                              unit: PERCENT
+                          minimum:
+                            measure:
+                              value: '8'
+                              unit: PERCENT
                         time:
                           label: VALIDITY
                           duration: P2D
@@ -4728,7 +4765,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a catalog for unreserved entry pass
-          value: &ref_19
+          value: &ref_20
             context:
               location:
                 country:
@@ -5006,11 +5043,11 @@ x-flows:
                           maximum:
                             measure:
                               value: '10'
-                              unit: PERCENT
+                              unit: INR
                           minimum:
                             measure:
                               value: '8'
-                              unit: PERCENT
+                              unit: INR
                         time:
                           label: VALIDITY
                           duration: P2D
@@ -5092,11 +5129,11 @@ x-flows:
                           maximum:
                             measure:
                               value: '10'
-                              unit: PERCENT
+                              unit: INR
                           minimum:
                             measure:
                               value: '8'
-                              unit: PERCENT
+                              unit: INR
                         time:
                           label: VALIDITY
                           duration: P2D
@@ -5246,6 +5283,15 @@ x-flows:
                             count: 6
                           minimum:
                             count: 1
+                        margin:
+                          maximum:
+                            measure:
+                              value: '10'
+                              unit: PERCENT
+                          minimum:
+                            measure:
+                              value: '8'
+                              unit: PERCENT
                         time:
                           label: VALIDITY
                           duration: P2D
@@ -5325,6 +5371,15 @@ x-flows:
                             count: 4
                           minimum:
                             count: 1
+                        margin:
+                          maximum:
+                            measure:
+                              value: '10'
+                              unit: PERCENT
+                          minimum:
+                            measure:
+                              value: '8'
+                              unit: PERCENT
                         time:
                           label: VALIDITY
                           duration: P2D
@@ -5683,7 +5738,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a catalog for unreserved entry pass
-          value: *ref_17
+          value: *ref_18
       - summary: Return a catalog of all unreserved-entry-pass services
         api: on_search
         details:
@@ -5701,7 +5756,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a catalog for unreserved entry pass
-          value: *ref_18
+          value: *ref_19
       - summary: Return a catalog of all unreserved-entry-pass services
         api: on_search
         details:
@@ -5719,7 +5774,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a catalog for unreserved entry pass
-          value: *ref_19
+          value: *ref_20
   - summary: Unreserved Entry Pass - Purchase Journey(Culture-Heritage)
     details:
       - description: >-
@@ -5798,7 +5853,7 @@ x-flows:
         reference: if any
         example:
           summary: Select a an item for unreserved-entry-pass
-          value: &ref_21
+          value: &ref_22
             context:
               location:
                 country:
@@ -5828,7 +5883,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     add_ons:
                       - id: A1
                         quantity:
@@ -5843,7 +5898,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     add_ons:
                       - id: A1
                         quantity:
@@ -5888,7 +5943,7 @@ x-flows:
         reference: if any
         example:
           summary: Return a selected item for unreserved-entry-pass
-          value: &ref_32
+          value: &ref_33
             context:
               location:
                 country:
@@ -5980,7 +6035,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -6085,7 +6140,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -6493,7 +6548,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     add_ons:
                       - id: A1
                         quantity:
@@ -6514,7 +6569,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     add_ons:
                       - id: A1
                         quantity:
@@ -6657,7 +6712,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -6749,7 +6804,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -7036,7 +7091,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: &ref_22
+          value: &ref_23
             context:
               location:
                 country:
@@ -7066,7 +7121,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     add_ons:
                       - id: A1
                         quantity:
@@ -7081,7 +7136,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     add_ons:
                       - id: A1
                         quantity:
@@ -7103,8 +7158,8 @@ x-flows:
                 payments:
                   - id: PA1
                     collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                 tags:
                   - descriptor:
                       code: BAP_TERMS
@@ -7145,7 +7200,7 @@ x-flows:
         reference: if any
         example:
           summary: Return draft order for transit ticket with settlement details
-          value: &ref_23
+          value: &ref_24
             context:
               location:
                 country:
@@ -7237,7 +7292,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -7314,7 +7369,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -7575,8 +7630,8 @@ x-flows:
                 payments:
                   - id: PA1
                     collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                 tags:
                   - descriptor:
                       code: BAP_TERMS
@@ -7652,7 +7707,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: &ref_24
+          value: &ref_25
             context:
               location:
                 country:
@@ -7682,7 +7737,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     add_ons:
                       - id: A1
                         quantity:
@@ -7697,7 +7752,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     add_ons:
                       - id: A1
                         quantity:
@@ -7720,7 +7775,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       currency: INR
@@ -7800,7 +7855,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_25
+          value: &ref_26
             context:
               location:
                 country:
@@ -7894,7 +7949,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -7971,7 +8026,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -8242,7 +8297,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       amount: '800'
@@ -8325,7 +8380,7 @@ x-flows:
         reference: if any
         example:
           summary: Fetch the latest status of order
-          value: &ref_20
+          value: &ref_21
             context:
               location:
                 country:
@@ -8365,7 +8420,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: &ref_26
+          value: &ref_27
             context:
               location:
                 country:
@@ -8459,7 +8514,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -8536,7 +8591,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -8777,7 +8832,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       amount: '800'
@@ -9487,8 +9542,8 @@ x-flows:
                 payments:
                   - id: PA1
                     collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                 tags:
                   - descriptor:
                       code: BAP_TERMS
@@ -9948,8 +10003,8 @@ x-flows:
                 payments:
                   - id: PA1
                     collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                 tags:
                   - descriptor:
                       code: BAP_TERMS
@@ -10087,7 +10142,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       currency: INR
@@ -10598,7 +10653,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       amount: '800'
@@ -10681,7 +10736,7 @@ x-flows:
         reference: if any
         example:
           summary: Fetch the latest status of order
-          value: *ref_20
+          value: *ref_21
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -11133,7 +11188,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       amount: '950'
@@ -11276,7 +11331,7 @@ x-flows:
         reference: if any
         example:
           summary: Select a an item for unreserved-entry-pass
-          value: *ref_21
+          value: *ref_22
       - summary: >-
           The provider platform generates a quote for the selected service and
           includes the corresponding xInput forms as part of the order object.
@@ -11395,7 +11450,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -11482,7 +11537,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -11890,7 +11945,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     add_ons:
                       - id: A1
                         quantity:
@@ -11905,7 +11960,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     add_ons:
                       - id: A1
                         quantity:
@@ -12048,7 +12103,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -12135,7 +12190,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -12422,7 +12477,7 @@ x-flows:
         reference: if any
         example:
           summary: Initialize the order by providing billing details
-          value: *ref_22
+          value: *ref_23
       - summary: Provider platform accepts/appends the terms of orders
         api: on_init
         details:
@@ -12442,7 +12497,7 @@ x-flows:
         reference: if any
         example:
           summary: Return draft order for transit ticket with settlement details
-          value: *ref_23
+          value: *ref_24
       - summary: Consumer confirms the booking and provides details.
         api: confirm
         details:
@@ -12462,7 +12517,7 @@ x-flows:
         reference: if any
         example:
           summary: Confirm ticket booking
-          value: *ref_24
+          value: *ref_25
       - summary: Provider platform confirms the order
         api: on_confirm
         details:
@@ -12482,7 +12537,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_25
+          value: *ref_26
       - summary: Consumer platform requests for latest status
         api: status
         details:
@@ -12503,7 +12558,7 @@ x-flows:
         reference: if any
         example:
           summary: Fetch the latest status of order
-          value: *ref_20
+          value: *ref_21
       - summary: Provider platform provides latest order status
         api: on_status
         details:
@@ -12524,7 +12579,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_26
+          value: *ref_27
   - summary: Unreserved Entry Pass - Technical Cancellation Flow
     details:
       - description: Detailed process of cancelling a ticket with soft & confirm status.
@@ -12568,7 +12623,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_25
+          value: *ref_26
       - summary: Buyer app request for latest order status
         api: status
         details:
@@ -12721,7 +12776,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -12798,7 +12853,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -13069,7 +13124,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       amount: '800'
@@ -13149,7 +13204,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel ticket booking
-          value: &ref_27
+          value: &ref_28
             context:
               location:
                 country:
@@ -13192,7 +13247,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel ticket booking
-          value: &ref_33
+          value: &ref_34
             context:
               location:
                 country:
@@ -13286,7 +13341,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -13363,7 +13418,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -13675,7 +13730,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       amount: '800'
@@ -13763,7 +13818,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel ticket booking
-          value: &ref_29
+          value: &ref_30
             context:
               location:
                 country:
@@ -13806,7 +13861,7 @@ x-flows:
         reference: if any
         example:
           summary: Cancel ticket booking
-          value: &ref_34
+          value: &ref_35
             context:
               location:
                 country:
@@ -13900,7 +13955,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -13977,7 +14032,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -14288,7 +14343,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       amount: '800'
@@ -14402,7 +14457,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_25
+          value: *ref_26
       - summary: Buyer app cancels the request for ticket
         api: cancel
         details:
@@ -14561,7 +14616,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -14638,7 +14693,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -14949,7 +15004,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       amount: '800'
@@ -15167,7 +15222,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -15244,7 +15299,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -15555,7 +15610,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       amount: '800'
@@ -15803,7 +15858,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -15880,7 +15935,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -16172,7 +16227,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       amount: '800'
@@ -16396,7 +16451,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -16473,7 +16528,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -16765,7 +16820,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       amount: '800'
@@ -16861,7 +16916,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_25
+          value: *ref_26
       - summary: Provider sends the unsolicited on_cancel
         api: on_cancel
         details:
@@ -16975,7 +17030,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -17052,7 +17107,7 @@ x-flows:
                       selected:
                         measure:
                           value: '10'
-                          unit: PERCENT
+                          unit: INR
                     time:
                       label: VALIDITY
                       duration: P2D
@@ -17363,7 +17418,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
                       amount: '800'
@@ -17472,7 +17527,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_25
+          value: *ref_26
       - summary: The provider platform sends an unsolicited on_status call.
         api: on_status
         details:
@@ -17492,7 +17547,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: *ref_26
+          value: *ref_27
       - summary: Buyer app provides rating for an entity
         api: rating
         details:
@@ -17512,7 +17567,7 @@ x-flows:
         reference: if any
         example:
           summary: Buyer app provides rating for an entity
-          value: &ref_30
+          value: &ref_31
             context:
               location:
                 country:
@@ -17578,7 +17633,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_25
+          value: *ref_26
       - summary: The provider platform sends an unsolicited on_status call.
         api: on_status
         details:
@@ -17600,7 +17655,7 @@ x-flows:
         reference: if any
         example:
           summary: Return transit ticket order with status - Journey Completed
-          value: *ref_26
+          value: *ref_27
       - summary: Buyer app provides rating for an entity
         api: rating
         details:
@@ -17622,7 +17677,7 @@ x-flows:
         reference: if any
         example:
           summary: Buyer app provides rating for an entity
-          value: &ref_31
+          value: &ref_32
             context:
               location:
                 country:
@@ -17667,7 +17722,7 @@ x-flows:
         reference: if any
         example:
           summary: Provider returns with the on_rating
-          value: &ref_35
+          value: &ref_36
             context:
               location:
                 country:
@@ -17715,7 +17770,7 @@ x-flows:
         reference: if any
         example:
           summary: Return confirmed ticket order with payment confirmation
-          value: *ref_27
+          value: *ref_28
       - summary: The provider app rejected the cancellation as it is not allowed.
         api: on_cancel
         details:
@@ -17822,7 +17877,7 @@ x-examples:
                             code: SETTLEMENT_WINDOW
                           value: P30D
           - summary: Search_for_unreserved_entry_pass_2
-            value: *ref_28
+            value: *ref_29
           - summary: Search_for_unreserved_entry_pass_without_timestamp(FOOD_DINING)
             value:
               context:
@@ -17879,63 +17934,63 @@ x-examples:
       select:
         examples:
           - summary: Select_a_an_item_for_unreserved-entry-pass
-            value: *ref_21
+            value: *ref_22
       init:
         examples:
           - summary: Initialize_the_order_by_providing_billing_details
-            value: *ref_22
+            value: *ref_23
       confirm:
         examples:
           - summary: Confirm_ticket_booking
-            value: *ref_24
+            value: *ref_25
       cancel:
         examples:
           - summary: Cancel_ticket_booking
-            value: *ref_27
+            value: *ref_28
           - summary: Cancel_ticket_booking_2
-            value: *ref_29
+            value: *ref_30
       status:
         examples:
           - summary: Fetch_the_latest_status_of_order
-            value: *ref_20
+            value: *ref_21
       rating:
         examples:
           - summary: Provides the rating
-            value: *ref_30
-          - summary: Provides the rating with invalid order id
             value: *ref_31
+          - summary: Provides the rating with invalid order id
+            value: *ref_32
       on_search:
         examples:
           - summary: Return_a_catalog_for_unreserved_entry_pass
-            value: *ref_18
+            value: *ref_19
           - summary: on_search_request_1
-            value: *ref_17
+            value: *ref_18
       on_select:
         examples:
           - summary: Return_a_selected_item_for_unreserved-entry-pass
-            value: *ref_32
+            value: *ref_33
       on_init:
         examples:
           - summary: Return_draft_order_for_transit_ticket_with_settlement_details
-            value: *ref_23
+            value: *ref_24
       on_confirm:
         examples:
           - summary: Return_confirmed_ticket_order_with_payment_confirmation
-            value: *ref_25
+            value: *ref_26
       on_cancel:
         examples:
           - summary: Cancel_ticket_booking_1
-            value: *ref_33
-          - summary: Cancel_ticket_booking_2
             value: *ref_34
+          - summary: Cancel_ticket_booking_2
+            value: *ref_35
       on_status:
         examples:
           - summary: Return_confirmed_ticket_order_with_payment_confirmation_1
-            value: *ref_26
+            value: *ref_27
       on_rating:
         examples:
           - summary: Provides the on_Rating on case of error
-            value: *ref_35
+            value: *ref_36
 x-attributes:
   unreserved-entry-pass:
     attribute_set:
@@ -21309,13 +21364,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describes the payment status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Describes the payment type
               _description:
                 required: mandatory
@@ -22224,13 +22279,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describes the payment status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Describes the payment type
               _description:
                 required: mandatory
@@ -22603,13 +22658,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describes the payment status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Describes the payment type
               params:
                 transaction_id:
@@ -23653,13 +23708,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describes the payment status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Describes the payment type
               params:
                 amount:
@@ -24829,13 +24884,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describes the payment status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Describes the payment type
               params:
                 amount:
