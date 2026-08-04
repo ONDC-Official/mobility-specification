@@ -396,6 +396,7 @@ paths:
                         - action
                 message:
                   type: object
+                  additionalProperties: false
                   properties:
                     support:
                       $ref: '#/components/schemas/Support'
@@ -1370,8 +1371,7 @@ components:
         data:
           description: The form submission data
           type: object
-          additionalProperties:
-            type: string
+          additionalProperties: true
         mime_type:
           description: >-
             This field indicates the nature and format of the form received by
@@ -1382,6 +1382,7 @@ components:
             - text/html
             - application/html
             - application/xml
+            - none
         resubmit:
           type: boolean
         multiple_submissions:
@@ -1686,6 +1687,10 @@ components:
           description: The selling quantity of the item
           allOf:
             - $ref: '#/components/schemas/ItemQuantity'
+        margin:
+          description: The selling margin of the item
+          allOf:
+            - $ref: '#/components/schemas/ItemQuantity'
         category_ids:
           description: Categories this item can be listed under
           type: array
@@ -1846,6 +1851,14 @@ components:
           description: The rating of this location
           allOf:
             - $ref: '#/components/schemas/Rating/properties/value'
+        time:
+          description: >-
+            Temporal attributes of this item. This property is used when the
+            item exists on the catalog only for a limited period of time.
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Time'
     MediaFile:
       description: This object contains a url to a media file.
       type: object
@@ -2145,17 +2158,19 @@ components:
         type:
           type: string
           enum:
-            - PRE-ORDER
-            - PRE-FULFILLMENT
-            - ON-FULFILLMENT
-            - POST-FULFILLMENT
-            - ON-ORDER
-            - PART-PAYMENT
+            - PRE_ORDER
+            - PRE_FULFILLMENT
+            - ON_FULFILLMENT
+            - POST_FULFILLMENT
+            - ON_ORDER
+            - PART_PAYMENT
+            - ON_CANCELLATION
+            - POST_CANCELLATION
         status:
           type: string
           enum:
             - PAID
-            - NOT-PAID
+            - NOT_PAID
         time:
           $ref: '#/components/schemas/Time'
         tags:
@@ -2578,6 +2593,10 @@ components:
         url:
           type: string
           format: uri
+        descriptor:
+          $ref: '#/components/schemas/Descriptor'
+        ref_type:
+          type: string
     Tag:
       description: >-
         Describes a tag. This is used to contain extended metadata. This object
@@ -2996,9 +3015,9 @@ x-enum:
           fulfillments: *ref_2
           payments: &ref_5
             status:
-              - code: NOT-PAID
+              - code: NOT_PAID
                 description: >-
-                  NOT-PAID indicates a payment status where the payment process
+                  NOT_PAID indicates a payment status where the payment process
                   has not been completed.
                 reference: <PR/Issue/Discussion Links md format text
               - code: PAID
@@ -3014,13 +3033,13 @@ x-enum:
                 description: Describes when the buyer app is collecting the payment.
                 reference: <PR/Issue/Discussion Links md format text
             type:
-              - code: PRE-ORDER
+              - code: PRE_ORDER
                 description: Payment occurs prior to order placement.
                 reference: <PR/Issue/Discussion Links md format text
-              - code: ON-FULFILLMENT
+              - code: ON_FULFILLMENT
                 description: Payment occurs upon completion of the journey.
                 reference: <PR/Issue/Discussion Links md format text
-              - code: POST-FULFILLMENT
+              - code: POST_FULFILLMENT
                 description: Payment occurs after the completion of the journey.
                 reference: <PR/Issue/Discussion Links md format text
   select:
@@ -3309,11 +3328,20 @@ x-tags:
                     description: Describes the ticket number for bus
                     reference: <PR/Issue/Discussion Links md format text>
               - code: INFO
-                description: Describes the details ablout fulfillment.
+                description: Describes the details about fulfillment.
                 reference: <PR/Issue/Discussion Links md format text>
                 list:
                   - code: PARENT_ID
                     description: Describes the parent id for fulfillments
+                    reference: <PR/Issue/Discussion Links md format text>
+              - code: PRICE_INFO
+                description: Describes the details ablout recharge price.
+                reference: <PR/Issue/Discussion Links md format text>
+                list:
+                  - code: STEP_VALUE
+                    description: >-
+                      Describes, the valid recharge amounts must be multiples of
+                      this value.
                     reference: <PR/Issue/Discussion Links md format text>
           tags:
             - &ref_12
@@ -5843,8 +5871,8 @@ x-flows:
                   phone: +91-9897867564
                 payments:
                   - collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                 tags:
                   - descriptor:
                       code: BAP_TERMS
@@ -6106,8 +6134,8 @@ x-flows:
                 payments:
                   - id: PA1
                     collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                 tags:
                   - descriptor:
                       code: BPP_TERMS
@@ -6212,7 +6240,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -6549,7 +6577,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -6913,7 +6941,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -8521,7 +8549,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       currency: INR
                       amount: '70'
@@ -8761,7 +8789,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -9562,8 +9590,8 @@ x-flows:
                   phone: +91-9897867564
                 payments:
                   - collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                 tags:
                   - descriptor:
                       code: BAP_TERMS
@@ -9749,8 +9777,8 @@ x-flows:
                 payments:
                   - id: PA1
                     collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                 tags:
                   - descriptor:
                       code: BPP_TERMS
@@ -9866,7 +9894,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -10118,7 +10146,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -10542,7 +10570,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -10927,7 +10955,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -11091,7 +11119,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -11419,7 +11447,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -11811,7 +11839,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -11978,7 +12006,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -12310,7 +12338,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -12674,7 +12702,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -13062,7 +13090,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -13507,7 +13535,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -13927,7 +13955,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -14305,7 +14333,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -14688,7 +14716,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -15187,7 +15215,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -15703,7 +15731,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -15913,7 +15941,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -16563,6 +16591,16 @@ x-flows:
                           maximum_value: '500'
                         fulfillment_ids:
                           - F3
+                        tags:
+                          - descriptor:
+                              code: PRICE_INFO
+                            list:
+                              - descriptor:
+                                  code: STEP_VALUE
+                                  short_desc: >-
+                                    Describes, the valid recharge amounts must
+                                    be multiples of this value.
+                                value: '50'
                       - id: I5
                         descriptor:
                           name: Daily Pass
@@ -18284,8 +18322,8 @@ x-flows:
                   phone: +91-9897867564
                 payments:
                   - collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                 tags:
                   - descriptor:
                       code: BAP_TERMS
@@ -18666,8 +18704,8 @@ x-flows:
                 payments:
                   - id: PA1
                     collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                 cancellation_terms:
                   - external_ref:
                       mimetype: text/html
@@ -18779,7 +18817,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -19263,7 +19301,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -19748,7 +19786,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -20374,8 +20412,8 @@ x-flows:
                   phone: +91-9897867564
                 payments:
                   - collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                 tags:
                   - descriptor:
                       code: BAP_TERMS
@@ -20704,8 +20742,8 @@ x-flows:
                 payments:
                   - id: PA1
                     collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                 cancellation_terms:
                   - external_ref:
                       mimetype: text/html
@@ -20868,7 +20906,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -21243,7 +21281,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -21833,7 +21871,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -22325,7 +22363,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -22911,7 +22949,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -23503,7 +23541,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -24042,7 +24080,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -24586,7 +24624,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -25191,7 +25229,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -25773,7 +25811,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -26304,7 +26342,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -26883,7 +26921,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -27416,15 +27454,15 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
                       amount: '120'
                   - id: PA2
                     collected_by: BAP
-                    status: NOT-PAID
-                    type: POST-FULFILLMENT
+                    status: NOT_PAID
+                    type: POST_FULFILLMENT
                 cancellation_terms:
                   - external_ref:
                       mimetype: text/html
@@ -27555,7 +27593,7 @@ x-flows:
                   - id: PA2
                     collected_by: BAP
                     status: PAID
-                    type: POST-FULFILLMENT
+                    type: POST_FULFILLMENT
                     params:
                       transaction_id: a442bd1f-0373-4562-845e-e5a9262a76fd
                       amount: '140'
@@ -27926,7 +27964,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                       currency: INR
@@ -27934,7 +27972,7 @@ x-flows:
                   - id: PA2
                     collected_by: BAP
                     status: PAID
-                    type: POST-FULFILLMENT
+                    type: POST_FULFILLMENT
                     params:
                       transaction_id: a442bd1f-0373-4562-845e-e5a9262a76fd
                       amount: '140'
@@ -28146,7 +28184,7 @@ x-flows:
                 end 
         reference: if any
         example:
-          value: &ref_70
+          value: &ref_69
             context:
               action: on_select
               bap_id: api.example-bap.com
@@ -28262,7 +28300,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_66
+          value: &ref_65
             context:
               action: init
               bap_id: api.example-bap.com
@@ -28297,8 +28335,8 @@ x-flows:
                     type: PASS
                 payments:
                   - collected_by: BAP
-                    type: PRE-ORDER
-                    status: NOT-PAID
+                    type: PRE_ORDER
+                    status: NOT_PAID
                 tags:
                   - descriptor:
                       code: BAP_TERMS
@@ -28343,7 +28381,7 @@ x-flows:
                 end
         reference: if any
         example:
-          value: &ref_72
+          value: &ref_70
             context:
               action: on_init
               bap_id: api.example-bap.com
@@ -28445,8 +28483,8 @@ x-flows:
                         value: '0'
                 payments:
                   - id: PAYMENT_ID
-                    type: PRE-ORDER
-                    status: NOT-PAID
+                    type: PRE_ORDER
+                    status: NOT_PAID
                     collected_by: BAP
                 billing:
                   name: John Doe
@@ -28507,7 +28545,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_68
+          value: &ref_67
             context:
               action: confirm
               bap_id: api.example-bap.com
@@ -28599,7 +28637,7 @@ x-flows:
                 payments:
                   - id: PAYMENT_ID
                     collected_by: BAP
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     status: PAID
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
@@ -28626,7 +28664,7 @@ x-flows:
                 end
         reference: if any
         example:
-          value: &ref_74
+          value: &ref_72
             context:
               action: on_confirm
               bap_id: api.example-bap.com
@@ -28742,7 +28780,7 @@ x-flows:
                 payments:
                   - id: PAYMENT_ID
                     collected_by: BAP
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     status: PAID
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
@@ -28866,177 +28904,6 @@ x-flows:
             Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK            
     references: if any
     steps:
-      - summary: Buyer app selects an item
-        api: select
-        details:
-          - description: Buyer app selects a specific metro card recharge item.
-            mermaid: |-
-              sequenceDiagram
-                title  Selection
-                participant Buyer Platform (BAP)
-                participant Seller Platforms (BPP)
-                rect rgb(191, 223, 255)
-                Buyer Platform (BAP)->>Seller Platforms (BPP): select
-                Seller Platforms (BPP)-->>Buyer Platform (BAP):ACK
-                end
-                Seller Platforms (BPP)->>Buyer Platform (BAP):on_select
-                Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
-        reference: if any
-        example:
-          value: &ref_65
-            context:
-              action: select
-              bap_id: api.example-bap.com
-              bap_uri: https://api.example-bap.com/ondc/metro
-              bpp_id: api.example-bpp.com
-              bpp_uri: https://api.example-bpp.com/ondc/metro
-              domain: ONDC:TRV11
-              location:
-                country:
-                  code: IND
-                city:
-                  code: std:011
-              message_id: 5ea24707-ed17-4ef8-b4a1-fcf77eb10b29
-              timestamp: '2025-11-23T05:40:10.651Z'
-              transaction_id: 4b991167-e506-44e7-bb4f-dccf1446fcaa
-              ttl: PT24H
-              version: 2.1.0
-            message:
-              order:
-                provider:
-                  id: P1
-                items:
-                  - id: I4
-                    price:
-                      value: '100'
-                fulfillments:
-                  - id: F3
-                    type: ONLINE
-                    customer:
-                      person:
-                        creds:
-                          - id: 7ed21b6f
-                            type: CARD_IDENTIFIER
-      - summary: Seller returns the response to selected metro card recharge plan
-        api: on_select
-        details:
-          - description: Seller responds to the buyer app requests with quote.
-            mermaid: |-
-              sequenceDiagram
-                participant Buyer Platform (BAP)
-                participant Seller Platforms (BPP)
-                Buyer Platform (BAP)->>Seller Platforms (BPP): select
-                Seller Platforms (BPP)-->>Buyer Platform (BAP):ACK
-                rect rgb(191, 223, 255)
-                Seller Platforms (BPP)->>Buyer Platform (BAP):on_select
-                Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK
-                end 
-        reference: if any
-        example:
-          value: &ref_71
-            context:
-              action: on_select
-              bap_id: api.example-bap.com
-              bap_uri: https://api.example-bap.com/ondc/metro
-              bpp_id: api.example-bpp.com
-              bpp_uri: https://api.example-bpp.com/ondc/metro
-              domain: ONDC:TRV11
-              location:
-                country:
-                  code: IND
-                city:
-                  code: std:011
-              message_id: 5ea24707-ed17-4ef8-b4a1-fcf77eb10b29
-              timestamp: '2025-11-23T05:40:12.651Z'
-              transaction_id: 4b991167-e506-44e7-bb4f-dccf1446fcaa
-              ttl: PT24H
-              version: 2.1.0
-            message:
-              order:
-                provider:
-                  id: P1
-                  descriptor:
-                    name: Delhi Metro Rail Limited
-                    images:
-                      - url: https://delhimetrorail.com/logos/logo.icon
-                items:
-                  - id: I4
-                    category_ids:
-                      - C3
-                    descriptor:
-                      name: Metro Card Recharge
-                      code: RECHARGE
-                      images:
-                        - url: https://delhimetrorail.com/logos/logo.ico
-                    price:
-                      currency: INR
-                      value: '100'
-                    fulfillment_ids:
-                      - F3
-                fulfillments:
-                  - id: F3
-                    customer:
-                      person:
-                        creds:
-                          - id: 7ed21b6f
-                            type: CARD_IDENTIFIER
-                    type: ONLINE
-                    stops:
-                      - instructions:
-                          name: How to use?
-                          short_desc: short description about how to use?
-                          long_desc: Description about how to use?
-                cancellation_terms:
-                  - external_ref:
-                      mimetype: text/html
-                      url: https://transitsolutions.com/mf/tnc.html
-                quote:
-                  id: Q1
-                  price:
-                    value: '100'
-                    currency: INR
-                  breakup:
-                    - title: BASE_FARE
-                      item:
-                        id: I1
-                        price:
-                          currency: INR
-                          value: '100'
-                    - title: CONVENIENCE_FEE
-                      price:
-                        currency: INR
-                        value: '10'
-                    - title: TAX
-                      price:
-                        currency: INR
-                        value: '10'
-                      item:
-                        tags:
-                          - descriptor:
-                              code: TAX
-                            list:
-                              - descriptor:
-                                  code: CGST
-                                value: 4%
-                              - descriptor:
-                                  code: SGST
-                                value: 4%
-                    - title: OTHER_CHARGES
-                      price:
-                        currency: INR
-                        value: '0'
-                      item:
-                        tags:
-                          - descriptor:
-                              code: OTHER_CHARGES
-                            list:
-                              - descriptor:
-                                  code: SURCHARGE
-                                value: '0'
-                    - title: OFFER
-                      price:
-                        currency: INR
-                        value: '-10'
       - summary: The buyer app initiates the metro card recharge request
         api: init
         details:
@@ -29054,7 +28921,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_67
+          value: &ref_66
             context:
               action: init
               bap_id: api.example-bap.com
@@ -29078,6 +28945,8 @@ x-flows:
                   id: P1
                 items:
                   - id: I4
+                    price:
+                      value: '100'
                 fulfillments:
                   - id: F3
                     customer:
@@ -29092,8 +28961,8 @@ x-flows:
                     type: ONLINE
                 payments:
                   - collected_by: BAP
-                    type: PRE-ORDER
-                    status: NOT-PAID
+                    type: PRE_ORDER
+                    status: NOT_PAID
                 tags:
                   - descriptor:
                       code: BAP_TERMS
@@ -29138,7 +29007,7 @@ x-flows:
                 end
         reference: if any
         example:
-          value: &ref_73
+          value: &ref_71
             context:
               action: on_init
               bap_id: api.example-bap.com
@@ -29178,6 +29047,16 @@ x-flows:
                       value: '100'
                     fulfillment_ids:
                       - F3
+                    tags:
+                      - descriptor:
+                          code: PRICE_INFO
+                        list:
+                          - descriptor:
+                              code: STEP_VALUE
+                              short_desc: >-
+                                Describes, the valid recharge amounts must be
+                                multiples of this value.
+                            value: '50'
                 fulfillments:
                   - id: F3
                     customer:
@@ -29244,8 +29123,8 @@ x-flows:
                         value: '-10'
                 payments:
                   - id: PAYMENT_ID
-                    type: PRE-ORDER
-                    status: NOT-PAID
+                    type: PRE_ORDER
+                    status: NOT_PAID
                     collected_by: BAP
                 tags:
                   - descriptor:
@@ -29306,7 +29185,7 @@ x-flows:
                 Buyer Platform (BAP)-->>Seller Platforms (BPP): ACK 
         reference: if any
         example:
-          value: &ref_69
+          value: &ref_68
             context:
               action: confirm
               bap_id: api.example-bap.com
@@ -29345,7 +29224,7 @@ x-flows:
                 payments:
                   - id: PAYMENT_ID
                     collected_by: BAP
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     status: PAID
                     params:
                       transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
@@ -29428,7 +29307,7 @@ x-flows:
                 end
         reference: if any
         example:
-          value: &ref_75
+          value: &ref_73
             context:
               action: on_confirm
               bap_id: api.example-bap.com
@@ -29470,6 +29349,16 @@ x-flows:
                       value: '100'
                     fulfillment_ids:
                       - F3
+                    tags:
+                      - descriptor:
+                          code: PRICE_INFO
+                        list:
+                          - descriptor:
+                              code: STEP_VALUE
+                              short_desc: >-
+                                Describes, the valid recharge amounts must be
+                                multiples of this value.
+                            value: '50'
                 fulfillments:
                   - id: F3
                     customer:
@@ -29490,6 +29379,13 @@ x-flows:
                           name: How to use?
                           short_desc: short description about how to use?
                           long_desc: Description about how to use?
+                    tags:
+                      - descriptor:
+                          code: TICKET_INFO
+                        list:
+                          - descriptor:
+                              code: NUMBER
+                            value: 7ed21b6f
                     type: ONLINE
                 quote:
                   id: Q1
@@ -29540,7 +29436,7 @@ x-flows:
                         value: '-10'
                 payments:
                   - id: PAYMENT_ID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     status: PAID
                     collected_by: BAP
                     params:
@@ -29932,7 +29828,7 @@ x-examples:
                     - id: PA1
                       collected_by: BAP
                       status: PAID
-                      type: PRE-ORDER
+                      type: PRE_ORDER
                       params:
                         transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                         currency: INR
@@ -31395,7 +31291,7 @@ x-examples:
                     - id: PA1
                       collected_by: BAP
                       status: PAID
-                      type: PRE-ORDER
+                      type: PRE_ORDER
                       params:
                         transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                         currency: INR
@@ -31718,7 +31614,7 @@ x-examples:
                     - id: PA1
                       collected_by: BAP
                       status: PAID
-                      type: PRE-ORDER
+                      type: PRE_ORDER
                       params:
                         transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                         currency: INR
@@ -32029,7 +31925,7 @@ x-examples:
                     - id: PA1
                       collected_by: BAP
                       status: PAID
-                      type: PRE-ORDER
+                      type: PRE_ORDER
                       params:
                         transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                         currency: INR
@@ -33221,7 +33117,7 @@ x-examples:
                     - id: PA1
                       collected_by: BAP
                       status: PAID
-                      type: PRE-ORDER
+                      type: PRE_ORDER
                       params:
                         transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                         currency: INR
@@ -33462,7 +33358,8 @@ x-examples:
                 timestamp: '2021-03-23T10:00:40.065Z'
                 ttl: PT30S
               message:
-                ref_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
+                support:
+                  ref_id: 6f339232-2bc3-44d2-915c-30d2b053ce1d
       on_update:
         examples:
           - summary: reject_cancel_request
@@ -33837,7 +33734,7 @@ x-examples:
                     - id: PA1
                       collected_by: BAP
                       status: PAID
-                      type: PRE-ORDER
+                      type: PRE_ORDER
                       params:
                         transaction_id: 34cc9b0b-6887-4c63-8397-2f4fcf03e50d
                         currency: INR
@@ -33999,15 +33896,48 @@ x-examples:
       select:
         examples:
           - value: *ref_64
-          - value: *ref_65
+          - value:
+              context:
+                action: select
+                bap_id: api.example-bap.com
+                bap_uri: https://api.example-bap.com/ondc/metro
+                bpp_id: api.example-bpp.com
+                bpp_uri: https://api.example-bpp.com/ondc/metro
+                domain: ONDC:TRV11
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                message_id: 5ea24707-ed17-4ef8-b4a1-fcf77eb10b29
+                timestamp: '2025-11-23T05:40:10.651Z'
+                transaction_id: 4b991167-e506-44e7-bb4f-dccf1446fcaa
+                ttl: PT24H
+                version: 2.1.0
+              message:
+                order:
+                  provider:
+                    id: P1
+                  items:
+                    - id: I4
+                      price:
+                        value: '100'
+                  fulfillments:
+                    - id: F3
+                      type: ONLINE
+                      customer:
+                        person:
+                          creds:
+                            - id: 7ed21b6f
+                              type: CARD_IDENTIFIER
       init:
         examples:
+          - value: *ref_65
           - value: *ref_66
-          - value: *ref_67
       confirm:
         examples:
+          - value: *ref_67
           - value: *ref_68
-          - value: *ref_69
           - value:
               context:
                 action: confirm
@@ -34222,16 +34152,119 @@ x-examples:
                           value: 2.5 %
       on_select:
         examples:
+          - value: *ref_69
+          - value:
+              context:
+                action: on_select
+                bap_id: api.example-bap.com
+                bap_uri: https://api.example-bap.com/ondc/metro
+                bpp_id: api.example-bpp.com
+                bpp_uri: https://api.example-bpp.com/ondc/metro
+                domain: ONDC:TRV11
+                location:
+                  country:
+                    code: IND
+                  city:
+                    code: std:011
+                message_id: 5ea24707-ed17-4ef8-b4a1-fcf77eb10b29
+                timestamp: '2025-11-23T05:40:12.651Z'
+                transaction_id: 4b991167-e506-44e7-bb4f-dccf1446fcaa
+                ttl: PT24H
+                version: 2.1.0
+              message:
+                order:
+                  provider:
+                    id: P1
+                    descriptor:
+                      name: Delhi Metro Rail Limited
+                      images:
+                        - url: https://delhimetrorail.com/logos/logo.icon
+                  items:
+                    - id: I4
+                      category_ids:
+                        - C3
+                      descriptor:
+                        name: Metro Card Recharge
+                        code: RECHARGE
+                        images:
+                          - url: https://delhimetrorail.com/logos/logo.ico
+                      price:
+                        currency: INR
+                        value: '100'
+                      fulfillment_ids:
+                        - F3
+                  fulfillments:
+                    - id: F3
+                      customer:
+                        person:
+                          creds:
+                            - id: 7ed21b6f
+                              type: CARD_IDENTIFIER
+                      type: ONLINE
+                      stops:
+                        - instructions:
+                            name: How to use?
+                            short_desc: short description about how to use?
+                            long_desc: Description about how to use?
+                  cancellation_terms:
+                    - external_ref:
+                        mimetype: text/html
+                        url: https://transitsolutions.com/mf/tnc.html
+                  quote:
+                    id: Q1
+                    price:
+                      value: '100'
+                      currency: INR
+                    breakup:
+                      - title: BASE_FARE
+                        item:
+                          id: I1
+                          price:
+                            currency: INR
+                            value: '100'
+                      - title: CONVENIENCE_FEE
+                        price:
+                          currency: INR
+                          value: '10'
+                      - title: TAX
+                        price:
+                          currency: INR
+                          value: '10'
+                        item:
+                          tags:
+                            - descriptor:
+                                code: TAX
+                              list:
+                                - descriptor:
+                                    code: CGST
+                                  value: 4%
+                                - descriptor:
+                                    code: SGST
+                                  value: 4%
+                      - title: OTHER_CHARGES
+                        price:
+                          currency: INR
+                          value: '0'
+                        item:
+                          tags:
+                            - descriptor:
+                                code: OTHER_CHARGES
+                              list:
+                                - descriptor:
+                                    code: SURCHARGE
+                                  value: '0'
+                      - title: OFFER
+                        price:
+                          currency: INR
+                          value: '-10'
+      on_init:
+        examples:
           - value: *ref_70
           - value: *ref_71
-      on_init:
+      on_confirm:
         examples:
           - value: *ref_72
           - value: *ref_73
-      on_confirm:
-        examples:
-          - value: *ref_74
-          - value: *ref_75
           - value:
               context:
                 action: on_confirm
@@ -36063,13 +36096,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment Type
               _description:
                 required: mandatory
@@ -36649,13 +36682,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment Status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment type
               _description:
                 required: mandatory
@@ -36994,13 +37027,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment Type
               params:
                 transaction_id:
@@ -37712,13 +37745,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment Status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment type
               params:
                 transaction_id:
@@ -38604,13 +38637,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment Status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment type
               params:
                 transaction_id:
@@ -39524,13 +39557,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment Status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment type
               params:
                 transaction_id:
@@ -41576,13 +41609,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment Type
               _description:
                 required: mandatory
@@ -42246,13 +42279,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BPP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment Status
               type:
                 required: mandatory
                 type: string
                 owner: BPP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment type
               _description:
                 required: mandatory
@@ -42594,13 +42627,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment Type
               params:
                 transaction_id:
@@ -43392,13 +43425,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BPP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment Status
               type:
                 required: mandatory
                 type: string
                 owner: BPP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment type
               params:
                 transaction_id:
@@ -44373,13 +44406,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BPP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment Status
               type:
                 required: mandatory
                 type: string
                 owner: BPP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment type
               _description:
                 required: mandatory
@@ -45322,13 +45355,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BPP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment Status
               type:
                 required: mandatory
                 type: string
                 owner: BPP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment type
               params:
                 transaction_id:
@@ -47042,7 +47075,7 @@ x-attributes:
                 required: optional
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describes the payment status
             tags:
               BAP_TERMS:
@@ -47444,7 +47477,7 @@ x-attributes:
                 required: optional
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describes the payment status
               id:
                 required: optional
@@ -47750,7 +47783,7 @@ x-attributes:
                 required: optional
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describes the payment status
               params:
                 transaction_id:
@@ -48283,7 +48316,7 @@ x-attributes:
                 required: optional
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describes the payment status
               id:
                 required: optional
@@ -48719,7 +48752,7 @@ x-tlc:
         Terms and the ONDC Network Policy or the Static Terms and the Network
         Participant Agreement, the terms of the ONDC Network Policy or the
         Network Participant Agreement (as the case may be) will prevail.
-x-featureui: &ref_76
+x-featureui: &ref_74
   filenames:
     - log-verification.md
     - order_confirmation.md
@@ -48727,7 +48760,7 @@ x-sandboxui:
   dropdown:
     - environment-name: staging
       link: https://mobility-staging.ondc.org
-x-testcasesui: *ref_76
+x-testcasesui: *ref_74
 x-changeLog:
   filenames:
     - TRV11_2.1.0_141125
