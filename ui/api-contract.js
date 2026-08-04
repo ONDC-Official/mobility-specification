@@ -1,4 +1,21 @@
 
+const REPO = "ONDC-Official/mobility-specification";
+
+async function fetchBranchStatus(branchCode) {
+  try {
+    const url = `https://raw.githubusercontent.com/${REPO}/${branchCode}/api/build/build.yaml`;
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const text = await res.text();
+    const head = text.split(/\npaths:/)[0];
+    const spec = jsyaml.load(head);
+    return spec?.info?.branch_status || null;
+  } catch (error) {
+    console.log("Error fetching status for", branchCode, error?.message || error);
+    return null;
+  }
+}
+
 var tokens = {
   first: "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",
   second: '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'
@@ -211,15 +228,20 @@ async function renderBranchesTable() {
     TO_BE_DEPRECATED: "#ff851b"
   };
 
+  const statuses = await Promise.all(
+    filteredBranches.map((branch) => fetchBranchStatus(branch.code))
+  );
+
   let tableBody = ''
 
-  filteredBranches.forEach(branch => {
+  filteredBranches.forEach((branch, i) => {
+    const status = statuses[i] || branch.status
     tableBody += `
     <tr>
     <td>${branch.name}</td>
     <td>${branch.short_desc}</td>
     <td>
-      <span class="badge" style="background-color: ${statusColors[branch.status]};"> ${branch.status}</span>
+      <span class="badge" style="background-color: ${statusColors[status]};"> ${status}</span>
     </td>
     <td class="branchLink" onClick="resolveHomePage('${branch.code}')">${branch.code}</td>
     </tr>
