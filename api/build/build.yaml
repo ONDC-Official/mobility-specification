@@ -396,6 +396,7 @@ paths:
                         - action
                 message:
                   type: object
+                  additionalProperties: false
                   properties:
                     support:
                       $ref: '#/components/schemas/Support'
@@ -1370,8 +1371,7 @@ components:
         data:
           description: The form submission data
           type: object
-          additionalProperties:
-            type: string
+          additionalProperties: true
         mime_type:
           description: >-
             This field indicates the nature and format of the form received by
@@ -1382,9 +1382,10 @@ components:
             - text/html
             - application/html
             - application/xml
+            - none
         resubmit:
           type: boolean
-        multiple_sumbissions:
+        multiple_submissions:
           type: boolean
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
@@ -1686,6 +1687,10 @@ components:
           description: The selling quantity of the item
           allOf:
             - $ref: '#/components/schemas/ItemQuantity'
+        margin:
+          description: The selling margin of the item
+          allOf:
+            - $ref: '#/components/schemas/ItemQuantity'
         category_ids:
           description: Categories this item can be listed under
           type: array
@@ -1787,6 +1792,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        creds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Credential'
     Location:
       description: The physical location of something
       type: object
@@ -1842,6 +1851,14 @@ components:
           description: The rating of this location
           allOf:
             - $ref: '#/components/schemas/Rating/properties/value'
+        time:
+          description: >-
+            Temporal attributes of this item. This property is used when the
+            item exists on the catalog only for a limited period of time.
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Time'
     MediaFile:
       description: This object contains a url to a media file.
       type: object
@@ -2141,17 +2158,19 @@ components:
         type:
           type: string
           enum:
-            - PRE-ORDER
-            - PRE-FULFILLMENT
-            - ON-FULFILLMENT
-            - POST-FULFILLMENT
-            - ON-ORDER
-            - PART-PAYMENT
+            - PRE_ORDER
+            - PRE_FULFILLMENT
+            - ON_FULFILLMENT
+            - POST_FULFILLMENT
+            - ON_ORDER
+            - PART_PAYMENT
+            - ON_CANCELLATION
+            - POST_CANCELLATION
         status:
           type: string
           enum:
             - PAID
-            - NOT-PAID
+            - NOT_PAID
         time:
           $ref: '#/components/schemas/Time'
         tags:
@@ -2221,6 +2240,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        descriptor:
+          $ref: '#/components/schemas/Descriptor'
     Price:
       description: Describes the price of a product or service
       type: object
@@ -2572,6 +2593,10 @@ components:
         url:
           type: string
           format: uri
+        descriptor:
+          $ref: '#/components/schemas/Descriptor'
+        ref_type:
+          type: string
     Tag:
       description: >-
         Describes a tag. This is used to contain extended metadata. This object
@@ -2928,9 +2953,9 @@ x-enum:
           fulfillments: *ref_3
           payments: &ref_5
             status:
-              - code: NOT-PAID
+              - code: NOT_PAID
                 description: >-
-                  NOT-PAID indicates a payment status where the payment process
+                  NOT_PAID indicates a payment status where the payment process
                   has not been completed.
                 reference: <PR/Issue/Discussion Links md format text
               - code: PAID
@@ -2946,13 +2971,13 @@ x-enum:
                 description: Describes when the buyer app is collecting the payment.
                 reference: <PR/Issue/Discussion Links md format text
             type:
-              - code: PRE-ORDER
+              - code: PRE_ORDER
                 description: Payment occurs prior to order placement.
                 reference: <PR/Issue/Discussion Links md format text
-              - code: ON-FULFILLMENT
+              - code: ON_FULFILLMENT
                 description: Payment occurs upon completion of the journey.
                 reference: <PR/Issue/Discussion Links md format text
-              - code: POST-FULFILLMENT
+              - code: POST_FULFILLMENT
                 description: Payment occurs after the completion of the journey.
                 reference: <PR/Issue/Discussion Links md format text
   select:
@@ -8361,8 +8386,8 @@ x-flows:
                   tax_id: GSTIN:22AAAAA0000A1Z5
                 payments:
                   - collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -9129,8 +9154,8 @@ x-flows:
                 payments:
                   - id: PA1
                     collected_by: BAP
-                    status: NOT-PAID
-                    type: PRE-ORDER
+                    status: NOT_PAID
+                    type: PRE_ORDER
                     params:
                       amount: '41859'
                       currency: INR
@@ -9314,7 +9339,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
                       currency: INR
@@ -10089,7 +10114,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
                       currency: INR
@@ -10985,7 +11010,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
                       currency: INR
@@ -11829,7 +11854,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
                       currency: INR
@@ -12696,7 +12721,7 @@ x-flows:
                   - id: PA1
                     collected_by: BAP
                     status: PAID
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     params:
                       transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
                       currency: INR
@@ -15307,7 +15332,7 @@ x-examples:
                     - id: PA1
                       collected_by: BAP
                       status: PAID
-                      type: PRE-ORDER
+                      type: PRE_ORDER
                       params:
                         transaction_id: a1644304-d150-4a58-93fe-69e8ab6e3cdc
                         currency: INR
@@ -17018,13 +17043,13 @@ x-attributes:
                 required: MANDATORY
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describe the payment status
               type: &ref_118
                 required: MANDATORY
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Describes the payment type
               tags: &ref_119
                 BUYER_FINDER_FEES: &ref_105
@@ -17294,13 +17319,13 @@ x-attributes:
                 required: MANDATORY
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment Status
               type: &ref_138
                 required: MANDATORY
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment type
               params:
                 bank_code: &ref_139
@@ -17450,7 +17475,7 @@ x-attributes:
                 required: MANDATORY
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describes the payment Status
               type: *ref_118
               params:
