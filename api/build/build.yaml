@@ -282,6 +282,10 @@ paths:
                       $ref: '#/components/schemas/Option/properties/id'
                     descriptor:
                       $ref: '#/components/schemas/Descriptor'
+                    cancellation:
+                      description: The cancellation details of this order
+                      allOf:
+                        - $ref: '#/components/schemas/Cancellation'
                   required:
                     - order_id
               required:
@@ -3237,54 +3241,64 @@ x-enum:
       location: *ref_0
       domain: *ref_1
     message:
-      cancellation_reason_id: &ref_10
-        - code: '000'
-          description: >-
-            Technical cancellation of orders in case protocol technical
-            failures(BAP/BPP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '001'
-          description: Driver not moving(BAP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '002'
-          description: Customer is unable to unable to contact driver(BAP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '003'
-          description: Driver asked to cancel the ride(BAP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '004'
-          description: My pickup location is incorrect(BAP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '005'
-          description: Customer booked the ride mistakenly(BAP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '006'
-          description: Safety concern with driver/ ride(BAP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '007'
-          description: Vehicle appears unsafe or non-compliant(BAP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '011'
-          description: Seller app cannot confirm the ride as no drivers are available(BPP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '012'
-          description: Rider not present at location(BPP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '013'
-          description: Driver accepted the ride mistakenly(BPP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '014'
-          description: Unable to contact rider(BPP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '015'
-          description: Stopped by traffic officialsBPP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '016'
-          description: Punctured tyre, engine issues(BPP)
-          reference: <PR/Issue/Discussion Links md format text
-        - code: '017'
-          description: Customer misconduct or safety concern(BPP)
-          reference: <PR/Issue/Discussion Links md format text
+      cancellation:
+        reason:
+          descriptor:
+            code: &ref_10
+              - code: '000'
+                description: >-
+                  Technical cancellation of orders in case protocol technical
+                  failures(BAP/BPP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '001'
+                description: Driver not moving(BAP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '002'
+                description: Customer is unable to unable to contact driver(BAP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '003'
+                description: Driver asked to cancel the ride(BAP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '004'
+                description: My pickup location is incorrect(BAP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '005'
+                description: Customer booked the ride mistakenly(BAP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '006'
+                description: Safety concern with driver/ ride(BAP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '007'
+                description: Vehicle appears unsafe or non-compliant(BAP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '011'
+                description: >-
+                  Seller app cannot confirm the ride as no drivers are
+                  available(BPP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '012'
+                description: Rider not present at location(BPP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '013'
+                description: Driver accepted the ride mistakenly(BPP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '014'
+                description: Unable to contact rider(BPP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '015'
+                description: Stopped by traffic officialsBPP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '016'
+                description: Punctured tyre, engine issues(BPP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '017'
+                description: Customer misconduct or safety concern(BPP)
+                reference: <PR/Issue/Discussion Links md format text
+              - code: '999'
+                description: >-
+                  Describes the cancellation reason as "Others" when none of the
+                  predefined cancellation reasons apply.
+                reference: <PR/Issue/Discussion Links md format text
       descriptor:
         code: *ref_9
   on_cancel:
@@ -19742,7 +19756,10 @@ x-flows:
               ttl: PT30S
               version: 2.1.0
             message:
-              cancellation_reason_id: '002'
+              cancellation:
+                reason:
+                  descriptor:
+                    code: '002'
               descriptor:
                 code: SOFT_CANCEL
                 name: Ride Cancellation
@@ -20051,7 +20068,10 @@ x-flows:
               ttl: PT30S
               version: 2.1.0
             message:
-              cancellation_reason_id: '002'
+              cancellation:
+                reason:
+                  descriptor:
+                    code: '002'
               descriptor:
                 code: CONFIRM_CANCEL
                 name: Ride Cancellation
@@ -20690,7 +20710,10 @@ x-flows:
               ttl: PT30S
               version: 2.1.0
             message:
-              cancellation_reason_id: '000'
+              cancellation:
+                reason:
+                  descriptor:
+                    code: '000'
               descriptor:
                 code: SOFT_CANCEL
                 name: Ride Cancellation
@@ -20988,7 +21011,10 @@ x-flows:
               ttl: PT30S
               version: 2.1.0
             message:
-              cancellation_reason_id: '000'
+              cancellation:
+                reason:
+                  descriptor:
+                    code: '000'
               descriptor:
                 code: CONFIRM_CANCEL
                 name: Ride Cancellation
