@@ -396,6 +396,7 @@ paths:
                         - action
                 message:
                   type: object
+                  additionalProperties: false
                   properties:
                     support:
                       $ref: '#/components/schemas/Support'
@@ -1370,8 +1371,7 @@ components:
         data:
           description: The form submission data
           type: object
-          additionalProperties:
-            type: string
+          additionalProperties: true
         mime_type:
           description: >-
             This field indicates the nature and format of the form received by
@@ -1382,9 +1382,10 @@ components:
             - text/html
             - application/html
             - application/xml
+            - none
         resubmit:
           type: boolean
-        multiple_sumbissions:
+        multiple_submissions:
           type: boolean
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
@@ -1686,6 +1687,10 @@ components:
           description: The selling quantity of the item
           allOf:
             - $ref: '#/components/schemas/ItemQuantity'
+        margin:
+          description: The selling margin of the item
+          allOf:
+            - $ref: '#/components/schemas/ItemQuantity'
         category_ids:
           description: Categories this item can be listed under
           type: array
@@ -1787,6 +1792,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        creds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Credential'
     Location:
       description: The physical location of something
       type: object
@@ -1842,6 +1851,14 @@ components:
           description: The rating of this location
           allOf:
             - $ref: '#/components/schemas/Rating/properties/value'
+        time:
+          description: >-
+            Temporal attributes of this item. This property is used when the
+            item exists on the catalog only for a limited period of time.
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Time'
     MediaFile:
       description: This object contains a url to a media file.
       type: object
@@ -2141,17 +2158,19 @@ components:
         type:
           type: string
           enum:
-            - PRE-ORDER
-            - PRE-FULFILLMENT
-            - ON-FULFILLMENT
-            - POST-FULFILLMENT
-            - ON-ORDER
-            - PART-PAYMENT
+            - PRE_ORDER
+            - PRE_FULFILLMENT
+            - ON_FULFILLMENT
+            - POST_FULFILLMENT
+            - ON_ORDER
+            - PART_PAYMENT
+            - ON_CANCELLATION
+            - POST_CANCELLATION
         status:
           type: string
           enum:
             - PAID
-            - NOT-PAID
+            - NOT_PAID
         time:
           $ref: '#/components/schemas/Time'
         tags:
@@ -2221,6 +2240,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        descriptor:
+          $ref: '#/components/schemas/Descriptor'
     Price:
       description: Describes the price of a product or service
       type: object
@@ -2572,6 +2593,10 @@ components:
         url:
           type: string
           format: uri
+        descriptor:
+          $ref: '#/components/schemas/Descriptor'
+        ref_type:
+          type: string
     Tag:
       description: >-
         Describes a tag. This is used to contain extended metadata. This object
@@ -2942,9 +2967,9 @@ x-enum:
                   reference: <PR/Issue/Discussion Links md format text
         payment: &ref_3
           status:
-            - code: NOT-PAID
+            - code: NOT_PAID
               description: >-
-                NOT-PAID indicates a payment status where the payment process
+                NOT_PAID indicates a payment status where the payment process
                 has not been completed.
               reference: <PR/Issue/Discussion Links md format text
             - code: PAID
@@ -2960,13 +2985,13 @@ x-enum:
               description: Describes when the buyer app is collecting the payment.
               reference: <PR/Issue/Discussion Links md format text
           type:
-            - code: PRE-ORDER
+            - code: PRE_ORDER
               description: Payment occurs prior to order placement.
               reference: <PR/Issue/Discussion Links md format text
-            - code: ON-ORDER
+            - code: ON_ORDER
               description: Payment occurs on order placement.
               reference: <PR/Issue/Discussion Links md format text
-            - code: ON-FULFILLMENT
+            - code: ON_FULFILLMENT
               description: Payment occurs upon completion of the journey.
               reference: <PR/Issue/Discussion Links md format text
   on_search:
@@ -3461,7 +3486,7 @@ x-flows:
                   - id: I1
                 payments:
                   - collected_by: BAP
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -3495,7 +3520,7 @@ x-flows:
                           - descriptor:
                               code: STATIC_TERMS
                             value: https://example-test-bap.com/static-terms.txt
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
       - summary: Ride provider accepts/appends the terms of orders
@@ -3670,7 +3695,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -3707,7 +3732,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '144.54'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -3990,7 +4015,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '144.54'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -4111,7 +4136,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '144.54'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
       - summary: Ride provider confirms the ride request
@@ -4339,7 +4364,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '144.54'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -4898,7 +4923,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -4935,7 +4960,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '144.54'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
       - summary: Ride provider accepts/appends the terms of orders
@@ -5110,7 +5135,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -5147,7 +5172,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -5234,7 +5259,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -5271,7 +5296,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
       - summary: Ride provider confirms the ride request
@@ -5464,7 +5489,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -5501,7 +5526,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -5710,7 +5735,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -5747,7 +5772,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -6037,7 +6062,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -6074,7 +6099,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -6281,7 +6306,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -6318,7 +6343,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -6517,7 +6542,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -6554,7 +6579,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -6842,7 +6867,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -7247,7 +7272,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -7284,7 +7309,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -7492,7 +7517,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -7529,7 +7554,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -7860,7 +7885,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -8351,7 +8376,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -8388,7 +8413,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '144.54'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
       - summary: Ride provider accepts/appends the terms of orders
@@ -8562,7 +8587,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -8599,7 +8624,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -8687,7 +8712,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -8724,7 +8749,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
       - summary: Ride provider confirms the ride request
@@ -8907,7 +8932,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -8944,7 +8969,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -9154,7 +9179,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -9191,7 +9216,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -9401,7 +9426,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -9438,7 +9463,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -9688,7 +9713,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -9725,7 +9750,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -9992,7 +10017,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -10508,7 +10533,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -10546,7 +10571,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '85'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -10874,7 +10899,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -10912,7 +10937,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '85'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -11175,7 +11200,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -11213,7 +11238,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '85'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -11603,7 +11628,7 @@ x-flows:
                       bank_account_number: xxxxxxxxxxxxxx
                       bank_code: XXXXXXXX
                       virtual_payment_address: 9988199772@okicic
-                    status: NOT-PAID
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: BUYER_FINDER_FEES
@@ -11640,7 +11665,7 @@ x-flows:
                           - descriptor:
                               code: SETTLEMENT_AMOUNT
                             value: '1.46'
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                 provider:
                   id: P1
                 quote:
@@ -11960,7 +11985,7 @@ x-examples:
                             - descriptor:
                                 code: SETTLEMENT_AMOUNT
                               value: '144.54'
-                      type: ON-FULFILLMENT
+                      type: ON_FULFILLMENT
                   provider:
                     id: P1
                   quote:
@@ -12333,7 +12358,7 @@ x-examples:
                         bank_account_number: xxxxxxxxxxxxxx
                         bank_code: XXXXXXXX
                         virtual_payment_address: 9988199772@okicic
-                      status: NOT-PAID
+                      status: NOT_PAID
                       tags:
                         - descriptor:
                             code: BUYER_FINDER_FEES
@@ -12370,7 +12395,7 @@ x-examples:
                             - descriptor:
                                 code: SETTLEMENT_AMOUNT
                               value: '174'
-                      type: ON-FULFILLMENT
+                      type: ON_FULFILLMENT
                   provider:
                     id: P1
                   quote:
@@ -12552,7 +12577,7 @@ x-examples:
                         bank_account_number: xxxxxxxxxxxxxx
                         bank_code: XXXXXXXX
                         virtual_payment_address: 9988199772@okicic
-                      status: NOT-PAID
+                      status: NOT_PAID
                       tags:
                         - descriptor:
                             code: BUYER_FINDER_FEES
@@ -12589,7 +12614,7 @@ x-examples:
                             - descriptor:
                                 code: SETTLEMENT_AMOUNT
                               value: '174'
-                      type: ON-FULFILLMENT
+                      type: ON_FULFILLMENT
                   provider:
                     id: P1
                   quote:
@@ -12771,7 +12796,7 @@ x-examples:
                         bank_account_number: xxxxxxxxxxxxxx
                         bank_code: XXXXXXXX
                         virtual_payment_address: 9988199772@okicic
-                      status: NOT-PAID
+                      status: NOT_PAID
                       tags:
                         - descriptor:
                             code: BUYER_FINDER_FEES
@@ -12808,7 +12833,7 @@ x-examples:
                             - descriptor:
                                 code: SETTLEMENT_AMOUNT
                               value: '174'
-                      type: ON-FULFILLMENT
+                      type: ON_FULFILLMENT
                   provider:
                     id: P1
                   quote:
@@ -13063,7 +13088,7 @@ x-examples:
                         bank_account_number: xxxxxxxxxxxxxx
                         bank_code: XXXXXXXX
                         virtual_payment_address: 9988199772@okicic
-                      status: NOT-PAID
+                      status: NOT_PAID
                       tags:
                         - descriptor:
                             code: BUYER_FINDER_FEES
@@ -13100,7 +13125,7 @@ x-examples:
                             - descriptor:
                                 code: SETTLEMENT_AMOUNT
                               value: '1.46'
-                      type: ON-FULFILLMENT
+                      type: ON_FULFILLMENT
                   provider:
                     id: P1
                   quote:
@@ -13271,7 +13296,8 @@ x-examples:
                 ttl: PT30S
                 version: 2.0.1
               message:
-                ref_id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
+                support:
+                  ref_id: 7751bd26-3fdc-47ca-9b64-e998dc5abe68
       track:
         examples:
           - summary: Track_an_active_ride___X31
@@ -14966,13 +14992,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment Type
               params:
                 bank_code:
@@ -15594,13 +15620,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describe the payment Status for particular order
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Describe the payment type for particular order
               params:
                 bank_code:
@@ -15950,13 +15976,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describe the payment Status for particular order
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Describe the payment type for particular order
               params:
                 bank_code:
@@ -16798,13 +16824,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describe the Payment Status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Describe the Payment type
               params:
                 bank_code:
@@ -17723,7 +17749,7 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Describe the Payment type
               params:
                 currency:
@@ -17779,7 +17805,7 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describe the Payment Status
               tags:
                 BUYER_FINDER_FEES:
@@ -18598,13 +18624,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment Status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment type
               params:
                 bank_code:
@@ -19514,13 +19540,13 @@ x-attributes:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Payment Status
               type:
                 required: mandatory
                 type: string
                 owner: BAP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Payment type
               params:
                 bank_code:
@@ -20052,10 +20078,10 @@ x-tlc:
       Attribute: 'payment.type        '
       Owner: Either
       Value: |
-        “ON-ORDER”, “ON-FULFILLMENT”
+        “ON_ORDER”, “ON-FULFILLMENT”
       Description: >-
         How payment is going to be collected from the Buyer. If this parameter
-        is set to “ON-ORDER”, that means it is a pre-paid order, i.e. the
+        is set to “ON_ORDER”, that means it is a pre-paid order, i.e. the
         payment is collected at the time of order confirmation. If this
         parameter is set to “ON-FULFILLMENT”, that means it is a pay at the end
         of the trip, i.e. the payment is collected when the trip ends.
