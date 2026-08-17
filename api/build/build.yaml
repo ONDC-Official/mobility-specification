@@ -396,6 +396,7 @@ paths:
                         - action
                 message:
                   type: object
+                  additionalProperties: false
                   properties:
                     support:
                       $ref: '#/components/schemas/Support'
@@ -1370,8 +1371,7 @@ components:
         data:
           description: The form submission data
           type: object
-          additionalProperties:
-            type: string
+          additionalProperties: true
         mime_type:
           description: >-
             This field indicates the nature and format of the form received by
@@ -1382,9 +1382,10 @@ components:
             - text/html
             - application/html
             - application/xml
+            - none
         resubmit:
           type: boolean
-        multiple_sumbissions:
+        multiple_submissions:
           type: boolean
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
@@ -1686,6 +1687,10 @@ components:
           description: The selling quantity of the item
           allOf:
             - $ref: '#/components/schemas/ItemQuantity'
+        margin:
+          description: The selling margin of the item
+          allOf:
+            - $ref: '#/components/schemas/ItemQuantity'
         category_ids:
           description: Categories this item can be listed under
           type: array
@@ -1787,6 +1792,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        creds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Credential'
     Location:
       description: The physical location of something
       type: object
@@ -1842,6 +1851,14 @@ components:
           description: The rating of this location
           allOf:
             - $ref: '#/components/schemas/Rating/properties/value'
+        time:
+          description: >-
+            Temporal attributes of this item. This property is used when the
+            item exists on the catalog only for a limited period of time.
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Time'
     MediaFile:
       description: This object contains a url to a media file.
       type: object
@@ -2141,17 +2158,19 @@ components:
         type:
           type: string
           enum:
-            - PRE-ORDER
-            - PRE-FULFILLMENT
-            - ON-FULFILLMENT
-            - POST-FULFILLMENT
-            - ON-ORDER
-            - PART-PAYMENT
+            - PRE_ORDER
+            - PRE_FULFILLMENT
+            - ON_FULFILLMENT
+            - POST_FULFILLMENT
+            - ON_ORDER
+            - PART_PAYMENT
+            - ON_CANCELLATION
+            - POST_CANCELLATION
         status:
           type: string
           enum:
             - PAID
-            - NOT-PAID
+            - NOT_PAID
         time:
           $ref: '#/components/schemas/Time'
         tags:
@@ -2221,6 +2240,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
+        descriptor:
+          $ref: '#/components/schemas/Descriptor'
     Price:
       description: Describes the price of a product or service
       type: object
@@ -2572,6 +2593,10 @@ components:
         url:
           type: string
           format: uri
+        descriptor:
+          $ref: '#/components/schemas/Descriptor'
+        ref_type:
+          type: string
     Tag:
       description: >-
         Describes a tag. This is used to contain extended metadata. This object
@@ -3012,9 +3037,9 @@ x-enum:
           fulfillments: *ref_3
           payments: &ref_5
             status:
-              - code: NOT-PAID
+              - code: NOT_PAID
                 description: >-
-                  NOT-PAID indicates a payment status where the payment process
+                  NOT_PAID indicates a payment status where the payment process
                   has not been completed.
                 reference: <PR/Issue/Discussion Links md format text
               - code: PAID
@@ -3030,16 +3055,16 @@ x-enum:
                 description: Describes when the buyer app is collecting the payment.
                 reference: <PR/Issue/Discussion Links md format text
             type:
-              - code: PRE-ORDER
+              - code: PRE_ORDER
                 description: Payment occurs prior to order placement.
                 reference: <PR/Issue/Discussion Links md format text
-              - code: ON-FULFILLMENT
+              - code: ON_FULFILLMENT
                 description: Payment occurs upon completion of the journey.
                 reference: <PR/Issue/Discussion Links md format text
-              - code: POST-FULFILLMENT
+              - code: POST_FULFILLMENT
                 description: Payment occurs after the completion of the journey.
                 reference: <PR/Issue/Discussion Links md format text
-              - code: PART-PAYMENT
+              - code: PART_PAYMENT
                 description: Describe the type of payment.
                 reference: <PR/Issue/Discussion Links md format text
           locations:
@@ -3745,11 +3770,11 @@ x-flows:
                           name: Family Suite
                     payments:
                       - id: pymnt-1
-                        type: PRE-ORDER
+                        type: PRE_ORDER
                       - id: pymnt-2
-                        type: ON-FULFILLMENT
+                        type: ON_FULFILLMENT
                       - id: pymnt-3
-                        type: PART-PAYMENT
+                        type: PART_PAYMENT
                     items:
                       - id: Accommodation-1
                         time:
@@ -4309,17 +4334,17 @@ x-flows:
                   ttl: P1D
                 payments:
                   - id: pymnt-1
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     tags:
                       - descriptor:
                           code: FULL-PAYMENT
                   - id: pymnt-2
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                     tags:
                       - descriptor:
                           code: FULL-PAYMENT
                   - id: pymnt-3
-                    type: PART-PAYMENT
+                    type: PART_PAYMENT
                     tags:
                       - descriptor:
                           code: LINKED-PAYMENTS
@@ -4331,7 +4356,7 @@ x-flows:
                               code: pymnt-5
                             value: '2'
                   - id: pymnt-4
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     tags:
                       - descriptor:
                           code: ADV-DEPOSIT
@@ -4339,7 +4364,7 @@ x-flows:
                       currency: INR
                       amount: '2000.00'
                   - id: pymnt-5
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                     tags:
                       - descriptor:
                           code: FINAL-PAYMENT
@@ -4400,8 +4425,8 @@ x-flows:
                       - id: full-board
                 payments:
                   - id: pymnt-3
-                    type: PART-PAYMENT
-                    status: NOT-PAID
+                    type: PART_PAYMENT
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: LINKED-PAYMENTS
@@ -4413,7 +4438,7 @@ x-flows:
                               code: pymnt-5
                             value: '2'
                   - id: pymnt-4
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     collected_by: BAP
                     tags:
                       - descriptor:
@@ -4422,7 +4447,7 @@ x-flows:
                       amount: '2000.00'
                       currency: INR
                   - id: pymnt-5
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                     collected_by: BPP
                     tags:
                       - descriptor:
@@ -4565,8 +4590,8 @@ x-flows:
                   ttl: P1D
                 payments:
                   - id: pymnt-3
-                    type: PART-PAYMENT
-                    status: NOT-PAID
+                    type: PART_PAYMENT
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: LINKED-PAYMENTS
@@ -4578,8 +4603,8 @@ x-flows:
                               code: pymnt-5
                             value: '2'
                   - id: pymnt-4
-                    type: PRE-ORDER
-                    status: NOT-PAID
+                    type: PRE_ORDER
+                    status: NOT_PAID
                     collected_by: BAP
                     tags:
                       - descriptor:
@@ -4591,8 +4616,8 @@ x-flows:
                       bank_account_number: Bank Account Number of Seller App
                       virtual_payment_address: ' VPA of Seller App'
                   - id: pymnt-5
-                    type: ON-FULFILLMENT
-                    status: NOT-PAID
+                    type: ON_FULFILLMENT
+                    status: NOT_PAID
                     collected_by: BPP
                     tags:
                       - descriptor:
@@ -4756,8 +4781,8 @@ x-flows:
                   ttl: P1D
                 payments:
                   - id: pymnt-3
-                    type: PART-PAYMENT
-                    status: NOT-PAID
+                    type: PART_PAYMENT
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: LINKED-PAYMENTS
@@ -4769,7 +4794,7 @@ x-flows:
                               code: pymnt-5
                             value: '2'
                   - id: pymnt-4
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     status: PAID
                     collected_by: BAP
                     tags:
@@ -4783,8 +4808,8 @@ x-flows:
                       bank_account_number: Bank Account Number of Seller App
                       virtual_payment_address: ' VPA of Seller App'
                   - id: pymnt-5
-                    type: ON-FULFILLMENT
-                    status: NOT-PAID
+                    type: ON_FULFILLMENT
+                    status: NOT_PAID
                     collected_by: BPP
                     tags:
                       - descriptor:
@@ -4952,8 +4977,8 @@ x-flows:
                   ttl: P1D
                 payments:
                   - id: pymnt-3
-                    type: PART-PAYMENT
-                    status: NOT-PAID
+                    type: PART_PAYMENT
+                    status: NOT_PAID
                     tags:
                       - descriptor:
                           code: LINKED-PAYMENTS
@@ -4965,7 +4990,7 @@ x-flows:
                               code: pymnt-5
                             value: '2'
                   - id: pymnt-4
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     status: PAID
                     collected_by: BAP
                     tags:
@@ -4979,8 +5004,8 @@ x-flows:
                       bank_account_number: Bank Account Number of Seller App
                       virtual_payment_address: ' VPA of Seller App'
                   - id: pymnt-5
-                    type: ON-FULFILLMENT
-                    status: NOT-PAID
+                    type: ON_FULFILLMENT
+                    status: NOT_PAID
                     collected_by: BPP
                     tags:
                       - descriptor:
@@ -5187,7 +5212,7 @@ x-flows:
                   ttl: P1D
                 payments:
                   - id: pymnt-3
-                    type: PART-PAYMENT
+                    type: PART_PAYMENT
                     status: PAID
                     tags:
                       - descriptor:
@@ -5200,7 +5225,7 @@ x-flows:
                               code: pymnt-5
                             value: '2'
                   - id: pymnt-4
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     status: PAID
                     collected_by: BAP
                     tags:
@@ -5214,7 +5239,7 @@ x-flows:
                       bank_account_number: Bank Account Number of Seller App
                       virtual_payment_address: ' VPA of Seller App'
                   - id: pymnt-5
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                     status: PAID
                     collected_by: BPP
                     tags:
@@ -5421,7 +5446,7 @@ x-flows:
                   ttl: P1D
                 payments:
                   - id: pymnt-3
-                    type: PART-PAYMENT
+                    type: PART_PAYMENT
                     status: PAID
                     tags:
                       - descriptor:
@@ -5434,7 +5459,7 @@ x-flows:
                               code: pymnt-5
                             value: '2'
                   - id: pymnt-4
-                    type: PRE-ORDER
+                    type: PRE_ORDER
                     status: PAID
                     collected_by: BAP
                     tags:
@@ -5447,7 +5472,7 @@ x-flows:
                       bank_account_number: Bank Account Number of Seller App
                       virtual_payment_address: ' VPA of Seller App'
                   - id: pymnt-5
-                    type: ON-FULFILLMENT
+                    type: ON_FULFILLMENT
                     status: PAID
                     collected_by: BPP
                     params:
@@ -5854,7 +5879,8 @@ x-examples:
                 bpp_id: ondc.hotelbpp.com
                 ttl: PT30S
               message:
-                ref_id: O1
+                support:
+                  ref_id: O1
       cancel:
         examples:
           - summary: cancelundefined
@@ -5928,11 +5954,11 @@ x-examples:
                             name: Family Suite
                       payments:
                         - id: pymnt-1
-                          type: PRE-ORDER
+                          type: PRE_ORDER
                         - id: pymnt-2
-                          type: ON-FULFILLMENT
+                          type: ON_FULFILLMENT
                         - id: pymnt-3
-                          type: PART-PAYMENT
+                          type: PART_PAYMENT
                       items:
                         - id: Accommodation-1
                           time:
@@ -6429,7 +6455,7 @@ x-attributes:
                   required: OPTIONAL
                   type: string
                   owner: BPP
-                  usage: PRE-ORDER
+                  usage: PRE_ORDER
                   description: Describes the payment type.
               items:
                 id: &ref_54
@@ -6758,7 +6784,7 @@ x-attributes:
                 required: MANDATORY
                 type: string
                 owner: BPP
-                usage: PRE-ORDER
+                usage: PRE_ORDER
                 description: Describes the payment type.
       init:
         context:
@@ -6792,7 +6818,7 @@ x-attributes:
                 required: OPTIONAL
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describes the payment status.
               collected_by: &ref_63
                 required: OPTIONAL
@@ -6969,7 +6995,7 @@ x-attributes:
                 required: MANDATORY
                 type: string
                 owner: BAP
-                usage: NOT-PAID
+                usage: NOT_PAID
                 description: Describes the payment status.
               collected_by: *ref_63
               params: *ref_64
