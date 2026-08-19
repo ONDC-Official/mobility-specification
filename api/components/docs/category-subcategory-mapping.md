@@ -49,6 +49,5 @@
 | **Speciality Events(SPECIALITY_EVENTS)** | Festivals | FESTIVALS |
 |  | Gaming | GAMING |
 |  | Workshops | WORKSHOPS |
-| Seminar / Conference  | SEMINAR / CONFERENCE |
 |   | Other | OTHERS |
 |  |
