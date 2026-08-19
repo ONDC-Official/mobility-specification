@@ -12,7 +12,6 @@
 | **Culture & Heritage(CULTURE_HERITAGE)** | Monument & Historical Site | MONUMENT_HISTORICAL_SITE |
 |  | Museum / Galleries | MUSEUM / GALLERIES |
 |  | Memorial | MEMORIAL |
-|  | Exhibition | EXHIBITION |
 |  | Others | OTHERS |
 |  | Handicraft | HANDICRAFT |  
 |  | Handloom | HANDLOOM | 
@@ -21,7 +20,6 @@
 |  | Literary Events | LITERARY_EVENTS |
 |  | Stage - Drama / Play / Comedy | STAGE_DRAMA / PLAY / COMEDY|
 |  | Others | OTHERS |
-|  | Exhibitions | EXHIBITIONS |
 | **Leisure & Theme Parks(LEISURE_THEME_PARKS)** | Parks / Theme Parks / Water Parks | PARKS / THEME_PARKS / WATER_PARKS|
 |  | Zoo / Aquarium | ZOO / AQUARIUM |
 |  | Indoor games / activities | INDOOR_GAMES / ACTIVITIES|
@@ -49,10 +47,7 @@
 |  | Party / Nightlife | PARTY / NIGHTLIFE |
 |   | Other | OTHERS |  
 | **Speciality Events(SPECIALITY_EVENTS)** | Festivals | FESTIVALS |
-|  | Quizzes / Competitions | QUIZZES / COMPETITIONS|
 |  | Gaming | GAMING |
-|  | Workshops / Training / Education | WORKSHOPS / TRAINING / EDUCATION |
-|  | Seminar / Conference  | SEMINAR / CONFERENCE |
-|  | Networking | NETWORKING |
+|  | Workshops | WORKSHOPS |
 |   | Other | OTHERS |
 |  |
