@@ -363,6 +363,7 @@ paths:
                         - action
                 message:
                   type: object
+                  additionalProperties: false
                   properties:
                     order_id:
                       $ref: '#/components/schemas/Order/properties/id'
@@ -370,6 +371,46 @@ paths:
                       type: array
                       items:
                         $ref: '#/components/schemas/Rating'
+                    rating_entity:
+                      type: string
+                      description: Describes the rating entity for feedback
+                    feedbacks:
+                      type: array
+                      items:
+                        type: object
+                        additionalProperties: false
+                        properties:
+                          id:
+                            $ref: '#/components/schemas/Order/properties/id'
+                          additional_details:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/Descriptor'
+                          ref_type:
+                            description: Reference object to which we are rating
+                            type: string
+                            enum:
+                              - ITEM
+                              - ORDER
+                              - FULFILLMENT
+                              - PROVIDER
+                              - AGENT
+                              - SUPPORT
+                              - DELIVERY
+                              - PACKAGING
+                              - BUYER
+                          ref_id:
+                            description: Reference id of the ref_type
+                            type: string
+                          type:
+                            description: Describes the type of feedback
+                            type: string
+                          ask:
+                            description: Describes the question about the feedback
+                            type: string
+                          comment:
+                            description: Describes the answer about the feedback
+                            type: string
               required:
                 - context
                 - message
@@ -734,6 +775,7 @@ paths:
                       required:
                         - action
                 message:
+                  additionalProperties: false
                   type: object
                   properties:
                     order_id:
@@ -742,6 +784,24 @@ paths:
                       type: array
                       items:
                         $ref: '#/components/schemas/Rating'
+                    rating_entity:
+                      type: string
+                      description: Describes the rating entity for feedback
+                    feedback:
+                      type: array
+                      items:
+                        allOf:
+                          - $ref: '#/components/schemas/Descriptor'
+                          - type: object
+                            properties:
+                              ref_id:
+                                type: string
+                                description: Reference ID associated with the feedback.
+                              ref_type:
+                                type: string
+                                description: >-
+                                  Type of reference associated with the
+                                  feedback.
                 error:
                   $ref: '#/components/schemas/Error'
               required:
@@ -1251,7 +1311,6 @@ components:
     Descriptor:
       description: Physical description of something.
       type: object
-      additionalProperties: false
       properties:
         name:
           type: string
@@ -2384,6 +2443,22 @@ components:
             also contain an inequality expression containing logical operators
             like && and ||.
           type: string
+        ref_type:
+          description: Reference object to which we are rating
+          type: string
+          enum:
+            - ITEM
+            - ORDER
+            - FULFILLMENT
+            - PROVIDER
+            - AGENT
+            - SUPPORT
+            - DELIVERY
+            - PACKAGING
+            - BUYER
+        ref_id:
+          description: Reference id of the ref_type
+          type: string
     Region:
       description: >-
         Describes an arbitrary region of space. The network policy should
@@ -2919,152 +2994,100 @@ x-enum:
               - code: CULTURE_HERITAGE
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
-              - code: ENTERTAINMENT_SHOWS
+              - code: EVENTS_WORKSHOPS
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
-              - code: LEISURE_THEME_PARKS
+              - code: LEISURE
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
-              - code: SPORTING_OUTDOOR
+              - code: OUTDOOR_ADVENTURE
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
               - code: TOURS_SIGHTSEEING
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
-              - code: FOOD_DINING
-                description: Represents type of category
-                reference: <PR/Issue/Discussion Links md format text
-              - code: SPECIALITY_EVENTS
-                description: Represents type of category
-                reference: <PR/Issue/Discussion Links md format text
               - code: MONUMENT_HISTORICAL_SITE
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
-              - code: MUSEUM
-                description: >-
-                  Represents type of category, possible values can be GALLERIES
-                  also.
+              - code: MUSEUM_GALLERIES
+                description: Represents type of category.
                 reference: <PR/Issue/Discussion Links md format text
-              - code: MEMORIAL
-                description: Represents type of category
-                reference: <PR/Issue/Discussion Links md format text
-              - code: EXHIBITION
-                description: Represents type of category
+              - code: RELIGIOUS_SITES
+                description: Represents type of category.
                 reference: <PR/Issue/Discussion Links md format text
               - code: OTHERS
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
-              - code: MOVIE
+              - code: WORKSHOPS
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
-              - code: CONCERT
-                description: >-
-                  Represents type of category, possible values can be MUSIC,
-                  DANCE also.
+              - code: CONCERT_MUSIC
+                description: Represents type of category.
                 reference: <PR/Issue/Discussion Links md format text
-              - code: LITERARY_EVENTS
+              - code: PERFORMANCES
+                description: Represents type of category.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: DRAMA
+                description: Represents type of category, possible values can be PLAY also.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: STANDUP_EVENTS
+                description: Represents type of category.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: SPORTS_EVENTS
+                description: Represents type of category.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: PARKS_GARDENS
+                description: Represents type of category.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: AMUSEMENT_WATER_PARKS
+                description: Represents type of category.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: WATERFALLS_DAMS
+                description: Represents type of category.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: ZOO_AQUARIUM
+                description: Represents type of category.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: INDOOR_ACTIVITIES_ATTRACTIONS
+                description: Represents type of category.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: TREKKING
+                description: Represents type of category.
+                reference: <PR/Issue/Discussion Links md format text
+              - code: CAMPING
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
-              - code: STAGE_DRAMA
-                description: >-
-                  Represents type of category, possible values can be PLAY,
-                  COMEDY also.
-                reference: <PR/Issue/Discussion Links md format text
-              - code: PARKS
-                description: >-
-                  Represents type of category, possible values can be
-                  THEME_PARKS,  WATER_PARKS also.
-                reference: <PR/Issue/Discussion Links md format text
-              - code: ZOO
-                description: >-
-                  Represents type of category, possible values can be AQUARIUM
-                  also.
-                reference: <PR/Issue/Discussion Links md format text
-              - code: INDOOR_GAMES
-                description: >-
-                  Represents type of category, possible values can be ACTIVITIES
-                  also.
-                reference: <PR/Issue/Discussion Links md format text
-              - code: SPORTING_EVENTS
-                description: Represents type of category
-                reference: <PR/Issue/Discussion Links md format text
-              - code: ADVENTURE
-                description: Represents type of category
-                reference: <PR/Issue/Discussion Links md format text
-              - code: OUTDOOR_EVENTS
+              - code: WATER_SPORTS
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
               - code: CITY_TOURS
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
-              - code: CULTURAL_TOURS
+              - code: CULTURAL_HERITAGE_TOURS
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
-              - code: PRIVATE
-                description: >-
-                  Represents type of category, possible values can be GROUP
-                  also.
+              - code: PILGRIMAGE
+                description: Represents type of category.
                 reference: <PR/Issue/Discussion Links md format text
-              - code: NATURE_TOURS
-                description: >-
-                  Represents type of category, possible values can be WILDLIFE,
-                  SAFARI also.
+              - code: NATURE_WILDLIFE
+                description: Represents type of category.
                 reference: <PR/Issue/Discussion Links md format text
-              - code: WALKING_TOURS
-                description: Represents type of category
-                reference: <PR/Issue/Discussion Links md format text
-              - code: HOP_ON
-                description: >-
-                  Represents type of category, possible values can be HOP_OFF
-                  also.
+              - code: HOP_ON_HOP_OFF
+                description: Represents type of category.
                 reference: <PR/Issue/Discussion Links md format text
               - code: BIKING_TOURS
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
-              - code: BOAT
-                description: >-
-                  Represents type of category, possible values can be CRUISE
-                  also.
-                reference: <PR/Issue/Discussion Links md format text
-              - code: RESTAURANTS
-                description: Represents type of category
-                reference: <PR/Issue/Discussion Links md format text
-              - code: BARS
-                description: Represents type of category, possible values can be PUBS also.
-                reference: <PR/Issue/Discussion Links md format text
-              - code: FOOD_TOURS
-                description: Represents type of category
-                reference: <PR/Issue/Discussion Links md format text
-              - code: PARTY
-                description: >-
-                  Represents type of category, possible values can be NIGHTLIFE
-                  also.
-                reference: <PR/Issue/Discussion Links md format text
-              - code: FESTIVALS
-                description: Represents type of category
-                reference: <PR/Issue/Discussion Links md format text
-              - code: GAMING
-                description: Represents type of category
-                reference: <PR/Issue/Discussion Links md format text
-              - code: WORKSHOPS
+              - code: BOAT_CRUISE
                 description: Represents type of category.
-                reference: <PR/Issue/Discussion Links md format text
-              - code: HANDICRAFT
-                description: Represents type of category
-                reference: <PR/Issue/Discussion Links md format text
-              - code: HANDLOOM
-                description: Represents type of category
-                reference: <PR/Issue/Discussion Links md format text
-              - code: CAMPING
-                description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
               - code: FARM_TOUR
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
-              - code: TOUR_GUIDE
+              - code: WINE_TOUR
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
-              - code: WINE_TOUR
+              - code: FOOD_TOURS
                 description: Represents type of category
                 reference: <PR/Issue/Discussion Links md format text
   on_search:
@@ -3700,23 +3723,11 @@ x-flows:
                         parent_category_id: C1
                         id: C4
                       - descriptor:
-                          name: Museum
-                          code: MUSEUM
-                          short_desc: >-
-                            Represents type of category, possible values can be
-                            GALLERIES also.
+                          name: Museum & Galleries
+                          code: MUSEUM_GALLERIES
+                          short_desc: Represents type of category.
                         parent_category_id: C1
                         id: C5
-                      - descriptor:
-                          name: Memorial
-                          code: MEMORIAL
-                        parent_category_id: C1
-                        id: C6
-                      - descriptor:
-                          name: Exhibition
-                          code: EXHIBITION
-                        parent_category_id: C1
-                        id: C7
                       - descriptor:
                           name: Others
                           code: OTHERS
@@ -3945,23 +3956,11 @@ x-flows:
                         parent_category_id: C1
                         id: C4
                       - descriptor:
-                          name: Museum
-                          code: MUSEUM
-                          short_desc: >-
-                            Represents type of category, possible values can be
-                            GALLERIES also.
+                          name: Museum & Galleries
+                          code: MUSEUM_GALLERIES
+                          short_desc: Represents type of category.
                         parent_category_id: C1
                         id: C5
-                      - descriptor:
-                          name: Memorial
-                          code: MEMORIAL
-                        parent_category_id: C1
-                        id: C6
-                      - descriptor:
-                          name: Exhibition
-                          code: EXHIBITION
-                        parent_category_id: C1
-                        id: C7
                       - descriptor:
                           name: Others
                           code: OTHERS
@@ -4805,23 +4804,11 @@ x-flows:
                         parent_category_id: C1
                         id: C4
                       - descriptor:
-                          name: Museum
-                          code: MUSEUM
-                          short_desc: >-
-                            Represents type of category, possible values can be
-                            GALLERIES also.
+                          name: Museum & Galleries
+                          code: MUSEUM_GALLERIES
+                          short_desc: Represents type of category.
                         parent_category_id: C1
                         id: C5
-                      - descriptor:
-                          name: Memorial
-                          code: MEMORIAL
-                        parent_category_id: C1
-                        id: C6
-                      - descriptor:
-                          name: Exhibition
-                          code: EXHIBITION
-                        parent_category_id: C1
-                        id: C7
                       - descriptor:
                           name: Others
                           code: OTHERS
