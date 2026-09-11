@@ -5,22 +5,20 @@ context:
     city:
       code: std:011
   domain: ONDC:TRV14
-  timestamp: '2024-06-26T04:53:26.000Z'
+  timestamp: '2024-06-26T04:51:16.000Z'
   bap_id: api.example-bap.com
   transaction_id: cf7bb367-c820-4bc9-9be8-f548e0bbf222
-  message_id: 6d287e01-59bc-4c6d-b0ab-e07649eae6b2
+  message_id: 7b355323-11aa-4be9-9648-9628618b1157
   version: 2.0.0
-  action: on_confirm
+  action: on_select
   bap_uri: https://api.example-bap.com/beckn/
   ttl: PT30S
   bpp_id: api.unreserved-entry-pass.com
   bpp_uri: https://api.unreserved-entry-pass.com/beckn/
 message:
   order:
-    id: '01'
-    status: ACTIVE
     items:
-      - id: I0
+      - id: I0_2
         descriptor:
           name: Parent Item for Culture & Heritage
           code: ABSTRACT
@@ -60,8 +58,10 @@ message:
                 value: 'https://api.unreserved-entry-pass/beckn/tnc.html' 
               - descriptor:
                   name: What to pack
-                value: Expect the weather to be very cold, so pack winter clothes. Trekking shoes are a must, without a trekking shoe, you will not be allowed to participate in the trek. Also, carry 2 torches per person along with a spare battery        
-      - id: I1
+                value: Expect the weather to be very cold, so pack winter clothes. Trekking shoes are a must, without a trekking shoe, you will not be allowed to participate in the trek. Also, carry 2 torches per person along with a spare battery                         
+              
+
+      - id: I6
         descriptor:
           name: Adult-Ticket Culture & Heritage Item
           code: ENTRY_PASS
@@ -71,7 +71,7 @@ message:
             - url: >-
                 https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
               size_type: xs
-        parent_item_id: I0      
+        parent_item_id: I0_2   
         location_ids:
           - L1
         category_ids:
@@ -86,7 +86,9 @@ message:
           selected:
             measure:
               value: '10'
-              unit: INR     
+              unit: INR 
+        convenience_terms:
+          - convenience_eligible:  true          
         time:
           label: VALIDITY
           duration: P2D
@@ -122,6 +124,16 @@ message:
                   code: ADDITIONAL_DETAILS_REQUIRED
                 value: 'TRUE'  
           - descriptor:
+              code: INCLUSIONS
+            list:
+              - value: water
+              - value: guide_tour
+          - descriptor:
+              code: EXCLUSIONS
+            list:
+              - value: out side food
+              - value: photography
+          - descriptor:
               code: INFO
               name: Info
             display: false
@@ -132,8 +144,15 @@ message:
                 value: 'https://api.unreserved-entry-pass/beckn/tnc.html'
               - descriptor:
                   name: What to pack
-                value: Expect the weather to be very cold, so pack winter clothes. Trekking shoes are a must, without a trekking shoe, you will not be allowed to participate in the trek. Also, carry 2 torches per person along with a spare battery          
-      - id: I2
+                value: Expect the weather to be very cold, so pack winter clothes. Trekking shoes are a must, without a trekking shoe, you will not be allowed to participate in the trek. Also, carry 2 torches per person along with a spare battery                         
+      
+        xinput:
+          form:
+            id: F01
+          form_response:
+            status: SUCCESS
+      
+      - id: I7
         descriptor:
           name: Child-Ticket Culture & Heritage Item
           code: ENTRY_PASS
@@ -143,7 +162,7 @@ message:
             - url: >-
                 https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
               size_type: xs
-        parent_item_id: I0      
+        parent_item_id: I0_2      
         location_ids:
           - L1
         category_ids:
@@ -158,7 +177,9 @@ message:
           selected:
             measure:
               value: '10'
-              unit: INR    
+              unit: INR
+        convenience_terms:
+          - convenience_eligible:  true          
         time:
           label: VALIDITY
           duration: P2D
@@ -174,6 +195,12 @@ message:
             price:
               value: '100'
               currency: INR
+        xinput:
+          form:
+            id: F02
+          form_response:
+            status: SUCCESS
+           
         tags:
           - descriptor:
               code: FARE_POLICY
@@ -194,35 +221,15 @@ message:
                   code: ADDITIONAL_DETAILS_REQUIRED
                 value: 'TRUE'  
           - descriptor:
-              code: INFO
-              name: Info
-            display: false
+              code: INCLUSIONS
             list:
-              - descriptor:
-                  code: TNC_LINK
-                  name: Terms & Conditions
-                value: 'https://api.unreserved-entry-pass/beckn/tnc.html'
-              - descriptor:
-                  name: What to pack
-                value: Expect the weather to be very cold, so pack winter clothes. Trekking shoes are a must, without a trekking shoe, you will not be allowed to participate in the trek. Also, carry 2 torches per person along with a spare battery            
-      - id: I5
-        location_ids:
-          - L1
-        descriptor:
-          name: Add on item
-          code: ADD_ON
-          images:
-            - url: >-
-                https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
-              size_type: xs
-        parent_item_id: I0      
-        price:
-          currency: INR
-          value: '100'
-        quantity:
-          selected:
-            count: 1
-        tags:
+              - value: water
+              - value: guide_tour
+          - descriptor:
+              code: EXCLUSIONS
+            list:
+              - value: out side food
+              - value: photography
           - descriptor:
               code: INFO
               name: Info
@@ -234,14 +241,43 @@ message:
                 value: 'https://api.unreserved-entry-pass/beckn/tnc.html'   
               - descriptor:
                   name: What to pack
-                value: Expect the weather to be very cold, so pack winter clothes. Trekking shoes are a must, without a trekking shoe, you will not be allowed to participate in the trek. Also, carry 2 torches per person along with a spare battery               
+                value: Expect the weather to be very cold, so pack winter clothes. Trekking shoes are a must, without a trekking shoe, you will not be allowed to participate in the trek. Also, carry 2 torches per person along with a spare battery                         
+   
+      - id: I5
+        location_ids:
+          - L1
+        descriptor:
+          name: Add on item
+          code: ADD_ON
+          images:
+            - url: >-
+                https://api.unreserved-entry-pass.com/sites/default/files/event/logo/event_logo_2.png
+              size_type: xs
+        parent_item_id: I0_2    
+        price:
+          currency: INR
+          value: '100'
+        quantity:
+          selected:
+            count: 1 
+        tags: 
+          - descriptor:
+              code: INFO
+              name: Info
+            display: false
+            list:
+              - descriptor:
+                  code: TNC_LINK
+                  name: Terms & Conditions
+                value: 'https://api.unreserved-entry-pass/beckn/tnc.html' 
+              - descriptor:
+                  name: What to pack
+                value: Expect the weather to be very cold, so pack winter clothes. Trekking shoes are a must, without a trekking shoe, you will not be allowed to participate in the trek. Also, carry 2 torches per person along with a spare battery                         
+      
 
     fulfillments:
       - id: F1
         type: VISIT
-        state: 
-          descriptor:
-            code: CONFIRMED
         stops:
           - type: START
             id: '1'
@@ -251,12 +287,6 @@ message:
                 content_type: text/plain
             time:
               timestamp: '2024-06-28T05:00:16.000Z'
-            authorization:
-              type: QR
-              token: >-
-                iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAAApklEQVR4Xu2UMQ4EMQgD/QP+/0vK6zjsvayUMmavWxQpMAUBkwS12wcveAAkgNSCD3rR5Lkgoai3GUCMgWqbAEYR3HxAkZlzU/0MyBisYRsgI1ERFfcpBpA+ze6k56Cj7KTdXNigFWZvSOpsgqLfd18i2aAukXh9TXBNmdWt5gzA/oqzWkkN8HtA7G8CNOwYAiZt3wZixUfkA32OHNQq7Bxs9oI/gC/9fV8AVCkPjQAAAABJRU5ErkJggg==
-              valid_to: '2024-06-30T05:00:16.000Z'
-              status: UNCLAIMED
           - type: CHECKPOINT
             id: '2'
             parent_stop_id: '1'
@@ -321,7 +351,7 @@ message:
             images:
               - url: https://api.unreserved-entry-pass.com/sites/images/location.png
                 size_type: md
-          rating: "5" 
+          rating: "5"  
           time:
             - label: OPERATIONAL_HOURS
               days: "1,2,3,4,5,6,7"
@@ -338,7 +368,7 @@ message:
                 #   - "2026-01-26T09:00:00Z/PT2H"
               range:
                 start: '2026-01-26T09:00:00Z'
-                end: '2026-01-26T11:00:00Z' 
+                end: '2026-01-26T11:00:00Z'
     cancellation_terms:
       - cancellation_fee: 
           percentage: '10'
@@ -347,8 +377,8 @@ message:
             code: CONFIRMED
         cancel_by:
           label: DURATION
-          duration: PT1H30M
-        cancellation_eligible:  true         
+          duration: PT1H30M 
+        cancellation_eligible:  true        
       - external_ref:
           mimetype: text/html
           url: https://api.unreserved-entry-pass.com/beckn/tnc.html
@@ -357,15 +387,11 @@ message:
       - external_ref:
           mimetype: text/html
           url: https://api.unreserved-entry-pass.com/beckn/replacement.html
-    billing:
-      name: John Doe
-      email: john.doe@example.com
-      phone: +91-9897867564
     quote:
       breakup:
         - title: BASE_PRICE
           item:
-            id: I1
+            id: I6
             price:
               currency: INR
               value: '350'
@@ -377,7 +403,7 @@ message:
             value: '350'
         - title: BASE_PRICE
           item:
-            id: I2
+            id: I7
             price:
               currency: INR
               value: '150'
@@ -420,70 +446,3 @@ message:
       price:
         currency: INR
         value: '800'
-    payments:
-      - id: PA1
-        collected_by: BAP
-        status: PAID
-        type: PRE_ORDER
-        params:
-          transaction_id: 61b4be7e-d85c-456a-99e5-ce3d83be135d
-          amount: '800'
-          currency: INR
-    tags:
-      - descriptor:
-          code: BAP_TERMS
-          name: BAP Terms of Engagement
-        display: false
-        list:
-          - descriptor:
-              code: BUYER_FINDER_FEES_PERCENTAGE
-            value: '1'
-          - descriptor:
-              code: BUYER_FINDER_FEES_TYPE
-            value: percent
-          - descriptor:
-              code: STATIC_TERMS
-            value: https://api.example-bap.com/booking/terms
-          - descriptor:
-              code: SETTLEMENT_BASIS
-            value: INVOICE_RECEIPT
-          - descriptor:
-              code: SETTLEMENT_WINDOW
-            value: P30D
-      - descriptor:
-          code: BPP_TERMS
-          name: BPP Terms of Engagement
-        display: false
-        list:
-          - descriptor:
-              code: BUYER_FINDER_FEES_PERCENTAGE
-            value: '1'
-          - descriptor:
-              code: BUYER_FINDER_FEES_TYPE
-            value: percent
-          - descriptor:
-              code: STATIC_TERMS
-            value: https://api.example-bap.com/booking/terms
-          - descriptor:
-              code: MANDATORY_ARBITRATION
-            value: 'true'
-          - descriptor:
-              code: COURT_JURISDICTION
-            value: New Delhi
-          - descriptor:
-              code: DELAY_INTEREST
-            value: 2.5 %
-          - descriptor:
-              code: SETTLEMENT_AMOUNT
-            value: 7 INR
-          - descriptor:
-              code: SETTLEMENT_TYPE
-            value: upi
-          - descriptor:
-              code: SETTLEMENT_BANK_CODE
-            value: XXXXXXXX
-          - descriptor:
-              code: SETTLEMENT_BANK_ACCOUNT_NUMBER
-            value: xxxxxxxxxxxxxx
-    created_at: '2024-06-26T04:53:26.000Z'
-    updated_at: '2024-06-26T04:53:26.000Z'
