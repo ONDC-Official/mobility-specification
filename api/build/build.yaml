@@ -16913,7 +16913,7 @@ x-flows:
                 status: COMPLETED
                 created_at: '2023-12-10T08:03:34.294Z'
                 updated_at: '2023-12-11T03:54:28.832Z'
-  - summary: On-Demand - Assign driver post on-confirm(with Offline Contract)
+  - summary: On-Demand - Assign driver post on-confirm
     details:
       - description: >-
           The illustraive flow to perform a transaction of the nature where in a
@@ -17048,11 +17048,14 @@ x-flows:
                     display: false
                     list:
                       - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bap.com/static-terms.txt
-                      - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
       - summary: Get a list of all services from ride providers
         api: on_search
         details:
@@ -17289,11 +17292,29 @@ x-flows:
                       name: BPP Terms of Engagement
                     list:
                       - descriptor:
-                          code: STATIC_TERMS
-                        value: https://example-test-bap.com/static-terms.txt
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
                       - descriptor:
-                          code: OFFLINE_CONTRACT
+                          code: SETTLEMENT_WINDOW
+                        value: PT60M
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
                         value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://example-test-bpp.com/static-terms.txt
       - summary: Buyer app selects a specific service for more details
         api: select
         details:
@@ -17396,6 +17417,12 @@ x-flows:
                       variant: AUTO_RICKSHAW
                 items:
                   - id: I1
+                payments:
+                  - collected_by: BPP
+                    status: NOT_PAID
+                    type: ON_FULFILLMENT
+                provider:
+                  id: P1
                 tags:
                   - descriptor:
                       name: BAP Terms of Engagement
@@ -17403,17 +17430,41 @@ x-flows:
                     display: false
                     list:
                       - descriptor:
-                          code: STATIC_TERMS
-                        value: https://example-test-bap.com/static-terms.txt
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
                       - descriptor:
-                          code: OFFLINE_CONTRACT
+                          code: SETTLEMENT_WINDOW
+                        value: PT60M
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
                         value: 'true'
-                payments:
-                  - collected_by: BPP
-                    status: NOT_PAID
-                    type: ON_FULFILLMENT
-                provider:
-                  id: P1
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://example-test-bpp.com/static-terms.txt
+                      - descriptor:
+                          code: SETTLEMENT_BANK_CODE
+                        value: XXXXXXXX
+                      - descriptor:
+                          code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                        value: xxxxxxxxxxxxxx
+                      - descriptor:
+                          code: SETTLEMENT_VIRTUAL_PAYMENT_ADDRESS
+                        value: 9988199772@okicic
       - summary: Ride provider accepts/appends the terms of orders
         api: on_init
         details:
@@ -17631,11 +17682,32 @@ x-flows:
                     display: false
                     list:
                       - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P2D
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bpp.com/static-terms.txt
                       - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
       - summary: Buyer app confirms the ride
         api: confirm
         details:
@@ -17710,22 +17782,73 @@ x-flows:
                     display: false
                     list:
                       - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: PT60M
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bap.com/static-terms.txt
                       - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
+                      - descriptor:
+                          code: SETTLEMENT_BANK_CODE
+                        value: XXXXXXXX
+                      - descriptor:
+                          code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                        value: xxxxxxxxxxxxxx
+                      - descriptor:
+                          code: SETTLEMENT_VIRTUAL_PAYMENT_ADDRESS
+                        value: 9988199772@okicic
                   - descriptor:
-                      code: BPP_TERMS
                       name: BPP Terms of Engagement
+                      code: BPP_TERMS
                     display: false
                     list:
                       - descriptor:
-                          code: STATIC_TERMS
-                        value: https://example-test-bpp.com/static-terms.txt
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
                       - descriptor:
-                          code: OFFLINE_CONTRACT
+                          code: SETTLEMENT_WINDOW
+                        value: PT60M
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
                         value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://example-test-bap.com/static-terms.txt
+                      - descriptor:
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
       - summary: Ride provider confirms the ride request
         api: on_confirm
         details:
@@ -17930,27 +18053,78 @@ x-flows:
                 updated_at: '2023-03-23T04:48:34.53Z'
                 tags:
                   - descriptor:
-                      code: BAP_TERMS
                       name: BAP Terms of Engagement
+                      code: BAP_TERMS
                     display: false
                     list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: PT60M
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bap.com/static-terms.txt
                       - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
+                      - descriptor:
+                          code: SETTLEMENT_BANK_CODE
+                        value: XXXXXXXX
+                      - descriptor:
+                          code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                        value: xxxxxxxxxxxxxx
+                      - descriptor:
+                          code: SETTLEMENT_VIRTUAL_PAYMENT_ADDRESS
+                        value: 9988199772@okicic
                   - descriptor:
-                      code: BPP_TERMS
                       name: BPP Terms of Engagement
+                      code: BPP_TERMS
                     display: false
                     list:
                       - descriptor:
-                          code: STATIC_TERMS
-                        value: https://example-test-bpp.com/static-terms.txt
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
                       - descriptor:
-                          code: OFFLINE_CONTRACT
+                          code: SETTLEMENT_WINDOW
+                        value: PT60M
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
                         value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
+                          code: STATIC_TERMS
+                        value: https://example-test-bap.com/static-terms.txt
+                      - descriptor:
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
       - summary: Ride provider provides latest update on the ride (unsolicited call)
         api: on_update
         details:
@@ -17994,27 +18168,78 @@ x-flows:
               order:
                 tags:
                   - descriptor:
-                      code: BAP_TERMS
                       name: BAP Terms of Engagement
+                      code: BAP_TERMS
                     display: false
                     list:
+                      - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P2D
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
                       - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bap.com/static-terms.txt
                       - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
+                      - descriptor:
+                          code: SETTLEMENT_BANK_CODE
+                        value: XXXXXXXX
+                      - descriptor:
+                          code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                        value: xxxxxxxxxxxxxx
+                      - descriptor:
+                          code: SETTLEMENT_VIRTUAL_PAYMENT_ADDRESS
+                        value: 9988199772@okicic
                   - descriptor:
                       code: BPP_TERMS
                       name: BPP Terms of Engagement
                     display: false
                     list:
                       - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P2D
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bpp.com/static-terms.txt
                       - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -18459,22 +18684,73 @@ x-flows:
                     display: false
                     list:
                       - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P2D
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bap.com/static-terms.txt
                       - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
+                      - descriptor:
+                          code: SETTLEMENT_BANK_CODE
+                        value: XXXXXXXX
+                      - descriptor:
+                          code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                        value: xxxxxxxxxxxxxx
+                      - descriptor:
+                          code: SETTLEMENT_VIRTUAL_PAYMENT_ADDRESS
+                        value: 9988199772@okicic
                   - descriptor:
                       code: BPP_TERMS
                       name: BPP Terms of Engagement
                     display: false
                     list:
                       - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P2D
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bpp.com/static-terms.txt
                       - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
                 status: ACTIVE
                 created_at: '2023-12-10T08:03:34.294Z'
                 updated_at: '2023-12-10T08:03:34.294Z'
@@ -18718,22 +18994,73 @@ x-flows:
                     display: false
                     list:
                       - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P2D
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bap.com/static-terms.txt
                       - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
+                      - descriptor:
+                          code: SETTLEMENT_BANK_CODE
+                        value: XXXXXXXX
+                      - descriptor:
+                          code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                        value: xxxxxxxxxxxxxx
+                      - descriptor:
+                          code: SETTLEMENT_VIRTUAL_PAYMENT_ADDRESS
+                        value: 9988199772@okicic
                   - descriptor:
                       code: BPP_TERMS
                       name: BPP Terms of Engagement
                     display: false
                     list:
                       - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P2D
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bpp.com/static-terms.txt
                       - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
       - summary: Ride provider provides latest order updates
         api: on_status
         details: *ref_48
@@ -18971,22 +19298,73 @@ x-flows:
                     display: false
                     list:
                       - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P2D
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bap.com/static-terms.txt
                       - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
+                      - descriptor:
+                          code: SETTLEMENT_BANK_CODE
+                        value: XXXXXXXX
+                      - descriptor:
+                          code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                        value: xxxxxxxxxxxxxx
+                      - descriptor:
+                          code: SETTLEMENT_VIRTUAL_PAYMENT_ADDRESS
+                        value: 9988199772@okicic
                   - descriptor:
                       code: BPP_TERMS
                       name: BPP Terms of Engagement
                     display: false
                     list:
                       - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P2D
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bpp.com/static-terms.txt
                       - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
                 status: ACTIVE
                 created_at: '2023-03-23T04:48:34.53Z'
                 updated_at: '2023-03-23T04:49:34.53Z'
@@ -19241,22 +19619,73 @@ x-flows:
                     display: false
                     list:
                       - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P2D
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bap.com/static-terms.txt
                       - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
+                      - descriptor:
+                          code: SETTLEMENT_BANK_CODE
+                        value: XXXXXXXX
+                      - descriptor:
+                          code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                        value: xxxxxxxxxxxxxx
+                      - descriptor:
+                          code: SETTLEMENT_VIRTUAL_PAYMENT_ADDRESS
+                        value: 9988199772@okicic
                   - descriptor:
                       code: BPP_TERMS
                       name: BPP Terms of Engagement
                     display: false
                     list:
                       - descriptor:
+                          code: BUYER_FINDER_FEES_PERCENTAGE
+                        value: '1'
+                      - descriptor:
+                          code: DELAY_INTEREST
+                        value: '5'
+                      - descriptor:
+                          code: SETTLEMENT_TYPE
+                        value: UPI
+                      - descriptor:
+                          code: SETTLEMENT_WINDOW
+                        value: P2D
+                      - descriptor:
+                          code: SETTLEMENT_BASIS
+                        value: DELIVERY
+                      - descriptor:
+                          code: MANDATORY_ARBITRATION
+                        value: 'true'
+                      - descriptor:
+                          code: COURT_JURISDICTION
+                        value: New Delhi
+                      - descriptor:
                           code: STATIC_TERMS
                         value: https://example-test-bpp.com/static-terms.txt
                       - descriptor:
-                          code: OFFLINE_CONTRACT
-                        value: 'true'
+                          code: SETTLEMENT_AMOUNT
+                        value: '1.46'
   - summary: On-Demand - Assign driver post on-confirm(Self-Pickup)
     details:
       - description: >-
@@ -48862,6 +49291,80 @@ x-examples:
                       value: '146'
                     ttl: PT30S
                   status: ACTIVE
+                  tags:
+                    - descriptor:
+                        name: BAP Terms of Engagement
+                        code: BAP_TERMS
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+                        - descriptor:
+                            code: SETTLEMENT_WINDOW
+                          value: P2D
+                        - descriptor:
+                            code: SETTLEMENT_BASIS
+                          value: DELIVERY
+                        - descriptor:
+                            code: SETTLEMENT_TYPE
+                          value: UPI
+                        - descriptor:
+                            code: MANDATORY_ARBITRATION
+                          value: 'true'
+                        - descriptor:
+                            code: COURT_JURISDICTION
+                          value: New Delhi
+                        - descriptor:
+                            code: DELAY_INTEREST
+                          value: '5'
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://example-test-bap.com/static-terms.txt
+                        - descriptor:
+                            code: SETTLEMENT_AMOUNT
+                          value: '1.46'
+                        - descriptor:
+                            code: SETTLEMENT_BANK_CODE
+                          value: XXXXXXXX
+                        - descriptor:
+                            code: SETTLEMENT_BANK_ACCOUNT_NUMBER
+                          value: xxxxxxxxxxxxxx
+                        - descriptor:
+                            code: SETTLEMENT_VIRTUAL_PAYMENT_ADDRESS
+                          value: 9988199772@okicic
+                    - descriptor:
+                        code: BPP_TERMS
+                        name: BPP Terms of Engagement
+                      display: false
+                      list:
+                        - descriptor:
+                            code: BUYER_FINDER_FEES_PERCENTAGE
+                          value: '1'
+                        - descriptor:
+                            code: DELAY_INTEREST
+                          value: '5'
+                        - descriptor:
+                            code: SETTLEMENT_TYPE
+                          value: UPI
+                        - descriptor:
+                            code: SETTLEMENT_WINDOW
+                          value: P2D
+                        - descriptor:
+                            code: SETTLEMENT_BASIS
+                          value: DELIVERY
+                        - descriptor:
+                            code: MANDATORY_ARBITRATION
+                          value: 'true'
+                        - descriptor:
+                            code: COURT_JURISDICTION
+                          value: New Delhi
+                        - descriptor:
+                            code: STATIC_TERMS
+                          value: https://example-test-bpp.com/static-terms.txt
+                        - descriptor:
+                            code: SETTLEMENT_AMOUNT
+                          value: '1.46'
                   created_at: '2023-03-23T04:48:53Z'
                   updated_at: '2023-03-23T04:48:53Z'
           - summary: >-
