@@ -282,6 +282,10 @@ paths:
                       $ref: '#/components/schemas/Option/properties/id'
                     descriptor:
                       $ref: '#/components/schemas/Descriptor'
+                    cancellation:
+                      description: The cancellation details of this order
+                      allOf:
+                        - $ref: '#/components/schemas/Cancellation'
                   required:
                     - order_id
               required:
@@ -359,6 +363,7 @@ paths:
                         - action
                 message:
                   type: object
+                  additionalProperties: false
                   properties:
                     order_id:
                       $ref: '#/components/schemas/Order/properties/id'
@@ -366,6 +371,46 @@ paths:
                       type: array
                       items:
                         $ref: '#/components/schemas/Rating'
+                    rating_entity:
+                      type: string
+                      description: Describes the rating entity for feedback
+                    feedbacks:
+                      type: array
+                      items:
+                        type: object
+                        additionalProperties: false
+                        properties:
+                          id:
+                            $ref: '#/components/schemas/Order/properties/id'
+                          additional_details:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/Descriptor'
+                          ref_type:
+                            description: Reference object to which we are rating
+                            type: string
+                            enum:
+                              - ITEM
+                              - ORDER
+                              - FULFILLMENT
+                              - PROVIDER
+                              - AGENT
+                              - SUPPORT
+                              - DELIVERY
+                              - PACKAGING
+                              - BUYER
+                          ref_id:
+                            description: Reference id of the ref_type
+                            type: string
+                          type:
+                            description: Describes the type of feedback
+                            type: string
+                          ask:
+                            description: Describes the question about the feedback
+                            type: string
+                          comment:
+                            description: Describes the answer about the feedback
+                            type: string
               required:
                 - context
                 - message
@@ -730,6 +775,7 @@ paths:
                       required:
                         - action
                 message:
+                  additionalProperties: false
                   type: object
                   properties:
                     order_id:
@@ -738,6 +784,24 @@ paths:
                       type: array
                       items:
                         $ref: '#/components/schemas/Rating'
+                    rating_entity:
+                      type: string
+                      description: Describes the rating entity for feedback
+                    feedback:
+                      type: array
+                      items:
+                        allOf:
+                          - $ref: '#/components/schemas/Descriptor'
+                          - type: object
+                            properties:
+                              ref_id:
+                                type: string
+                                description: Reference ID associated with the feedback.
+                              ref_type:
+                                type: string
+                                description: >-
+                                  Type of reference associated with the
+                                  feedback.
                 error:
                   $ref: '#/components/schemas/Error'
               required:
@@ -1247,7 +1311,6 @@ components:
     Descriptor:
       description: Physical description of something.
       type: object
-      additionalProperties: false
       properties:
         name:
           type: string
@@ -1796,6 +1859,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Credential'
+        convenience_terms:
+          description: Convenience fee of this item
+          type: array
+          items:
+            description: >-
+              Describes the convenience terms of an item or an order. This can
+              be referenced at an item or order level.
+            type: object
+            additionalProperties: false
+            properties:
+              convenience_eligible:
+                description: Indicates if convenience fee is eligible
+                type: boolean
     Location:
       description: The physical location of something
       type: object
@@ -2379,6 +2455,22 @@ components:
             also contain an inequality operator like gt, gte, lt, lte. This can
             also contain an inequality expression containing logical operators
             like && and ||.
+          type: string
+        ref_type:
+          description: Reference object to which we are rating
+          type: string
+          enum:
+            - ITEM
+            - ORDER
+            - FULFILLMENT
+            - PROVIDER
+            - AGENT
+            - SUPPORT
+            - DELIVERY
+            - PACKAGING
+            - BUYER
+        ref_id:
+          description: Reference id of the ref_type
           type: string
     Region:
       description: >-
@@ -48597,6 +48689,14 @@ x-errorcodes:
       Description: The requested amount exceeds the applicable limit.
       From: BPP
       code: 91223
+    - Event: Invalid card number length
+      Description: Length of the card number is invalid
+      From: BPP
+      code: 91224
+    - Event: Card data unavailable
+      Description: No data available for this card number
+      From: BPP
+      code: 91225
 x-tlc:
   code:
     - Term: Buyer App Fee
