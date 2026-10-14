@@ -374,43 +374,22 @@ paths:
                     rating_entity:
                       type: string
                       description: Describes the rating entity for feedback
-                    feedbacks:
+                      enum:
+                        - ITEM
+                        - ORDER
+                        - FULFILLMENT
+                        - PROVIDER
+                        - AGENT
+                        - SUPPORT
+                        - BUYER
+                    feedback:
                       type: array
                       items:
                         type: object
                         additionalProperties: false
                         properties:
-                          id:
-                            $ref: '#/components/schemas/Order/properties/id'
-                          additional_details:
-                            type: array
-                            items:
-                              $ref: '#/components/schemas/Descriptor'
-                          ref_type:
-                            description: Reference object to which we are rating
-                            type: string
-                            enum:
-                              - ITEM
-                              - ORDER
-                              - FULFILLMENT
-                              - PROVIDER
-                              - AGENT
-                              - SUPPORT
-                              - DELIVERY
-                              - PACKAGING
-                              - BUYER
-                          ref_id:
-                            description: Reference id of the ref_type
-                            type: string
-                          type:
-                            description: Describes the type of feedback
-                            type: string
-                          ask:
-                            description: Describes the question about the feedback
-                            type: string
-                          comment:
-                            description: Describes the answer about the feedback
-                            type: string
+                          descriptor:
+                            $ref: '#/components/schemas/Descriptor'
               required:
                 - context
                 - message
@@ -2446,6 +2425,7 @@ components:
             - PROVIDER
             - AGENT
             - SUPPORT
+            - BUYER
         id:
           description: Id of the object being rated
           type: string
@@ -2472,6 +2452,14 @@ components:
         ref_id:
           description: Reference id of the ref_type
           type: string
+        feedback:
+          description: feedback for rating
+          type: string
+        feedback_form:
+          description: >-
+            A feedback form to allow the user to provide additional information
+            on the rating provided
+          $ref: '#/components/schemas/Form'
     Region:
       description: >-
         Describes an arbitrary region of space. The network policy should
@@ -47986,42 +47974,15 @@ x-flows:
               version: 2.1.0
             message:
               order_id: O1
+              rating_entity: BUYER
               ratings:
-                - ref_type: ITEM
-                  ref_id: I1
-                  id: '01'
-                  value: '5'
-                - ref_type: FULFILLMENT
-                  ref_id: F1
-                  id: '02'
+                - id: 01'
+                  rating_category: AGENT
                   value: '4'
-              feedbacks:
-                - ref_type: ITEM
-                  ref_id: I1
-                  id: 9604f3b6
-                  type: REVIEW
-                  ask: How was your ride?
-                  comment: Answer to the ask.
-                  additional_details:
-                    - short_desc: How was the packaging and food quality
-                      long_desc: >-
-                        Nice packaging and food was delivered on time. The food
-                        was amazing
-                      images:
-                        - url: https://bnp.com/customer-review-image1
-                - ref_type: FULFILLMENT
-                  ref_id: F1
-                  id: 8738a2ce
-                  type: REVIEW
-                  ask: How was your ride?
-                  comment: Answer to the ask.
-                  additional_details:
-                    - short_desc: How was the packaging and food quality
-                      long_desc: >-
-                        Nice packaging and food was delivered on time. The food
-                        was amazing
-                      images:
-                        - url: https://bnp.com/customer-review-image1
+              feedback:
+                - descriptor:
+                    short_desc: Any feedback you would like to provide?
+                    long_desc: Great ride! Fast and smooth.
 x-examples:
   on-demand:
     summary: On Demand Use Case Specification
