@@ -108,4 +108,38 @@ steps:
     reference: if any
     example:
       $ref: "../../examples/metro/on_cancel/example_2.yaml"                            
+  - summary: Buyer app confirms the refund for ticket
+    api: update
+    details: 
+      - description: Buyer app provides the confirmation for ticket refund.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            rect rgb(191, 223, 255)
+            Buyer Platform (BAP)->>Seller Platform (BPP): update
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            end
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+    reference: if any
+    example:
+      $ref: "../../examples/metro/update/update_ref_number_cancel.yaml"
+  - summary: The Provider App acknowledges the ticket refund.
+    api: on_update
+    details: 
+      - description: The Provider App acknowledges the ticket refund.
+        mermaid: >-
+          sequenceDiagram
+            participant Buyer Platform (BAP)
+            participant Seller Platform (BPP)
+            Buyer Platform (BAP)->>Seller Platform (BPP): update
+            Seller Platform (BPP)-->>Buyer Platform (BAP):ACK
+            rect rgb(191, 223, 255)
+            Seller Platform (BPP)->>Buyer Platform (BAP):on_update
+            Buyer Platform (BAP)-->>Seller Platform (BPP): ACK
+            end 
+    reference: if any
+    example:
+      $ref: "../../examples/metro/on_update/on_update_refund.yaml"                            
   
