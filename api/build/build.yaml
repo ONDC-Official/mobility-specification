@@ -19,7 +19,6 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
@@ -30,7 +29,6 @@ paths:
                             - search
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     intent:
                       $ref: '#/components/schemas/Intent'
@@ -52,13 +50,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - select
@@ -66,7 +62,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     order:
                       $ref: '#/components/schemas/Order'
@@ -88,13 +83,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - init
@@ -102,7 +95,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     order:
                       $ref: '#/components/schemas/Order'
@@ -127,7 +119,6 @@ paths:
                       ack:
                         allOf:
                           - $ref: '#/components/schemas/Ack'
-                          - type: object
                           - properties:
                               status:
                                 enum:
@@ -149,13 +140,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - confirm
@@ -163,7 +152,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     order:
                       $ref: '#/components/schemas/Order'
@@ -185,13 +173,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - status
@@ -199,12 +185,11 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
-                    ref_id:
-                      $ref: '#/components/schemas/Order/properties/id'
                     order_id:
                       $ref: '#/components/schemas/Order/properties/id'
+                  required:
+                    - order_id
               required:
                 - context
                 - message
@@ -221,13 +206,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - track
@@ -235,7 +218,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     order_id:
                       $ref: '#/components/schemas/Order/properties/id'
@@ -260,13 +242,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - cancel
@@ -274,7 +254,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     order_id:
                       $ref: '#/components/schemas/Order/properties/id'
@@ -282,10 +261,6 @@ paths:
                       $ref: '#/components/schemas/Option/properties/id'
                     descriptor:
                       $ref: '#/components/schemas/Descriptor'
-                    cancellation:
-                      description: The cancellation details of this order
-                      allOf:
-                        - $ref: '#/components/schemas/Cancellation'
                   required:
                     - order_id
               required:
@@ -304,13 +279,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - update
@@ -318,7 +291,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     update_target:
                       description: >-
@@ -349,13 +321,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - rating
@@ -363,33 +333,11 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
-                    order_id:
-                      $ref: '#/components/schemas/Order/properties/id'
                     ratings:
                       type: array
                       items:
                         $ref: '#/components/schemas/Rating'
-                    rating_entity:
-                      type: string
-                      description: Describes the rating entity for feedback
-                      enum:
-                        - ITEM
-                        - ORDER
-                        - FULFILLMENT
-                        - PROVIDER
-                        - AGENT
-                        - SUPPORT
-                        - BUYER
-                    feedback:
-                      type: array
-                      items:
-                        type: object
-                        additionalProperties: false
-                        properties:
-                          descriptor:
-                            $ref: '#/components/schemas/Descriptor'
               required:
                 - context
                 - message
@@ -406,13 +354,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - support
@@ -420,7 +366,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     support:
                       $ref: '#/components/schemas/Support'
@@ -440,13 +385,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - on_search
@@ -454,7 +397,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     catalog:
                       $ref: '#/components/schemas/Catalog'
@@ -464,7 +406,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -478,13 +419,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - on_select
@@ -492,7 +431,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     order:
                       $ref: '#/components/schemas/Order'
@@ -500,7 +438,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -514,13 +451,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - on_init
@@ -528,7 +463,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     order:
                       $ref: '#/components/schemas/Order'
@@ -551,13 +485,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - on_confirm
@@ -565,7 +497,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     order:
                       $ref: '#/components/schemas/Order'
@@ -588,13 +519,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - on_track
@@ -602,7 +531,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     tracking:
                       $ref: '#/components/schemas/Tracking'
@@ -612,7 +540,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -628,13 +555,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - on_cancel
@@ -642,7 +567,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     order:
                       $ref: '#/components/schemas/Order'
@@ -665,13 +589,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - on_update
@@ -679,7 +601,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     order:
                       $ref: '#/components/schemas/Order'
@@ -689,7 +610,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -703,13 +623,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - on_status
@@ -717,7 +635,6 @@ paths:
                         - action
                 message:
                   type: object
-                  additionalProperties: false
                   properties:
                     order:
                       $ref: '#/components/schemas/Order'
@@ -727,7 +644,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -741,50 +657,30 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - on_rating
                       required:
                         - action
                 message:
-                  additionalProperties: false
                   type: object
                   properties:
-                    order_id:
-                      $ref: '#/components/schemas/Order/properties/id'
-                    ratings:
-                      type: array
-                      items:
-                        $ref: '#/components/schemas/Rating'
-                    rating_entity:
-                      type: string
-                      description: Describes the rating entity for feedback
-                    feedback:
-                      type: array
-                      items:
-                        allOf:
-                          - $ref: '#/components/schemas/Descriptor'
-                          - type: object
-                            properties:
-                              ref_id:
-                                type: string
-                                description: Reference ID associated with the feedback.
-                              ref_type:
-                                type: string
-                                description: >-
-                                  Type of reference associated with the
-                                  feedback.
+                    feedback_form:
+                      description: >-
+                        A feedback form to allow the user to provide additional
+                        information on the rating provided
+                      allOf:
+                        - $ref: '#/components/schemas/XInput'
                 error:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
+                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -798,13 +694,11 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: false
               properties:
                 context:
                   allOf:
                     - $ref: '#/components/schemas/Context'
-                    - type: object
-                      properties:
+                    - properties:
                         action:
                           enum:
                             - on_support
@@ -819,7 +713,6 @@ paths:
                   $ref: '#/components/schemas/Error'
               required:
                 - context
-                - message
       responses:
         default:
           $ref: '#/paths/~1init/post/responses/default'
@@ -845,7 +738,6 @@ components:
         property called `status` that indicates the status of the
         Acknowledgement.
       type: object
-      additionalProperties: false
       properties:
         status:
           type: string
@@ -873,7 +765,6 @@ components:
         service. This does not exist independently in a catalog and is always
         associated with an item.
       type: object
-      additionalProperties: false
       properties:
         id:
           description: Provider-defined ID of the add-on
@@ -882,8 +773,6 @@ components:
           $ref: '#/components/schemas/Descriptor'
         price:
           $ref: '#/components/schemas/Price'
-        quantity:
-          $ref: '#/components/schemas/ItemQuantity'
     Address:
       description: Describes a postal address.
       type: string
@@ -901,8 +790,6 @@ components:
         wants fulfilling an order. Sometimes, this object gets instantiated
         after the order is confirmed, like in the case of on-demand taxis, where
         the driver is assigned after the user confirms the ride.
-      type: object
-      additionalProperties: false
       properties:
         person:
           $ref: '#/components/schemas/Person'
@@ -920,7 +807,6 @@ components:
         sector, a patient may need to provide a password to open a video
         conference link during a teleconsultation.
       type: object
-      additionalProperties: false
       properties:
         type:
           description: >-
@@ -951,7 +837,6 @@ components:
         name,organization,address,email,phone,time,tax_number,
         created_at,updated_at
       type: object
-      additionalProperties: false
       properties:
         name:
           description: Name of the billable entity
@@ -991,7 +876,6 @@ components:
     Cancellation:
       description: Describes a cancellation event
       type: object
-      additionalProperties: false
       properties:
         time:
           description: Date-time when the order was cancelled by the buyer
@@ -1016,7 +900,6 @@ components:
         referenced at an item or order level. Item-level cancellation terms can
         override the terms at the order level.
       type: object
-      additionalProperties: false
       properties:
         fulfillment_state:
           description: The state of fulfillment during which this term is applicable.
@@ -1035,9 +918,6 @@ components:
           $ref: '#/components/schemas/XInput'
         external_ref:
           $ref: '#/components/schemas/MediaFile'
-        cancellation_eligible:
-          description: Indicates if cancellation is eligible
-          type: boolean
     Catalog:
       description: >-
         Describes the products or services offered by a BPP. This is typically
@@ -1054,7 +934,6 @@ components:
         the products and services it offers as response to a search intent from
         the BAP. </li></ul>
       type: object
-      additionalProperties: false
       properties:
         descriptor:
           $ref: '#/components/schemas/Descriptor'
@@ -1084,10 +963,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Provider'
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/TagGroup'
         exp:
           description: Timestamp after which catalog will expire
           type: string
@@ -1098,7 +973,6 @@ components:
     Category:
       description: A label under which a collection of items can be grouped.
       type: object
-      additionalProperties: false
       properties:
         id:
           description: ID of the category
@@ -1120,7 +994,6 @@ components:
         Describes a circular region of a specified radius centered at a
         specified GPS coordinate.
       type: object
-      additionalProperties: false
       properties:
         gps:
           $ref: '#/components/schemas/Gps'
@@ -1129,7 +1002,6 @@ components:
     City:
       description: Describes a city
       type: object
-      additionalProperties: false
       properties:
         name:
           description: Name of the city
@@ -1140,7 +1012,6 @@ components:
     Contact:
       description: Describes the contact information of an entity
       type: object
-      additionalProperties: false
       properties:
         phone:
           type: string
@@ -1148,7 +1019,6 @@ components:
           type: string
         jcard:
           type: object
-          additionalProperties: false
           description: A Jcard object as per draft-ietf-jcardcal-jcard-03 specification
     Context:
       description: >-
@@ -1174,13 +1044,11 @@ components:
         synchronous response. However, in asynchronous protocols, the context
         must be sent during all interactions,
       type: object
-      additionalProperties: false
       properties:
         domain:
           description: Domain code that is relevant to this transaction context
           allOf:
             - $ref: '#/components/schemas/Domain/properties/code'
-              type: string
         location:
           description: The location where the transaction is intended to be fulfilled.
           allOf:
@@ -1252,7 +1120,6 @@ components:
     Country:
       description: Describes a country
       type: object
-      additionalProperties: false
       properties:
         name:
           type: string
@@ -1263,7 +1130,6 @@ components:
     Credential:
       description: Describes a credential of an entity - Person or Organization
       type: object
-      additionalProperties: false
       properties:
         id:
           type: string
@@ -1277,7 +1143,6 @@ components:
     Customer:
       description: Describes a customer buying/availing a product or a service
       type: object
-      additionalProperties: false
       properties:
         person:
           $ref: '#/components/schemas/Person'
@@ -1301,7 +1166,6 @@ components:
           type: string
         additional_desc:
           type: object
-          additionalProperties: false
           properties:
             url:
               type: string
@@ -1335,7 +1199,6 @@ components:
         healthcare etc, and progressively granularize them as and when the
         number of network participants for each domain grows large.
       type: object
-      additionalProperties: false
       properties:
         name:
           description: Name of the domain
@@ -1361,7 +1224,6 @@ components:
         unacceptable. This object can be sent either during Ack or with the
         callback.
       type: object
-      additionalProperties: false
       properties:
         code:
           type: string
@@ -1381,7 +1243,6 @@ components:
     Fee:
       description: A fee applied on a particular entity
       type: object
-      additionalProperties: false
       properties:
         percentage:
           description: Percentage of a value
@@ -1394,11 +1255,7 @@ components:
     Form:
       description: Describes a form
       type: object
-      additionalProperties: false
       properties:
-        id:
-          description: The form identifier.
-          type: string
         url:
           description: >-
             The URL from where the form can be fetched. The content fetched from
@@ -1413,7 +1270,8 @@ components:
         data:
           description: The form submission data
           type: object
-          additionalProperties: true
+          additionalProperties:
+            type: string
         mime_type:
           description: >-
             This field indicates the nature and format of the form received by
@@ -1422,17 +1280,13 @@ components:
           type: string
           enum:
             - text/html
-            - application/html
             - application/xml
-            - none
-        resubmit:
-          type: boolean
-        multiple_submissions:
-          type: boolean
+        submission_id:
+          type: string
+          format: uuid
     Fulfillment:
       description: Describes how a an order will be rendered/fulfilled to the end-customer
       type: object
-      additionalProperties: false
       properties:
         id:
           description: Unique reference ID to the fulfillment of an order
@@ -1496,7 +1350,6 @@ components:
     FulfillmentState:
       description: Describes the state of fulfillment
       type: object
-      additionalProperties: false
       properties:
         descriptor:
           $ref: '#/components/schemas/Descriptor'
@@ -1514,7 +1367,6 @@ components:
     Image:
       description: Describes an image
       type: object
-      additionalProperties: false
       properties:
         url:
           description: URL to the image. This can be a data url or an remote url
@@ -1580,7 +1432,6 @@ components:
         they like to avail (intent.category)</li><li>How would they like to pay
         for their journey (intent.payment)</li></ul>
       type: object
-      additionalProperties: false
       properties:
         descriptor:
           description: >-
@@ -1621,14 +1472,12 @@ components:
     ItemQuantity:
       description: Describes the count or amount of an item
       type: object
-      additionalProperties: false
       properties:
         allocated:
           description: >-
             This represents the exact quantity allocated for purchase of the
             item.
           type: object
-          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1640,7 +1489,6 @@ components:
             This represents the exact quantity available for purchase of the
             item. The buyer can only purchase multiples of this
           type: object
-          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1652,7 +1500,6 @@ components:
             This represents the maximum quantity allowed for purchase of the
             item
           type: object
-          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1664,7 +1511,6 @@ components:
             This represents the minimum quantity allowed for purchase of the
             item
           type: object
-          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1674,7 +1520,6 @@ components:
         selected:
           description: This represents the quantity selected for purchase of the item
           type: object
-          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1684,7 +1529,6 @@ components:
         unitized:
           description: This represents the quantity available in a single unit of the item
           type: object
-          additionalProperties: false
           properties:
             count:
               type: integer
@@ -1700,7 +1544,6 @@ components:
         service offering. In the retail domain it can represent a product like a
         grocery item.
       type: object
-      additionalProperties: false
       properties:
         id:
           description: ID of the item.
@@ -1727,10 +1570,6 @@ components:
             - $ref: '#/components/schemas/Price'
         quantity:
           description: The selling quantity of the item
-          allOf:
-            - $ref: '#/components/schemas/ItemQuantity'
-        margin:
-          description: The selling margin of the item
           allOf:
             - $ref: '#/components/schemas/ItemQuantity'
         category_ids:
@@ -1772,7 +1611,6 @@ components:
           items:
             description: Refund term of an item or an order
             type: object
-            additionalProperties: false
             properties:
               fulfillment_state:
                 description: The state of fulfillment during which this term is applicable.
@@ -1834,27 +1672,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
-        creds:
-          type: array
-          items:
-            $ref: '#/components/schemas/Credential'
-        convenience_terms:
-          description: Convenience fee of this item
-          type: array
-          items:
-            description: >-
-              Describes the convenience terms of an item or an order. This can
-              be referenced at an item or order level.
-            type: object
-            additionalProperties: false
-            properties:
-              convenience_eligible:
-                description: Indicates if convenience fee is eligible
-                type: boolean
     Location:
       description: The physical location of something
       type: object
-      additionalProperties: false
       properties:
         id:
           type: string
@@ -1870,9 +1690,6 @@ components:
           description: The GPS co-ordinates of this location.
           allOf:
             - $ref: '#/components/schemas/Gps'
-        updated_at:
-          type: string
-          format: date-time
         address:
           description: The address of this location.
           allOf:
@@ -1906,18 +1723,9 @@ components:
           description: The rating of this location
           allOf:
             - $ref: '#/components/schemas/Rating/properties/value'
-        time:
-          description: >-
-            Temporal attributes of this item. This property is used when the
-            item exists on the catalog only for a limited period of time.
-          type: array
-          items:
-            allOf:
-              - $ref: '#/components/schemas/Time'
     MediaFile:
       description: This object contains a url to a media file.
       type: object
-      additionalProperties: false
       properties:
         mimetype:
           description: >-
@@ -1939,7 +1747,6 @@ components:
         An offer associated with a catalog. This is typically used to promote a
         particular product and enable more purchases.
       type: object
-      additionalProperties: false
       properties:
         id:
           type: string
@@ -1966,7 +1773,6 @@ components:
     Option:
       description: Describes a selectable option
       type: object
-      additionalProperties: false
       properties:
         id:
           type: string
@@ -1977,7 +1783,6 @@ components:
         Describes a legal purchase order. It contains the complete details of
         the legal contract created between the buyer and the seller.
       type: object
-      additionalProperties: false
       properties:
         id:
           type: string
@@ -2000,13 +1805,6 @@ components:
             - ACTIVE
             - COMPLETE
             - CANCELLED
-            - COMPLETED
-            - SOFT_CANCEL
-            - CANCELLATION_INITIATED
-            - CANCELLATION_REJECTED
-            - SOFT_UPDATE
-            - CONFIRM_UPDATE
-            - UPDATED
         type:
           description: >-
             This is used to indicate the type of order being created to BPPs.
@@ -2056,33 +1854,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CancellationTerm'
-        documents:
-          type: array
-          items:
-            description: Documnents associated to the order
-            type: object
-            additionalProperties: false
-            properties:
-              descriptor:
-                $ref: '#/components/schemas/Descriptor'
-              mime_type:
-                description: >-
-                  This field indicates the nature and format of the form
-                  received by querying the url. MIME types are defined and
-                  standardized in IETF's RFC 6838.
-                type: string
-                enum:
-                  - text/html
-                  - application/html
-                  - application/xml
-                  - application/pdf
-              url:
-                description: >-
-                  The URL from where the form can be fetched. The content
-                  fetched from the url must be processed as per the mime_type
-                  specified in this object.
-                type: string
-                format: uri
         refund_terms:
           description: Refund terms of this item
           type: array
@@ -2126,7 +1897,6 @@ components:
     Organization:
       description: An organization. Usually a recognized business entity.
       type: object
-      additionalProperties: false
       properties:
         descriptor:
           $ref: '#/components/schemas/Descriptor'
@@ -2160,7 +1930,6 @@ components:
         negotiations on the payment terms. Once an agreement is reached, the BAP
         and BPP can resume transactions.
       type: object
-      additionalProperties: false
       properties:
         id:
           description: >-
@@ -2175,7 +1944,6 @@ components:
             should not send the payment url. Alternatively, the BPP can set this
             field with the value 'bpp' if it wants the payment to be made
             directly.
-          type: string
         url:
           type: string
           description: >-
@@ -2185,11 +1953,8 @@ components:
             will be sent as url params. Two url param values,
             ```$transaction_id``` and ```$amount``` are mandatory.
           format: uri
-        tl_method:
-          type: string
         params:
           type: object
-          additionalProperties: false
           properties:
             transaction_id:
               type: string
@@ -2213,19 +1978,15 @@ components:
         type:
           type: string
           enum:
-            - PRE_ORDER
-            - PRE_FULFILLMENT
-            - ON_FULFILLMENT
-            - POST_FULFILLMENT
-            - ON_ORDER
-            - PART_PAYMENT
-            - ON_CANCELLATION
-            - POST_CANCELLATION
+            - PRE-ORDER
+            - PRE-FULFILLMENT
+            - ON-FULFILLMENT
+            - POST-FULFILLMENT
         status:
           type: string
           enum:
             - PAID
-            - NOT_PAID
+            - NOT-PAID
         time:
           $ref: '#/components/schemas/Time'
         tags:
@@ -2235,7 +1996,6 @@ components:
     Person:
       description: Describes a person as any individual
       type: object
-      additionalProperties: false
       properties:
         id:
           type: string
@@ -2274,7 +2034,6 @@ components:
           items:
             description: Describes a language known to the person.
             type: object
-            additionalProperties: false
             properties:
               code:
                 type: string
@@ -2285,7 +2044,6 @@ components:
           items:
             description: Describes a skill of the person.
             type: object
-            additionalProperties: false
             properties:
               code:
                 type: string
@@ -2295,12 +2053,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
-        descriptor:
-          $ref: '#/components/schemas/Descriptor'
     Price:
       description: Describes the price of a product or service
       type: object
-      additionalProperties: false
       properties:
         currency:
           type: string
@@ -2321,7 +2076,6 @@ components:
     Provider:
       description: Describes the catalog of a business.
       type: object
-      additionalProperties: false
       properties:
         id:
           type: string
@@ -2371,26 +2125,22 @@ components:
             The time-to-live in seconds, for this object. This can be overriden
             at deeper levels. A value of -1 indicates that this object is not
             cacheable.
-          type: string
+          type: integer
+          minimum: -1
         tags:
           type: array
           items:
             $ref: '#/components/schemas/TagGroup'
-        cancellation_terms:
-          description: Cancellation terms of this item
-          type: array
-          items:
-            $ref: '#/components/schemas/CancellationTerm'
     Quotation:
       description: >-
         Describes a quote. It is the estimated price of products or services
         from the BPP.<br>This has properties like price, breakup, ttl
       type: object
-      additionalProperties: false
       properties:
         id:
           description: ID of the quote.
           type: string
+          format: uuid
         price:
           description: The total quoted price
           allOf:
@@ -2400,7 +2150,6 @@ components:
           type: array
           items:
             type: object
-            additionalProperties: false
             properties:
               item:
                 $ref: '#/components/schemas/Item'
@@ -2413,19 +2162,17 @@ components:
     Rating:
       description: Describes the rating of an entity
       type: object
-      additionalProperties: false
       properties:
         rating_category:
           description: Category of the entity being rated
           type: string
           enum:
-            - ITEM
-            - ORDER
-            - FULFILLMENT
-            - PROVIDER
-            - AGENT
-            - SUPPORT
-            - BUYER
+            - Item
+            - Order
+            - Fulfillment
+            - Provider
+            - Agent
+            - Support
         id:
           description: Id of the object being rated
           type: string
@@ -2436,36 +2183,11 @@ components:
             also contain an inequality expression containing logical operators
             like && and ||.
           type: string
-        ref_type:
-          description: Reference object to which we are rating
-          type: string
-          enum:
-            - ITEM
-            - ORDER
-            - FULFILLMENT
-            - PROVIDER
-            - AGENT
-            - SUPPORT
-            - DELIVERY
-            - PACKAGING
-            - BUYER
-        ref_id:
-          description: Reference id of the ref_type
-          type: string
-        feedback:
-          description: feedback for rating
-          type: string
-        feedback_form:
-          description: >-
-            A feedback form to allow the user to provide additional information
-            on the rating provided
-          $ref: '#/components/schemas/Form'
     Region:
       description: >-
         Describes an arbitrary region of space. The network policy should
         contain a published list of supported regions by the network.
       type: object
-      additionalProperties: false
       properties:
         dimensions:
           description: >-
@@ -2512,7 +2234,6 @@ components:
     ReplacementTerm:
       description: The replacement policy of an item or an order
       type: object
-      additionalProperties: false
       properties:
         fulfillment_state:
           description: The state of fulfillment during which this term is applicable.
@@ -2530,7 +2251,6 @@ components:
     ReturnTerm:
       description: Describes the return policy of an item or an order
       type: object
-      additionalProperties: false
       properties:
         fulfillment_state:
           description: The state of fulfillment during which this term IETF''s applicable.
@@ -2559,7 +2279,6 @@ components:
     Scalar:
       description: Describes a scalar
       type: object
-      additionalProperties: false
       properties:
         type:
           type: string
@@ -2574,7 +2293,6 @@ components:
           $ref: '#/components/schemas/DecimalValue'
         range:
           type: object
-          additionalProperties: false
           properties:
             min:
               $ref: '#/components/schemas/DecimalValue'
@@ -2593,7 +2311,6 @@ components:
         day from the schedule.<br>This has properties like frequency, holidays,
         times
       type: object
-      additionalProperties: false
       properties:
         frequency:
           $ref: '#/components/schemas/Duration'
@@ -2610,7 +2327,6 @@ components:
     State:
       description: A bounded geopolitical region of governance inside a country.
       type: object
-      additionalProperties: false
       properties:
         name:
           type: string
@@ -2621,7 +2337,6 @@ components:
     Stop:
       description: A logical point in space and time during the fulfillment of an order.
       type: object
-      additionalProperties: false
       properties:
         id:
           type: string
@@ -2657,7 +2372,6 @@ components:
     Support:
       description: Details of customer support
       type: object
-      additionalProperties: false
       properties:
         ref_id:
           type: string
@@ -2673,10 +2387,6 @@ components:
         url:
           type: string
           format: uri
-        descriptor:
-          $ref: '#/components/schemas/Descriptor'
-        ref_type:
-          type: string
     Tag:
       description: >-
         Describes a tag. This is used to contain extended metadata. This object
@@ -2689,7 +2399,6 @@ components:
         name-value pairs. This is particularly useful when rendering tabular
         information about a product or service.
       type: object
-      additionalProperties: false
       properties:
         descriptor:
           description: Description of the Tag, can be used to store detailed information.
@@ -2713,7 +2422,6 @@ components:
         documentation on the Tags and Tag Groups schema go to
         https://github.com/beckn/protocol-specifications/discussions/316
       type: object
-      additionalProperties: false
       properties:
         display:
           description: >-
@@ -2747,7 +2455,6 @@ components:
         duration; or a structured timetable of operations<br>This has properties
         like label, time stamp,duration,range, days, schedule
       type: object
-      additionalProperties: false
       properties:
         label:
           type: string
@@ -2758,7 +2465,6 @@ components:
           $ref: '#/components/schemas/Duration'
         range:
           type: object
-          additionalProperties: false
           properties:
             start:
               type: string
@@ -2777,7 +2483,6 @@ components:
         fulfillment of an order in real-time. which is useful for knowing the
         location of time sensitive deliveries.
       type: object
-      additionalProperties: false
       properties:
         id:
           description: A unique tracking reference number
@@ -2816,7 +2521,6 @@ components:
         properties like category, capacity, make, model,
         size,variant,color,energy_type,registration
       type: object
-      additionalProperties: false
       properties:
         category:
           type: string
@@ -2864,48 +2568,9 @@ components:
         for that particular item. Hence the BAP must render a separate form for
         the Item and another form at the Order level before confirmation.
       type: object
-      additionalProperties: false
       properties:
-        head:
-          description: Provides the header information for the xinput.
-          type: object
-          additionalProperties: false
-          properties:
-            descriptor:
-              $ref: '#/components/schemas/Descriptor'
-            index:
-              type: object
-              additionalProperties: false
-              properties:
-                min:
-                  type: integer
-                cur:
-                  type: integer
-                max:
-                  type: integer
-            headings:
-              type: array
-              items:
-                type: string
-                description: The heading names of the forms
         form:
           $ref: '#/components/schemas/Form'
-        form_response:
-          description: Describes the response to a form submission
-          type: object
-          additionalProperties: false
-          properties:
-            status:
-              description: Contains the status of form submission.
-              type: string
-            signature:
-              type: string
-            submission_id:
-              type: string
-            errors:
-              type: array
-              items:
-                $ref: '#/components/schemas/Error'
         required:
           description: >-
             Indicates whether the form data is mandatorily required by the BPP
@@ -4762,6 +4427,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -5150,6 +4817,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -5470,6 +5139,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -5871,6 +5542,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -6189,6 +5862,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -6511,6 +6186,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -6861,6 +6538,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 id: O1
                 cancellation_terms:
                   - cancellation_fee:
@@ -7932,6 +7611,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -8341,6 +8022,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -8666,6 +8349,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -9030,6 +8715,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -9353,6 +9040,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -9680,6 +9369,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -10016,6 +9707,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 id: O1
                 cancellation_terms:
                   - cancellation_fee:
@@ -11092,6 +10785,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -11489,6 +11184,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -11798,6 +11495,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -12146,6 +11845,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -12453,6 +12154,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -12764,6 +12467,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -13111,6 +12816,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 id: O1
                 cancellation_terms:
                   - cancellation_fee:
@@ -13683,6 +13390,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -14084,6 +13793,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -14397,6 +14108,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -14749,6 +14462,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -15060,6 +14775,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -15375,6 +15092,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -15699,6 +15418,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -16333,6 +16054,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -16692,6 +16415,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -17555,6 +17280,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -17939,6 +17666,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -18217,6 +17946,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 tags:
                   - descriptor:
                       name: BAP Terms of Engagement
@@ -18548,6 +18279,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -18831,6 +18564,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -19138,6 +18873,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -19467,6 +19204,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 id: O1
                 cancellation_terms:
                   - cancellation_fee:
@@ -20424,6 +20163,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -20797,6 +20538,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -21080,6 +20823,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -21376,6 +21121,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -21712,6 +21459,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -22028,6 +21777,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -22748,6 +22499,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -23049,6 +22802,8 @@ x-flows:
               ttl: PT30S
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -23404,6 +23159,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -23754,6 +23511,8 @@ x-flows:
               ttl: PT30S
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -24113,6 +23872,8 @@ x-flows:
               ttl: PT30S
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -24508,6 +24269,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -24852,6 +24615,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -25202,6 +24967,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -25678,6 +25445,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -25953,6 +25722,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -27008,6 +26779,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 tags:
                   - descriptor:
                       name: BPP Terms of Engagement
@@ -27400,6 +27173,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 tags:
                   - descriptor:
                       name: BAP Terms of Engagement
@@ -27702,6 +27477,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 tags:
                   - descriptor:
                       name: BAP Terms of Engagement
@@ -28034,6 +27811,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 tags:
                   - descriptor:
                       name: BAP Terms of Engagement
@@ -28334,6 +28113,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 tags:
                   - descriptor:
                       name: BAP Terms of Engagement
@@ -28638,6 +28419,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 tags:
                   - descriptor:
                       name: BAP Terms of Engagement
@@ -28951,6 +28734,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 tags:
                   - descriptor:
                       name: BAP Terms of Engagement
@@ -29372,6 +29157,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -29708,6 +29495,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -29994,6 +29783,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -30776,6 +30567,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 id: O1
                 cancellation_terms:
                   - cancellation_fee:
@@ -31835,6 +31628,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -32219,6 +32014,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -32528,6 +32325,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -32876,6 +32675,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -33183,6 +32984,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -33494,6 +33297,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -33825,6 +33630,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 id: O1
                 cancellation_terms:
                   - cancellation_fee:
@@ -34824,6 +34631,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -35212,6 +35021,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -35504,6 +35315,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -35897,6 +35710,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -36208,6 +36023,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -36519,6 +36336,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -36832,6 +36651,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -37184,6 +37005,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 id: O1
                 cancellation_terms:
                   - cancellation_fee:
@@ -38121,6 +37944,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -38498,6 +38323,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -38781,6 +38608,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -39120,6 +38949,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -39422,6 +39253,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -39723,6 +39556,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -40026,6 +39861,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -40338,6 +40175,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 id: O1
                 cancellation_terms:
                   - cancellation_fee:
@@ -41079,6 +40918,8 @@ x-flows:
               ttl: PT30S
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -41398,6 +41239,8 @@ x-flows:
               ttl: PT30S
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -41767,6 +41610,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -42061,6 +41906,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -42500,6 +42347,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -42784,6 +42633,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 tags:
                   - descriptor:
                       name: BAP Terms of Engagement
@@ -43204,6 +43055,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -44286,6 +44139,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -44684,6 +44539,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -45003,6 +44860,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -45361,6 +45220,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -45678,6 +45539,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -45999,6 +45862,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -46329,6 +46194,8 @@ x-flows:
               version: 2.1.0
             message:
               order:
+                billing:
+                  name: Joe Adams
                 id: O1
                 cancellation_terms:
                   - cancellation_fee:
@@ -46746,6 +46613,8 @@ x-flows:
               ttl: PT30S
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -47026,6 +46895,8 @@ x-flows:
               ttl: PT30S
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -47335,6 +47206,8 @@ x-flows:
               ttl: PT30S
             message:
               order:
+                billing:
+                  name: Joe Adams
                 cancellation_terms:
                   - cancellation_fee:
                       percentage: '0'
@@ -48124,6 +47997,8 @@ x-examples:
                 version: 2.1.0
               message:
                 order:
+                  billing:
+                    name: Joe Adams
                   cancellation_terms:
                     - cancellation_fee:
                         percentage: '0'
@@ -48611,6 +48486,8 @@ x-examples:
                 version: 2.1.0
               message:
                 order:
+                  billing:
+                    name: Joe Adams
                   cancellation_terms:
                     - cancellation_fee:
                         percentage: '0'
@@ -48841,6 +48718,8 @@ x-examples:
                 version: 2.1.0
               message:
                 order:
+                  billing:
+                    name: Joe Adams
                   cancellation_terms:
                     - cancellation_fee:
                         percentage: '0'
@@ -49071,6 +48950,8 @@ x-examples:
                 version: 2.1.0
               message:
                 order:
+                  billing:
+                    name: Joe Adams
                   cancellation_terms:
                     - cancellation_fee:
                         percentage: '0'
